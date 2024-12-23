@@ -80,6 +80,9 @@ class EVOSPACE_API UAbstractCrafter : public UTieredBlockLogic, public ISwitchIn
   UFUNCTION(BlueprintCallable)
   virtual void ResetRecipe();
 
+  UFUNCTION(BlueprintCallable)
+  FText GetDescription() const;
+
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   virtual float GetCurrentProgress() const;
 

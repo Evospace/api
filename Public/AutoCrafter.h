@@ -50,53 +50,7 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UDeconstructorCrafterBlockLogic
-  : public UAutoCrafter {
-  GENERATED_BODY()
-
-  public:
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UDumpAnyBlockLogic : public UTieredBlockLogic, public ISwitchInterface {
-  GENERATED_BODY()
-
-  public:
-  UDumpAnyBlockLogic();
-
-  virtual void Tick() override;
-
-  virtual bool IsBlockTicks() const override;
-
-  virtual void BlockBeginPlay() override;
-
-  void SetActor(ABlockActor *actor);
-  FObjectProperty *mItem = nullptr;
-
-  virtual void SetWorking(bool working);
-  FBoolProperty *mWorking = nullptr;
-
-  void SetSwitched(bool val) override;
-
-  bool GetSwitched() const override;
-
-  protected:
-  UPROPERTY()
-  UInventory *mInputInventory;
-
-  bool mSwitchedOn = true;
-
-  int32 AnimationTicks = 0;
-
-  public:
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UDumpCrafterBlockLogic : public USelectCrafter {
+class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
   GENERATED_BODY()
 
   protected:

@@ -28,9 +28,8 @@ class UStaticTip : public UPrototype {
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   UTexture2D *mImage;
-
-  UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  FString mImagePath;
+  
+  std::string mImagePath;
 
   UFUNCTION(BlueprintCallable)
   void LoadImagePath();
@@ -50,6 +49,7 @@ class UStaticTip : public UPrototype {
       .addProperty("image", &UStaticTip::mImagePath)
       .addFunction("add_context", &UStaticTip::AddContext)
       .addFunction("clear_context", &UStaticTip::ClearContext)
+      .addProperty("context", &UStaticTip::mContextInventory)
       .endClass();
   }
 };

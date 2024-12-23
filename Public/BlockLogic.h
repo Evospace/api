@@ -8,7 +8,9 @@
 
 #include "BlockLogic.generated.h"
 
-class UCoreAccessor;
+
+
+class UHierarchicalInstancedStaticMeshComponent;class UStaticCover;class UCoreAccessor;
 class AMainPlayerController;
 class ABlockActor;
 class UBlockWidget;
@@ -57,7 +59,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual Vec3i GetRotationLocks() const;
 
   virtual bool IsHandleRecipeSelection() const;
-  virtual void HandleRecipeSelection(UStaticItem *item);
+  virtual void HandleRecipeSelection(UStaticItem *item);void ShowAccessors();
 
   virtual void SetRenderable();
 
@@ -132,14 +134,14 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   float DeltaTime = 0.05f;
 
+  UPROPERTY(VisibleAnywhere)
+  TMap<const UStaticCover *, UHierarchicalInstancedStaticMeshComponent *> mAccessorCover;
+
   UFUNCTION(BlueprintCallable)
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const;
 
   UFUNCTION(BlueprintCallable)
   virtual EBlockWidgetType GetWidgetType() const;
-
-  //TODO: remove
-  virtual void InitializeBlock();
 
   // No any code
   virtual void BlockBeginPlay();

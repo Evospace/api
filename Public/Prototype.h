@@ -64,6 +64,8 @@ class Base;
         .beginClass<U##type>(#type)                                                                                                      \
         .addStaticFunction(                                                                                                              \
           "new", +[](UInstance *parent, std::string_view newName) { return NewObject<U##type>(parent, UTF8_TO_TCHAR(newName.data())); }) \
+        .addStaticFunction(                                                                                                              \
+          "new_simple", +[]() { return NewObject<U##type>(); }) \
         .endClass();                                                                                                                     \
     }                                                                                                                                    \
   }
