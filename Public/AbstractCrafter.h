@@ -29,15 +29,15 @@ UCLASS(BlueprintType)
 /**
  * 
  */
-class EVOSPACE_API UAbstractCrafter : public UTieredBlockLogic, public ISwitchInterface {
+class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   using Self = UAbstractCrafter;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(AbstractCrafter);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UTieredBlockLogic>("AbstractCrafter")
+      .deriveClass<Self, UBlockLogic>("AbstractCrafter")
       .addProperty("recipes", &Self::RecipeDictionary)
-    
+
       .addProperty("load_independent", &Self::LoadIndependent)
       .addProperty("input_gathered", &Self::InputGathered)
       .addProperty("switched_on", &Self::SwitchedOn)
@@ -59,6 +59,12 @@ class EVOSPACE_API UAbstractCrafter : public UTieredBlockLogic, public ISwitchIn
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FColor GetStateColor() const;
+
+  virtual void SetActor(ABlockActor *actor) override;
+
+  virtual void SetWorking(bool working);
+
+  FBoolProperty *mWorking = nullptr;
 
   //
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

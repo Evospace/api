@@ -44,7 +44,7 @@ class Base;
       luabridge::getGlobalNamespace(L)                                                                                                                        \
         .beginClass<U##type>(#type)                                                                                                                           \
         .addStaticFunction(                                                                                                                                   \
-          "reg", +[](std::string_view newName) { return NewObject<U##type>(MainGameOwner<U##topmost_not_prototype>::Get(), UTF8_TO_TCHAR(newName.data())); }) \
+          "new", +[](std::string_view newName) { return NewObject<U##type>(MainGameOwner<U##topmost_not_prototype>::Get(), UTF8_TO_TCHAR(newName.data())); }) \
         .endClass();                                                                                                                                          \
     }                                                                                                                                                         \
   }
@@ -65,7 +65,7 @@ class Base;
         .addStaticFunction(                                                                                                              \
           "new", +[](UInstance *parent, std::string_view newName) { return NewObject<U##type>(parent, UTF8_TO_TCHAR(newName.data())); }) \
         .addStaticFunction(                                                                                                              \
-          "new_simple", +[]() { return NewObject<U##type>(); }) \
+          "new_simple", +[]() { return NewObject<U##type>(); })                                                                          \
         .endClass();                                                                                                                     \
     }                                                                                                                                    \
   }
@@ -121,8 +121,7 @@ class UPrototype : public UObject, public ISerializableJson {
   virtual UClass *lua_reg_type() { return UPrototype::StaticClass(); }
   virtual void register_owner() {}
   virtual void lua_reg_internal(lua_State *L) const {
-    LOG(INFO_LL) << "Registering lua "
-                 << "Prototype";
+    LOG(INFO_LL) << "Registering lua Prototype";
     luabridge::getGlobalNamespace(L)
       .deriveClass<UPrototype, UObject>("Prototype")
 
@@ -141,6 +140,7 @@ class UPrototype : public UObject, public ISerializableJson {
   UPROPERTY(VisibleAnywhere)
   const UMod *mOwningMod = nullptr;
 
+  //No code
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override {
     return true;
   }

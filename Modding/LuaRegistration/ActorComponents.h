@@ -104,17 +104,12 @@ inline void registerComponentClasses(lua_State *L) {
     .endClass();
 
   getGlobalNamespace(L)
-    .beginClass<AActor>("Actor")
+    .deriveClass<AActor, UObject>("Actor")
     .addFunction(
       "add_actor_component",
-      [](AActor *actor,
-         UClass *componentClass,
-         const std::string &componentName) {
+      [](AActor *actor, UClass *componentClass, const std::string &componentName) {
         if (actor && componentClass) {
-          UActorComponent *newComponent = NewObject<UActorComponent>(
-            actor,
-            componentClass,
-            FName(UTF8_TO_TCHAR(componentName.data())));
+          UActorComponent *newComponent = NewObject<UActorComponent>(actor, componentClass, FName(UTF8_TO_TCHAR(componentName.data())));
           if (newComponent) {
             newComponent->RegisterComponent();
             actor->AddInstanceComponent(newComponent);
@@ -125,8 +120,7 @@ inline void registerComponentClasses(lua_State *L) {
       })
     .addFunction("set_field_object", [](AActor *actor, std::string_view field_name, UObject *object) {
       if (ensure(actor && field_name != "")) {
-        auto prop = FindFProperty<FObjectPropertyBase>(actor->GetClass(),
-                                                       UTF8_TO_TCHAR(field_name.data()));
+        auto prop = FindFProperty<FObjectPropertyBase>(actor->GetClass(), UTF8_TO_TCHAR(field_name.data()));
         if (prop) {
           prop->SetObjectPropertyValue_InContainer(actor, object);
         }
@@ -138,6 +132,7 @@ inline void registerComponentClasses(lua_State *L) {
 
   getGlobalNamespace(L)
     .deriveClass<ABlockActor, AActor>("BlockActor")
+    .addProperty("logic", &ABlockActor::mBlockLogic)
     .endClass();
 
   getGlobalNamespace(L)

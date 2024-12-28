@@ -8,9 +8,9 @@
 
 #include "BlockLogic.generated.h"
 
-
-
-class UHierarchicalInstancedStaticMeshComponent;class UStaticCover;class UCoreAccessor;
+class UHierarchicalInstancedStaticMeshComponent;
+class UStaticCover;
+class UCoreAccessor;
 class AMainPlayerController;
 class ABlockActor;
 class UBlockWidget;
@@ -36,6 +36,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBlockLogic, UInstance>("BlockLogic")
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
+      .addProperty("static_block", &UBlockLogic::mStaticBlock)
       .endClass();
   }
 
@@ -59,7 +60,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual Vec3i GetRotationLocks() const;
 
   virtual bool IsHandleRecipeSelection() const;
-  virtual void HandleRecipeSelection(UStaticItem *item);void ShowAccessors();
+  virtual void HandleRecipeSelection(UStaticItem *item);
+  void ShowAccessors();
 
   virtual void SetRenderable();
 
@@ -74,7 +76,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual void Tick();
   virtual void TickAccessor();
 
-  ADimension * GetDim() const { return mDimension; }
+  ADimension *GetDim() const { return mDimension; }
 
   virtual void CopyOnReplace(UBlockLogic *from);
 
@@ -121,7 +123,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   const Vec3i &GetBlockPos() const;
 
-  void Init(const Vec3i&pos, const FQuat&r, const UStaticBlock*block, ADimension*dim);
+  void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, ADimension *dim);
 
   virtual UBlockLogic *GetPartRootBlock();
 
@@ -179,7 +181,6 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   }
 
   public:
-
   //=====================
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -249,7 +250,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ABlockActor *mActor = nullptr;
 
-private:
+  private:
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   const UStaticBlock *mStaticBlock = nullptr;
 

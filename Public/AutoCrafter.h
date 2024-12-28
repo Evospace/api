@@ -58,8 +58,10 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
-  virtual void SetActor(ABlockActor *actor)override;
-  FObjectProperty *Item = nullptr;
+  virtual void SetActor(ABlockActor *actor) override;
+
+  UPROPERTY(BlueprintReadOnly)
+  FLinearColor Color;
 
   public:
   virtual bool IsUniversalCrafter() const override;

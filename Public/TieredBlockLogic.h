@@ -11,40 +11,12 @@ UCLASS(BlueprintType)
 /**
  * 
  */
-class EVOSPACE_API UTieredBlockLogic : public UBlockLogic {
-  using Self = UTieredBlockLogic;
+class EVOSPACE_API UTieredBlockHelper : public UBlockLogic {
+  using Self = UTieredBlockHelper;
   GENERATED_BODY()
-  EVO_CODEGEN_INSTANCE(TieredBlockLogic)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UBlockLogic>("TieredBlockLogic")
-      .addProperty("tier", &Self::Tier)
-      .addProperty("level", &Self::Level)
-      .endClass();
-  }
 
   public:
-  UTieredBlockLogic();
-
-  // Has actual code
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  // Has actual code
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
-
-  UFUNCTION(BlueprintCallable)
-  uint8 GetTier() const;
-
-  UFUNCTION(BlueprintCallable)
-  uint8 GetLevel() const;
-
-  virtual void SetActor(ABlockActor *actor) override;
-
-  UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  uint8 Tier = 0;
-
-  UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  uint8 Level = 0;
+  UTieredBlockHelper();
 
   UFUNCTION(BlueprintCallable)
   static FString TierToString(int32 t);
@@ -54,7 +26,7 @@ class EVOSPACE_API UTieredBlockLogic : public UBlockLogic {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UFilteringBlockLogic : public UTieredBlockLogic {
+class EVOSPACE_API UFilteringBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:

@@ -28,7 +28,7 @@ class UStaticTip : public UPrototype {
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   UTexture2D *mImage;
-  
+
   std::string mImagePath;
 
   UFUNCTION(BlueprintCallable)

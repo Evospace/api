@@ -25,6 +25,24 @@ UCLASS(BlueprintType)
  * Static Block
  */
 class EVOSPACE_API UStaticBlock : public UStaticObject {
+  EVO_OWNED(StaticBlock, StaticObject)
+  EVO_CODEGEN_DB(StaticBlock, StaticBlock);
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UStaticBlock, UStaticObject>("StaticBlock")
+      .addProperty("logic", &UStaticBlock::mBlockLogic)
+      .addProperty("actor", &UStaticBlock::mActorClass)
+      .addProperty("selector", &UStaticBlock::mSelectorClass)
+      .addProperty("tesselator", &UStaticBlock::mTesselator)
+      .addProperty("sub_blocks", &UStaticBlock::Positions)
+      .addProperty("replace_tag", &UStaticBlock::ReplaceTag)
+      .addProperty("color_side", &UStaticBlock::mColorSide)
+      .addProperty("color_top", &UStaticBlock::mColorTop)
+      .addProperty("tier", &UStaticBlock::Tier)
+      .addProperty("level", &UStaticBlock::Level)
+      .addProperty("lua", &UStaticBlock::Table)
+      .endClass();
+  }
   GENERATED_BODY()
 
   public:
@@ -76,31 +94,26 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   FVector mColorTop = FVector(1);
 
   const TArray<FVector3i> &GetPositions() const;
-  TArray<FVector3i> mPositions;
+  TArray<FVector3i> Positions;
 
   /**
    * Replace tag
    */
-  FName mReplaceTag;
+  FName ReplaceTag;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  /**
+   * Tier
+   */
+  int32 Tier = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  /**
+   * Level
+   */
+  int32 Level = 0;
 
   virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
 
   virtual UPartBlockLogic *SpawnPart(ADimension *world, const FTransform &tr, const Vec3i &bpos, UBlockLogic *parent) const;
-
-  EVO_OWNED(StaticBlock, StaticObject)
-  EVO_CODEGEN_DB(StaticBlock, StaticBlock);
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticBlock, UStaticObject>("StaticBlock")
-      .addProperty("logic", &UStaticBlock::mBlockLogic)
-      .addProperty("actor", &UStaticBlock::mActorClass)
-      .addProperty("selector", &UStaticBlock::mSelectorClass)
-      .addProperty("tesselator", &UStaticBlock::mTesselator)
-      .addProperty("sub_blocks", &UStaticBlock::mPositions)
-      .addProperty("replace_tag", &UStaticBlock::mReplaceTag)
-      .addProperty("color_side", &UStaticBlock::mColorSide)
-      .addProperty("color_top", &UStaticBlock::mColorTop)
-      .addProperty("lua", &UStaticBlock::Table)
-      .endClass();
-  }
 };

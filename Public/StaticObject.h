@@ -33,6 +33,14 @@ UCLASS(Abstract)
  * 
  */
 class EVOSPACE_API UStaticObject : public UPrototype {
+  EVO_OWNER(StaticObject)
+  EVO_CODEGEN_DB(StaticObject, StaticObject)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UStaticObject, UPrototype>("StaticObject")
+      .addProperty("item", &UStaticObject::mStaticItem)
+      .endClass();
+  }
   GENERATED_BODY()
 
   public:
@@ -51,13 +59,4 @@ class EVOSPACE_API UStaticObject : public UPrototype {
   bool mSurface = false;
 
   virtual AActor *CreateSelector() const { return nullptr; };
-
-  EVO_OWNER(StaticObject)
-  EVO_CODEGEN_DB(StaticObject, StaticObject)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticObject, UPrototype>("StaticObject")
-      .addProperty("item", &UStaticObject::mStaticItem)
-      .endClass();
-  }
 };
