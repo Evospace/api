@@ -1,15 +1,12 @@
 #pragma once
-#include "Components/AudioComponent.h"
-#include "Particles/ParticleSystemComponent.h"
+
 #include "ThirdParty/lua/lua.h"
 #include "ThirdParty/luabridge/luabridge.h"
 #include "Evospace/Common.h"
 #include "Evospace/Dimension.h"
 #include "Evospace/MainGameInstance.h"
 #include "Evospace/Blocks/BlockActor.h"
-#include "Evospace/Item/ItemData.h"
-#include "Evospace/Item/ItemLogic.h"
-#include "Evospace/Item/Recipe.h"
+#include "Public/ItemData.h"
 
 class UIcoGenerator;
 
@@ -86,8 +83,7 @@ inline void registerComponentClasses(lua_State *L) {
     .addStaticFunction(
       "new_empty", +[]() { return FItemData(); })
     .addStaticFunction(
-      "new",
-      +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
+      "new", +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
     .addStaticFunction(
       "new_zero", +[](UStaticItem *item) { return FItemData(item, 0); })
     .addProperty("count", &FItemData::mValue)

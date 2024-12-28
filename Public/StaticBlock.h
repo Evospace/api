@@ -77,7 +77,7 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
 
   const TArray<FVector3i> &GetPositions() const;
   TArray<FVector3i> Positions;
-  
+
   FName ReplaceTag;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)

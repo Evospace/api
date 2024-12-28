@@ -1,9 +1,7 @@
 // Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
 #include "EvospaceLuaState.h"
-#include "PrototypeHelper.h"
 #include "PrototypeInclude.h"
 #include "Evospace/Blocks/CommonBlockTypes/ResourceComponent.h"
-#include "Evospace/Item/SingleSlotInventory.h"
 #include "LuaRegistration/ActorComponents.h"
 
 #include <tuple>

@@ -12,7 +12,7 @@ class EVOSPACE_API UAutosizeInventory : public UInventory {
       .endClass();
   }
 
-public:
+  public:
   UAutosizeInventory();
 
   virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const override;

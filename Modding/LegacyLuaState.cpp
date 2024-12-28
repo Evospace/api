@@ -2,9 +2,9 @@
 #include "LegacyLuaState.h"
 
 #include "Evospace/Blocks/Accessors/BaseInventorySideAccessor.h"
-#include "Evospace/Blocks/Accessors/ResourceAccessor.h"
 #include "Public/SelectCrafter.h"
 #include "Evospace/Item/InventoryContainer.h"
+#include "Public/ResourceAccessor.h"
 
 using namespace luabridge;
 

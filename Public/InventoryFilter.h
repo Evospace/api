@@ -3,6 +3,7 @@
 
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
+#include "ItemData.h"
 
 #include "InventoryFilter.generated.h"
 class UInventoryAccess;
