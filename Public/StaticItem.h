@@ -25,18 +25,20 @@ enum class EStaticItemType : uint8 {
 };
 
 UCLASS(BlueprintType)
-/**
- * @brief Static part of every item
- *
- * FItemData {
- *      count: per instance data,
- *      item: static part pointer
- * }
- *
- * Not modifiable in game part of item
- */
 class EVOSPACE_API UStaticItem : public UPrototype {
   GENERATED_BODY()
+  EVO_OWNER(StaticItem)
+  EVO_CODEGEN_DB(StaticItem, StaticItem)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UStaticItem, UPrototype>("StaticItem") //class: StaticItem, parent: Prototype
+      .addProperty("image", &UStaticItem::mImage) //field: Texture
+      .addProperty("stack_size", &UStaticItem::mStackSize) //field: integer
+      .addProperty("unit_mul", &UStaticItem::mUnitMul) //field: number
+      .addProperty("mesh", &UStaticItem::mMesh) //field: StaticMesh
+      .addProperty("craftable", &UStaticItem::mCraftable) //field: boolean
+      .endClass();
+  }
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -59,62 +61,21 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   FKeyTableObject mLabelFormat;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  /**
-     * @brief Property. Multiplier for internal item count units
-     *
-     * When drawing in inventory this multiplier is applying. Showing number =
-     * count * multiplier
-     *
-     * Default value: 1.0
-     *
-     * @code{.lua}
-     * local coal = StaticItem.find("Coal")
-     * mul = coal.unit_mul
-     * coal.unit_mul = 1.0
-     * @endcode
-     */
   float mUnitMul = 1.f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  /**
-     * @brief Property. Item ico for drawing in inventory
-     *
-     * Default value: nil
-     *
-     * @code{.lua}
-     * local coal = StaticItem.find("Coal")
-     * image = coal.image
-     * coal.image = image
-     * @endcode
-     */
   UTexture2D *mImage = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TSubclassOf<AItemLogic> mItemLogic;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  /**
-   * @brief Property. Mesh for rendering item in world (on ground or at
-   * conveyor)
-   */
   UStaticMesh *mMesh;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TArray<UMaterialInterface *> mMaterials;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  /**
-     * @brief Property. Max count that can be stored in one slot of default
-     * inventory
-     *
-     * Default value: 0
-     *
-     * @code{.lua}
-     * local coal = StaticItem.find("Coal")
-     * count = coal.max_count
-     * coal.max_count = 64
-     * @endcode
-     */
   int64 mStackSize = 0;
 
   // Item database category
@@ -131,9 +92,6 @@ class EVOSPACE_API UStaticItem : public UPrototype {
 
   // Hidden in survival
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  /**
-   * @brief Set visibility for non creative game
-   */
   bool mCraftable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -147,17 +105,4 @@ class EVOSPACE_API UStaticItem : public UPrototype {
 
   TSharedPtr<FJsonObject> mLogicJson;
   virtual void MarkIncomplete() override;
-
-  EVO_OWNER(StaticItem)
-  EVO_CODEGEN_DB(StaticItem, StaticItem)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticItem, UPrototype>("StaticItem")
-      .addProperty("image", &UStaticItem::mImage)
-      .addProperty("stack_size", &UStaticItem::mStackSize)
-      .addProperty("unit_mul", &UStaticItem::mUnitMul)
-      .addProperty("mesh", &UStaticItem::mMesh)
-      .addProperty("craftable", &UStaticItem::mCraftable)
-      .endClass();
-  }
 };

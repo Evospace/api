@@ -21,26 +21,23 @@ class UPartBlockLogic;
 class ADimension;
 
 UCLASS(BlueprintType)
-/**
- * Static Block
- */
 class EVOSPACE_API UStaticBlock : public UStaticObject {
   EVO_OWNED(StaticBlock, StaticObject)
   EVO_CODEGEN_DB(StaticBlock, StaticBlock);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticBlock, UStaticObject>("StaticBlock")
-      .addProperty("logic", &UStaticBlock::mBlockLogic)
-      .addProperty("actor", &UStaticBlock::mActorClass)
-      .addProperty("selector", &UStaticBlock::mSelectorClass)
-      .addProperty("tesselator", &UStaticBlock::mTesselator)
+      .deriveClass<UStaticBlock, UStaticObject>("StaticBlock") //class: StaticBlock, parent: StaticObject
+      .addProperty("logic", &UStaticBlock::mBlockLogic) //field: Class
+      .addProperty("actor", &UStaticBlock::mActorClass) //field: Class
+      .addProperty("selector", &UStaticBlock::mSelectorClass) //field: Class
+      .addProperty("tesselator", &UStaticBlock::mTesselator) //field: Tesselator
       .addProperty("sub_blocks", &UStaticBlock::Positions)
-      .addProperty("replace_tag", &UStaticBlock::ReplaceTag)
-      .addProperty("color_side", &UStaticBlock::mColorSide)
-      .addProperty("color_top", &UStaticBlock::mColorTop)
-      .addProperty("tier", &UStaticBlock::Tier)
-      .addProperty("level", &UStaticBlock::Level)
-      .addProperty("lua", &UStaticBlock::Table)
+      .addProperty("replace_tag", &UStaticBlock::ReplaceTag) //field: string
+      .addProperty("color_side", &UStaticBlock::mColorSide) //field: Vector
+      .addProperty("color_top", &UStaticBlock::mColorTop) //field: Vector
+      .addProperty("tier", &UStaticBlock::Tier) //field: integer
+      .addProperty("level", &UStaticBlock::Level) //field: integer
+      .addProperty("lua", &UStaticBlock::Table) //field: table
       .endClass();
   }
   GENERATED_BODY()
@@ -52,21 +49,12 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   const UTesselator *GetTesselator() const;
 
   UPROPERTY(BlueprintReadOnly)
-  /**
-   * Tesselator
-   */
   UTesselator *mTesselator;
 
   UPROPERTY(BlueprintReadOnly)
-  /**
-   * Block Logic
-   */
   TSubclassOf<UBlockLogic> mBlockLogic = nullptr;
 
   UPROPERTY(BlueprintReadOnly)
-  /**
-   * Actor Class
-   */
   UClass *mActorClass = nullptr;
 
   UPROPERTY(BlueprintReadOnly)
@@ -82,35 +70,20 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   virtual void LuaCleanup() override;
 
   UPROPERTY(BlueprintReadOnly)
-  /**
-   * Color side
-   */
   FVector mColorSide = FVector(1);
 
   UPROPERTY(BlueprintReadOnly)
-  /**
-   * Color top
-   */
   FVector mColorTop = FVector(1);
 
   const TArray<FVector3i> &GetPositions() const;
   TArray<FVector3i> Positions;
-
-  /**
-   * Replace tag
-   */
+  
   FName ReplaceTag;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  /**
-   * Tier
-   */
   int32 Tier = 0;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  /**
-   * Level
-   */
   int32 Level = 0;
 
   virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
