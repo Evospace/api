@@ -48,6 +48,34 @@ UCLASS()
  */
 class EVOSPACE_API UMainGameModLoader : public UObject {
   GENERATED_BODY()
+public:
+  static void lua_reg(lua_State *L) {
+    luabridge::getGlobalNamespace(L)
+      .beginClass<UMainGameModLoader>("DB") //class: DB
+      //direct:
+      //---Register Prototype in DB
+      //---@param proto Prototype Prototype to register
+      //function DB:reg(proto) end
+      .addFunction("reg", [](UMainGameModLoader *self, UPrototype *proto) {
+        if (ensure_log(proto, FString("Trying to register nullptr from ") + UTF8_TO_TCHAR(self->mCurrentMod->mName.data()))) {
+          self->RegisterPrototype(self->mCurrentMod, proto);
+        }
+      })
+      .addFunction("from_table", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
+        self->mJsonObjectLibrary->ObjectFromTable(self->mCurrentMod, table);
+      })
+      //direct:
+      //---Register mod table
+      //---@param table table Mod table
+      //function DB:mod(table) end
+      .addFunction("mod", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
+        self->ModInitTable(table);
+      })
+      .addFunction("objects", [](UMainGameModLoader *self) {
+        return self->GetPrototypes();
+      })
+      .endClass();
+  }
   public:
   UMainGameModLoader();
 
@@ -96,26 +124,6 @@ class EVOSPACE_API UMainGameModLoader : public UObject {
 
   UFUNCTION(BlueprintCallable)
   int32 GetPhase() const { return phase; }
-
-  static void lua_reg(lua_State *L) {
-    luabridge::getGlobalNamespace(L)
-      .beginClass<UMainGameModLoader>("MainGameModLoader")
-      .addFunction("reg", [](UMainGameModLoader *self, UPrototype *proto) {
-        if (ensure_log(proto, FString("Trying to register nullptr from ") + UTF8_TO_TCHAR(self->mCurrentMod->mName.data()))) {
-          self->RegisterPrototype(self->mCurrentMod, proto);
-        }
-      })
-      .addFunction("from_table", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
-        self->mJsonObjectLibrary->ObjectFromTable(self->mCurrentMod, table);
-      })
-      .addFunction("mod", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
-        self->ModInitTable(table);
-      })
-      .addFunction("objects", [](UMainGameModLoader *self) {
-        return self->GetPrototypes();
-      })
-      .endClass();
-  }
 
   private:
   static bool LoadLoc(const FString &path, const FString &locale, bool isSource);

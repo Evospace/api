@@ -103,9 +103,24 @@ class EventSystem {
           register_enum_line(on_player_at_sector)
         .endNamespace()
       .endNamespace()
-      .beginClass<EventSystem>("EventSystem")
+      .beginClass<EventSystem>("EventSystem") //class: EventSystem
+        //direct:
+        //--- Get global instance of EventSystem
+        //--- @return EventSystem
+        //function EventSystem.get_instance() end
         .addStaticFunction("get_instance", &EventSystem::GetInstance)
+        //direct:
+        //--- Subscribe
+        //--- @param event integer Event id
+        //--- @param action function Triggering action
+        //--- @return integer Subscription id
+        //function EventSystem:sub(event, action) end
         .addFunction("sub", &EventSystem::Sub)
+        //direct:
+        //--- Unsubscribe
+        //--- @param event integer Event id
+        //--- @param id integer Subscription id
+        //function EventSystem:unsub(event, id) end
         .addFunction("unsub", &EventSystem::Unsub)
         .addFunction("trigger", &EventSystem::Trigger)
       .endClass();

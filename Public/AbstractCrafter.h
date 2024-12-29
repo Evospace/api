@@ -35,22 +35,21 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   EVO_CODEGEN_INSTANCE(AbstractCrafter);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UBlockLogic>("AbstractCrafter")
-      .addProperty("recipes", &Self::RecipeDictionary)
+      .deriveClass<Self, UBlockLogic>("AbstractCrafter") //class: AbstractCrafter, parent: BlockLogic
+      .addProperty("recipes", &Self::RecipeDictionary) //field: RecipeDictionary
+      .addProperty("load_independent", &Self::LoadIndependent) //field: boolean
+      .addProperty("input_gathered", &Self::InputGathered) //field: boolean
+      .addProperty("switched_on", &Self::SwitchedOn) //field: boolean
+      .addProperty("ticks_passed", &Self::TicksPassed) //field: integer
+      .addProperty("real_ticks_passed", &Self::RealTicksPassed) //field: integer
+      .addProperty("total_production", &Self::TotalProduction) //field: integer
+      .addProperty("speed", &Self::Speed) //field: integer
 
-      .addProperty("load_independent", &Self::LoadIndependent)
-      .addProperty("input_gathered", &Self::InputGathered)
-      .addProperty("switched_on", &Self::SwitchedOn)
-      .addProperty("ticks_passed", &Self::TicksPassed)
-      .addProperty("real_ticks_passed", &Self::RealTicksPassed)
-      .addProperty("total_production", &Self::TotalProduction)
-      .addProperty("speed", &Self::Speed)
+      .addProperty("energy_input_inventory", &Self::EnergyInputInventory) //field: ResourceInventory
+      .addProperty("energy_output_inventory", &Self::EnergyOutputInventory) //field: ResourceInventory
 
-      .addProperty("energy_input_inventory", &Self::EnergyInputInventory)
-      .addProperty("energy_output_inventory", &Self::EnergyOutputInventory)
-
-      .addProperty("crafter_input_container", &Self::CrafterInputContainer)
-      .addProperty("crafter_output_container", &Self::EnergyOutputInventory)
+      .addProperty("crafter_input_container", &Self::CrafterInputContainer) //field: ResourceInventory
+      .addProperty("crafter_output_container", &Self::EnergyOutputInventory) //field: ResourceInventory
       .endClass();
   }
 

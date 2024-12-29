@@ -34,9 +34,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   EVO_CODEGEN_INSTANCE(BlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UBlockLogic, UInstance>("BlockLogic")
+      .deriveClass<UBlockLogic, UInstance>("BlockLogic") //class: BlockLogic, parent: Instance
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
-      .addProperty("static_block", &UBlockLogic::mStaticBlock)
+      .addProperty("static_block", &UBlockLogic::mStaticBlock) //field: StaticBlock, comment: comment
       .endClass();
   }
 
@@ -79,38 +79,20 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   ADimension *GetDim() const { return mDimension; }
 
   virtual void CopyOnReplace(UBlockLogic *from);
-
-  /**
-   * @brief Test if position is suitable for this block placing
-   *
-   * Some places are not suitable for block placing but still not occupied.
-   * For example when such block will connect two pipe systems with different
-   * content
-   * @param dim dimension instance for test
-   * @param pos position for test
-   * @return
-   */
+  
   virtual bool CheckPlaceble(ADimension *dim, FVector3i pos);
 
   UFUNCTION(BlueprintCallable)
-  /**
-   * @brief Try to awake actor in world for animation playing
-   */
   virtual void AwakeAnimation() const;
 
   UFUNCTION(BlueprintCallable)
-  /**
-   * @brief Try to make sleep actor in world for stopping animation playing
-   */
   virtual void SleepAnimation() const;
 
   // No any code
-  virtual void SaveSettings(TSharedPtr<FJsonObject> json,
-                            AMainPlayerController *mpc = nullptr);
+  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
 
   // No any code
-  virtual void LoadSettings(TSharedPtr<FJsonObject> json,
-                            AMainPlayerController *mpc = nullptr);
+  virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
 
   UFUNCTION(BlueprintCallable)
   virtual FString SaveSettings(AMainPlayerController *mpc = nullptr);
@@ -246,11 +228,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UMaterialInterface *mPaintMaterial = nullptr;
 
-  protected:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ABlockActor *mActor = nullptr;
-
-  private:
+  
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   const UStaticBlock *mStaticBlock = nullptr;
 

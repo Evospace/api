@@ -14,9 +14,9 @@ class EVOSPACE_API USingleSlotInventory : public UBaseInventory {
   EVO_CODEGEN_INSTANCE(SingleSlotInventory)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory")
-      .addProperty("arm_capacity", &USingleSlotInventory::ArmCapacity)
-      .addProperty("capacity", &Self::Capacity)
+      .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory") //class: SingleSlotInventory, parent: BaseInventory
+      .addProperty("arm_capacity", &USingleSlotInventory::ArmCapacity) //field: integer|nil
+      .addProperty("capacity", &Self::Capacity) //field: integer|nil
       .endClass();
   }
 
@@ -43,51 +43,6 @@ class EVOSPACE_API USingleSlotInventory : public UBaseInventory {
 
   private:
   bool mFrozen = false;
-};
-
-UCLASS()
-class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
-  GENERATED_BODY()
-  EVO_CODEGEN_INSTANCE(ResourceInventory)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UResourceInventory, USingleSlotInventory>("ResourceInventory")
-      .addProperty("item", &UResourceInventory::GetItem, &UResourceInventory::SetItem)
-      .addProperty("drain", &UResourceInventory::mDrain)
-      .endClass();
-  }
-
-  const UStaticItem *GetItem() const;
-  void SetItem(UStaticItem *s);
-
-  int64 mDrain = 0;
-
-  //TODO: why in single slot
-  void AddResource(int64 a) {
-    Data[0].mValue += a;
-  }
-
-  //TODO: why in single slot
-  void RemoveResource(int64 a) {
-    Data[0].mValue -= a;
-  }
-
-  int64 GetInput() const {
-    return Capacity.value_or(0);
-  }
-
-  int64 GetOutput() const {
-    return Capacity.value_or(0);
-  }
-
-  int64 GetFreeInput() const {
-    return FMath::Abs(Capacity.value_or(0) - _Get(0).mValue);
-  }
-
-  int64 GetAvailableOutput() const {
-    auto slot_value = _Get(0).mValue;
-    return FMath::Min(Capacity.value_or(slot_value), slot_value);
-  }
 };
 
 UCLASS()
