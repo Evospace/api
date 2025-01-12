@@ -28,7 +28,7 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
   public:
   virtual bool IsUniversalCrafter() const override;
 
-  virtual void SelectRecipe(APlayerController *pc, int32 i) override;
+  virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
 
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
   void RecipeInventoryPrepare();

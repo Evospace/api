@@ -77,7 +77,10 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   virtual URecipe *GetCurrentRecipe() const;
 
   UFUNCTION(BlueprintCallable)
-  virtual void SelectRecipe(APlayerController *pc, int32 i);
+  virtual void SelectRecipeIndex(APlayerController *pc, int32 i);
+
+  UFUNCTION(BlueprintCallable)
+  virtual void SelectRecipe(APlayerController *pc, const URecipe * recipe);
 
   UFUNCTION(BlueprintCallable)
   virtual void FindRecipe(APlayerController *pc, const UStaticItem *i);

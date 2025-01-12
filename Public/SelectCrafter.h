@@ -2,6 +2,7 @@
 #pragma once
 #include "Evospace/Blocks/BlockWidget.h"
 #include "CoreMinimal.h"
+#include "Recipe.h"
 #include "Public/AbstractCrafter.h"
 #include "Public/StaticItem.h"
 
@@ -29,8 +30,10 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   public:
   USelectCrafter();
 
-  virtual void SelectRecipe(APlayerController *pc, int32 i) override;
+  virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
 
+  virtual void SelectRecipe(APlayerController *pc, const URecipe * recipe) override;
+  
   void RecipeSelectionPostprocess(APlayerController *pc);
 
   virtual void FindRecipe(APlayerController *pc, const UStaticItem *item) override;

@@ -67,14 +67,15 @@ class EVOSPACE_API UAccessor : public UInstance {
   // No code
   virtual void TickComponent();
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+  UBlockLogic *Owner;
+
   protected:
   UPROPERTY(VisibleAnywhere)
   FVector3i Pos;
 
   UPROPERTY(VisibleAnywhere)
   FVector3i Side;
+  
 
-  friend class UBlockLogic;
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UBlockLogic *Owner;
 };

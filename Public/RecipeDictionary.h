@@ -36,6 +36,9 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
+  UFUNCTION(BlueprintCallable)
+  static TArray<URecipe *> GetRecipesSorted(TArray<URecipe *> r);
+
   const URecipe *FindByInput(UInventoryReader *inventory, bool ignore_locked = false) const;
 
   const TArray<const URecipe *> &GetRecipes() const;

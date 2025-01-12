@@ -28,7 +28,9 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
   public:
   virtual bool IsUniversalCrafter() const override;
 
-  virtual void SelectRecipe(APlayerController *pc, int32 i) override;
+  virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
+
+  virtual void SelectRecipe(APlayerController *pc, const URecipe *recipe) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
