@@ -55,6 +55,30 @@ db = {}
 
 regions = {}
 
+--- @class Loc
+Loc = {}
+
+--- Create new Loc object
+--- @param key string
+--- @param table string
+--- @return Loc
+function Loc.new(key, table) end
+
+--- Resolve key value to localized string
+--- @param key string
+--- @param table string
+--- @return string
+function Loc.get(key, table) end
+
+--- Resolve Loc object to localized string
+--- @return string
+function Loc:get() end
+
+--- Get number as string for GUI (3000 -> 3.0k)
+--- @param value number
+--- @return string
+function Loc.gui_number(value) end
+
 -- end of common --
 
 --- @class AbstractCrafter : BlockLogic

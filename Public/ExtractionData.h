@@ -13,7 +13,7 @@ struct FExtractionData {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UStaticItem *mItem;
-  
+
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .beginClass<FExtractionData>("ExtractionData") //class: ExtractionData

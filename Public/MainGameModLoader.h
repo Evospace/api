@@ -48,7 +48,7 @@ UCLASS()
  */
 class EVOSPACE_API UMainGameModLoader : public UObject {
   GENERATED_BODY()
-public:
+  public:
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .beginClass<UMainGameModLoader>("DB") //class: DB
@@ -76,6 +76,7 @@ public:
       })
       .endClass();
   }
+
   public:
   UMainGameModLoader();
 

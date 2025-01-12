@@ -40,6 +40,7 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
   int32 cap_replace = 0;
+  bool recipe_prepared = false;
 
   EVO_CODEGEN_INSTANCE(AutoCrafter)
   virtual void lua_reg(lua_State *L) const override {
@@ -47,28 +48,4 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
       .deriveClass<Self, USelectCrafter>("AutoCrafter")
       .endClass();
   }
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
-  GENERATED_BODY()
-
-  protected:
-  virtual void Tick() override;
-
-  virtual void BlockBeginPlay() override;
-
-  virtual void SetActor(ABlockActor *actor) override;
-
-  UPROPERTY(BlueprintReadOnly)
-  FLinearColor Color;
-
-  public:
-  virtual bool IsUniversalCrafter() const override;
-
-  virtual void SelectRecipe(APlayerController *pc, int32 i) override;
-
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  int32 AnimationTicks = 0;
 };

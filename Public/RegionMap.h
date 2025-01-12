@@ -60,7 +60,7 @@ class EVOSPACE_API UStaticStructure : public UPrototype {
       .addProperty("size", &UStaticStructure::mSize) //field: Vec2i
       .endClass();
   }
-  
+
   public:
   bool SerializeJson(TSharedPtr<FJsonObject> json);
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
@@ -117,20 +117,20 @@ class EVOSPACE_API URegionMap : public UObject, public ISerializableJson {
   static constexpr int32 gridSize = 256;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TMap<FVector2i, UEvoRegion *> mKnownDeposits;
+  TMap<FVector2i, UEvoRegion *> Regions;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<FExtractionData> mAllResources;
+  TArray<FExtractionData> AllResources;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<int32> mAllResourcesCounts;
+  TArray<int32> ResourceGeneratedCount;
 
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
 
   UFUNCTION(BlueprintCallable)
   void Reset() {
-    mKnownDeposits.Empty();
+    Regions.Empty();
   }
 
   static FVector2i WorldBlockToGrid(const Vec3i &pos);

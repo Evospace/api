@@ -79,7 +79,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   ADimension *GetDim() const { return mDimension; }
 
   virtual void CopyOnReplace(UBlockLogic *from);
-  
+
   virtual bool CheckPlaceble(ADimension *dim, FVector3i pos);
 
   UFUNCTION(BlueprintCallable)
@@ -230,7 +230,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ABlockActor *mActor = nullptr;
-  
+
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   const UStaticBlock *mStaticBlock = nullptr;
 

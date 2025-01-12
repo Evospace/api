@@ -20,6 +20,7 @@ class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
   const UStaticItem *GetItem() const;
   void SetItem(UStaticItem *s);
 
+  UPROPERTY(VisibleAnywhere)
   int64 mDrain = 0;
 
   //TODO: why in single slot

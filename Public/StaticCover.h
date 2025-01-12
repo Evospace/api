@@ -13,7 +13,7 @@ class EVOSPACE_API UStaticCover : public UStaticAttach {
       .endClass();
   }
 
-public:
+  public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   int32 Tier = INDEX_NONE;
 };

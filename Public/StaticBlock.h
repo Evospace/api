@@ -62,8 +62,8 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
 
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 
-  //std::string mActorBytecode;
-  //std::string mBlockBytecode;
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  FString GetLuaTooltip(UBlockLogic * s) const;
 
   std::optional<luabridge::LuaRef> Table;
 
