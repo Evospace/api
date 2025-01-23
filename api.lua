@@ -5,14 +5,14 @@ Prototype = {}
 Instance = {}
 
 --- @class Vec3i
---- @field zero Vec3i
---- @field one Vec3i
---- @field left Vec3i
---- @field right Vec3i
---- @field up Vec3i
---- @field down Vec3i
---- @field front Vec3i
---- @field back Vec3i
+--- @field zero Vec3i = (0, 0, 0)
+--- @field one Vec3i = (1, 1, 1)
+--- @field left Vec3i = (0, 1, 0)
+--- @field right Vec3i = (0, -1, 0)
+--- @field up Vec3i = (0, 0, 1)
+--- @field down Vec3i = (0, 0, -1)
+--- @field front Vec3i = (1, 0, 0)
+--- @field back Vec3i = (-1, 0, 0)
 Vec3i = {}
 
 --- @param x integer 

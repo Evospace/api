@@ -145,7 +145,7 @@ class UPrototype : public UObject, public ISerializableJson {
     return true;
   }
 
-  virtual void LuaCleanup() {}
+  virtual void Release() {}
   virtual void MarkIncomplete() {}
   virtual void OnObjectFromTable() {}
 

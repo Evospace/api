@@ -7,7 +7,8 @@
 #include <Dom/JsonObject.h>
 
 #include "Recipe.generated.h"
-class URecipeInventory;
+
+class URecipeDictionary;class URecipeInventory;
 class UStaticResearch;
 
 UCLASS(BlueprintType)
@@ -56,16 +57,7 @@ class EVOSPACE_API URecipe : public UPrototype {
   URecipeInventory *mOutput;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  FRecipeItemData mInputData;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  FRecipeItemData mOutputData;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 mDuration = 1;
-
-  // UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  // int32 loss = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   mutable bool mLocked = false;
@@ -81,4 +73,9 @@ class EVOSPACE_API URecipe : public UPrototype {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<FLinearColor> colors;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  URecipeDictionary * Dictionary;
+
+  virtual void Release() override;
 };

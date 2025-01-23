@@ -77,5 +77,8 @@ struct FRecipeItemData {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 mProbability = 100;
 
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  bool Bonus = false;
+
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 };

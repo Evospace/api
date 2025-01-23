@@ -32,8 +32,8 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
 
   virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
 
-  virtual void SelectRecipe(APlayerController *pc, const URecipe * recipe) override;
-  
+  virtual void SelectRecipe(APlayerController *pc, const URecipe *recipe) override;
+
   void RecipeSelectionPostprocess(APlayerController *pc);
 
   virtual void FindRecipe(APlayerController *pc, const UStaticItem *item) override;
@@ -45,7 +45,7 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
-  void GenerateOutput();
+  void GenerateOutput(bool bonus);
 
   void ProcessRecipe();
   bool CanGenerateOutput();

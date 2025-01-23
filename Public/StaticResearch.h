@@ -114,16 +114,10 @@ class EVOSPACE_API UStaticResearch : public UStaticResearchBase {
   GENERATED_BODY()
 
   public:
-  UStaticResearch();
-
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UInventory *NewItemsCache;
+  TArray<class URecipe *> RecipeUnlocks;
+  std::unique_ptr<FResearchUnlockLevel> RecipeUnlocksTemp;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  TArray<FResearchUnlockLevel> Unlocks;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UInventory *AlsoNewItemsCache;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FVector2i LevelMinMax;

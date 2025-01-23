@@ -74,12 +74,12 @@ inline void registerComponentClasses(lua_State *L) {
       return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(TCHAR_TO_UTF8(key.data()), TCHAR_TO_UTF8(table.data())));
     })
     .addStaticFunction("gui_number", [](float value) -> std::string {
-       return TCHAR_TO_UTF8(*UUserWidgetSlot::FloatToGuiCount(value, 1, false, 1).ToString());
-      })
-    .addFunction("get", [](FKeyTableObject * kto) -> std::string {
-        const auto gi = UMainGameInstance::GetMainGameInstance();
-        return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(kto->Key, kto->Table));
-      })
+      return TCHAR_TO_UTF8(*UUserWidgetSlot::FloatToGuiCount(value, 1, false, 1).ToString());
+    })
+    .addFunction("get", [](FKeyTableObject *kto) -> std::string {
+      const auto gi = UMainGameInstance::GetMainGameInstance();
+      return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(kto->Key, kto->Table));
+    })
     .addStaticFunction("new_param", [](std::string_view key, std::string_view table, float param) {
       auto kt = FKeyTableObject();
       kt.Key = UTF8_TO_TCHAR(key.data());

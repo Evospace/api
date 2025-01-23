@@ -63,11 +63,11 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  FString GetLuaTooltip(UBlockLogic * s) const;
+  FString GetLuaTooltip(UBlockLogic *s) const;
 
   std::optional<luabridge::LuaRef> Table;
 
-  virtual void LuaCleanup() override;
+  virtual void Release() override;
 
   UPROPERTY(BlueprintReadOnly)
   FVector mColorSide = FVector(1);

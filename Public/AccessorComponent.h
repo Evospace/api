@@ -76,6 +76,4 @@ class EVOSPACE_API UAccessor : public UInstance {
 
   UPROPERTY(VisibleAnywhere)
   FVector3i Side;
-  
-
 };

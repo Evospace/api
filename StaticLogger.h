@@ -159,6 +159,10 @@ class FLogHelper {
     return FString::Printf(TEXT("%s"), *FString::FromInt(Value));
   }
 
+  FString TTypeToString(const FName &Value) const {
+    return Value.ToString();
+  }
+
   FString TTypeToString(const bool &Value) const {
     return Value ? "true" : "false";
   }

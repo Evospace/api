@@ -60,7 +60,7 @@ class EVOSPACE_API UFluidOutputAccessor : public UFluidAccessor {
 };
 
 UCLASS()
-class EVOSPACE_API UResourceAccessor : public UAccessor {
+class UResourceAccessor : public UAccessor {
   using Self = UResourceAccessor;
   GENERATED_BODY()
   EVO_CODEGEN_ACCESSOR(ResourceAccessor)
@@ -81,6 +81,7 @@ class EVOSPACE_API UResourceAccessor : public UAccessor {
   static FName Kinetic() { return TEXT("Kinetic"); }
   static FName Fluid() { return TEXT("Fluid"); }
   static FName Heat() { return TEXT("Heat"); }
+  static FName Data() { return TEXT("Data"); }
 
   UResourceAccessor *GetOutsideAccessorCached();
   const UResourceAccessor *GetOutsideAccessorCached() const;

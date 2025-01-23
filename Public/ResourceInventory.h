@@ -23,6 +23,9 @@ class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
   UPROPERTY(VisibleAnywhere)
   int64 mDrain = 0;
 
+  UPROPERTY(VisibleAnywhere)
+  FColor Color = FColor::White;
+
   //TODO: why in single slot
   void AddResource(int64 a) {
     Data[0].mValue += a;
@@ -42,7 +45,8 @@ class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
   }
 
   int64 GetFreeInput() const {
-    return FMath::Abs(Capacity.value_or(0) - _Get(0).mValue);
+    const auto v = Capacity.value_or(0) * 2 - _Get(0).mValue;
+    return v > 0 ? v : 0;
   }
 
   int64 GetAvailableOutput() const {

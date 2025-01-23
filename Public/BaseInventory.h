@@ -40,7 +40,7 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
 
   bool Equal(const UBaseInventory *other) const;
 
-  virtual int64 _AddWithLimit(const FItemData &other) override;
+  virtual int64 _AddWithLimit(const FItemData &other, bool arm = false) override;
 
   public:
   virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const override;

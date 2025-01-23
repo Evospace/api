@@ -70,7 +70,7 @@ class EVOSPACE_API UStaticStructure : public UPrototype {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   FVector2i mSize;
 
-  virtual void LuaCleanup() override;
+  virtual void Release() override;
 };
 
 UCLASS(BlueprintType)
