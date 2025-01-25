@@ -77,14 +77,14 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   virtual int64 _Sum(const UStaticItem *item) const override;
   virtual FItemData &_GetMut(int32 index) override;
   virtual const FItemData &_Get(int32 index) const override;
-  virtual int64 GetCapacity(const UStaticItem *item = nullptr) const override;
-  virtual int64 GetArmCapacity(const UStaticItem *item = nullptr) const override;
+  virtual int64 GetCapacity(int32 index) const override;
+  virtual int64 GetArmCapacity(int32 index) const override;
   virtual int32 _Num() const override;
   virtual int64 _Add(const FItemData &other) override;
-  virtual int64 _Add(int32 index, const FItemData &other) override;
+  virtual int64 _Add(int32 i, const FItemData &other) override;
 
   virtual int64 _Sub(const FItemData &other) override;
-  virtual int64 _Sub(int32 index, const FItemData &other) override;
+  virtual int64 _Sub(int32 i, const FItemData &other) override;
 
   TFunction<void(FItemData &)> OnAdd;
   TFunction<void(FItemData &)> OnRemove;

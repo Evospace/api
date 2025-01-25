@@ -83,13 +83,13 @@ class EVOSPACE_API UInventoryReader : public UInstance {
   };
 
   UFUNCTION(BlueprintCallable)
-  virtual int64 GetCapacity(const UStaticItem *item = nullptr) const {
+  virtual int64 GetCapacity(int32 index) const {
     checkNoEntry();
     return 0;
   };
 
   UFUNCTION(BlueprintCallable)
-  virtual int64 GetArmCapacity(const UStaticItem *item = nullptr) const {
+  virtual int64 GetArmCapacity(int32 index) const {
     checkNoEntry();
     return 0;
   }

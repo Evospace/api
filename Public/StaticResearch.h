@@ -118,7 +118,6 @@ class EVOSPACE_API UStaticResearch : public UStaticResearchBase {
   TArray<class URecipe *> RecipeUnlocks;
   std::unique_ptr<FResearchUnlockLevel> RecipeUnlocksTemp;
 
-
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FVector2i LevelMinMax;
 

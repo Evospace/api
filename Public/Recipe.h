@@ -8,7 +8,8 @@
 
 #include "Recipe.generated.h"
 
-class URecipeDictionary;class URecipeInventory;
+class URecipeDictionary;
+class URecipeInventory;
 class UStaticResearch;
 
 UCLASS(BlueprintType)
@@ -75,7 +76,7 @@ class EVOSPACE_API URecipe : public UPrototype {
   TArray<FLinearColor> colors;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  URecipeDictionary * Dictionary;
+  URecipeDictionary *Dictionary;
 
   virtual void Release() override;
 };
