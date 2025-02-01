@@ -14,8 +14,6 @@ class EVOSPACE_API UAutosizeInventory : public UInventory {
 
   public:
   UAutosizeInventory();
-
-  virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const override;
 };
 
 UCLASS(BlueprintType)

@@ -78,7 +78,6 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   virtual FItemData &_GetMut(int32 index) override;
   virtual const FItemData &_Get(int32 index) const override;
   virtual int64 GetCapacity(int32 index) const override;
-  virtual int64 GetArmCapacity(int32 index) const override;
   virtual int32 _Num() const override;
   virtual int64 _Add(const FItemData &other) override;
   virtual int64 _Add(int32 i, const FItemData &other) override;

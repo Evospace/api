@@ -30,7 +30,7 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
   virtual int64 _AddSilent(const FItemData &other) {
     return _Add(other);
   };
-  
+
   virtual int64 _Add(int32 index, const FItemData &other) {
     checkNoEntry();
     return 0;
@@ -45,7 +45,7 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
     checkNoEntry();
     return 0;
   };
-  
+
   virtual int64 _Sub(const FItemData &other) {
     checkNoEntry();
     return 0;
@@ -59,7 +59,7 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
     checkNoEntry();
     return false;
   };
-  
+
   virtual int64 _Sub(int32 index, const FItemData &other) {
     checkNoEntry();
     return 0;
