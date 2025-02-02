@@ -61,7 +61,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual bool IsHandleRecipeSelection() const;
   virtual void HandleRecipeSelection(UStaticItem *item);
-  void ShowAccessors();
+  void SetAccessorsInstances(bool show);
 
   virtual void SetRenderable();
 
@@ -202,6 +202,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UPROPERTY(VisibleAnywhere)
   TArray<UAccessor *> mAccessors;
+
+  TArray<int32> mAccessorInstances;
 
   // Core
   protected:

@@ -3,7 +3,7 @@
 #include "ThirdParty/lua/lua.h"
 #include "ThirdParty/luabridge/luabridge.h"
 #include "Evospace/Common.h"
-#include "Evospace/Dimension.h"
+#include "Public/Dimension.h"
 #include "Evospace/MainGameInstance.h"
 #include "Evospace/Blocks/BlockActor.h"
 #include "Evospace/Item/SlotWidget.h"

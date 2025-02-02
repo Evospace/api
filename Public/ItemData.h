@@ -48,7 +48,7 @@ struct EVOSPACE_API FItemData {
 
   void SetItem(const UStaticItem *item);
 
-  void SetValue(int64 value);
+  FORCEINLINE void SetValue(int64 value);
 
   //TODO: remove
   const UStaticItem *GetItem() const;

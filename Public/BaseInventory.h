@@ -52,17 +52,6 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
 
   virtual UInventoryFilter *GetFilter() const override;
 
-  auto LogContext() const {
-    auto contextLogger = [this]() {
-      if (GetOuter()) {
-        return FString("inventory ") + this->GetName() + " from " + GetOuter()->GetName();
-      }
-
-      return FString("inventory ") + this->GetName() + " without outer";
-    };
-    return contextLogger;
-  }
-
   virtual int32 _Min() const override;
   virtual int32 _Max() const override;
   virtual int32 _Find(const UStaticItem *item) const override;
@@ -88,8 +77,8 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   TFunction<void(FItemData &)> OnAdd;
   TFunction<void(FItemData &)> OnRemove;
 
-  std::optional<int64> Capacity;
-  std::optional<int64> ArmCapacity;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 Capacity = INDEX_NONE;
 
   protected:
   bool CheckFilter(const FItemData &data);

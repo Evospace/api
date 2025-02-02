@@ -37,20 +37,20 @@ class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
   }
 
   int64 GetInput() const {
-    return Capacity.value_or(0);
+    return Capacity != INDEX_NONE ? Capacity : 0;
   }
 
   int64 GetOutput() const {
-    return Capacity.value_or(0);
+    return Capacity != INDEX_NONE ? Capacity : 0;
   }
 
   int64 GetFreeInput() const {
-    const auto v = Capacity.value_or(0) * 2 - _Get(0).mValue;
+    const auto v = (Capacity != INDEX_NONE ? Capacity : 0) * 2 - _Get(0).mValue;
     return v > 0 ? v : 0;
   }
 
   int64 GetAvailableOutput() const {
     auto slot_value = _Get(0).mValue;
-    return FMath::Min(Capacity.value_or(slot_value), slot_value);
+    return FMath::Min(Capacity != INDEX_NONE ? Capacity : slot_value, slot_value);
   }
 };

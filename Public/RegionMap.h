@@ -42,7 +42,7 @@ class EVOSPACE_API USourceData : public UObject {
   float CalculateExtractionSpeed() const;
 
   UFUNCTION(BlueprintCallable)
-  FExtractionData ExtractOre();
+  FExtractionData ExtractOre(ADimension * dim);
 };
 
 UCLASS(BlueprintType)

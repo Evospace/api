@@ -8,6 +8,7 @@ def extract_class_details(file_content):
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR|EVO_CODEGEN_INSTANCE)\((\w+)\)'
     static_pattern = r'(EVO_CODEGEN_DB)\((\w+),\s*(\w+)\)'
+    just_ue_object_pattern = r'(EVO_JUST_UE)\((\w+),\s*(\w+)\)'
 
     matches = re.finditer(class_pattern, file_content)
     annotations = {}
@@ -26,6 +27,7 @@ def extract_class_details(file_content):
         for prop_name, prop_var, prop_type, prop_comment in properties:
             comment_str = f" {prop_comment}" if prop_comment else ""
             annotation += f"--- @field {prop_name} {prop_type}{comment_str}\n"
+            print(f"field {prop_name} {prop_type} {comment_str}")
 
         annotation += f"{class_name} = {{}}\n"
 

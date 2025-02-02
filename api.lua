@@ -198,6 +198,10 @@ function DB:reg(proto) end
 ---@param table table Mod table
 function DB:mod(table) end
 
+--- @class Dimension : Actor
+--- @field settings DimensionSettings
+Dimension = {}
+
 --- @class EventSystem : Object
 EventSystem = {}
 
@@ -224,6 +228,10 @@ ExtractionData = {}
 --- Create new instance of ExtractionData
 --- @return ExtractionData
 function ExtractionData.new() end
+
+--- @class GameSessionData : Object
+--- @field infinite_ore boolean
+GameSessionData = {}
 
 --- @class Inventory : BaseInventory
 Inventory = {}
@@ -351,8 +359,7 @@ function ResourceInventory.get_class() end
 function ResourceInventory.cast(object) end
 
 --- @class SingleSlotInventory : BaseInventory
---- @field arm_capacity integer|nil
---- @field capacity integer|nil
+--- @field capacity integer
 SingleSlotInventory = {}
 
 --- Creates a new SingleSlotInventory instance
