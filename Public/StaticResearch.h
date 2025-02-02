@@ -89,6 +89,8 @@ class EVOSPACE_API UStaticResearchBase : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool mCompleteByDefault = false;
 
+  virtual FString GetSearchMetaString() const;
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level);
@@ -122,6 +124,8 @@ class EVOSPACE_API UStaticResearch : public UStaticResearchBase {
   FVector2i LevelMinMax;
 
   virtual void PostDeserializeJson() override;
+
+  virtual FString GetSearchMetaString() const;
 
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 

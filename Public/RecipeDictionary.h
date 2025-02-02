@@ -37,6 +37,9 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   UFUNCTION(BlueprintCallable)
+  void UpdatePerRecipeInventory();
+
+  UFUNCTION(BlueprintCallable)
   static TArray<URecipe *> GetRecipesSorted(TArray<URecipe *> r);
 
   const URecipe *FindByInput(UInventoryReader *inventory, bool ignore_locked = false) const;
@@ -75,4 +78,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   // item per every recipe in this dictionary
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   UInventory *mItemPerRecipeInventory;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UInventory *mAvailibleItemPerRecipeInventory;
 };
