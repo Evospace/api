@@ -82,6 +82,7 @@ class UResourceAccessor : public UAccessor {
   static FName Fluid() { return TEXT("Fluid"); }
   static FName Heat() { return TEXT("Heat"); }
   static FName Data() { return TEXT("Data"); }
+  static FName Plasma() { return TEXT("Plasma"); }
 
   UResourceAccessor *GetOutsideAccessorCached();
   const UResourceAccessor *GetOutsideAccessorCached() const;

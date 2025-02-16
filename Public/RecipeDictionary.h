@@ -35,6 +35,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   URecipeDictionary();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual void PostDeserializeJson() override;
 
   UFUNCTION(BlueprintCallable)
   void UpdatePerRecipeInventory();

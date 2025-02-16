@@ -187,8 +187,6 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual ABlockActor *GetActor();
 
-  virtual bool IsNoActor() const;
-
   virtual bool IsPart() { return false; }
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

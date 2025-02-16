@@ -58,6 +58,9 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   UClass *mActorClass = nullptr;
 
   UPROPERTY(BlueprintReadOnly)
+  bool NoActorRenderable = false;
+
+  UPROPERTY(BlueprintReadOnly)
   UClass *mSelectorClass = nullptr;
 
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;

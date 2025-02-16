@@ -21,11 +21,11 @@ class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
   public:
   UGameSessionData();
 
-  static void lua_reg(lua_State * L) {
+  static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
-    .deriveClass<UGameSessionData, UObject>("GameSessionData") //class: GameSessionData, parent: Object
-    .addProperty("infinite_ore", &UGameSessionData::mInfiniteOre) //field: boolean
-    .endClass();
+      .deriveClass<UGameSessionData, UObject>("GameSessionData") //class: GameSessionData, parent: Object
+      .addProperty("infinite_ore", &UGameSessionData::mInfiniteOre) //field: boolean
+      .endClass();
   }
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

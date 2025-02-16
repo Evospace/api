@@ -22,7 +22,8 @@ enum class ECrafterState : uint8 {
   ResourceSaturated,
   ResourceRequired,
   NotInitialized,
-  SwitchedOff,
+  SwitchOff,
+  Idle
 };
 
 UCLASS(BlueprintType)
@@ -38,8 +39,9 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
       .deriveClass<Self, UBlockLogic>("AbstractCrafter") //class: AbstractCrafter, parent: BlockLogic
       .addProperty("recipes", &Self::RecipeDictionary) //field: RecipeDictionary
       .addProperty("load_independent", &Self::LoadIndependent) //field: boolean
+      .addProperty("stable_supply", &Self::StableSupply) //field: boolean
       .addProperty("input_gathered", &Self::InputGathered) //field: boolean
-      .addProperty("switched_on", &Self::SwitchedOn) //field: boolean
+      .addProperty("switch_on", &Self::SwitchedOn) //field: boolean
       .addProperty("ticks_passed", &Self::TicksPassed) //field: integer
       .addProperty("real_ticks_passed", &Self::RealTicksPassed) //field: integer
       .addProperty("total_production", &Self::TotalProduction) //field: integer
@@ -131,13 +133,16 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   UFUNCTION(BlueprintCallable)
   virtual bool IsUniversalCrafter() const;
 
-  void SetSwitched(bool val) override;
-  bool GetSwitched() const override;
+  virtual void SetSwitch(bool val) override;
+  virtual bool GetSwitch() const override;
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool LoadIndependent = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  bool StableSupply = true;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool InputGathered = false;

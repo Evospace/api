@@ -52,7 +52,7 @@ struct EVOSPACE_API FStatictics {
 
 UCLASS()
 class ADimension : public AActor {
-public:
+  public:
   GENERATED_BODY()
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
@@ -63,7 +63,6 @@ public:
       .addProperty("settings", &ADimension::DimSettings) //field: GameSessionData
       .endClass();
   }
-
 
   ADimension();
 

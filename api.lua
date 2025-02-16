@@ -84,8 +84,9 @@ function Loc.gui_number(value) end
 --- @class AbstractCrafter : BlockLogic
 --- @field recipes RecipeDictionary
 --- @field load_independent boolean
+--- @field stable_supply boolean
 --- @field input_gathered boolean
---- @field switched_on boolean
+--- @field switch_on boolean
 --- @field ticks_passed integer
 --- @field real_ticks_passed integer
 --- @field total_production integer
@@ -187,6 +188,26 @@ function BlockLogic.get_class() end
 --- @return BlockLogic
 function BlockLogic.cast(object) end
 
+--- @class ConductorBlockLogic : StorageBlockLogic
+--- @field side_cover StaticCover
+--- @field center_cover StaticCover
+ConductorBlockLogic = {}
+
+--- Creates a new ConductorBlockLogic instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return ConductorBlockLogic
+function ConductorBlockLogic.new(parent, new_name) end
+
+--- Return ConductorBlockLogic class object
+--- @return Class
+function ConductorBlockLogic.get_class() end
+
+--- Trying to cast Object into ConductorBlockLogic
+--- @param object Object to cast
+--- @return ConductorBlockLogic
+function ConductorBlockLogic.cast(object) end
+
 --- @class DB : Object
 DB = {}
 
@@ -199,7 +220,7 @@ function DB:reg(proto) end
 function DB:mod(table) end
 
 --- @class Dimension : Actor
---- @field settings DimensionSettings
+--- @field settings GameSessionData
 Dimension = {}
 
 --- @class EventSystem : Object
@@ -526,4 +547,22 @@ function StaticStructure.get_class() end
 --- @param object Object to cast
 --- @return StaticStructure
 function StaticStructure.cast(object) end
+
+--- @class StorageBlockLogic : BlockLogic
+StorageBlockLogic = {}
+
+--- Creates a new StorageBlockLogic instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return StorageBlockLogic
+function StorageBlockLogic.new(parent, new_name) end
+
+--- Return StorageBlockLogic class object
+--- @return Class
+function StorageBlockLogic.get_class() end
+
+--- Trying to cast Object into StorageBlockLogic
+--- @param object Object to cast
+--- @return StorageBlockLogic
+function StorageBlockLogic.cast(object) end
 

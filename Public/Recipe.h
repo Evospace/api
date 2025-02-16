@@ -25,6 +25,7 @@ class EVOSPACE_API URecipe : public UPrototype {
       .addProperty("productivity", &URecipe::mProductivityBonus)
       .addProperty("input", &URecipe::mInput, false)
       .addProperty("output", &URecipe::mOutput, false)
+      .addProperty("tier", &URecipe::Tier)
       .endClass();
   }
 
@@ -73,10 +74,13 @@ class EVOSPACE_API URecipe : public UPrototype {
   UStaticResearch *mUnlocksBy;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  TArray<FLinearColor> colors;
+  TArray<FLinearColor> Colors;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   URecipeDictionary *Dictionary;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int32 Tier = 1;
 
   virtual void Release() override;
 };

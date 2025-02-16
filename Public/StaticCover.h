@@ -9,7 +9,7 @@ class EVOSPACE_API UStaticCover : public UStaticAttach {
   EVO_CODEGEN_DB(StaticCover, StaticCover)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticCover, UStaticAttach>("StaticAttach") //class: StaticCover, parent: StaticAttach
+      .deriveClass<UStaticCover, UStaticAttach>("StaticCover") //class: StaticCover, parent: StaticAttach
       .endClass();
   }
 
