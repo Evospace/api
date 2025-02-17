@@ -24,20 +24,22 @@ UCLASS(BlueprintType)
 class EVOSPACE_API UStaticBlock : public UStaticObject {
   EVO_OWNED(StaticBlock, StaticObject)
   EVO_CODEGEN_DB(StaticBlock, StaticBlock);
+  using Self = UStaticBlock;
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticBlock, UStaticObject>("StaticBlock") //class: StaticBlock, parent: StaticObject
-      .addProperty("logic", &UStaticBlock::mBlockLogic) //field: Class
-      .addProperty("actor", &UStaticBlock::mActorClass) //field: Class
-      .addProperty("selector", &UStaticBlock::mSelectorClass) //field: Class
-      .addProperty("tesselator", &UStaticBlock::mTesselator) //field: Tesselator
-      .addProperty("sub_blocks", &UStaticBlock::Positions)
-      .addProperty("replace_tag", &UStaticBlock::ReplaceTag) //field: string
-      .addProperty("color_side", &UStaticBlock::mColorSide) //field: Vector
-      .addProperty("color_top", &UStaticBlock::mColorTop) //field: Vector
-      .addProperty("tier", &UStaticBlock::Tier) //field: integer
-      .addProperty("level", &UStaticBlock::Level) //field: integer
-      .addProperty("lua", &UStaticBlock::Table) //field: table
+      .deriveClass<Self, UStaticObject>("StaticBlock") //class: StaticBlock, parent: StaticObject
+      .addProperty("logic", &Self::mBlockLogic) //field: Class
+      .addProperty("actor", &Self::mActorClass) //field: Class
+      .addProperty("selector", &Self::mSelectorClass) //field: Class
+      .addProperty("tesselator", &Self::mTesselator) //field: Tesselator
+      .addProperty("sub_blocks", &Self::Positions)
+      .addProperty(
+        "replace_tag", [](const Self *self) -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); }, [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //field: string
+      .addProperty("color_side", &Self::mColorSide) //field: Vector
+      .addProperty("color_top", &Self::mColorTop) //field: Vector
+      .addProperty("tier", &Self::Tier) //field: integer
+      .addProperty("level", &Self::Level) //field: integer
+      .addProperty("lua", &Self::Table) //field: table
       .endClass();
   }
   GENERATED_BODY()

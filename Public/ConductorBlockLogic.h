@@ -30,22 +30,28 @@ class USubnetwork : public UObject {
   int32 id;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UResourceAccessor *> mPossibleAccessors;
+  TArray<UResourceAccessor *> PossibleAccessors;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UResourceAccessor *> mInputs;
+  TArray<UResourceAccessor *> Inputs;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UResourceAccessor *> mOutputs;
+  TArray<UResourceAccessor *> Outputs;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UConductorBlockLogic *> mStorages;
+  TArray<UConductorBlockLogic *> Storages;
 
   UPROPERTY(VisibleAnywhere)
-  int64 mCharge = 0;
+  int64 Charge = 0;
 
   UPROPERTY(VisibleAnywhere)
-  int64 mCapacity = 0;
+  int64 Capacity = 0;
+
+  UPROPERTY(VisibleAnywhere)
+  int64 Resistance = 0;
+
+  UPROPERTY(VisibleAnywhere)
+  int64 Voltage = 1000;
 };
 
 class ConnectionInfo {
@@ -68,6 +74,18 @@ struct FNetworkWidgetData {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   float meanFactor = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  float thermalLoss = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  float resistance = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  float electricCurrent = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  float voltage = 0;
 };
 
 UCLASS(BlueprintType)
@@ -92,9 +110,6 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 
   void SetResource(const UStaticItem *param1);
 
-  UFUNCTION(BlueprintCosmetic, BlueprintCallable)
-  FNetworkWidgetData GetWidgetData();
-
   UPROPERTY(VisibleAnywhere)
   TArray<UConductorBlockLogic *> mWires;
 
@@ -107,6 +122,9 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 
   UPROPERTY()
   UStaticItem *mDrainItem;
+
+  UPROPERTY()
+  UStaticItem *mHeatLoss;
 
   UPROPERTY(BlueprintReadWrite)
   UMaterialInstanceDynamic *mSharedMaterial = nullptr;
@@ -127,28 +145,30 @@ class EVOSPACE_API UBlockNetwork : public UObject {
   void ResetResource();
 
   UFUNCTION(BlueprintCallable)
-  float GetCharge(int32 sub = 0) const;
+  float GetCharge(int32 sub) const;
 
   UFUNCTION(BlueprintCallable)
-  float GetCapacity(int32 sub = 0) const;
+  float GetCapacity(int32 sub) const;
 
   UFUNCTION(BlueprintCallable)
-  float GetRequest() const;
+  float GetRequest(int32 sub) const;
 
-  int64 GetCharge64(int32 sub = 0) const;
-  int64 GetCapacity64(int32 sub = 0) const;
+  int64 GetCharge64(int32 sub) const;
+  int64 GetCapacity64(int32 sub) const;
 
   UFUNCTION(BlueprintCallable)
   float GetTotalDrain() const;
 
   UFUNCTION(BlueprintCallable)
-  float GetTotalProduction() const;
+  float GetTotalProduction(int32 sub) const;
 
   UFUNCTION(BlueprintCallable)
   bool AddCharge(int64 addition);
 
   UFUNCTION()
   void EndTick();
+
+  static std::tuple<int64, int64> CalculateThermalLoss(int64 power_W, int64 voltage_V, int64 resistance_mOhm, int64 currentLimit_mA);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UGraphStorage *mConsumptionStorage;
@@ -171,17 +191,31 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 
   bool mUpdated = false;
 
-  int64 mRequest = 0;
-  int64 mTotalProduction = 0;
+  public:
+  void ResizePerSubnetwork(int32 size);
 
+  private:
+  TArray<int64> Request;
+  TArray<int64> TotalProduction;
+  TArray<int64> ThermalLoss;
+  TArray<int64> Resistance;
+  TArray<int64> ElectricCurrent;
   TArray<TArray<UResourceAccessor *>> AllCollectedOutputs;
   TArray<TArray<UResourceAccessor *>> AllCollectedInputs;
   TArray<TArray<UConductorBlockLogic *>> AllCollectedStorages;
   TArray<TArray<int32>> AllCollectedSubnetworks;
 
-  EvoRingBuffer<float> medianCharge = EvoRingBuffer<float>(20, 0);
-  EvoRingBuffer<float> medianRequest = EvoRingBuffer<float>(20, 0);
-  EvoRingBuffer<float> medianProduction = EvoRingBuffer<float>(20, 0);
+  public:
+  UFUNCTION(BlueprintCosmetic, BlueprintCallable)
+  FNetworkWidgetData GetWidgetData(int32 sub);
+
+  private:
+  // Widget data cache, updates only by widget data request
+  mutable EvoRingBuffer<float> medianLoss = EvoRingBuffer<float>(20, 0);
+  mutable EvoRingBuffer<float> medianCurrent = EvoRingBuffer<float>(20, 0);
+  mutable EvoRingBuffer<float> medianCharge = EvoRingBuffer<float>(20, 0);
+  mutable EvoRingBuffer<float> medianRequest = EvoRingBuffer<float>(20, 0);
+  mutable EvoRingBuffer<float> medianProduction = EvoRingBuffer<float>(20, 0);
 };
 
 /// Conductors
@@ -195,6 +229,18 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
       .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //class: ConductorBlockLogic, parent: StorageBlockLogic
       .addProperty("side_cover", &Self::mSideCover) //field: StaticCover
       .addProperty("center_cover", &Self::mCenterCover) //field: StaticCover
+      .addProperty("resistance", &Self::Resistance) //field: integer mOhm
+      .addProperty("voltage", &Self::Voltage) //field: integer Volt
+      .addProperty(
+        "channel", [](const UConductorBlockLogic *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](UConductorBlockLogic *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); }) //field: string
+      .addProperty("conductor_channel", &Self::ConductorChannel) //field: integer
+      //direct:
+      //---Add side wire
+      //---@param acc ResourceAccessor
+      //function ConductorBlockLogic:add_wire(acc) end
+      .addFunction("add_wire", [](UConductorBlockLogic *self, UResourceAccessor *acc) {
+        self->mWireAccessor.Add(acc);
+      }) //field: integer
       .endClass();
   }
   GENERATED_BODY()
@@ -220,8 +266,10 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 
   virtual TArray<ConnectionInfo> GetConnectionInfo() const;
 
-  bool SetChannel(int32 channel);
   virtual int32 GetChannel() const;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 ConductorChannel;
 
   virtual EBlockWidgetType GetWidgetType() const override;
 
@@ -291,9 +339,13 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   UBlockNetwork *mNetwork = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  int32 mSubnetwork = INDEX_NONE;
+  int32 Subnetwork = 0;
 
-  int32 mChannel = 0;
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int64 Resistance = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int64 Voltage = 1000;
 };
 
 UCLASS()
@@ -310,9 +362,7 @@ UCLASS()
 class EVOSPACE_API UElectricityConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
-  UElectricityConductorBlockLogic();
-
-  virtual int32 GetChannel() const override;
+  //UElectricityConductorBlockLogic();
 };
 
 UCLASS()
@@ -420,8 +470,8 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
 
   bool IsSwithedOn() const;
 
-  UPROPERTY(VisibleAnywhere)
-  bool mSwitchedOn = false;
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+  bool mSwitchOn = false;
 
   UPROPERTY(VisibleAnywhere)
   int32 mSubnetwork1 = INDEX_NONE;

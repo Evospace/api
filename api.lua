@@ -191,7 +191,13 @@ function BlockLogic.cast(object) end
 --- @class ConductorBlockLogic : StorageBlockLogic
 --- @field side_cover StaticCover
 --- @field center_cover StaticCover
+--- @field resistance integer
+--- @field conductor_channel integer
 ConductorBlockLogic = {}
+
+---Add side wire
+---@param acc ResourceAccessor
+function ConductorBlockLogic:add_wire(acc) end
 
 --- Creates a new ConductorBlockLogic instance
 --- @param parent Object Object of parent
@@ -425,7 +431,6 @@ function StaticAttach.cast(object) end
 --- @field actor Class
 --- @field selector Class
 --- @field tesselator Tesselator
---- @field replace_tag string
 --- @field color_side Vector
 --- @field color_top Vector
 --- @field tier integer

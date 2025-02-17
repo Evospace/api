@@ -142,6 +142,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   void SetOwner(void *param1);
 
   UAccessor *GetSideAccessor(UClass *type, Vec3i side, Vec3i pos);
+  UAccessor *GetSideAccessorPred(UClass *type, Vec3i side, Vec3i pos, const TFunction<bool(UAccessor *)> & pred);
 
   template <class Ty_>
   Ty_ *GetSideAccessor(FVector3i side, FVector3i pos) {
@@ -149,14 +150,14 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   }
 
   template <typename Ty_>
-  Ty_ *CreateDefaultAccessor(UObject *Outer, FName SubobjectFName) {
+  Ty_ *EvoDefaultAccessor(UObject *Outer, FName SubobjectFName) {
     auto v = CreateDefaultSubobject<Ty_>(Outer, SubobjectFName);
     RegisterAccessor(v);
     return v;
   }
 
   template <typename Ty_>
-  Ty_ *CreateDefaultAccessor(FName SubobjectFName) {
+  Ty_ *EvoDefaultAccessor(FName SubobjectFName) {
     auto v = CreateDefaultSubobject<Ty_>(SubobjectFName);
     RegisterAccessor(v);
     return v;

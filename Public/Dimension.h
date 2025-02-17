@@ -121,9 +121,6 @@ class ADimension : public AActor {
   void ActorBuildModeToggle(bool enabled);
 
   UFUNCTION(BlueprintCallable)
-  void ActorAccessorToggle(bool enabled);
-
-  UFUNCTION(BlueprintCallable)
   void Pause();
 
   UFUNCTION(BlueprintCallable)
