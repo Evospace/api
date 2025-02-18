@@ -50,9 +50,6 @@ struct EVOSPACE_API FItemData {
 
   FORCEINLINE void SetValue(int64 value);
 
-  //TODO: remove
-  const UStaticItem *GetItem() const;
-
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 mValue = 0;
 

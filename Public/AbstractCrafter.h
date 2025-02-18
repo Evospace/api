@@ -133,8 +133,8 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   UFUNCTION(BlueprintCallable)
   virtual bool IsUniversalCrafter() const;
 
-  virtual void SetSwitch(bool val) override;
-  virtual bool GetSwitch() const override;
+  virtual void SetSwitch_Implementation(bool val) override;
+  virtual bool GetSwitch_Implementation() const override;
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 

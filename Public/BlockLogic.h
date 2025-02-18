@@ -87,11 +87,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   virtual void SleepAnimation() const;
-
-  // No any code
+  
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
 
-  // No any code
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
 
   UFUNCTION(BlueprintCallable)
@@ -125,6 +123,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const;
 
   UFUNCTION(BlueprintCallable)
+  virtual TSubclassOf<UBlockWidget> GetHoverWidgetClass() const;
+
+  UFUNCTION(BlueprintCallable)
   virtual EBlockWidgetType GetWidgetType() const;
 
   // No any code
@@ -142,7 +143,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   void SetOwner(void *param1);
 
   UAccessor *GetSideAccessor(UClass *type, Vec3i side, Vec3i pos);
-  UAccessor *GetSideAccessorPred(UClass *type, Vec3i side, Vec3i pos, const TFunction<bool(UAccessor *)> & pred);
+  UAccessor *GetSideAccessorPred(UClass *type, Vec3i side, Vec3i pos, const TFunction<bool(UAccessor *)> &pred);
 
   template <class Ty_>
   Ty_ *GetSideAccessor(FVector3i side, FVector3i pos) {
@@ -175,6 +176,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual void OpenWidget(class UHudWidget *widget);
 
+  // No code
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
 
   //    .
@@ -189,6 +191,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual ABlockActor *GetActor();
 
   virtual bool IsPart() { return false; }
+
+  UFUNCTION(BlueprintCallable)
+  const UStaticItem *GetNetworkSignal() const;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool mRenderable = false;
@@ -229,12 +234,16 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UMaterialInterface *mPaintMaterial = nullptr;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   ABlockActor *mActor = nullptr;
 
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   const UStaticBlock *mStaticBlock = nullptr;
 
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  const UStaticItem *NetworkSignal = nullptr;
+
+  private:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ADimension *mDimension = nullptr;
 };

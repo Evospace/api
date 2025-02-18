@@ -46,7 +46,6 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 
   const UTesselator *GetTesselator() const;
 

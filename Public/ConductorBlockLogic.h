@@ -485,9 +485,9 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
 
   virtual bool IsBlockTicks() const override;
 
-  void SetSwitch(bool val) override;
+  void SetSwitch_Implementation(bool val) override;
 
-  bool GetSwitch() const override;
+  bool GetSwitch_Implementation() const override;
   virtual TArray<ConnectionInfo> GetConnectionInfo() const override;
 };
 

@@ -58,7 +58,7 @@ class ADimension : public AActor {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ADimension, AActor>("Dimension") //class: Dimension, parent: Actor
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
-      .addFunction("spawn_block_identity", &ADimension::SpawnLogicFull)
+      .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
       .addProperty("settings", &ADimension::DimSettings) //field: GameSessionData
       .endClass();
@@ -100,9 +100,11 @@ class ADimension : public AActor {
   void RemoveInstance(const UStaticItem *prop, int32 index);
 
   UBlockLogic *SetBlockLogic(Vec3i pos, UBlockLogic *logic);
-  UBlockLogic *SpawnLogicFull(const Vec3i &bpos, const UStaticBlock *staticObject);
+  UBlockLogic *DestroyLogicFull(const Vec3i &pos);
+  UBlockLogic *SpawnLogicFullIdentity(const Vec3i &bpos, const UStaticBlock *staticObject);
+  UBlockLogic *SpawnLogicFull(const Vec3i &bpos, const UStaticBlock *staticObject, const FQuat &rot);
 
-  UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject);
+  UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject, const FQuat &rot);
 
   virtual void BeginPlay() override;
 
