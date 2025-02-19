@@ -38,6 +38,8 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   protected:
   virtual void Initialize() override;
 
+  void PlaceProp(std::mt19937 engine, FTallSectorData & data, const FVector2i & sbpos, TArray<float> &HeightCache, int w, int d) const;
+
   virtual void LoadBiomeFamily() override;
 
   std::vector<UStaticBlock *> ores_map;
