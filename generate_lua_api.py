@@ -3,8 +3,8 @@ import re
 
 def extract_class_details(file_content):
     print("Extracting class details from file content...")
-    class_pattern = r'//class:\s*(\w+)(?:,\s*parent:\s*(\w+))?'
-    properties_pattern = r'\.addProperty\("(\w+)",\s*&\w+::(\w+)\)\s*//field:\s*([\w<>|]+)(?:,\s*comment:\s*(.*))?'
+    class_pattern = r'//@class\s+(\w+)(?:\s*:\s*(\w+))?'
+    properties_pattern = r'\.addProperty\("(\w+)",\s*&\w+::(\w+)\)\s*//@field\s*(\w+)\s*(\w+)?'
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR|EVO_CODEGEN_INSTANCE)\((\w+)\)'
     static_pattern = r'(EVO_CODEGEN_DB)\((\w+),\s*(\w+)\)'
@@ -24,6 +24,7 @@ def extract_class_details(file_content):
         direct_sections = re.finditer(direct_section_pattern, body)
 
         annotation = f"--- @class {class_name} : {parent_class}\n"
+
         for prop_name, prop_var, prop_type, prop_comment in properties:
             comment_str = f" {prop_comment}" if prop_comment else ""
             annotation += f"--- @field {prop_name} {prop_type}{comment_str}\n"
