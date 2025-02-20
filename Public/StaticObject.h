@@ -24,6 +24,9 @@ struct FStaticBlockMinable {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UStaticItem *Result = nullptr;
+  
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  int64 Count = 1;
 
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 };
@@ -33,12 +36,13 @@ UCLASS(Abstract)
  * 
  */
 class EVOSPACE_API UStaticObject : public UPrototype {
+  using Self = UStaticObject;
   EVO_OWNER(StaticObject)
   EVO_CODEGEN_DB(StaticObject, StaticObject)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticObject, UPrototype>("StaticObject") //class: StaticObject, parent: Prototype
-      .addProperty("item", &UStaticObject::mStaticItem) //field: StaticItem
+      .deriveClass<Self, UPrototype>("StaticObject") //class: StaticObject, parent: Prototype
+      .addProperty("item", &Self::mStaticItem) //field: StaticItem
       .endClass();
   }
   GENERATED_BODY()
@@ -57,6 +61,4 @@ class EVOSPACE_API UStaticObject : public UPrototype {
 
   UPROPERTY(BlueprintReadOnly)
   bool mSurface = false;
-
-  virtual AActor *CreateSelector() const { return nullptr; };
 };

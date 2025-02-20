@@ -1,5 +1,5 @@
 #pragma once
-#include <cmath>
+#include "Evospace/CoordinameMinimal.h"
 
 class SimpleNoise {
   struct HashVec2 {

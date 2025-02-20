@@ -31,7 +31,7 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
       .addProperty("logic", &Self::mBlockLogic) //field: Class
       .addProperty("actor", &Self::mActorClass) //field: Class
       .addProperty("selector", &Self::mSelectorClass) //field: Class
-      .addProperty("tesselator", &Self::mTesselator) //field: Tesselator
+      .addProperty("tesselator", &Self::Tesselator) //field: Tesselator
       .addProperty("sub_blocks", &Self::Positions)
       .addProperty(
         "replace_tag", [](const Self *self) -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); }, [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //field: string
@@ -47,10 +47,8 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  const UTesselator *GetTesselator() const;
-
   UPROPERTY(BlueprintReadOnly)
-  UTesselator *mTesselator;
+  UTesselator *Tesselator;
 
   UPROPERTY(BlueprintReadOnly)
   TSubclassOf<UBlockLogic> mBlockLogic = nullptr;

@@ -38,7 +38,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   protected:
   virtual void Initialize() override;
 
-  void PlaceProp(std::mt19937 engine, FTallSectorData & data, const FVector2i & sbpos, TArray<float> &HeightCache, int w, int d) const;
+  void PlaceProp(std::mt19937 & engine, FTallSectorData & data, const FVector2i & sbpos, TArray<float> &HeightCache, int w, int d) const;
 
   virtual void LoadBiomeFamily() override;
 
@@ -50,7 +50,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   UPROPERTY()
   UStaticBlock *mUnderworldBlock;
 
-  std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, ore_spread, caves, caves2;
+  std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, caves, caves2;
 
   public:
   EVO_OWNED(BiomeWorldGenerator, WorldGenerator)

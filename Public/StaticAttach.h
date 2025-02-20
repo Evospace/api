@@ -9,12 +9,15 @@ class ASector;
 
 UCLASS(Abstract)
 class EVOSPACE_API UStaticAttach : public UStaticObject {
+  using Self = UStaticAttach;
   GENERATED_BODY()
   EVO_OWNER(StaticAttach);
   EVO_CODEGEN_DB(StaticAttach, StaticAttach);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticAttach, UStaticObject>("StaticAttach") //class: StaticAttach, parent: StaticObject
+      .deriveClass<Self, UStaticObject>("StaticAttach") //class: StaticAttach, parent: StaticObject
+      .addProperty("mesh", &Self::Mesh) //field: StaticItem
+      .addProperty("no_collision", &Self::NoCollision) //field: boolean
       .endClass();
   }
 
@@ -29,8 +32,10 @@ class EVOSPACE_API UStaticAttach : public UStaticObject {
   TArray<UMaterialInterface *> Materials;
 
   UPROPERTY(VisibleAnywhere)
-  UStaticMesh *StaticMesh;
+  UStaticMesh *Mesh;
 
   UPROPERTY(VisibleAnywhere)
   bool NoCollision = false;
+  
+  std::optional<luabridge::LuaRef> OnDestroy;
 };
