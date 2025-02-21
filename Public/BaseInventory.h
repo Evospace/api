@@ -20,7 +20,7 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   EVO_CODEGEN_INSTANCE(BaseInventory)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UBaseInventory, UInventoryAccess>("BaseInventory") //class: BaseInventory, parent: InventoryAccess
+      .deriveClass<UBaseInventory, UInventoryAccess>("BaseInventory") //@class BaseInventory : InventoryAccess
       .endClass();
   }
 

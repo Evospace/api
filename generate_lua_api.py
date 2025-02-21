@@ -4,7 +4,7 @@ import re
 def extract_class_details(file_content):
     print("Extracting class details from file content...")
     class_pattern = r'//@class\s+(\w+)(?:\s*:\s*(\w+))?'
-    properties_pattern = r'\.addProperty\("(\w+)",\s*&\w+::(\w+)\)\s*//@field\s*(\w+)\s*(\w+)?'
+    properties_pattern = r'\.addProperty\("(\w+)",\s*&\w+::\w+\)\s*//@field\s*([^\n]*)'
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR|EVO_CODEGEN_INSTANCE)\((\w+)\)'
     static_pattern = r'(EVO_CODEGEN_DB)\((\w+),\s*(\w+)\)'
@@ -25,8 +25,10 @@ def extract_class_details(file_content):
 
         annotation = f"--- @class {class_name} : {parent_class}\n"
 
-        for prop_name, prop_var, prop_type, prop_comment in properties:
-            comment_str = f" {prop_comment}" if prop_comment else ""
+        for prop_name, prop_comment in properties:
+            prop_parts = prop_comment.split(" ", 1)
+            prop_type = prop_parts[0].strip() if prop_parts else "unknown"
+            comment_str = f" {prop_parts[1].strip()}" if len(prop_parts) > 1 else ""
             annotation += f"--- @field {prop_name} {prop_type}{comment_str}\n"
             print(f"field {prop_name} {prop_type} {comment_str}")
 
@@ -59,7 +61,6 @@ def extract_class_details(file_content):
 def parse_api_files(folder_path):
     print(f"Parsing API files in folder: {folder_path}")
     lua_annotations = {}
-
     for root, _, files in os.walk(folder_path):
         print(f"Entering folder: {root}")
         for file in files:
@@ -69,7 +70,6 @@ def parse_api_files(folder_path):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                     lua_annotations.update(extract_class_details(content))
-
     print("Completed parsing API files.")
     return lua_annotations
 
@@ -86,7 +86,6 @@ def generate_lua_stub_file(output_file, annotations):
 if __name__ == "__main__":
     api_folder = "./Source/Evospace/Shared/"
     output_file = "./Source/Evospace/Shared/api.lua"
-
     print("Starting Lua stub generation...")
     annotations = parse_api_files(api_folder)
     annotations = dict(sorted(annotations.items()))

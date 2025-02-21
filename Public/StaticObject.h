@@ -41,8 +41,8 @@ class EVOSPACE_API UStaticObject : public UPrototype {
   EVO_CODEGEN_DB(StaticObject, StaticObject)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UPrototype>("StaticObject") //class: StaticObject, parent: Prototype
-      .addProperty("item", &Self::mStaticItem) //field: StaticItem
+      .deriveClass<Self, UPrototype>("StaticObject") //@class StaticObject : Prototype
+      .addProperty("item", &Self::mStaticItem) //@field StaticItem
       .endClass();
   }
   GENERATED_BODY()

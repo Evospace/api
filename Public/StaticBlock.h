@@ -27,19 +27,19 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   using Self = UStaticBlock;
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStaticObject>("StaticBlock") //class: StaticBlock, parent: StaticObject
-      .addProperty("logic", &Self::mBlockLogic) //field: Class
-      .addProperty("actor", &Self::mActorClass) //field: Class
-      .addProperty("selector", &Self::mSelectorClass) //field: Class
-      .addProperty("tesselator", &Self::Tesselator) //field: Tesselator
+      .deriveClass<Self, UStaticObject>("StaticBlock") //@class StaticBlock : StaticObject
+      .addProperty("logic", &Self::mBlockLogic) //@field Class
+      .addProperty("actor", &Self::mActorClass) //@field Class
+      .addProperty("selector", &Self::mSelectorClass) //@field Class
+      .addProperty("tesselator", &Self::Tesselator) //@field Tesselator
       .addProperty("sub_blocks", &Self::Positions)
       .addProperty(
-        "replace_tag", [](const Self *self) -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); }, [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //field: string
-      .addProperty("color_side", &Self::mColorSide) //field: Vector
-      .addProperty("color_top", &Self::mColorTop) //field: Vector
-      .addProperty("tier", &Self::Tier) //field: integer
-      .addProperty("level", &Self::Level) //field: integer
-      .addProperty("lua", &Self::Table) //field: table
+        "replace_tag", [](const Self *self) -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); }, [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //@field string
+      .addProperty("color_side", &Self::mColorSide) //@field Vector
+      .addProperty("color_top", &Self::mColorTop) //@field Vector
+      .addProperty("tier", &Self::Tier) //@field integer
+      .addProperty("level", &Self::Level) //@field integer
+      .addProperty("lua", &Self::Table) //@field table
       .endClass();
   }
   GENERATED_BODY()

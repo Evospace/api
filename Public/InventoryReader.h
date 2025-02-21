@@ -17,7 +17,7 @@ class EVOSPACE_API UInventoryReader : public UInstance {
   EVO_CODEGEN_INSTANCE(InventoryReader)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryReader, UInstance>("InventoryReader") //class: InventoryReader, parent: Instance
+      .deriveClass<UInventoryReader, UInstance>("InventoryReader") //@class InventoryReader : Instance
       .endClass();
   }
 

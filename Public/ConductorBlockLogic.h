@@ -226,21 +226,21 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //class: ConductorBlockLogic, parent: StorageBlockLogic
-      .addProperty("side_cover", &Self::mSideCover) //field: StaticCover
-      .addProperty("center_cover", &Self::mCenterCover) //field: StaticCover
-      .addProperty("resistance", &Self::Resistance) //field: integer mOhm
-      .addProperty("voltage", &Self::Voltage) //field: integer Volt
+      .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
+      .addProperty("side_cover", &Self::mSideCover) //@field StaticCover
+      .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
+      .addProperty("resistance", &Self::Resistance) //@field integer mOhm
+      .addProperty("voltage", &Self::Voltage) //@field integer Volt
       .addProperty(
-        "channel", [](const UConductorBlockLogic *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](UConductorBlockLogic *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); }) //field: string
-      .addProperty("conductor_channel", &Self::ConductorChannel) //field: integer
+        "channel", [](const UConductorBlockLogic *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](UConductorBlockLogic *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); }) //@field string
+      .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
       //direct:
       //---Add side wire
       //---@param acc ResourceAccessor
       //function ConductorBlockLogic:add_wire(acc) end
       .addFunction("add_wire", [](UConductorBlockLogic *self, UResourceAccessor *acc) {
         self->mWireAccessor.Add(acc);
-      }) //field: integer
+      }) //@field integer
       .endClass();
   }
   GENERATED_BODY()

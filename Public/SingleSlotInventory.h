@@ -14,8 +14,8 @@ class EVOSPACE_API USingleSlotInventory : public UBaseInventory {
   EVO_CODEGEN_INSTANCE(SingleSlotInventory)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory") //class: SingleSlotInventory, parent: BaseInventory
-      .addProperty("capacity", &Self::Capacity) //field: integer
+      .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory") //@class SingleSlotInventory : BaseInventory
+      .addProperty("capacity", &Self::Capacity) //@field integer
       .endClass();
   }
 

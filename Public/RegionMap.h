@@ -55,9 +55,9 @@ class EVOSPACE_API UStaticStructure : public UPrototype {
   EVO_CODEGEN_DB(StaticStructure, StaticStructure)
   virtual void lua_reg(lua_State *L) const {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticStructure, UPrototype>("StaticStructure") //class: StaticStructure, parent: Prototype
-      .addProperty("generate", &UStaticStructure::mGenerage) //field: function|nil
-      .addProperty("size", &UStaticStructure::mSize) //field: Vec2i
+      .deriveClass<UStaticStructure, UPrototype>("StaticStructure") //@class StaticStructure : Prototype
+      .addProperty("generate", &UStaticStructure::mGenerage) //@field function
+      .addProperty("size", &UStaticStructure::mSize) //@field Vec2i
       .endClass();
   }
 

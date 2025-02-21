@@ -15,6 +15,17 @@ Instance = {}
 --- @field back Vec3i = (-1, 0, 0)
 Vec3i = {}
 
+--- @class Vec3
+--- @field zero Vec3 = (0, 0, 0)
+--- @field one Vec3 = (1, 1, 1)
+--- @field left Vec3 = (0, 1, 0)
+--- @field right Vec3 = (0, -1, 0)
+--- @field up Vec3 = (0, 0, 1)
+--- @field down Vec3 = (0, 0, -1)
+--- @field front Vec3 = (1, 0, 0)
+--- @field back Vec3 = (-1, 0, 0)
+Vec3 = {}
+
 --- @param x integer 
 --- @param y integer 
 --- @param z integer 

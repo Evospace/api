@@ -34,9 +34,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   EVO_CODEGEN_INSTANCE(BlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UBlockLogic, UInstance>("BlockLogic") //class: BlockLogic, parent: Instance
+      .deriveClass<UBlockLogic, UInstance>("BlockLogic") //@class BlockLogic : Instance
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
-      .addProperty("static_block", &UBlockLogic::mStaticBlock) //field: StaticBlock, comment: comment
+      .addProperty("static_block", &UBlockLogic::mStaticBlock) //@field StaticBlock comment
       .endClass();
   }
 

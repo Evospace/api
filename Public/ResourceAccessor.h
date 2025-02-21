@@ -66,10 +66,10 @@ class UResourceAccessor : public UAccessor {
   EVO_CODEGEN_ACCESSOR(ResourceAccessor)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UAccessor>("ResourceAccessor") //class: ResourceAccessor, parent: Accessor
-      .addProperty("inventory", &Self::mInventory) //field: ResourceInventory
-      .addProperty("is_input", &Self::IsInput) //field: boolean
-      .addProperty("is_output", &Self::IsOutput) //field: boolean
+      .deriveClass<Self, UAccessor>("ResourceAccessor") //@class ResourceAccessor : Accessor
+      .addProperty("inventory", &Self::mInventory) //@field ResourceInventory
+      .addProperty("is_input", &Self::IsInput) //@field boolean
+      .addProperty("is_output", &Self::IsOutput) //@field boolean
       .addProperty(
         "channel", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](Self *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); })
       .addFunction("init", &Self::Init)

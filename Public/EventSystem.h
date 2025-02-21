@@ -103,7 +103,7 @@ class EventSystem {
           register_enum_line(on_player_at_sector)
         .endNamespace()
       .endNamespace()
-      .beginClass<EventSystem>("EventSystem") //class: EventSystem
+      .beginClass<EventSystem>("EventSystem") //@class EventSystem
         //direct:
         //--- Get global instance of EventSystem
         //--- @return EventSystem

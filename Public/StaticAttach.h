@@ -15,9 +15,10 @@ class EVOSPACE_API UStaticAttach : public UStaticObject {
   EVO_CODEGEN_DB(StaticAttach, StaticAttach);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStaticObject>("StaticAttach") //class: StaticAttach, parent: StaticObject
-      .addProperty("mesh", &Self::Mesh) //field: StaticItem
-      .addProperty("no_collision", &Self::NoCollision) //field: boolean
+      .deriveClass<Self, UStaticObject>("StaticAttach") //@class StaticAttach : StaticObject
+      .addProperty("mesh", &Self::Mesh) //@field StaticItem
+      .addProperty("no_collision", &Self::NoCollision) //@field boolean
+      .addProperty("on_destroy", &Self::OnDestroy) //@field fun(pos: Vec3, attach: StaticAttach) comment example
       .endClass();
   }
 
@@ -26,7 +27,11 @@ class EVOSPACE_API UStaticAttach : public UStaticObject {
     return false;
   }
 
+  virtual void Release() override;
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  void CallDestroyScript(const FVector&pos) const;
 
   UPROPERTY(VisibleAnywhere)
   TArray<UMaterialInterface *> Materials;

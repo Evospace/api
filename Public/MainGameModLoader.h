@@ -51,7 +51,7 @@ class EVOSPACE_API UMainGameModLoader : public UObject {
   public:
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
-      .beginClass<UMainGameModLoader>("DB") //class: DB
+      .beginClass<UMainGameModLoader>("DB") //@class DB
       //direct:
       //---Register Prototype in DB
       //---@param proto Prototype Prototype to register

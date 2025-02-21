@@ -15,6 +15,17 @@ Instance = {}
 --- @field back Vec3i = (-1, 0, 0)
 Vec3i = {}
 
+--- @class Vec3
+--- @field zero Vec3 = (0, 0, 0)
+--- @field one Vec3 = (1, 1, 1)
+--- @field left Vec3 = (0, 1, 0)
+--- @field right Vec3 = (0, -1, 0)
+--- @field up Vec3 = (0, 0, 1)
+--- @field down Vec3 = (0, 0, -1)
+--- @field front Vec3 = (1, 0, 0)
+--- @field back Vec3 = (-1, 0, 0)
+Vec3 = {}
+
 --- @param x integer 
 --- @param y integer 
 --- @param z integer 
@@ -191,7 +202,8 @@ function BlockLogic.cast(object) end
 --- @class ConductorBlockLogic : StorageBlockLogic
 --- @field side_cover StaticCover
 --- @field center_cover StaticCover
---- @field resistance integer
+--- @field resistance integer mOhm
+--- @field voltage integer Volt
 --- @field conductor_channel integer
 ConductorBlockLogic = {}
 
@@ -405,6 +417,9 @@ function SingleSlotInventory.get_class() end
 function SingleSlotInventory.cast(object) end
 
 --- @class StaticAttach : StaticObject
+--- @field mesh StaticItem
+--- @field no_collision boolean
+--- @field on_destroy fun(pos: Vec3, attach: StaticAttach) comment example
 StaticAttach = {}
 
 --- Creates a new StaticAttach static object
@@ -529,8 +544,40 @@ function StaticObject.get_class() end
 --- @return StaticObject
 function StaticObject.cast(object) end
 
+--- @class StaticProp : StaticAttach
+--- @field lock_xy boolean
+--- @field lock_all boolean
+--- @field project_to_terrain_power number
+--- @field additive_elevation number
+--- @field cull_begin number
+--- @field cull_end number
+--- @field maximum_height number
+--- @field minimum_height number
+--- @field floating boolean
+--- @field is_big boolean
+StaticProp = {}
+
+--- Creates a new StaticProp static object
+--- @param new_name string The name of the object
+--- @return StaticProp
+function StaticProp.new(new_name) end
+
+--- Searching for StaticProp in db
+--- @param name string The name of the object
+--- @return StaticProp
+function StaticProp.find(name) end
+
+--- Return StaticProp class object
+--- @return Class
+function StaticProp.get_class() end
+
+--- Trying to cast Object into StaticProp
+--- @param object Object to cast
+--- @return StaticProp
+function StaticProp.cast(object) end
+
 --- @class StaticStructure : Prototype
---- @field generate function|nil
+--- @field generate function
 --- @field size Vec2i
 StaticStructure = {}
 

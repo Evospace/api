@@ -12,7 +12,7 @@ class EVOSPACE_API UStorageBlockLogic : public UBlockLogic {
   EVO_CODEGEN_INSTANCE(StorageBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UBlockLogic>("StorageBlockLogic") //class: StorageBlockLogic, parent: BlockLogic
+      .deriveClass<Self, UBlockLogic>("StorageBlockLogic") //@class StorageBlockLogic : BlockLogic
       .endClass();
   }
   GENERATED_BODY()

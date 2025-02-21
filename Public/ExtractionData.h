@@ -16,14 +16,14 @@ struct FExtractionData {
 
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
-      .beginClass<FExtractionData>("ExtractionData") //class: ExtractionData
+      .beginClass<FExtractionData>("ExtractionData") //@class ExtractionData
       .addStaticFunction("new", []() { return FExtractionData(); })
       //direct:
       //--- Create new instance of ExtractionData
       //--- @return ExtractionData
       //function ExtractionData.new() end
-      .addProperty("item", &FExtractionData::mItem) //field: StaticItem
-      .addProperty("speed", &FExtractionData::mSpeed) //field: number
+      .addProperty("item", &FExtractionData::mItem) //@field StaticItem
+      .addProperty("speed", &FExtractionData::mSpeed) //@field number
       .endClass();
   }
 };

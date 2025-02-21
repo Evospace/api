@@ -56,11 +56,11 @@ class ADimension : public AActor {
   GENERATED_BODY()
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<ADimension, AActor>("Dimension") //class: Dimension, parent: Actor
+      .deriveClass<ADimension, AActor>("Dimension") //@class Dimension : Actor
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
       .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
-      .addProperty("settings", &ADimension::DimSettings) //field: GameSessionData
+      .addProperty("settings", &ADimension::DimSettings) //@field GameSessionData
       .endClass();
   }
 

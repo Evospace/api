@@ -13,7 +13,7 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
   EVO_CODEGEN_INSTANCE(InventoryAccess)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryAccess, UInventoryReader>("InventoryAccess") //class: InventoryAccess, parent: InventoryReader
+      .deriveClass<UInventoryAccess, UInventoryReader>("InventoryAccess") //@class InventoryAccess : InventoryReader
       .addFunction("add", [](UInventoryAccess *self, const UStaticItem *i, int64 count) {
         self->_Add({ i, count });
       })

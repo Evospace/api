@@ -31,12 +31,12 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   EVO_CODEGEN_DB(StaticItem, StaticItem)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticItem, UPrototype>("StaticItem") //class: StaticItem, parent: Prototype
-      .addProperty("image", &UStaticItem::mImage) //field: Texture
-      .addProperty("stack_size", &UStaticItem::mStackSize) //field: integer
-      .addProperty("unit_mul", &UStaticItem::mUnitMul) //field: number
-      .addProperty("mesh", &UStaticItem::mMesh) //field: StaticMesh
-      .addProperty("craftable", &UStaticItem::mCraftable) //field: boolean
+      .deriveClass<UStaticItem, UPrototype>("StaticItem") //@class StaticItem : Prototype
+      .addProperty("image", &UStaticItem::mImage) //@field Texture
+      .addProperty("stack_size", &UStaticItem::mStackSize) //@field integer
+      .addProperty("unit_mul", &UStaticItem::mUnitMul) //@field number
+      .addProperty("mesh", &UStaticItem::mMesh) //@field StaticMesh
+      .addProperty("craftable", &UStaticItem::mCraftable) //@field boolean
       .endClass();
   }
 

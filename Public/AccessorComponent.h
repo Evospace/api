@@ -21,11 +21,11 @@ class EVOSPACE_API UAccessor : public UInstance {
   EVO_CODEGEN_ACCESSOR(Accessor)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UInstance>("Accessor") //class: Accessor, parent: Instance
-      .addProperty("side", &Self::Side) //field: Vec3i
-      .addProperty("pos", &Self::Pos) //field: Vec3i
-      .addProperty("owner", &Self::Owner, false) //field: BlockLogic
-      .addProperty("cover", &Self::Cover) //field: StaticCover
+      .deriveClass<Self, UInstance>("Accessor") //@class Accessor : Instance
+      .addProperty("side", &Self::Side) //@field Vec3i
+      .addProperty("pos", &Self::Pos) //@field Vec3i
+      .addProperty("owner", &Self::Owner, false) //@field BlockLogic
+      .addProperty("cover", &Self::Cover) //@field StaticCover
       .endClass();
   }
 

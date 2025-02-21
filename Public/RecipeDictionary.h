@@ -27,7 +27,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   EVO_CODEGEN_DB(RecipeDictionary, RecipeDictionary)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<URecipeDictionary, UPrototype>("RecipeDictionary") //class: RecipeDictionary, parent: Prototype
+      .deriveClass<URecipeDictionary, UPrototype>("RecipeDictionary") //@class RecipeDictionary : Prototype
       .endClass();
   }
 
