@@ -39,6 +39,7 @@ class Base;
       .addStaticFunction("cast", &U##type::lua_codegen_cast)                                                                                                  \
       .addStaticFunction("get_class", []() { return U##type::StaticClass(); })                                                                                \
       .addFunction("__tostring", &U##type::ToString)                                                                                                          \
+      .addFunction("__eq", &U##type::LuaEquals)                                                                                                               \
       .endClass();                                                                                                                                            \
     if (!U##type::StaticClass()->HasAnyClassFlags(CLASS_Abstract)) {                                                                                          \
       luabridge::getGlobalNamespace(L)                                                                                                                        \
@@ -47,6 +48,9 @@ class Base;
           "new", +[](std::string_view newName) { return NewObject<U##type>(MainGameOwner<U##topmost_not_prototype>::Get(), UTF8_TO_TCHAR(newName.data())); }) \
         .endClass();                                                                                                                                          \
     }                                                                                                                                                         \
+  }                                                                                                                                                           \
+  bool LuaEquals(const UObject &other) const {                                                                                                                \
+    return this == &other;                                                                                                                                    \
   }
 
 #define EVO_CODEGEN_INSTANCE(type)                                                                                                       \
@@ -58,6 +62,7 @@ class Base;
       .addStaticFunction("cast", &U##type::lua_codegen_cast)                                                                             \
       .addStaticFunction("get_class", []() { return U##type::StaticClass(); })                                                           \
       .addFunction("__tostring", &U##type::ToString)                                                                                     \
+      .addFunction("__eq", &U##type::LuaEquals)                                                                                          \
       .endClass();                                                                                                                       \
     if (!U##type::StaticClass()->HasAnyClassFlags(CLASS_Abstract)) {                                                                     \
       luabridge::getGlobalNamespace(L)                                                                                                   \
@@ -68,6 +73,9 @@ class Base;
           "new_simple", +[]() { return NewObject<U##type>(); })                                                                          \
         .endClass();                                                                                                                     \
     }                                                                                                                                    \
+  }                                                                                                                                      \
+  bool LuaEquals(const UObject &other) const {                                                                                           \
+    return this == &other;                                                                                                               \
   }
 
 #define EVO_CODEGEN_ACCESSOR(type)                                                \
@@ -79,6 +87,7 @@ class Base;
       .addStaticFunction("cast", &U##type::lua_codegen_cast)                      \
       .addStaticFunction("get_class", []() { return U##type::StaticClass(); })    \
       .addFunction("__tostring", &U##type::ToString)                              \
+      .addFunction("__eq", &U##type::LuaEquals)                                   \
       .endClass();                                                                \
     if (!U##type::StaticClass()->HasAnyClassFlags(CLASS_Abstract)) {              \
       luabridge::getGlobalNamespace(L)                                            \
@@ -91,6 +100,9 @@ class Base;
           })                                                                      \
         .endClass();                                                              \
     }                                                                             \
+  }                                                                               \
+  bool LuaEquals(const UObject &other) const {                                    \
+    return this == &other;                                                        \
   }
 
 // /*.addStaticFunction("get", &evo::DB::get<type>)   */ /* .addStaticFunction("get_derived", &evo::DB::get_derived<type>)  */
@@ -124,7 +136,6 @@ class UPrototype : public UObject, public ISerializableJson {
     LOG(INFO_LL) << "Registering lua Prototype";
     luabridge::getGlobalNamespace(L)
       .deriveClass<UPrototype, UObject>("Prototype")
-
       .endClass();
   };
   virtual void lua_reg(lua_State *L) const {
@@ -135,7 +146,7 @@ class UPrototype : public UObject, public ISerializableJson {
   virtual luabridge::LuaRef to_luaref(lua_State *L) {
     checkNoEntry();
     return luabridge::LuaRef(nullptr, nullptr);
-  };
+  }
 
   UPROPERTY(VisibleAnywhere)
   const UMod *mOwningMod = nullptr;
@@ -184,11 +195,9 @@ class UInstance : public UObject, public ISerializableJson {
   virtual UClass *lua_reg_type() { return UInstance::StaticClass(); }
   virtual void register_owner() {}
   virtual void lua_reg_internal(lua_State *L) const {
-    LOG(INFO_LL) << "Registering lua "
-                 << "Prototype";
+    LOG(INFO_LL) << "Registering lua Instance";
     luabridge::getGlobalNamespace(L)
       .deriveClass<UInstance, UObject>("Instance")
-
       .endClass();
   };
   virtual void lua_reg(lua_State *L) const {

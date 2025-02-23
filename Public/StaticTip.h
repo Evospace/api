@@ -6,7 +6,7 @@
 #include "StaticTip.generated.h"
 
 class UAutosizeInventory;
-class UMainGameModLoader;
+class UDB;
 
 UCLASS(BlueprintType)
 /**

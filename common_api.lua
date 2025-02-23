@@ -64,6 +64,7 @@ Object = {}
 --- @class DB
 db = {}
 
+--- @class RegionMap
 regions = {}
 
 --- @class Loc

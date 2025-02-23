@@ -1,6 +1,7 @@
 #pragma once
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
+#include "Prototype.h"
 #include "Evospace/Ensure.h"
 #include "Evospace/JsonObjectLibrary.h"
 #include "Modding/Mod.h"
@@ -9,14 +10,14 @@
 #include <string>
 #include <array>
 
-#include "MainGameModLoader.generated.h"
+#include "DB.generated.h"
 
 class UPrototype;
 namespace evo {
 class LegacyLuaState;
 class ModLoadingLuaState;
 } // namespace evo
-class UMainGameModLoader;
+class UDB;
 
 class UJsonObjectLibrary;
 class UMod;
@@ -24,7 +25,7 @@ class ModLoadingContext;
 
 class ModLoadingContext {
   public:
-  ModLoadingContext(evo::LegacyLuaState *lua, UMainGameModLoader *);
+  ModLoadingContext(evo::LegacyLuaState *lua, UDB *);
   ~ModLoadingContext() = default;
 
   ModLoadingContext(const ModLoadingContext &c) = delete;
@@ -32,7 +33,7 @@ class ModLoadingContext {
 
   evo::LegacyLuaState *lua_state;
 
-  UMainGameModLoader *loader;
+  UDB *loader;
 };
 
 enum class ModTickLoadStatus {
@@ -46,39 +47,40 @@ UCLASS()
 /**
  * 
  */
-class EVOSPACE_API UMainGameModLoader : public UObject {
+class EVOSPACE_API UDB : public UInstance {
   GENERATED_BODY()
   public:
-  static void lua_reg(lua_State *L) {
+  EVO_CODEGEN_INSTANCE(DB)
+  virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .beginClass<UMainGameModLoader>("DB") //@class DB
+      .deriveClass<UDB, UInstance>("DB") //@class DB : Instance
       //direct:
       //---Register Prototype in DB
       //---@param proto Prototype Prototype to register
       //function DB:reg(proto) end
-      .addFunction("reg", [](UMainGameModLoader *self, UPrototype *proto) {
+      .addFunction("reg", [](UDB *self, UPrototype *proto) {
         if (ensure_log(proto, FString("Trying to register nullptr from ") + UTF8_TO_TCHAR(self->mCurrentMod->mName.data()))) {
           self->RegisterPrototype(self->mCurrentMod, proto);
         }
       })
-      .addFunction("from_table", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
+      .addFunction("from_table", [](UDB *self, const luabridge::LuaRef &table) {
         self->mJsonObjectLibrary->ObjectFromTable(self->mCurrentMod, table);
       })
       //direct:
       //---Register mod table
       //---@param table table Mod table
       //function DB:mod(table) end
-      .addFunction("mod", [](UMainGameModLoader *self, const luabridge::LuaRef &table) {
+      .addFunction("mod", [](UDB *self, const luabridge::LuaRef &table) {
         self->ModInitTable(table);
       })
-      .addFunction("objects", [](UMainGameModLoader *self) {
+      .addFunction("objects", [](UDB *self) {
         return self->GetPrototypes();
       })
       .endClass();
   }
 
   public:
-  UMainGameModLoader();
+  UDB();
 
   UPROPERTY(VisibleAnywhere)
   UJsonObjectLibrary *mJsonObjectLibrary = nullptr;
@@ -95,13 +97,13 @@ class EVOSPACE_API UMainGameModLoader : public UObject {
 
   TArray<FString> GetMods();
 
-  void LuaCleanup();
+  void Release();
 
   std::optional<luabridge::LuaRef> lastRegisteredMod;
 
   void ModInitTable(const luabridge::LuaRef &table);
 
-  static UMainGameModLoader *GetMainGameModLoader();
+  static UDB *GetMainGameModLoader();
 
   void RegisterPrototype(const UMod *owner, UPrototype *proto) const;
 
@@ -129,7 +131,7 @@ class EVOSPACE_API UMainGameModLoader : public UObject {
   private:
   static bool LoadLoc(const FString &path, const FString &locale, bool isSource);
 
-  bool PrepareMods(ModLoadingContext &context);
+  bool LoadVanillaPrepareMods(ModLoadingContext &context);
   bool LuaTickCaller(ModLoadingContext &context, const std::string &function_name, int32 seq);
   bool SubscriptionLoading(ModLoadingContext &context);
   bool Init(ModLoadingContext &context, int32 seq);

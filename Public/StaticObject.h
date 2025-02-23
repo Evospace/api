@@ -24,7 +24,7 @@ struct FStaticBlockMinable {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UStaticItem *Result = nullptr;
-  
+
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int64 Count = 1;
 

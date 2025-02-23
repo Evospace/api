@@ -1,6 +1,6 @@
 // Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
 #pragma once
-#include "Public/MainGameModLoader.h"
+#include "Public/DB.h"
 #include "ThirdParty/luabridge/luabridge.h"
 
 #include <string>

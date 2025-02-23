@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include "BlockLogic.h"
+#include "Prototype.h"
 #include "../SerializableJson.h"
+#include "Evospace/Misc/AssetOwner.h"
 
 #include "PropList.generated.h"
 
 class UStaticProp;
-class UStaticAttach;
 
 USTRUCT()
 struct FPropListData {
@@ -15,21 +17,28 @@ struct FPropListData {
 
   public:
   UPROPERTY()
-  TArray<UStaticAttach *> Props;
+  TArray<const UStaticProp *> Props;
 
   UPROPERTY()
   float Chance = 1.0;
 };
 
 UCLASS()
-class UPropList : public UObject, public ISerializableJson {
+class UStaticPropList : public UPrototype {
   GENERATED_BODY()
+  EVO_OWNER(StaticPropList)
+  EVO_CODEGEN_DB(StaticPropList, StaticPropList)
+  virtual void lua_reg(lua_State *L) const override {
+      luabridge::getGlobalNamespace(L)
+        .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
+        .endClass();
+    }
 
   public:
   UPROPERTY()
   TArray<FPropListData> PropListDatas;
 
-  UStaticAttach *PickOne(const FVector &start_point);
+  const UStaticProp *PickOne(const Vec2i &start_point);
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 

@@ -87,7 +87,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   virtual void SleepAnimation() const;
-  
+
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
 
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);

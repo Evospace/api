@@ -6,7 +6,7 @@
 #include "LegacyLuaState.h"
 #include "Evospace/JsonHelper.h"
 #include "Evospace/Misc/JsonLuaConverter.h"
-#include "Public/MainGameModLoader.h"
+#include "Public/DB.h"
 
 #include <regex>
 

@@ -21,7 +21,9 @@ enum class Event {
   on_built_block,
   on_player_spawn,
   on_tick,
-  on_player_at_sector
+  on_player_at_sector,
+  on_entity_died,
+  on_entity_damaged
 };
 
 inline const char *ToString(Event event) {
@@ -53,9 +55,8 @@ class EventSystem {
   using HandlerID = int;
 
   static EventSystem &GetInstance();
-  void LuaCleanup();
+  void Release();
   lua_State *L() const;
-  evo::LuaState *LuaState() const;
 
   /**
    * Add callback for event
@@ -74,7 +75,7 @@ class EventSystem {
 
   luabridge::LuaRef NewTable() const;
 
-  void Trigger(defines::Event event, const luabridge::LuaRef &context);
+  void Emmit(defines::Event event, const luabridge::LuaRef &context);
 
   void SetState(evo::LuaState *l);
 
@@ -101,6 +102,8 @@ class EventSystem {
           register_enum_line(on_player_spawn)
           register_enum_line(on_tick)
           register_enum_line(on_player_at_sector)
+          register_enum_line(on_entity_died)
+          register_enum_line(on_entity_damaged)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
@@ -122,7 +125,12 @@ class EventSystem {
         //--- @param id integer Subscription id
         //function EventSystem:unsub(event, id) end
         .addFunction("unsub", &EventSystem::Unsub)
-        .addFunction("trigger", &EventSystem::Trigger)
+        //direct:
+        //--- Emmit
+        //--- @param event integer Event id
+        //--- @param context table Context table
+        //function EventSystem:unsub(event, id) end
+        .addFunction("emmit", &EventSystem::Emmit)
       .endClass();
 #undef register_enum_line
     // clang-format on

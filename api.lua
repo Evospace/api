@@ -64,6 +64,7 @@ Object = {}
 --- @class DB
 db = {}
 
+--- @class RegionMap
 regions = {}
 
 --- @class Loc
@@ -226,7 +227,7 @@ function ConductorBlockLogic.get_class() end
 --- @return ConductorBlockLogic
 function ConductorBlockLogic.cast(object) end
 
---- @class DB : Object
+--- @class DB : Instance
 DB = {}
 
 ---Register Prototype in DB
@@ -236,6 +237,21 @@ function DB:reg(proto) end
 ---Register mod table
 ---@param table table Mod table
 function DB:mod(table) end
+
+--- Creates a new MainGameModLoader instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return MainGameModLoader
+function MainGameModLoader.new(parent, new_name) end
+
+--- Return MainGameModLoader class object
+--- @return Class
+function MainGameModLoader.get_class() end
+
+--- Trying to cast Object into MainGameModLoader
+--- @param object Object to cast
+--- @return MainGameModLoader
+function MainGameModLoader.cast(object) end
 
 --- @class Dimension : Actor
 --- @field settings GameSessionData
@@ -257,6 +273,11 @@ function EventSystem:sub(event, action) end
 --- Unsubscribe
 --- @param event integer Event id
 --- @param id integer Subscription id
+function EventSystem:unsub(event, id) end
+
+--- Emmit
+--- @param event integer Event id
+--- @param context table Context table
 function EventSystem:unsub(event, id) end
 
 --- @class ExtractionData : Object
@@ -357,6 +378,56 @@ function RecipeDictionary.get_class() end
 --- @return RecipeDictionary
 function RecipeDictionary.cast(object) end
 
+--- @class Region : Instance
+Region = {}
+
+---Add source to this Region
+---@param spos SourceData
+function Region:add_source(spos) end
+
+--- Creates a new Region instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return Region
+function Region.new(parent, new_name) end
+
+--- Return Region class object
+--- @return Class
+function Region.get_class() end
+
+--- Trying to cast Object into Region
+--- @param object Object to cast
+--- @return Region
+function Region.cast(object) end
+
+--- @class RegionMap : Instance
+RegionMap = {}
+
+---Get Region by its position
+---@param spos Vec2i position in RegionMap grid
+---@return Region
+function RegionMap:get_region(spos) end
+
+---Convert Block World position to RegionMap grid cell that contains this position
+---@param bpos Vec3i
+--- @return Vec2i RegionMap grid position
+function RegionMap.world_block_to_grid(bpos) end
+
+--- Creates a new RegionMap instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return RegionMap
+function RegionMap.new(parent, new_name) end
+
+--- Return RegionMap class object
+--- @return Class
+function RegionMap.get_class() end
+
+--- Trying to cast Object into RegionMap
+--- @param object Object to cast
+--- @return RegionMap
+function RegionMap.cast(object) end
+
 --- @class ResourceAccessor : Accessor
 --- @field inventory ResourceInventory
 --- @field is_input boolean
@@ -416,10 +487,28 @@ function SingleSlotInventory.get_class() end
 --- @return SingleSlotInventory
 function SingleSlotInventory.cast(object) end
 
+--- @class SourceData : Instance
+--- @field item StaticItem item to mine
+SourceData = {}
+
+--- Creates a new SourceData instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return SourceData
+function SourceData.new(parent, new_name) end
+
+--- Return SourceData class object
+--- @return Class
+function SourceData.get_class() end
+
+--- Trying to cast Object into SourceData
+--- @param object Object to cast
+--- @return SourceData
+function SourceData.cast(object) end
+
 --- @class StaticAttach : StaticObject
 --- @field mesh StaticItem
 --- @field no_collision boolean
---- @field on_destroy fun(pos: Vec3, attach: StaticAttach) comment example
 StaticAttach = {}
 
 --- Creates a new StaticAttach static object
@@ -544,7 +633,7 @@ function StaticObject.get_class() end
 --- @return StaticObject
 function StaticObject.cast(object) end
 
---- @class StaticProp : StaticAttach
+--- @class StaticProp : StaticObject
 --- @field lock_xy boolean
 --- @field lock_all boolean
 --- @field project_to_terrain_power number
@@ -555,6 +644,8 @@ function StaticObject.cast(object) end
 --- @field minimum_height number
 --- @field floating boolean
 --- @field is_big boolean
+--- @field mesh StaticItem
+--- @field no_collision boolean
 StaticProp = {}
 
 --- Creates a new StaticProp static object
@@ -576,7 +667,7 @@ function StaticProp.get_class() end
 --- @return StaticProp
 function StaticProp.cast(object) end
 
---- @class StaticStructure : Prototype
+--- @class StaticStructure : Instance
 --- @field generate function
 --- @field size Vec2i
 StaticStructure = {}

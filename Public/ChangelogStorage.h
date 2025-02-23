@@ -3,7 +3,7 @@
 #include "ChangelogStorage.generated.h"
 
 class UAutosizeInventory;
-class UMainGameModLoader;
+class UDB;
 
 USTRUCT(BlueprintType)
 struct FChangelog {

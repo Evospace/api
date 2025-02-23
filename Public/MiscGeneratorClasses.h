@@ -22,7 +22,7 @@ using BlockInterval = std::pair<unsigned short, unsigned short>;
 
 class UStaticBlock;
 class UStaticProp;
-class UPropList;
+class UStaticPropList;
 class ULayeringGenerator;
 class UBiome;
 
@@ -145,7 +145,7 @@ class UPropsGenerator : public UObject, public ISerializableJson {
   public:
   virtual ~UPropsGenerator() = default;
 
-  virtual UStaticAttach *GetSurfaceAttach(const FVector &start_point) const;
+  virtual const UStaticProp *GetSurfaceAttach(const Vec2i &start_point) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   UBiome *mBiome;
@@ -153,7 +153,7 @@ class UPropsGenerator : public UObject, public ISerializableJson {
   virtual void SetSeed(int32 seed);
 
   protected:
-  UPropList *proplist = nullptr;
+  UStaticPropList *proplist = nullptr;
 };
 
 UCLASS()
@@ -164,7 +164,7 @@ class UBiome : public UPrototype {
   virtual Layering GetLayering(const Vec2i &pos) const;
   virtual float GetHeight(const FVector2D &pos) const;
   virtual float GetGrad(const FVector2D &pos) const;
-  virtual UStaticAttach *GetSurfaceAttach(const FVector2D &pos) const;
+  virtual const UStaticProp *GetSurfaceAttach(const Vec2i &pos) const;
   virtual float GetWeight(const FVector2D &pos) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -200,7 +200,7 @@ class UBiomeFamily : public UBiome {
   virtual float GetGrad(const FVector2D &pos) const override;
 
   // Only baked
-  virtual UStaticAttach *GetSurfaceAttach(const FVector2D &pos) const override;
+  virtual const UStaticProp *GetSurfaceAttach(const Vec2i &pos) const override;
 
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;
