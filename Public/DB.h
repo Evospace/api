@@ -85,6 +85,11 @@ class EVOSPACE_API UDB : public UInstance {
   UPROPERTY(VisibleAnywhere)
   UJsonObjectLibrary *mJsonObjectLibrary = nullptr;
 
+  UTexture2D *FindIco(const FName &name) const;
+
+  UPROPERTY(VisibleAnywhere)
+  TMap<FName, UTexture2D *> IconTextures;
+
   UPROPERTY(VisibleAnywhere)
   TArray<int64> mSubscribedIds;
 

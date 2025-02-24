@@ -29,10 +29,10 @@ class UStaticPropList : public UPrototype {
   EVO_OWNER(StaticPropList)
   EVO_CODEGEN_DB(StaticPropList, StaticPropList)
   virtual void lua_reg(lua_State *L) const override {
-      luabridge::getGlobalNamespace(L)
-        .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
-        .endClass();
-    }
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
+      .endClass();
+  }
 
   public:
   UPROPERTY()
