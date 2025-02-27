@@ -15,9 +15,6 @@
 class ModLoadingContext;
 
 UCLASS(BlueprintType)
-/**
- * @brief Mod object
- */
 class UMod : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
@@ -28,56 +25,26 @@ class UMod : public UObject, public ISerializableJson {
   virtual ~UMod() override {
   }
 
-  /**
-     * @brief name. Must be not empty.
-     */
   std::string mName;
-
-  /**
-     * @brief version. Default value: ""
-     */
+  
   std::string mVersion;
-
-  /**
-     * @brief title. Default value: ""
-     */
+  
   std::string mTitle;
-
-  /**
-     * @brief evospace_version. Default value: ""
-     */
+  
   std::string mEvospaceVersion;
-
-  /**
-     * @brief created_by. Default value: ""
-     */
+  
   std::string mCreatedBy;
-
-  /**
-     * @brief description. Default value: ""
-     */
+  
   std::string mDescription;
-
-  /**
-     * @brief author. Default value: ""
-     */
+  
   std::string mAuthor;
 
   FString mPath;
 
-  /**
-     * @brief enabled. Default value: true
-     */
   bool mEnabled = true;
-
-  /**
-     * @brief is mod loaded without errors. Default value: false
-     */
+  
   bool loaded_without_errors = false;
-
-  /**
-     * @brief dependencies
-     */
+  
   std::vector<std::string> dependencies;
 
   std::optional<luabridge::LuaRef> mod_table;

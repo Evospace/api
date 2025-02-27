@@ -12,9 +12,6 @@
 
 class UValueStorage;
 
-/**
- * 
- */
 UCLASS()
 class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
   GENERATED_BODY()

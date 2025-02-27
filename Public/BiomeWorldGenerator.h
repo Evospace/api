@@ -21,9 +21,6 @@ class UStaticBlock;
 class UGlobalBiomeFamily;
 
 UCLASS(BlueprintType)
-/**
- *  Legacy biome based world generator
- */
 class UBiomeWorldGenerator : public UWorldGenerator {
   GENERATED_BODY()
 

@@ -122,9 +122,6 @@ class Base;
 //   }
 
 UCLASS(Abstract)
-/**
- * @brief Super class for all objects stored in database
- */
 class UPrototype : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
@@ -186,9 +183,6 @@ class UPrototype : public UObject, public ISerializableJson {
 };
 
 UCLASS(Abstract)
-/**
- * @brief Super class for all object instances 
- */
 class UInstance : public UObject, public ISerializableJson {
   GENERATED_BODY()
 

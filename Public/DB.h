@@ -44,9 +44,6 @@ enum class ModTickLoadStatus {
 };
 
 UCLASS()
-/**
- * 
- */
 class EVOSPACE_API UDB : public UInstance {
   GENERATED_BODY()
   public:

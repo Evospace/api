@@ -25,10 +25,7 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   }
 
   UBaseInventory();
-
-  /**
-   * Make all slots empty (value = 0, type = nullptr)
-   */
+  
   UFUNCTION(BlueprintCallable)
   void Empty();
 

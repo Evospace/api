@@ -115,6 +115,10 @@ AbstractCrafter = {}
 --- @return AbstractCrafter
 function AbstractCrafter.new(parent, new_name) end
 
+--- Creates a new AbstractCrafter instance
+--- @return AbstractCrafter
+function AbstractCrafter.new_simple() end
+
 --- Return AbstractCrafter class object
 --- @return Class
 function AbstractCrafter.get_class() end
@@ -154,6 +158,10 @@ AutosizeInventory = {}
 --- @return AutosizeInventory
 function AutosizeInventory.new(parent, new_name) end
 
+--- Creates a new AutosizeInventory instance
+--- @return AutosizeInventory
+function AutosizeInventory.new_simple() end
+
 --- Return AutosizeInventory class object
 --- @return Class
 function AutosizeInventory.get_class() end
@@ -171,6 +179,10 @@ BaseInventory = {}
 --- @param new_name string The name of the instance
 --- @return BaseInventory
 function BaseInventory.new(parent, new_name) end
+
+--- Creates a new BaseInventory instance
+--- @return BaseInventory
+function BaseInventory.new_simple() end
 
 --- Return BaseInventory class object
 --- @return Class
@@ -190,6 +202,10 @@ BlockLogic = {}
 --- @param new_name string The name of the instance
 --- @return BlockLogic
 function BlockLogic.new(parent, new_name) end
+
+--- Creates a new BlockLogic instance
+--- @return BlockLogic
+function BlockLogic.new_simple() end
 
 --- Return BlockLogic class object
 --- @return Class
@@ -218,6 +234,10 @@ function ConductorBlockLogic:add_wire(acc) end
 --- @return ConductorBlockLogic
 function ConductorBlockLogic.new(parent, new_name) end
 
+--- Creates a new ConductorBlockLogic instance
+--- @return ConductorBlockLogic
+function ConductorBlockLogic.new_simple() end
+
 --- Return ConductorBlockLogic class object
 --- @return Class
 function ConductorBlockLogic.get_class() end
@@ -238,20 +258,24 @@ function DB:reg(proto) end
 ---@param table table Mod table
 function DB:mod(table) end
 
---- Creates a new MainGameModLoader instance
+--- Creates a new DB instance
 --- @param parent Object Object of parent
 --- @param new_name string The name of the instance
---- @return MainGameModLoader
-function MainGameModLoader.new(parent, new_name) end
+--- @return DB
+function DB.new(parent, new_name) end
 
---- Return MainGameModLoader class object
+--- Creates a new DB instance
+--- @return DB
+function DB.new_simple() end
+
+--- Return DB class object
 --- @return Class
-function MainGameModLoader.get_class() end
+function DB.get_class() end
 
---- Trying to cast Object into MainGameModLoader
+--- Trying to cast Object into DB
 --- @param object Object to cast
---- @return MainGameModLoader
-function MainGameModLoader.cast(object) end
+--- @return DB
+function DB.cast(object) end
 
 --- @class Dimension : Actor
 --- @field settings GameSessionData
@@ -302,6 +326,10 @@ Inventory = {}
 --- @return Inventory
 function Inventory.new(parent, new_name) end
 
+--- Creates a new Inventory instance
+--- @return Inventory
+function Inventory.new_simple() end
+
 --- Return Inventory class object
 --- @return Class
 function Inventory.get_class() end
@@ -320,6 +348,10 @@ InventoryAccess = {}
 --- @return InventoryAccess
 function InventoryAccess.new(parent, new_name) end
 
+--- Creates a new InventoryAccess instance
+--- @return InventoryAccess
+function InventoryAccess.new_simple() end
+
 --- Return InventoryAccess class object
 --- @return Class
 function InventoryAccess.get_class() end
@@ -337,6 +369,10 @@ InventoryReader = {}
 --- @param new_name string The name of the instance
 --- @return InventoryReader
 function InventoryReader.new(parent, new_name) end
+
+--- Creates a new InventoryReader instance
+--- @return InventoryReader
+function InventoryReader.new_simple() end
 
 --- Return InventoryReader class object
 --- @return Class
@@ -391,6 +427,10 @@ function Region:add_source(spos) end
 --- @return Region
 function Region.new(parent, new_name) end
 
+--- Creates a new Region instance
+--- @return Region
+function Region.new_simple() end
+
 --- Return Region class object
 --- @return Class
 function Region.get_class() end
@@ -418,6 +458,10 @@ function RegionMap.world_block_to_grid(bpos) end
 --- @param new_name string The name of the instance
 --- @return RegionMap
 function RegionMap.new(parent, new_name) end
+
+--- Creates a new RegionMap instance
+--- @return RegionMap
+function RegionMap.new_simple() end
 
 --- Return RegionMap class object
 --- @return Class
@@ -459,6 +503,10 @@ ResourceInventory = {}
 --- @return ResourceInventory
 function ResourceInventory.new(parent, new_name) end
 
+--- Creates a new ResourceInventory instance
+--- @return ResourceInventory
+function ResourceInventory.new_simple() end
+
 --- Return ResourceInventory class object
 --- @return Class
 function ResourceInventory.get_class() end
@@ -478,6 +526,10 @@ SingleSlotInventory = {}
 --- @return SingleSlotInventory
 function SingleSlotInventory.new(parent, new_name) end
 
+--- Creates a new SingleSlotInventory instance
+--- @return SingleSlotInventory
+function SingleSlotInventory.new_simple() end
+
 --- Return SingleSlotInventory class object
 --- @return Class
 function SingleSlotInventory.get_class() end
@@ -488,6 +540,7 @@ function SingleSlotInventory.get_class() end
 function SingleSlotInventory.cast(object) end
 
 --- @class SourceData : Instance
+--- @field offset Vec2i source offset from world (0, 0)
 --- @field item StaticItem item to mine
 SourceData = {}
 
@@ -497,6 +550,10 @@ SourceData = {}
 --- @return SourceData
 function SourceData.new(parent, new_name) end
 
+--- Creates a new SourceData instance
+--- @return SourceData
+function SourceData.new_simple() end
+
 --- Return SourceData class object
 --- @return Class
 function SourceData.get_class() end
@@ -505,30 +562,6 @@ function SourceData.get_class() end
 --- @param object Object to cast
 --- @return SourceData
 function SourceData.cast(object) end
-
---- @class StaticAttach : StaticObject
---- @field mesh StaticItem
---- @field no_collision boolean
-StaticAttach = {}
-
---- Creates a new StaticAttach static object
---- @param new_name string The name of the object
---- @return StaticAttach
-function StaticAttach.new(new_name) end
-
---- Searching for StaticAttach in db
---- @param name string The name of the object
---- @return StaticAttach
-function StaticAttach.find(name) end
-
---- Return StaticAttach class object
---- @return Class
-function StaticAttach.get_class() end
-
---- Trying to cast Object into StaticAttach
---- @param object Object to cast
---- @return StaticAttach
-function StaticAttach.cast(object) end
 
 --- @class StaticBlock : StaticObject
 --- @field logic Class
@@ -561,7 +594,7 @@ function StaticBlock.get_class() end
 --- @return StaticBlock
 function StaticBlock.cast(object) end
 
---- @class StaticCover : StaticAttach
+--- @class StaticCover : StaticObject
 StaticCover = {}
 
 --- Creates a new StaticCover static object
@@ -634,8 +667,6 @@ function StaticObject.get_class() end
 function StaticObject.cast(object) end
 
 --- @class StaticProp : StaticObject
---- @field lock_xy boolean
---- @field lock_all boolean
 --- @field project_to_terrain_power number
 --- @field additive_elevation number
 --- @field cull_begin number
@@ -666,6 +697,28 @@ function StaticProp.get_class() end
 --- @param object Object to cast
 --- @return StaticProp
 function StaticProp.cast(object) end
+
+--- @class StaticPropList : Prototype
+StaticPropList = {}
+
+--- Creates a new StaticPropList static object
+--- @param new_name string The name of the object
+--- @return StaticPropList
+function StaticPropList.new(new_name) end
+
+--- Searching for StaticPropList in db
+--- @param name string The name of the object
+--- @return StaticPropList
+function StaticPropList.find(name) end
+
+--- Return StaticPropList class object
+--- @return Class
+function StaticPropList.get_class() end
+
+--- Trying to cast Object into StaticPropList
+--- @param object Object to cast
+--- @return StaticPropList
+function StaticPropList.cast(object) end
 
 --- @class StaticStructure : Instance
 --- @field generate function
@@ -699,6 +752,10 @@ StorageBlockLogic = {}
 --- @param new_name string The name of the instance
 --- @return StorageBlockLogic
 function StorageBlockLogic.new(parent, new_name) end
+
+--- Creates a new StorageBlockLogic instance
+--- @return StorageBlockLogic
+function StorageBlockLogic.new_simple() end
 
 --- Return StorageBlockLogic class object
 --- @return Class

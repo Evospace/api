@@ -19,9 +19,6 @@ class ADimension;
 class UStaticItem;
 class UTexture2D;
 
-/**
- * 
- */
 UCLASS(BlueprintType)
 class EVOSPACE_API URegionMap : public UInstance {
   GENERATED_BODY()

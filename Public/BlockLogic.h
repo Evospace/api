@@ -26,9 +26,6 @@ class UStaticBlock;
 class UAccessor;
 
 UCLASS(BlueprintType)
-/**
- * 
- */
 class EVOSPACE_API UBlockLogic : public UInstance {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(BlockLogic)

@@ -17,9 +17,6 @@ class UInventoryReader;
 //{
 // };
 
-/**
- *
- */
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipeDictionary : public UPrototype {
   GENERATED_BODY()

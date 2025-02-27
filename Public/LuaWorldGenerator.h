@@ -6,9 +6,6 @@ class UHeightGenerator;
 class UBiomeFamily;
 
 UCLASS()
-/**
- * LuaWorldGenerator
- */
 class ULuaWorldGenerator : public UWorldGenerator {
   GENERATED_BODY()
   public:

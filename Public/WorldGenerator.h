@@ -10,9 +10,6 @@
 class UStaticItem;
 
 UCLASS(Abstract, BlueprintType)
-/**
- * WorldGenerator
- */
 class EVOSPACE_API UWorldGenerator : public UPrototype {
   GENERATED_BODY()
 

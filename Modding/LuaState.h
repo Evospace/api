@@ -22,16 +22,7 @@ class LuaState {
 
   LuaState(const LuaState &v) = delete;
   LuaState &operator=(const LuaState &v) = delete;
-
-  /**
-     * @brief Find Unreal Engine UClass
-     * @details lua syntax
-     * @code{.lua}
-     * get_class("name")
-     * @endcode
-     * @param Class name
-     * @return Class object
-     */
+  
   static UClass *FindClass(const std::string &name);
   static UClass *LoadClass(const std::string &name);
   static UTexture2D *FindTexture(const std::string &name);

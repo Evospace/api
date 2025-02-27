@@ -13,9 +13,6 @@ class LuaState;
 
 namespace defines {
 
-/**
- * Event types
- */
 enum class Event {
   on_player_mined_item,
   on_built_block,
@@ -46,9 +43,6 @@ inline const char *ToString(Event event) {
 }
 } // namespace defines
 
-/**
- * Global event system
- */
 class EventSystem {
   public:
   using EventHandler = TFunction<void(luabridge::LuaRef)>;
@@ -57,20 +51,9 @@ class EventSystem {
   static EventSystem &GetInstance();
   void Release();
   lua_State *L() const;
-
-  /**
-   * Add callback for event
-   * @param event Event type
-   * @param func Callback function
-   * @return Subscription handle for unsubscription
-   */
+  
   HandlerID Sub(int event, luabridge::LuaRef func);
-
-  /**
-   * Remove callback from event
-   * @param event Event type
-   * @param handlerId Subscription handle
-   */
+  
   void Unsub(int event, HandlerID handlerId);
 
   luabridge::LuaRef NewTable() const;

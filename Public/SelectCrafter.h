@@ -14,9 +14,6 @@ class UInventoryContainer;
 class UCoreAccessor;
 
 UCLASS(BlueprintType)
-/**
- * 
- */
 class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   using Self = USelectCrafter;
   EVO_CODEGEN_INSTANCE(SelectCrafter)

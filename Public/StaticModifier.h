@@ -10,9 +10,6 @@
 #include "UObject/Object.h"
 #include "StaticModifier.generated.h"
 
-/**
- * 
- */
 UCLASS(BlueprintType)
 class UStaticModifier : public UPrototype {
   GENERATED_BODY()

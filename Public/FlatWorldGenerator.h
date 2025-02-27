@@ -12,9 +12,6 @@
 class UStaticBlock;
 
 UCLASS(BlueprintType)
-/**
- *  Legacy flat concrete world generator
- */
 class UFlatWorldGenerator : public UWorldGenerator {
   GENERATED_BODY()
 
