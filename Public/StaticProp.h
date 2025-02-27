@@ -1,15 +1,15 @@
 // Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
 
 #pragma once
+#include "StaticObject.h"
 #include "Evospace/CoordinameMinimal.h"
-#include "Public/StaticAttach.h"
 
 #include "StaticProp.generated.h"
 
 class ASector;
 class UStaticMesh;
 
-UCLASS(Abstract)
+UCLASS()
 class EVOSPACE_API UStaticProp : public UStaticObject {
   using Self = UStaticProp;
   GENERATED_BODY()
@@ -37,6 +37,8 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
   void OnDestroy(const Vec3i &pos) const;
 
   virtual bool Create(ASector *sector, const FTransform &transform, const FVector3i &bpos, bool ignored = false) const;
+
+  virtual bool ProtoValidCheck() override;
 
   UPROPERTY(EditAnywhere)
   float ScaleMin = .6;

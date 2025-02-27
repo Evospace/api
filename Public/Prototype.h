@@ -156,6 +156,7 @@ class UPrototype : public UObject, public ISerializableJson {
     return true;
   }
 
+  virtual bool ProtoValidCheck() { return true; }
   virtual void Release() {}
   virtual void MarkIncomplete() {}
   virtual void OnObjectFromTable() {}
@@ -174,7 +175,8 @@ class UPrototype : public UObject, public ISerializableJson {
   inline UPrototype *_get_or_register(const FString &obj_name, IRegistrar &registry) {
     auto obj = FindObject<BaseType>(MainGameOwner<BaseType>::Get(), *obj_name);
     if (!obj) {
-      obj = NewObject<BaseType>(MainGameOwner<BaseType>::Get(), RealType::StaticClass(), *obj_name);
+      auto owner = MainGameOwner<BaseType>::Get();
+      obj = NewObject<BaseType>(owner, RealType::StaticClass(), *obj_name);
       LOG(INFO_LL) << "Register " << BaseType::StaticClass()->GetName() << " " << obj_name;
       registry.Register(obj);
     }

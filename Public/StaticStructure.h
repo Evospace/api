@@ -19,9 +19,6 @@ class EVOSPACE_API UStaticStructure : public UPrototype {
   }
 
   public:
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
-  bool DeserializeJson(TSharedPtr<FJsonObject> json);
-
   std::optional<luabridge::LuaRef> Generate;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
