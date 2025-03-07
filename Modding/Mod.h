@@ -26,25 +26,25 @@ class UMod : public UObject, public ISerializableJson {
   }
 
   std::string mName;
-  
+
   std::string mVersion;
-  
+
   std::string mTitle;
-  
+
   std::string mEvospaceVersion;
-  
+
   std::string mCreatedBy;
-  
+
   std::string mDescription;
-  
+
   std::string mAuthor;
 
   FString mPath;
 
   bool mEnabled = true;
-  
+
   bool loaded_without_errors = false;
-  
+
   std::vector<std::string> dependencies;
 
   std::optional<luabridge::LuaRef> mod_table;

@@ -10,7 +10,7 @@ class EVOSPACE_API USourceData : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("SourceData") //@class SourceData : Instance
-      .addProperty("offset", &Self::mOffset) //@field Vec2i source offset from world (0, 0)
+      .addProperty("position", &Self::Position) //@field Vec2i source position in block coordinates
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
       .endClass();
   }
@@ -26,13 +26,16 @@ class EVOSPACE_API USourceData : public UInstance {
   UStaticItem *Item = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FVector2i mOffset;
+  class UStaticProp *Prop = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FVector2i Position;
 
   bool SerializeJson(TSharedPtr<FJsonObject> json);
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UFUNCTION(BlueprintCallable)
-  float CalculateExtractionSpeed() const;
+  int32 CalculateExtractionSpeed() const;
 
   UFUNCTION(BlueprintCallable)
   FExtractionData ExtractOre(ADimension *dim);

@@ -21,11 +21,11 @@ struct FMapStructure {
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .beginClass<FMapStructure>("MapStructure") //@class MapStructure
-      .addStaticFunction("new", [] { return FMapStructure(); })
       //direct:
       //--- Create new instance of MapStructure
       //--- @return MapStructure
       //function MapStructure.new() end
+      .addStaticFunction("new", [] { return FMapStructure(); })
       .addProperty("offset", &FMapStructure::mOffset) //@field Vec2i
       .addProperty("structure", &FMapStructure::mStruct) //@field StaticStructure
       .endClass();

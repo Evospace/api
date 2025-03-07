@@ -34,9 +34,10 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
   virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
 
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
-  void RecipeInventoryPrepare();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  void PrepareInventories()const;
 
   virtual void BlockBeginPlay() override;
 

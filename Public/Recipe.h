@@ -26,6 +26,7 @@ class EVOSPACE_API URecipe : public UPrototype {
       .addProperty("input", &URecipe::mInput, false)
       .addProperty("output", &URecipe::mOutput, false)
       .addProperty("tier", &URecipe::Tier)
+      .addProperty("start_tier", &URecipe::StartTier)
       .endClass();
   }
 
@@ -52,22 +53,25 @@ class EVOSPACE_API URecipe : public UPrototype {
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FText GetLabel() const;
 
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  int64 GetDuration() const;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   URecipeInventory *mInput;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   URecipeInventory *mOutput;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere)
   int32 mDuration = 1;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   mutable bool mLocked = false;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool mDefaultLocked = false;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 mProductivityBonus = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -79,8 +83,11 @@ class EVOSPACE_API URecipe : public UPrototype {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   URecipeDictionary *Dictionary;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  int32 Tier = 1;
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 Tier = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  mutable int32 StartTier = 0;
 
   virtual void Release() override;
 };

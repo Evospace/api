@@ -20,7 +20,8 @@ enum class Event {
   on_tick,
   on_player_at_sector,
   on_entity_died,
-  on_entity_damaged
+  on_entity_damaged,
+  on_entity_spawn
 };
 
 inline const char *ToString(Event event) {
@@ -51,9 +52,9 @@ class EventSystem {
   static EventSystem &GetInstance();
   void Release();
   lua_State *L() const;
-  
+
   HandlerID Sub(int event, luabridge::LuaRef func);
-  
+
   void Unsub(int event, HandlerID handlerId);
 
   luabridge::LuaRef NewTable() const;
@@ -87,6 +88,7 @@ class EventSystem {
           register_enum_line(on_player_at_sector)
           register_enum_line(on_entity_died)
           register_enum_line(on_entity_damaged)
+          register_enum_line(on_entity_spawn)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
@@ -111,8 +113,8 @@ class EventSystem {
         //direct:
         //--- Emmit
         //--- @param event integer Event id
-        //--- @param context table Context table
-        //function EventSystem:unsub(event, id) end
+        //--- @param table Context table
+        //function EventSystem:emmit(event, table) end
         .addFunction("emmit", &EventSystem::Emmit)
       .endClass();
 #undef register_enum_line

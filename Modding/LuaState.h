@@ -14,6 +14,8 @@ namespace evo {
  */
 class LuaState {
   public:
+
+  template<ELogLevel Severity>
   static int l_my_print(lua_State *L);
 
   LuaState();
@@ -22,7 +24,7 @@ class LuaState {
 
   LuaState(const LuaState &v) = delete;
   LuaState &operator=(const LuaState &v) = delete;
-  
+
   static UClass *FindClass(const std::string &name);
   static UClass *LoadClass(const std::string &name);
   static UTexture2D *FindTexture(const std::string &name);

@@ -2,9 +2,6 @@
 
 #pragma once
 
-#include "../CoordinateSystem.h"
-#include "../NoiseArray.h"
-#include "../Vector.h"
 #include "Public/WorldGenerator.h"
 #include "MiscGeneratorClasses.h"
 #include "CoreMinimal.h"
@@ -17,7 +14,8 @@
 #include <vector>
 
 #include "BiomeWorldGenerator.generated.h"
-class UStaticBlock;
+
+struct FNoiseArray;class UStaticBlock;
 class UGlobalBiomeFamily;
 
 UCLASS(BlueprintType)
@@ -35,7 +33,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   protected:
   virtual void Initialize() override;
 
-  void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FVector2i &sbpos, const Vec2i & orePos, TArray<float> &HeightCache, int w, int d) const;
+  void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FVector2i &sbpos, const Vec2i &orePos, TArray<float> &HeightCache, int w, int d) const;
 
   virtual void LoadBiomeFamily() override;
 

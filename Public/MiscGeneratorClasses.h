@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../Common.h"
-#include "../CoordinateSystem.h"
-#include "../Sector.h"
 #include "Public/WorldGenerator.h"
 #include "CoreMinimal.h"
 #include "FastNoiseSIMD.h"

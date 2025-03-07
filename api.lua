@@ -142,6 +142,7 @@ function AbstractCrafter.cast(object) end
 --- @class Accessor : Instance
 --- @field side Vec3i
 --- @field pos Vec3i
+--- @field owner BlockLogic
 --- @field cover StaticCover
 Accessor = {}
 
@@ -232,6 +233,7 @@ function BlockLogic.cast(object) end
 --- @field center_cover StaticCover
 --- @field resistance integer mOhm
 --- @field voltage integer Volt
+--- @field channel string
 --- @field conductor_channel integer
 ConductorBlockLogic = {}
 
@@ -408,6 +410,7 @@ function InventoryContainer.get_class() end
 function InventoryContainer.cast(object) end
 
 --- @class InventoryReader : Instance
+--- @field size integer Number of slots in this InventoryReader
 InventoryReader = {}
 
 --- Get ItemData with index from InventoryReader
@@ -565,6 +568,7 @@ function ResourceAccessor.get_class() end
 function ResourceAccessor.cast(object) end
 
 --- @class ResourceInventory : SingleSlotInventory
+--- @field item StaticItem
 --- @field drain integer
 ResourceInventory = {}
 
@@ -639,6 +643,7 @@ function SourceData.cast(object) end
 --- @field actor Class
 --- @field selector Class
 --- @field tesselator Tesselator
+--- @field replace_tag string
 --- @field color_side Vector
 --- @field color_top Vector
 --- @field tier integer

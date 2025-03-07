@@ -60,7 +60,7 @@ class EVOSPACE_API UStaticResearchBase : public UPrototype {
   TArray<FKeyTableObject> LabelParts = {};
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FKeyTableObject> mDescriptionParts = {};
+  TArray<FKeyTableObject> DescriptionParts = {};
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UInventory *DataPoints;
@@ -101,7 +101,7 @@ class EVOSPACE_API UStaticResearchBase : public UPrototype {
   FText GetLabel() const;
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  FText GetDescription() const;
+  virtual FText GetDescription() const;
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   virtual UTexture2D *GetTexture() const;
@@ -130,6 +130,8 @@ class EVOSPACE_API UStaticResearch : public UStaticResearchBase {
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  virtual FText GetDescription() const override;
 
   virtual UTexture2D *GetTexture() const override;
 

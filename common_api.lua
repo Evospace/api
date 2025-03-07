@@ -1,3 +1,6 @@
+--- @type boolean|nil
+LuaLogFlag = false
+
 --- @class Prototype : Object
 Prototype = {}
 
@@ -90,3 +93,11 @@ function Loc:get() end
 --- @param value number
 --- @return string
 function Loc.gui_number(value) end
+
+--- Prints error to log but do not breaks execution
+--- @param message string
+function print_err(message) end
+
+--- Prints warning to log
+--- @param message string
+function print_warn(message) end

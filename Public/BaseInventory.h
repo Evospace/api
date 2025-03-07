@@ -25,7 +25,7 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   }
 
   UBaseInventory();
-  
+
   UFUNCTION(BlueprintCallable)
   void Empty();
 
@@ -48,12 +48,8 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   void SetFilter(UInventoryFilter *filter);
 
   virtual UInventoryFilter *GetFilter() const override;
-
-  virtual int32 _Min() const override;
-  virtual int32 _Max() const override;
+  
   virtual int32 _Find(const UStaticItem *item) const override;
-  virtual int32 _FindEmpty() const override;
-  virtual int32 _FindNotEmpty() const override;
 
   virtual const FItemData &_SafeGet(int32 index) const override;
 

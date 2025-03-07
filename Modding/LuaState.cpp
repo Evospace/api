@@ -173,20 +173,21 @@ void LuaState::HandleLuaErrorOnStack() const {
   HandleLuaErrorOnStack(L);
 }
 
+template<ELogLevel Severity>
 int LuaState::l_my_print(lua_State *L) {
   int nargs = lua_gettop(L);
 
   for (int i = 1; i <= nargs; i++) {
     if (lua_isstring(L, i)) {
-      LOG(INFO_LL) << "Lua: " << UTF8_TO_TCHAR(lua_tostring(L, i));
+      LOG(Severity) << "Lua: " << UTF8_TO_TCHAR(lua_tostring(L, i));
     } else if (lua_isnumber(L, i)) {
-      LOG(INFO_LL) << "Lua: " << lua_tonumber(L, i);
+      LOG(Severity) << "Lua: " << lua_tonumber(L, i);
     } else if (lua_isboolean(L, i)) {
-      LOG(INFO_LL) << "Lua: " << lua_toboolean(L, i);
+      LOG(Severity) << "Lua: " << lua_toboolean(L, i);
     } else if (lua_isnil(L, i)) {
-      LOG(INFO_LL) << "Lua: nil";
+      LOG(Severity) << "Lua: nil";
     } else {
-      LOG(WARN_LL) << "Lua: print not implemented type";
+      LOG(Severity) << "Lua: print not implemented type";
     }
   }
 
@@ -203,7 +204,9 @@ LuaState::LuaState() {
   luabridge::setGlobal(L, nullptr, "io");
   luabridge::setGlobal(L, nullptr, "utf8");
 
-  luabridge::setGlobal(L, &LuaState::l_my_print, "print");
+  luabridge::setGlobal(L, &LuaState::l_my_print<INFO_LL>, "print");
+  luabridge::setGlobal(L, &LuaState::l_my_print<ERROR_LL>, "print_err");
+  luabridge::setGlobal(L, &LuaState::l_my_print<WARN_LL>, "print_warn");
 
   auto col = luabridge::getGlobal(L, "collectgarbage");
   col("setpause", 100);

@@ -50,8 +50,8 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
       .addProperty("energy_input_inventory", &Self::EnergyInputInventory) //@field ResourceInventory
       .addProperty("energy_output_inventory", &Self::EnergyOutputInventory) //@field ResourceInventory
 
-      .addProperty("crafter_input_container", &Self::CrafterInputContainer) //@field ResourceInventory
-      .addProperty("crafter_output_container", &Self::EnergyOutputInventory) //@field ResourceInventory
+      .addProperty("crafter_input_container", &Self::CrafterInputContainer) //@field InventoryContainer
+      .addProperty("crafter_output_container", &Self::CrafterOutputContainer) //@field InventoryContainer
       .endClass();
   }
 

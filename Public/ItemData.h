@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Evospace/SerializableJson.h"
+#include "ThirdParty/luabridge/LuaBridge.h"
 
 #include <Dom/JsonObject.h>
 #include <Templates/SharedPointer.h>
@@ -30,7 +31,7 @@ class UCustomItemData : public UObject, public ISerializableJson {
 };
 
 USTRUCT(BlueprintType)
-struct EVOSPACE_API FItemData {
+struct FItemData {
   GENERATED_BODY()
 
   public:
@@ -49,6 +50,17 @@ struct EVOSPACE_API FItemData {
   void SetItem(const UStaticItem *item);
 
   FORCEINLINE void SetValue(int64 value);
+
+  static void lua_reg(lua_State * L) {
+    luabridge::getGlobalNamespace(L)
+      .beginClass<FItemData>("ItemData") //@class ItemData : Struct
+      .addStaticFunction("new_empty", +[]() { return FItemData(); })
+      .addStaticFunction("new", +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
+      .addStaticFunction("new_zero", +[](UStaticItem *item) { return FItemData(item, 0); })
+      .addProperty("count", &FItemData::mValue) //@field integer
+      .addProperty("item", &FItemData::mItem) //@field StaticItem
+      .endClass();
+  }
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 mValue = 0;

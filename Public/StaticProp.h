@@ -28,6 +28,8 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
       .addProperty("is_big", &Self::IsBig) //@field boolean
       .addProperty("mesh", &Self::Mesh) //@field StaticItem
       .addProperty("no_collision", &Self::NoCollision) //@field boolean
+      .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
+      .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
       .endClass();
   }
 
@@ -35,10 +37,14 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   void OnDestroy(const Vec3i &pos) const;
+  void OnDamage(const Vec3i &pos) const;void OnSpawn(const Vec3i&pos)const;
 
   virtual bool Create(ASector *sector, const FTransform &transform, const FVector3i &bpos, bool ignored = false) const;
 
   virtual bool ProtoValidCheck() override;
+  
+  UPROPERTY(EditAnywhere)
+  bool IsEmitting = false;
 
   UPROPERTY(EditAnywhere)
   float ScaleMin = .6;
@@ -69,6 +75,9 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
 
   UPROPERTY(EditAnywhere)
   bool IsBig = false;
+
+  UPROPERTY(EditAnywhere)
+  int32 BreakChance = 100;
 
   UPROPERTY(VisibleAnywhere)
   TArray<UMaterialInterface *> Materials;

@@ -48,6 +48,8 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   bool CanGenerateOutput();
   void ResetCrafterState();
 
+  virtual void BlockBeginPlay() override;
+
   protected:
   virtual void Tick() override;
 
@@ -55,11 +57,4 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   virtual void SetActor(ABlockActor *actor) override;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UInventoryContainer *mAutoCrafterCoreInput;
-
-  //TODO: replace with output container
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UInventoryContainer *mAutoCrafterCoreOutput;
 };

@@ -11,7 +11,6 @@ namespace evo {
  */
 class LegacyLuaState : public ModLoadingLuaState {
   public:
-
   void SetCurrent(AActor *actor);
   void SetCurrent(UBlockLogic *actor);
 

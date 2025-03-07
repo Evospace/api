@@ -3,7 +3,7 @@
 #pragma once
 #include "Prototype.h"
 #include "Evospace/Common.h"
-#include "Evospace/SerializableJson.h"
+
 #include "Evospace/Misc/AssetOwner.h"
 
 #include <Engine/World.h>
@@ -12,7 +12,6 @@
 #include <Templates/SubclassOf.h>
 
 #include "StaticItem.generated.h"
-struct FItemData;
 class UUserWidgetSlot;
 class AItemLogic;
 

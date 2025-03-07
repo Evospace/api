@@ -27,7 +27,7 @@ class EVOSPACE_API UInventoryWhiteFilter : public UInventoryFilter {
   void AddItem(const UStaticItem *item);
   void Empty();
 
-  UPROPERTY()
+  UPROPERTY(VisibleAnywhere)
   TSet<const UStaticItem *> mItems;
 };
 

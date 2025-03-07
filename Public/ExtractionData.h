@@ -2,28 +2,37 @@
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "ExtractionData.generated.h"
 
-class UStaticItem;
+
+class UStaticProp;class UStaticItem;
 
 USTRUCT(BlueprintType)
 struct FExtractionData {
   GENERATED_BODY()
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  float mSpeed;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticItem *mItem;
-
+  using Self = FExtractionData;
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
-      .beginClass<FExtractionData>("ExtractionData") //@class ExtractionData
+      .beginClass<Self>("ExtractionData") //@class ExtractionData
       .addStaticFunction("new", []() { return FExtractionData(); })
       //direct:
       //--- Create new instance of ExtractionData
       //--- @return ExtractionData
       //function ExtractionData.new() end
-      .addProperty("item", &FExtractionData::mItem) //@field StaticItem
-      .addProperty("speed", &FExtractionData::mSpeed) //@field number
+      .addProperty("item", &Self::Item) //@field StaticItem
+      .addProperty("prop", &Self::Prop) //@field StaticProp
+      .addProperty("speed", &Self::Speed) //@field integer
+      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer
       .endClass();
   }
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Speed = 100;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 InitialCapacity = 10000;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *Item = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticProp *Prop = nullptr;
 };

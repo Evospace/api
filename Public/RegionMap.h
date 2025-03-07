@@ -14,6 +14,8 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
+
+class USourceData;
 class UEvoRegion;
 class ADimension;
 class UStaticItem;
@@ -35,8 +37,18 @@ class EVOSPACE_API URegionMap : public UInstance {
       //---@return Region
       //function RegionMap:get_region(spos) end
       .addFunction("get_region", &URegionMap::GetRegion)
+      //direct:
+      //---Looking for existing Region with given sector position
+      //---@param spos Vec2i position in RegionMap grid
+      //---@return Region
+      //function RegionMap:find_region(spos) end
+      .addFunction("find_region", &URegionMap::FindRegion)
+      //direct:
+      //---Looking for SourceData near given location in world blocks
+      //---@param wbpos Vec3i position in Dimension grid
+      //---@return SourceData
+      //function RegionMap:find_source(wbpos) end
       .addFunction("find_source", &URegionMap::FindSourceWrapper)
-      .addFunction("find_region", &URegionMap::FindRegionWrapper)
       .addFunction("has_region", [](URegionMap &self, const FVector2i &pos) { return self.FindRegion(pos) != nullptr; })
       //direct:
       //---Convert Block World position to RegionMap grid cell that contains this position
@@ -62,16 +74,20 @@ class EVOSPACE_API URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
 
+  void Initialize();
+
   UFUNCTION(BlueprintCallable)
   void Reset() {
     Regions.Empty();
   }
 
+  UPROPERTY()
+  USourceData * StoneSource;
+
+  static FVector2i SectorToGrid(const FVector2i&pos);
   static FVector2i WorldBlockToGrid(const Vec3i &pos);
 
-  USourceData *FindSource(const Vec3i &bpos);
-
-  USourceData *FindSource(const FVector &wpos);
+  USourceData *FindSource(const Vec3i &wbpos);
 
   UFUNCTION(BlueprintCallable)
   USourceData *FindSourceWrapper(const FVector3i &grid);
@@ -81,10 +97,10 @@ class EVOSPACE_API URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   UEvoRegion *GetRegion(const FVector2i &grid);
 
-  UEvoRegion *FindRegion(const Vec2i &grid);
-
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *FindRegionWrapper(const FVector2i &grid);
+  UEvoRegion *FindRegion(const FVector2i &grid);
+
+  std::vector<USourceData*> FindOresInSector(const FVector2i& spos);
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

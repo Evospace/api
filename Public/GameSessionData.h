@@ -10,9 +10,10 @@
 #include "UObject/Object.h"
 #include "GameSessionData.generated.h"
 
-class UValueStorage;
 
-UCLASS()
+class USetting;class UValueStorage;
+
+UCLASS(BlueprintType)
 class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
   GENERATED_BODY()
   public:
@@ -60,6 +61,9 @@ class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   FString mVersion;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+  int32 oreGrid;
 
   UPROPERTY(VisibleAnywhere)
   TArray<FString> mMods;

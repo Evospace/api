@@ -4,7 +4,7 @@ import re
 def extract_class_details(file_content):
     print("Extracting class details from file content...")
     class_pattern = r'//@class\s+(\w+)(?:\s*:\s*(\w+))?'
-    properties_pattern = r'\.addProperty\("(\w+)",\s*&\w+::\w+\)\s*//@field\s*([^\n]*)'
+    properties_pattern = r'\.addProperty\(\s*"([^"]+)"\s*,\s*(.*?)\)\s*//@field\s*(.*)'
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR)\((\w+)\)'
     instance_pattern = r'(EVO_CODEGEN_INSTANCE)\((\w+)\)'
@@ -26,7 +26,7 @@ def extract_class_details(file_content):
 
         annotation = f"--- @class {class_name} : {parent_class}\n"
 
-        for prop_name, prop_comment in properties:
+        for prop_name, code, prop_comment in properties:
             prop_parts = prop_comment.split(" ", 1)
             prop_type = prop_parts[0].strip() if prop_parts else "unknown"
             comment_str = f" {prop_parts[1].strip()}" if len(prop_parts) > 1 else ""

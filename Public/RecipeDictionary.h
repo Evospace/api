@@ -60,7 +60,10 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   const URecipe *FindByOutput(UInventoryReader *inventory, bool ignore_locked = false) const;
 
   //TODO: remove default
-  const URecipe *FindByItem(const UStaticItem*item, bool ignore_locked = false) const;
+  const URecipe *FindByItem(const UStaticItem *item, bool ignore_locked = false) const;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int32 StartTier = 0;
 
   protected:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

@@ -1,13 +1,12 @@
 // Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
 #pragma once
-#include "Evospace/Column.h"
 #include "CoreMinimal.h"
-#include "Evospace/SectorCompiler.h"
-#include "Evospace/SerializableJson.h"
 #include "Evospace/ThreadWorker.h"
 #include "Evospace/Vector.h"
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Evospace/Props/StaticIndexedHierarchicalInstancedStaticMeshComponent.h"
+#include "Evospace/World/Column.h"
+#include "Evospace/World/SectorCompiler.h"
 #include "Public/StaticBlock.h"
 
 #include <Containers/CircularBuffer.h>
@@ -273,7 +272,7 @@ class ADimension : public AActor {
   bool TickBlocks(float DeltaTime);
 
   bool IsColumnActive(const UColumn &column) const;
-  void SpawnColumn(const Vec3i &pos, UColumn *tall, FColumnSectorsData &data);
+  void SpawnColumn(Vec3i spos, UColumn *tall, FColumnSectorsData &data);
 
   bool IsColumnActive1(const UColumn &column) const;
   bool IsColumnRemove(const UColumn &column) const;

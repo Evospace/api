@@ -1,7 +1,7 @@
 #pragma once
 #include "FastNoiseSIMD.h"
-#include "Evospace/NoiseArray.h"
 #include "Evospace/Misc/AssetOwner.h"
+#include "Evospace/Misc/NoiseArray.h"
 #include "Public/Prototype.h"
 #include <string>
 #include <unordered_map>

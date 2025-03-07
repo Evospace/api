@@ -10,6 +10,7 @@
 #include "Public/ItemData.h"
 
 class UIcoGenerator;
+struct FItemData;
 
 inline void registerComponentClasses(lua_State *L) {
   using namespace luabridge;
@@ -90,17 +91,7 @@ inline void registerComponentClasses(lua_State *L) {
     })
     .endClass();
 
-  getGlobalNamespace(L)
-    .beginClass<FItemData>("ItemData")
-    .addStaticFunction(
-      "new_empty", +[]() { return FItemData(); })
-    .addStaticFunction(
-      "new", +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
-    .addStaticFunction(
-      "new_zero", +[](UStaticItem *item) { return FItemData(item, 0); })
-    .addProperty("count", &FItemData::mValue)
-    .addProperty("item", &FItemData::mItem)
-    .endClass();
+  FItemData::lua_reg(L);
 
   getGlobalNamespace(L)
     .beginClass<UActorComponent>("ActorComponent")

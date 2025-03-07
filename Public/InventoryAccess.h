@@ -14,8 +14,13 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UInventoryAccess, UInventoryReader>("InventoryAccess") //@class InventoryAccess : InventoryReader
-      .addFunction("add", [](UInventoryAccess *self, const UStaticItem *i, int64 count) {
-        self->_Add({ i, count });
+      //direct:
+      //--- Add item with count to InventoryAccess
+      //--- @param item StaticItem
+      //--- @param count integer
+      //function InventoryAccess:add(item, count) end
+      .addFunction("add", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
+        self->_Add({ item, count });
       })
       .addProperty("is_can_have_zero_slot", &UInventoryAccess::mCanHaveZeroSlot)
       .endClass();

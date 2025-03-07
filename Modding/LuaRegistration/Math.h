@@ -98,6 +98,7 @@ inline void registerMathClasses(lua_State *L) {
       return TCHAR_TO_UTF8(*("(Vec3i: x=" + FString::FromInt(c.X) + " y=" + FString::FromInt(c.Y) + " z=" + FString::FromInt(c.Z) + ")"));
     })
     .addFunction("__add", [](Vec3i &a, Vec3i &b) { return Vec3i(a.X + b.X, a.Y + b.Y, a.Z + b.Z); })
+    .addFunction("__eq", [](Vec3i &a, Vec3i &b) { return a.X == b.X && a.Y == b.Y && a.Z == b.Z; })
     .addFunction("__sub", [](Vec3i &a, Vec3i &b) { return Vec3i(a.X - b.X, a.Y - b.Y, a.Z - b.Z); })
     .addFunction("__mul", [](Vec3i &a, Vec3i &b) { return Vec3i(a.X * b.X, a.Y * b.Y, a.Z * b.Z); })
     .addFunction("__div", [](Vec3i &a, Vec3i &b) { return Vec3i(a.X / b.X, a.Y / b.Y, a.Z / b.Z); })
@@ -113,6 +114,7 @@ inline void registerMathClasses(lua_State *L) {
       "one", +[]() { return Vec2i(1); })
     .addProperty("x", &Vec2i::X, true)
     .addProperty("y", &Vec2i::Y, true)
+    .addFunction("__eq", [](Vec2i &a, Vec2i &b) { return a.X == b.X && a.Y == b.Y; })
     .addFunction("__add", [](Vec2i &a, Vec2i &b) { return Vec2i(a.X + b.X, a.Y + b.Y); })
     .addFunction("__sub", [](Vec2i &a, Vec2i &b) { return Vec2i(a.X - b.X, a.Y - b.Y); })
     .addFunction("__mul", [](Vec2i &a, Vec2i &b) { return Vec2i(a.X * b.X, a.Y * b.Y); })
@@ -145,6 +147,7 @@ inline void registerMathClasses(lua_State *L) {
     .addProperty("x", &FVector::X, true)
     .addProperty("y", &FVector::Y, true)
     .addProperty("z", &FVector::Z, true)
+    .addFunction("__eq", [](FVector &a, FVector &b) { return FMath::IsNearlyEqual(a.X, b.X) && FMath::IsNearlyEqual(a.Y, b.Y) && FMath::IsNearlyEqual(a.Z, b.Z); })
     .addFunction("__add", [](FVector &a, FVector &b) { return FVector(a.X + b.X, a.Y + b.Y, a.Z + b.Z); })
     .addFunction("__sub", [](FVector &a, FVector &b) { return FVector(a.X - b.X, a.Y - b.Y, a.Z - b.Z); })
     .addFunction("__mul", [](FVector &a, FVector &b) { return FVector(a.X * b.X, a.Y * b.Y, a.Z * b.Z); })

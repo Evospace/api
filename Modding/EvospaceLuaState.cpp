@@ -1,6 +1,5 @@
 // Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
 #include "EvospaceLuaState.h"
-#include "PrototypeInclude.h"
 #include "Evospace/Blocks/CommonBlockTypes/ResourceComponent.h"
 #include "LuaRegistration/ActorComponents.h"
 
