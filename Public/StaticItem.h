@@ -35,12 +35,13 @@ class EVOSPACE_API UStaticItem : public UPrototype {
       .addProperty("stack_size", &UStaticItem::mStackSize) //@field integer
       .addProperty("unit_mul", &UStaticItem::mUnitMul) //@field number
       .addProperty("mesh", &UStaticItem::mMesh) //@field StaticMesh
-      .addProperty("craftable", &UStaticItem::mCraftable) //@field boolean
       .endClass();
   }
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  virtual void PostDeserializeJson() override;
 
   AItemLogic *SpawnLogicItemDeferred(UWorld *world, const FTransform &transform) const;
 
@@ -85,13 +86,12 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TArray<FKeyTableObject> mDescriptionParts = {};
 
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  FString SearchMetadata;
+
   // Ingame effects color
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FLinearColor mColor = FLinearColor(.5, .5, .5, 1);
-
-  // Hidden in survival
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  bool mCraftable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool mStackable = true;

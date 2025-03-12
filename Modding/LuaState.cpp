@@ -173,7 +173,7 @@ void LuaState::HandleLuaErrorOnStack() const {
   HandleLuaErrorOnStack(L);
 }
 
-template<ELogLevel Severity>
+template <ELogLevel Severity>
 int LuaState::l_my_print(lua_State *L) {
   int nargs = lua_gettop(L);
 
@@ -214,7 +214,7 @@ LuaState::LuaState() {
   LOG(INFO_LL) << "Lua state is constructed";
 }
 
-void LuaState::Init() {
+void LuaState::Init(IRegistrar *registrar) {
   LOG(INFO_LL) << "Lua actor component registering";
 
   registerComponentClasses(L);

@@ -14,13 +14,12 @@ namespace evo {
  */
 class LuaState {
   public:
-
-  template<ELogLevel Severity>
+  template <ELogLevel Severity>
   static int l_my_print(lua_State *L);
 
   LuaState();
 
-  virtual void Init();
+  virtual void Init(IRegistrar *registrar);
 
   LuaState(const LuaState &v) = delete;
   LuaState &operator=(const LuaState &v) = delete;

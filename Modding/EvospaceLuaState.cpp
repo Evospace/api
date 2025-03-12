@@ -8,7 +8,7 @@
 namespace evo {
 
 template <typename T>
-void RegisterClassAndSuper(UClass *Class, TSet<UClass *> &Registered, lua_State *L) {
+void RegisterClassAndSuper(UClass *Class, TSet<UClass *> &Registered, lua_State *L, IRegistrar *registrar) {
   if (!Class || Registered.Contains(Class)) {
     return;
   }
@@ -16,12 +16,12 @@ void RegisterClassAndSuper(UClass *Class, TSet<UClass *> &Registered, lua_State 
   // Register superclass first
   auto super = Class->GetSuperClass();
   if (super && super != Class && super->IsChildOf(T::StaticClass())) {
-    RegisterClassAndSuper<T>(Class->GetSuperClass(), Registered, L);
+    RegisterClassAndSuper<T>(Class->GetSuperClass(), Registered, L, registrar);
   }
 
   if (const auto cdo = Class->GetDefaultObject<T>()) {
     if (!Registered.Contains(cdo->lua_reg_type())) {
-      cdo->register_owner();
+      cdo->register_owner(registrar);
       cdo->lua_reg(L);
       cdo->lua_reg_internal(L);
       Registered.Add(Class);
@@ -29,15 +29,15 @@ void RegisterClassAndSuper(UClass *Class, TSet<UClass *> &Registered, lua_State 
   }
 }
 
-void ModLoadingLuaState::Init() {
-  LuaState::Init();
+void ModLoadingLuaState::Init(IRegistrar *registrar) {
+  LuaState::Init(registrar);
 
   TSet<UClass *> registered = {};
   for (TObjectIterator<UClass> it; it; ++it) {
     if (it->IsChildOf(UPrototype::StaticClass()) && !registered.Contains(*it)) {
-      RegisterClassAndSuper<UPrototype>(*it, registered, L);
+      RegisterClassAndSuper<UPrototype>(*it, registered, L, registrar);
     } else if (it->IsChildOf(UInstance::StaticClass()) && !registered.Contains(*it)) {
-      RegisterClassAndSuper<UInstance>(*it, registered, L);
+      RegisterClassAndSuper<UInstance>(*it, registered, L, registrar);
     }
   }
 }

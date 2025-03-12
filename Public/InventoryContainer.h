@@ -23,7 +23,7 @@ class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
   }
 
   virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const override;
-  
+
   virtual int32 _Find(const UStaticItem *item) const override;
 
   virtual bool IsEmpty() const override;
@@ -32,19 +32,19 @@ class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
 
   virtual FItemData &_GetMut(int32 index) override;
   virtual const FItemData &_Get(int32 index) const override;
-  
+
   virtual const FItemData &_SafeGet(int32 index) const override;
-  
+
   virtual int32 _Num() const override;
 
   virtual void SortKeyAZ() override;
-  
+
   virtual int64 _Add(const FItemData &other) override;
-  
+
   virtual int64 _Add(int32 index, const FItemData &other) override;
-  
+
   virtual int64 _Sub(const FItemData &other) override;
-  
+
   virtual int64 _Sub(int32 index, const FItemData &from) override;
 
   virtual void TrySetFilter(int32 index, UInventoryFilter *filter) override;

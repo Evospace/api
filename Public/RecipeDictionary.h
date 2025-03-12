@@ -65,6 +65,9 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 StartTier = 0;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  const UStaticItem *mUsedInInventoryFace;
+
   protected:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   TArray<const URecipe *> mRecipes;

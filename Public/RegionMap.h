@@ -14,7 +14,6 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
-
 class USourceData;
 class UEvoRegion;
 class ADimension;
@@ -82,9 +81,9 @@ class EVOSPACE_API URegionMap : public UInstance {
   }
 
   UPROPERTY()
-  USourceData * StoneSource;
+  USourceData *StoneSource;
 
-  static FVector2i SectorToGrid(const FVector2i&pos);
+  static FVector2i SectorToGrid(const FVector2i &pos);
   static FVector2i WorldBlockToGrid(const Vec3i &pos);
 
   USourceData *FindSource(const Vec3i &wbpos);
@@ -100,7 +99,7 @@ class EVOSPACE_API URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   UEvoRegion *FindRegion(const FVector2i &grid);
 
-  std::vector<USourceData*> FindOresInSector(const FVector2i& spos);
+  std::vector<USourceData *> FindOresInSector(const FVector2i &spos);
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

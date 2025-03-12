@@ -15,7 +15,8 @@
 
 #include "BiomeWorldGenerator.generated.h"
 
-struct FNoiseArray;class UStaticBlock;
+struct FNoiseArray;
+class UStaticBlock;
 class UGlobalBiomeFamily;
 
 UCLASS(BlueprintType)

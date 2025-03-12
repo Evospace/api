@@ -2,8 +2,8 @@
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "ExtractionData.generated.h"
 
-
-class UStaticProp;class UStaticItem;
+class UStaticProp;
+class UStaticItem;
 
 USTRUCT(BlueprintType)
 struct FExtractionData {

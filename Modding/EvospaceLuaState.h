@@ -10,6 +10,6 @@ namespace evo {
 class ModLoadingLuaState : public LuaState {
 
   public:
-  virtual void Init() override;
+  virtual void Init(IRegistrar *registrar) override;
 };
 } // namespace evo

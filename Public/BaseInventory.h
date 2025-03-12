@@ -48,7 +48,7 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   void SetFilter(UInventoryFilter *filter);
 
   virtual UInventoryFilter *GetFilter() const override;
-  
+
   virtual int32 _Find(const UStaticItem *item) const override;
 
   virtual const FItemData &_SafeGet(int32 index) const override;

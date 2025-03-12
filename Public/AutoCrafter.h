@@ -37,7 +37,7 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  void PrepareInventories()const;
+  void PrepareInventories() const;
 
   virtual void BlockBeginPlay() override;
 

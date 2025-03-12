@@ -10,8 +10,8 @@
 #include "UObject/Object.h"
 #include "GameSessionData.generated.h"
 
-
-class USetting;class UValueStorage;
+class USetting;
+class UValueStorage;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {

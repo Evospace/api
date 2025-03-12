@@ -51,12 +51,15 @@ struct FItemData {
 
   FORCEINLINE void SetValue(int64 value);
 
-  static void lua_reg(lua_State * L) {
+  static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .beginClass<FItemData>("ItemData") //@class ItemData : Struct
-      .addStaticFunction("new_empty", +[]() { return FItemData(); })
-      .addStaticFunction("new", +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
-      .addStaticFunction("new_zero", +[](UStaticItem *item) { return FItemData(item, 0); })
+      .addStaticFunction(
+        "new_empty", +[]() { return FItemData(); })
+      .addStaticFunction(
+        "new", +[](UStaticItem *item, int64 count) { return FItemData(item, count); })
+      .addStaticFunction(
+        "new_zero", +[](UStaticItem *item) { return FItemData(item, 0); })
       .addProperty("count", &FItemData::mValue) //@field integer
       .addProperty("item", &FItemData::mItem) //@field StaticItem
       .endClass();

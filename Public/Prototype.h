@@ -128,7 +128,7 @@ class UPrototype : public UObject, public ISerializableJson {
   public:
   static UPrototype *lua_codegen_cast(UObject *parent_inst) { return Cast<UPrototype>(parent_inst); }
   virtual UClass *lua_reg_type() { return UPrototype::StaticClass(); }
-  virtual void register_owner() {}
+  virtual void register_owner(IRegistrar *registrar) {}
   virtual void lua_reg_internal(lua_State *L) const {
     LOG(INFO_LL) << "Registering lua Prototype";
     luabridge::getGlobalNamespace(L)
@@ -189,7 +189,7 @@ class UInstance : public UObject, public ISerializableJson {
   public:
   static UInstance *lua_codegen_cast(UObject *parent_inst) { return Cast<UInstance>(parent_inst); }
   virtual UClass *lua_reg_type() { return UInstance::StaticClass(); }
-  virtual void register_owner() {}
+  virtual void register_owner(IRegistrar *registrar) {}
   virtual void lua_reg_internal(lua_State *L) const {
     LOG(INFO_LL) << "Registering lua Instance";
     luabridge::getGlobalNamespace(L)

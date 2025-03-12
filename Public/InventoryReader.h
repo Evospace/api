@@ -37,7 +37,7 @@ class EVOSPACE_API UInventoryReader : public UInstance {
       })
       .endClass();
   }
-  
+
   virtual int32 _Find(const UStaticItem *item) const {
     checkNoEntry();
     return 0;

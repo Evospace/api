@@ -14,7 +14,7 @@ class LegacyLuaState : public ModLoadingLuaState {
   void SetCurrent(AActor *actor);
   void SetCurrent(UBlockLogic *actor);
 
-  virtual void Init() override;
+  virtual void Init(IRegistrar *registrar) override;
 
   AActor *current_object;
 };
