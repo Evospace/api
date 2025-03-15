@@ -228,6 +228,30 @@ function BlockLogic.get_class() end
 --- @return BlockLogic
 function BlockLogic.cast(object) end
 
+--- @class ComputerBlockLogic : BlockLogic
+--- @field energy_inventory ResourceInventory
+--- @field energy_input ResourceAccessor
+ComputerBlockLogic = {}
+
+--- Creates a new ComputerBlockLogic instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return ComputerBlockLogic
+function ComputerBlockLogic.new(parent, new_name) end
+
+--- Creates a new ComputerBlockLogic instance
+--- @return ComputerBlockLogic
+function ComputerBlockLogic.new_simple() end
+
+--- Return ComputerBlockLogic class object
+--- @return Class
+function ComputerBlockLogic.get_class() end
+
+--- Trying to cast Object into ComputerBlockLogic
+--- @param object Object to cast
+--- @return ComputerBlockLogic
+function ComputerBlockLogic.cast(object) end
+
 --- @class ConductorBlockLogic : StorageBlockLogic
 --- @field side_cover StaticCover
 --- @field center_cover StaticCover
@@ -385,10 +409,10 @@ function InventoryAccess.cast(object) end
 InventoryContainer = {}
 
 ---@field index integer
-function InventoryContainer:get_access(index)
+function InventoryContainer:get_access(index) end
 
 ---@field inventory InventoryAccess
-function InventoryContainer:bind(inventory)
+function InventoryContainer:bind(inventory) end
 
 --- Creates a new InventoryContainer instance
 --- @param parent Object Object of parent
@@ -697,7 +721,6 @@ function StaticCover.cast(object) end
 --- @field stack_size integer
 --- @field unit_mul number
 --- @field mesh StaticMesh
---- @field craftable boolean
 StaticItem = {}
 
 --- Creates a new StaticItem static object
