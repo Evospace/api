@@ -25,6 +25,7 @@ class EVOSPACE_API UOldResearch : public UObject, public ISerializableJson {
 UENUM()
 enum class EResearchStatus : uint8 {
   Opened,
+  CanEnqueue,
   Closed,
   Complete,
   Restricted
