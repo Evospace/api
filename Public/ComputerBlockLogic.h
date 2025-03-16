@@ -24,6 +24,7 @@ class EVOSPACE_API UComputerBlockLogic : public UBlockLogic {
       .addProperty("energy_input", &Self::energy_input) //@field ResourceAccessor
       .endClass();
   }
+
   public:
   UComputerBlockLogic();
 

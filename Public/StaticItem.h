@@ -12,7 +12,8 @@
 #include <Templates/SubclassOf.h>
 
 #include "StaticItem.generated.h"
-class UUserWidgetSlot;
+
+class UStaticObject;class UUserWidgetSlot;
 class AItemLogic;
 
 UENUM(BlueprintType)
@@ -35,6 +36,7 @@ class EVOSPACE_API UStaticItem : public UPrototype {
       .addProperty("stack_size", &UStaticItem::mStackSize) //@field integer
       .addProperty("unit_mul", &UStaticItem::mUnitMul) //@field number
       .addProperty("mesh", &UStaticItem::mMesh) //@field StaticMesh
+      .addProperty("object", &UStaticItem::Object) //@field StaticObject
       .endClass();
   }
 
@@ -101,6 +103,9 @@ class EVOSPACE_API UStaticItem : public UPrototype {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int64 mMaxCharge = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  UStaticObject * Object;
 
   TSharedPtr<FJsonObject> mLogicJson;
   virtual void MarkIncomplete() override;

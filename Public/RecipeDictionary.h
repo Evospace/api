@@ -25,6 +25,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<URecipeDictionary, UPrototype>("RecipeDictionary") //@class RecipeDictionary : Prototype
+      .addProperty("start_tier", &URecipeDictionary::StartTier) //@field integer
       .endClass();
   }
 

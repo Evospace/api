@@ -203,3 +203,23 @@ class EVOSPACE_API UStaticResearchToolUnlock : public UStaticResearchBase {
   EVO_CODEGEN_DB(StaticResearchToolUnlock, StaticResearchBase)
   virtual void lua_reg(lua_State *L) const override {}
 };
+
+UCLASS(BlueprintType)
+class EVOSPACE_API UStaticResearchDecorationUnlock : public UStaticResearchBase {
+  GENERATED_BODY()
+  public:
+  virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
+
+  EVO_OWNED(StaticResearchDecorationUnlock, StaticResearchBase)
+  EVO_CODEGEN_DB(StaticResearchDecorationUnlock, StaticResearchBase)
+  virtual void lua_reg(lua_State *L) const override {}
+
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  virtual FText GetDescription() const override;
+
+  virtual UTexture2D * GetTexture() const override;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UStaticItem *Decoration;
+};
