@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 
 #pragma once
 #include "Prototype.h"
@@ -105,8 +105,10 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   int64 mMaxCharge = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  FName ObjectName;
+  
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticObject * Object;
-
-  TSharedPtr<FJsonObject> mLogicJson;
+  
   virtual void MarkIncomplete() override;
 };

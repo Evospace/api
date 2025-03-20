@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
@@ -50,7 +50,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
   URecipe *GetByName(const FName &name) const;
 
   //   ,
-  UInventory *GetUsedInInventory();
+  class UNeiCrafterInventory *GetUsedInInventory();
 
   void ResetLocked();
 
@@ -81,7 +81,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
 
   // item per every crafter that using this recipe dictionary
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UInventory *mUsedInInventory;
+  UNeiCrafterInventory *mUsedInInventory;
 
   // item per every recipe in this dictionary
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

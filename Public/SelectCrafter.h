@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Evospace/Blocks/BlockWidget.h"
 #include "CoreMinimal.h"

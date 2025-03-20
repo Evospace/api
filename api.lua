@@ -481,6 +481,7 @@ MapStructure = {}
 function MapStructure.new() end
 
 --- @class RecipeDictionary : Prototype
+--- @field start_tier integer
 RecipeDictionary = {}
 
 --- Creates a new RecipeDictionary static object
@@ -721,6 +722,7 @@ function StaticCover.cast(object) end
 --- @field stack_size integer
 --- @field unit_mul number
 --- @field mesh StaticMesh
+--- @field object StaticObject
 StaticItem = {}
 
 --- Creates a new StaticItem static object

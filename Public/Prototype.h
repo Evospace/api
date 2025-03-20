@@ -1,4 +1,4 @@
-// Copyright (c) 2017 - 2024, Samsonov Andrey. All Rights Reserved.
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 
 #include "ThirdParty/luabridge/LuaBridge.h"
@@ -170,9 +170,9 @@ class UPrototype : public UObject, public ISerializableJson {
   protected:
   template <typename BaseType, typename RealType>
   inline UPrototype *_get_or_register(const FString &obj_name, IRegistrar &registry) {
-    auto obj = FindObject<BaseType>(MainGameOwner<BaseType>::Get(), *obj_name);
+    auto owner = MainGameOwner<BaseType>::Get();
+    auto obj = FindObject<BaseType>(owner, *obj_name);
     if (!obj) {
-      auto owner = MainGameOwner<BaseType>::Get();
       obj = NewObject<BaseType>(owner, RealType::StaticClass(), *obj_name);
       LOG(INFO_LL) << "Register " << BaseType::StaticClass()->GetName() << " " << obj_name;
       registry.Register(obj);
