@@ -13,31 +13,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Setup Python
-      uses: actions/setup-python@v4.3.1
-      
-    - name: Build 💼
+
+    - name: Setup Lua and LDoc
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lua5.3 luarocks
+        sudo luarocks install ldoc
+
+    - name: Prepare Documentation
       run: |
         echo "- clean api -"
-        
+
         rm -rf .git
         rm -rf .github
-        
+
         python filter_ue4_macros.py
-        
         python lua_code_highlight.py
-        
+
         mkdir output
-        
-    - name: Doxygen Action
-      uses: mattnotmitt/doxygen-action@v1.0.0
-        
+
+    - name: Generate LDoc Documentation
+      run: |
+        ldoc . --dir output/docs
+
     - name: Deploy 🚀
       uses: s0/git-publish-subdir-action@develop
       env:
         REPO: self
         BRANCH: gh-pages
-        FOLDER: doxygen/html
+        FOLDER: output/docs
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SQUASH_HISTORY: true
