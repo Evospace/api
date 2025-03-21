@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Items &#8212; Evospace  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/lua.css" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Blocks" href="blocks.html" />
+    <link rel="prev" title="Core" href="core.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="items">
+<h1>Items<a class="headerlink" href="#items" title="Link to this heading">¶</a></h1>
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryReader">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryReader</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-InventoryReader" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-InventoryReader.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-InventoryReader.size" title="Link to this definition">¶</a></dt>
+<dd><p>Number of slots in this InventoryReader</p>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua" id="lua-InventoryReader.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-ItemData" title="ItemData"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ItemData</span></code></a></span></span><a class="headerlink" href="#lua-InventoryReader.get" title="Link to this definition">¶</a></dt>
+<dd><p>Get ItemData with index from InventoryReader</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua" id="lua-InventoryReader.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code></span></span><a class="headerlink" href="#lua-InventoryReader.find" title="Link to this definition">¶</a></dt>
+<dd><p>Looking for index of StaticItem in InventoryReader</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code>) – of found item or -1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryReader.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></span></span><a class="headerlink" href="#lua-InventoryReader.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new InventoryReader instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
+<li><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryReader.new_simple">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_simple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></span></span><a class="headerlink" href="#lua-InventoryReader.new_simple" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new InventoryReader instance</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryReader.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-InventoryReader.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return InventoryReader class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryReader.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></span></span><a class="headerlink" href="#lua-InventoryReader.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into InventoryReader</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryAccess">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryAccess</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryReader" title="InventoryReader"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryReader</span></code></a><a class="headerlink" href="#lua-InventoryAccess" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua method">
+<dt class="sig sig-object lua" id="lua-InventoryAccess.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryAccess" title="InventoryAccess"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryAccess</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-InventoryAccess.add" title="Link to this definition">¶</a></dt>
+<dd><p>Add item with count to InventoryAccess</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-BaseInventory">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseInventory</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryAccess" title="InventoryAccess"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryAccess</span></code></a><a class="headerlink" href="#lua-BaseInventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-Inventory">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Inventory</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BaseInventory" title="BaseInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BaseInventory</span></code></a><a class="headerlink" href="#lua-Inventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-ItemData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ItemData</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Struct</span></code><a class="headerlink" href="#lua-ItemData" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-StaticItem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StaticItem</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-StaticItem" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticItem.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a></span></span><a class="headerlink" href="#lua-StaticItem.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new StaticItem static object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticItem.find">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a></span></span><a class="headerlink" href="#lua-StaticItem.find" title="Link to this definition">¶</a></dt>
+<dd><p>Searching for StaticItem in db</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticItem.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-StaticItem.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return StaticItem class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticItem.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a></span></span><a class="headerlink" href="#lua-StaticItem.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into StaticItem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Evospace</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Items</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lua-InventoryReader"><code class="docutils literal notranslate"><span class="pre">InventoryReader</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-InventoryAccess"><code class="docutils literal notranslate"><span class="pre">InventoryAccess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-BaseInventory"><code class="docutils literal notranslate"><span class="pre">BaseInventory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-Inventory"><code class="docutils literal notranslate"><span class="pre">Inventory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-ItemData"><code class="docutils literal notranslate"><span class="pre">ItemData</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-StaticItem"><code class="docutils literal notranslate"><span class="pre">StaticItem</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="blocks.html">Blocks</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="core.html" title="previous chapter">Core</a></li>
+      <li>Next: <a href="blocks.html" title="next chapter">Blocks</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/rst/items.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
