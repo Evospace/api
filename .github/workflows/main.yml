@@ -15,15 +15,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y luarocks
+          pip install sphinx sphinx
           pip install sphinx sphinx-lua-ls
-
-      - name: Install Lua Language Server
-        run: |
-          git clone https://github.com/LuaLS/lua-language-server.git
-          cd lua-language-server && ./make.sh
-
-      - name: Generate JSON Documentation
-        run: ./lua-language-server/bin/lua-language-server --export-documentation ./api ./output/docs.json
 
       - name: Build Documentation with Sphinx
         run: |
