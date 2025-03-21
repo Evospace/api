@@ -2,6 +2,7 @@
 
 #pragma once
 #include "ItemData.h"
+#include "Evospace/ISearchable.h"
 #include "Public/Prototype.h"
 
 #include <Dom/JsonObject.h>
@@ -13,7 +14,7 @@ class URecipeInventory;
 class UStaticResearch;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URecipe : public UPrototype {
+class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   GENERATED_BODY()
   EVO_CODEGEN_DB(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {
@@ -34,6 +35,8 @@ class EVOSPACE_API URecipe : public UPrototype {
   URecipe();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  virtual void ComputeSearchMetadata() const override;
 
   UFUNCTION(BlueprintCallable)
   virtual float GetCostMultiplier(int32 tier = 0) const;

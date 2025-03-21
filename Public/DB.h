@@ -138,6 +138,7 @@ class EVOSPACE_API UDB : public UInstance {
   bool SubscriptionLoading(ModLoadingContext &context);
   bool Init(ModLoadingContext &context, int32 seq);
   bool PostInit(ModLoadingContext &context, int32 seq);
+  bool PrototypePostprocess(ModLoadingContext &context);
   bool PreInit(ModLoadingContext &context, int32 seq);
   bool ResearchPostprocess(ModLoadingContext &context);
   bool LuaPostprocess(ModLoadingContext &context);

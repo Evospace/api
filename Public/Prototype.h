@@ -158,6 +158,8 @@ class UPrototype : public UObject, public ISerializableJson {
   virtual void MarkIncomplete() {}
   virtual void OnObjectFromTable() {}
 
+  virtual void ModLoadFinalize() {}
+
   virtual std::string ToString() const {
     return TCHAR_TO_UTF8(*("(" + GetClass()->GetName() + ": " + GetName() + ")"));
   }

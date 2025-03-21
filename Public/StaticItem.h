@@ -3,6 +3,7 @@
 #pragma once
 #include "Prototype.h"
 #include "Evospace/Common.h"
+#include "Evospace/ISearchable.h"
 
 #include "Evospace/Misc/AssetOwner.h"
 
@@ -13,7 +14,8 @@
 
 #include "StaticItem.generated.h"
 
-class UStaticObject;class UUserWidgetSlot;
+class UStaticObject;
+class UUserWidgetSlot;
 class AItemLogic;
 
 UENUM(BlueprintType)
@@ -25,7 +27,7 @@ enum class EStaticItemType : uint8 {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticItem : public UPrototype {
+class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   GENERATED_BODY()
   EVO_OWNER(StaticItem)
   EVO_CODEGEN_DB(StaticItem, StaticItem)
@@ -44,6 +46,8 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   virtual void PostDeserializeJson() override;
+
+  virtual void ComputeSearchMetadata() const override;
 
   AItemLogic *SpawnLogicItemDeferred(UWorld *world, const FTransform &transform) const;
 
@@ -88,9 +92,6 @@ class EVOSPACE_API UStaticItem : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TArray<FKeyTableObject> mDescriptionParts = {};
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FString SearchMetadata;
-
   // Ingame effects color
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FLinearColor mColor = FLinearColor(.5, .5, .5, 1);
@@ -106,9 +107,9 @@ class EVOSPACE_API UStaticItem : public UPrototype {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FName ObjectName;
-  
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UStaticObject * Object;
-  
+  UStaticObject *Object;
+
   virtual void MarkIncomplete() override;
 };

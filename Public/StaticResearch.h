@@ -1,5 +1,6 @@
 #pragma once
 #include "Prototype.h"
+#include "Evospace/ISearchable.h"
 #include "Evospace/SerializableJson.h"
 #include "Evospace/Vector.h"
 #include "Evospace/Misc/AssetOwner.h"
@@ -52,7 +53,7 @@ struct EVOSPACE_API FResearchUnlockLevel {
 };
 
 UCLASS(BlueprintType, Abstract)
-class EVOSPACE_API UStaticResearchBase : public UPrototype {
+class EVOSPACE_API UStaticResearchBase : public UPrototype, public ISearchable {
   GENERATED_BODY()
   public:
   UStaticResearchBase();
@@ -90,7 +91,7 @@ class EVOSPACE_API UStaticResearchBase : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool mCompleteByDefault = false;
 
-  virtual FString GetSearchMetaString() const;
+  virtual void ComputeSearchMetadata() const override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
@@ -126,7 +127,7 @@ class EVOSPACE_API UStaticResearch : public UStaticResearchBase {
 
   virtual void PostDeserializeJson() override;
 
-  virtual FString GetSearchMetaString() const;
+  virtual void ComputeSearchMetadata() const override;
 
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
@@ -218,7 +219,7 @@ class EVOSPACE_API UStaticResearchDecorationUnlock : public UStaticResearchBase 
 
   virtual FText GetDescription() const override;
 
-  virtual UTexture2D * GetTexture() const override;
+  virtual UTexture2D *GetTexture() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UStaticItem *Decoration;
