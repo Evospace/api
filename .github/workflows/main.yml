@@ -9,6 +9,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Delete deployment
+        uses: strumwolf/delete-deployment-environment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: github-pages
+          onlyRemoveDeployments: true
   build:
     runs-on: ubuntu-latest
     steps:
@@ -24,13 +34,6 @@ jobs:
       - name: Build Documentation with Sphinx
         run: |
           sphinx-build -b html ./api ./build/html
-
-      - name: Delete deployment
-        uses: strumwolf/delete-deployment-environment@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          environment: github-pages
-          onlyRemoveDeployments: true
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
