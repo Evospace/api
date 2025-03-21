@@ -27,14 +27,6 @@ jobs:
 
     - name: Prepare Documentation
       run: |
-        echo "- clean api -"
-
-        rm -rf .git
-        rm -rf .github
-
-        python filter_ue4_macros.py
-        python lua_code_highlight.py
-
         mkdir output
 
     - name: Generate LDoc Documentation
