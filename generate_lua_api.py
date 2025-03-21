@@ -94,7 +94,7 @@ def generate_lua_stub_file(output_file, annotations):
 
 if __name__ == "__main__":
     api_folder = "./Source/Evospace/Shared/"
-    output_file = "./Source/Evospace/Shared/api.lua"
+    output_file = "./Source/Evospace/Shared/api/api.lua"
     print("Starting Lua stub generation...")
     annotations = parse_api_files(api_folder)
     annotations = dict(sorted(annotations.items()))
