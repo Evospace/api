@@ -1,4 +1,0 @@
-var searchData=
-[
-  ['data_0',['JSON data',['../md__doc_2_json_data.html',1,'']]]
-];
