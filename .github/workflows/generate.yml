@@ -14,6 +14,17 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup Lua
+      uses: leafo/gh-actions-lua@v8
+      with:
+        luaVersion: 5.4
+
+    - name: Setup LuaRocks
+      uses: leafo/gh-actions-luarocks@v4
+
+    - name: Install LDoc
+      run: luarocks install ldoc
+
     - name: Prepare Documentation
       run: |
         echo "- clean api -"
@@ -27,15 +38,12 @@ jobs:
         mkdir output
 
     - name: Generate LDoc Documentation
-      uses: lunarmodules/ldoc@v0
-      with:
-        args: . --dir output/docs
+      run: ldoc . --dir output/docs
 
     - name: Deploy 🚀
-      uses: s0/git-publish-subdir-action@develop
-      env:
-        REPO: self
-        BRANCH: gh-pages
-        FOLDER: output/docs
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SQUASH_HISTORY: true
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: output/docs
+        publish_branch: gh-pages
+        force_orphan: true
