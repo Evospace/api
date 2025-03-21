@@ -14,12 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup Lua and LDoc
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y lua5.3 luarocks
-        sudo luarocks install ldoc
-
     - name: Prepare Documentation
       run: |
         echo "- clean api -"
@@ -33,8 +27,9 @@ jobs:
         mkdir output
 
     - name: Generate LDoc Documentation
-      run: |
-        ldoc . --dir output/docs
+      uses: lunarmodules/ldoc@v0
+      with:
+        args: . --dir output/docs
 
     - name: Deploy 🚀
       uses: s0/git-publish-subdir-action@develop
