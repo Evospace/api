@@ -1,7 +1,7 @@
 name: Generate Documentation
 
 permissions:
-  contents: write-all
+  contents: write
 
 on:
   push:
