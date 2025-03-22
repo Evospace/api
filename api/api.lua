@@ -104,6 +104,8 @@ function print_warn(message) end
 
 -- end of common --
 
+--- 
+--- 
 --- @class AbstractCrafter : BlockLogic
 --- @field recipes RecipeDictionary
 --- @field load_independent boolean
@@ -139,6 +141,8 @@ function AbstractCrafter.get_class() end
 --- @return AbstractCrafter
 function AbstractCrafter.cast(object) end
 
+--- 
+--- 
 --- @class Accessor : Instance
 --- @field side Vec3i
 --- @field pos Vec3i
@@ -161,6 +165,8 @@ function Accessor.get_class() end
 --- @return Accessor
 function Accessor.cast(object) end
 
+--- 
+--- 
 --- @class AutosizeInventory : Inventory
 AutosizeInventory = {}
 
@@ -183,6 +189,8 @@ function AutosizeInventory.get_class() end
 --- @return AutosizeInventory
 function AutosizeInventory.cast(object) end
 
+--- 
+--- 
 --- @class BaseInventory : InventoryAccess
 BaseInventory = {}
 
@@ -205,6 +213,8 @@ function BaseInventory.get_class() end
 --- @return BaseInventory
 function BaseInventory.cast(object) end
 
+--- 
+--- 
 --- @class BlockLogic : Instance
 --- @field static_block StaticBlock comment
 BlockLogic = {}
@@ -228,6 +238,8 @@ function BlockLogic.get_class() end
 --- @return BlockLogic
 function BlockLogic.cast(object) end
 
+--- 
+--- 
 --- @class ComputerBlockLogic : BlockLogic
 --- @field energy_inventory ResourceInventory
 --- @field energy_input ResourceAccessor
@@ -252,6 +264,8 @@ function ComputerBlockLogic.get_class() end
 --- @return ComputerBlockLogic
 function ComputerBlockLogic.cast(object) end
 
+--- 
+--- 
 --- @class ConductorBlockLogic : StorageBlockLogic
 --- @field side_cover StaticCover
 --- @field center_cover StaticCover
@@ -284,6 +298,8 @@ function ConductorBlockLogic.get_class() end
 --- @return ConductorBlockLogic
 function ConductorBlockLogic.cast(object) end
 
+--- Comment to class
+--- 
 --- @class DB : Instance
 DB = {}
 
@@ -314,10 +330,14 @@ function DB.get_class() end
 --- @return DB
 function DB.cast(object) end
 
+--- 
+--- 
 --- @class Dimension : Actor
 --- @field settings GameSessionData
 Dimension = {}
 
+--- 
+--- 
 --- @class EventSystem : Object
 EventSystem = {}
 
@@ -341,6 +361,8 @@ function EventSystem:unsub(event, id) end
 --- @param table Context table
 function EventSystem:emmit(event, table) end
 
+--- 
+--- 
 --- @class ExtractionData : Object
 --- @field item StaticItem
 --- @field prop StaticProp
@@ -352,10 +374,14 @@ ExtractionData = {}
 --- @return ExtractionData
 function ExtractionData.new() end
 
+--- 
+--- 
 --- @class GameSessionData : Object
 --- @field infinite_ore boolean
 GameSessionData = {}
 
+--- 
+--- 
 --- @class Inventory : BaseInventory
 Inventory = {}
 
@@ -378,6 +404,8 @@ function Inventory.get_class() end
 --- @return Inventory
 function Inventory.cast(object) end
 
+--- 
+--- 
 --- @class InventoryAccess : InventoryReader
 InventoryAccess = {}
 
@@ -405,6 +433,8 @@ function InventoryAccess.get_class() end
 --- @return InventoryAccess
 function InventoryAccess.cast(object) end
 
+--- 
+--- 
 --- @class InventoryContainer : InventoryAccess
 InventoryContainer = {}
 
@@ -433,6 +463,8 @@ function InventoryContainer.get_class() end
 --- @return InventoryContainer
 function InventoryContainer.cast(object) end
 
+--- 
+--- 
 --- @class InventoryReader : Instance
 --- @field size integer Number of slots in this InventoryReader
 InventoryReader = {}
@@ -466,11 +498,15 @@ function InventoryReader.get_class() end
 --- @return InventoryReader
 function InventoryReader.cast(object) end
 
+--- 
+--- 
 --- @class ItemData : Struct
 --- @field count integer
 --- @field item StaticItem
 ItemData = {}
 
+--- 
+--- 
 --- @class MapStructure : Object
 --- @field offset Vec2i
 --- @field structure StaticStructure
@@ -480,6 +516,8 @@ MapStructure = {}
 --- @return MapStructure
 function MapStructure.new() end
 
+--- 
+--- 
 --- @class RecipeDictionary : Prototype
 --- @field start_tier integer
 RecipeDictionary = {}
@@ -503,6 +541,8 @@ function RecipeDictionary.get_class() end
 --- @return RecipeDictionary
 function RecipeDictionary.cast(object) end
 
+--- 
+--- 
 --- @class Region : Instance
 Region = {}
 
@@ -529,6 +569,8 @@ function Region.get_class() end
 --- @return Region
 function Region.cast(object) end
 
+--- 
+--- 
 --- @class RegionMap : Instance
 RegionMap = {}
 
@@ -571,6 +613,8 @@ function RegionMap.get_class() end
 --- @return RegionMap
 function RegionMap.cast(object) end
 
+--- 
+--- 
 --- @class ResourceAccessor : Accessor
 --- @field inventory ResourceInventory
 --- @field is_input boolean
@@ -592,6 +636,8 @@ function ResourceAccessor.get_class() end
 --- @return ResourceAccessor
 function ResourceAccessor.cast(object) end
 
+--- 
+--- 
 --- @class ResourceInventory : SingleSlotInventory
 --- @field item StaticItem
 --- @field drain integer
@@ -616,6 +662,8 @@ function ResourceInventory.get_class() end
 --- @return ResourceInventory
 function ResourceInventory.cast(object) end
 
+--- 
+--- 
 --- @class SingleSlotInventory : BaseInventory
 --- @field capacity integer
 SingleSlotInventory = {}
@@ -639,6 +687,8 @@ function SingleSlotInventory.get_class() end
 --- @return SingleSlotInventory
 function SingleSlotInventory.cast(object) end
 
+--- 
+--- 
 --- @class SourceData : Instance
 --- @field position Vec2i source position in block coordinates
 --- @field item StaticItem item to mine
@@ -663,6 +713,8 @@ function SourceData.get_class() end
 --- @return SourceData
 function SourceData.cast(object) end
 
+--- 
+--- 
 --- @class StaticBlock : StaticObject
 --- @field logic Class
 --- @field actor Class
@@ -695,6 +747,8 @@ function StaticBlock.get_class() end
 --- @return StaticBlock
 function StaticBlock.cast(object) end
 
+--- 
+--- 
 --- @class StaticCover : StaticObject
 StaticCover = {}
 
@@ -717,6 +771,8 @@ function StaticCover.get_class() end
 --- @return StaticCover
 function StaticCover.cast(object) end
 
+--- 
+--- 
 --- @class StaticItem : Prototype
 --- @field image Texture
 --- @field stack_size integer
@@ -744,6 +800,8 @@ function StaticItem.get_class() end
 --- @return StaticItem
 function StaticItem.cast(object) end
 
+--- 
+--- 
 --- @class StaticObject : Prototype
 --- @field item StaticItem
 StaticObject = {}
@@ -767,6 +825,8 @@ function StaticObject.get_class() end
 --- @return StaticObject
 function StaticObject.cast(object) end
 
+--- 
+--- 
 --- @class StaticProp : StaticObject
 --- @field project_to_terrain_power number
 --- @field additive_elevation number
@@ -801,6 +861,8 @@ function StaticProp.get_class() end
 --- @return StaticProp
 function StaticProp.cast(object) end
 
+--- 
+--- 
 --- @class StaticPropList : Prototype
 StaticPropList = {}
 
@@ -823,6 +885,8 @@ function StaticPropList.get_class() end
 --- @return StaticPropList
 function StaticPropList.cast(object) end
 
+--- 
+--- 
 --- @class StaticStructure : Instance
 --- @field generate function
 --- @field size Vec2i
@@ -847,6 +911,8 @@ function StaticStructure.get_class() end
 --- @return StaticStructure
 function StaticStructure.cast(object) end
 
+--- 
+--- 
 --- @class StorageBlockLogic : BlockLogic
 StorageBlockLogic = {}
 

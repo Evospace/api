@@ -4,6 +4,7 @@ import re
 def extract_class_details(file_content):
     print("Extracting class details from file content...")
     class_pattern = r'//@class\s+(\w+)(?:\s*:\s*(\w+))?'
+    comment_pattern = r'//@comment\s+((?:.*(?:\n\s*//.*)*)*)'
     properties_pattern = r'\.addProperty\(\s*"([^"]+)"\s*,\s*(.*?)\)\s*//@field\s*(.*)'
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR)\((\w+)\)'
@@ -24,8 +25,14 @@ def extract_class_details(file_content):
         properties = re.findall(properties_pattern, body)
         direct_sections = re.finditer(direct_section_pattern, body)
 
+        comments = re.search(comment_pattern, body)
+        annotation = ""
+        if comments:
+            comment_text = re.sub(r'\n\s*//', '\n--- ', comments.group(1).strip())
+            annotation += "--- " + comment_text + "\n"
+        else:
+            annotation += "--- \n"
 
-        annotation = "--- \n"
         annotation += "--- \n"
         annotation += f"--- @class {class_name} : {parent_class}\n"
 

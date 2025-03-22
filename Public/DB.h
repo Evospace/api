@@ -50,6 +50,7 @@ class EVOSPACE_API UDB : public UInstance {
   EVO_CODEGEN_INSTANCE(DB)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
+      //@comment Comment to class
       .deriveClass<UDB, UInstance>("DB") //@class DB : Instance
       //direct:
       //---Register Prototype in DB
