@@ -1,5 +1,4 @@
 #pragma once
-#include "StaticAttach.h"
 #include "StaticObject.h"
 #include "StaticCover.generated.h"
 
