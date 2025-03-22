@@ -24,7 +24,10 @@ def extract_class_details(file_content):
         properties = re.findall(properties_pattern, body)
         direct_sections = re.finditer(direct_section_pattern, body)
 
-        annotation = f"--- @class {class_name} : {parent_class}\n"
+
+        annotation = "--- \n"
+        annotation += "--- \n"
+        annotation += f"--- @class {class_name} : {parent_class}\n"
 
         for prop_name, code, prop_comment in properties:
             prop_parts = prop_comment.split(" ", 1)
