@@ -1,6 +1,8 @@
 Evospace documentation
 ======================
 
+`Sources <https://github.com/Evospace/api>`_
+
 
 .. toctree::
    :maxdepth: 2
