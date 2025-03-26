@@ -67,36 +67,3 @@ class EVOSPACE_API UBatteryContainerBlockLogic : public UElectricityConductorBlo
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
   virtual EBlockWidgetType GetWidgetType() const override;
 };
-
-UCLASS()
-class EVOSPACE_API UFluidContainerBlockLogic : public UFluidConductorBlockLogic {
-  GENERATED_BODY()
-
-  public:
-  UFluidContainerBlockLogic();
-
-  virtual bool IsResourceStorage() const override { return true; }
-  virtual bool IsBatteryContainer() const override { return false; }
-
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  virtual int64 GetCapacity() const override;
-  virtual int64 GetCharge() const override;
-
-  virtual void UpdateSides(UAccessor *except = nullptr) override;
-
-  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-  virtual EBlockWidgetType GetWidgetType() const override;
-
-  virtual int32 GetChannel() const override;
-
-  protected:
-  UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UResourceInventory *mInventory;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBaseCapacity = 30.f;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBonusCapacity = 30.f;
-};

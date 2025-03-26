@@ -13,6 +13,7 @@ class EVOSPACE_API UStorageBlockLogic : public UBlockLogic {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UBlockLogic>("StorageBlockLogic") //@class StorageBlockLogic : BlockLogic
+      .addProperty("storage_access", &Self::mStorageAccess) //field InventoryAccess
       .endClass();
   }
   GENERATED_BODY()

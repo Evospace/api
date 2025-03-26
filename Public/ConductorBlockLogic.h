@@ -352,10 +352,10 @@ UCLASS()
 class EVOSPACE_API UFluidConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
-  UFluidConductorBlockLogic();
+  //UFluidConductorBlockLogic();
 
   protected:
-  virtual void BlockBeginPlay() override;
+  //virtual void BlockBeginPlay() override;
 };
 
 UCLASS()

@@ -1,12 +1,18 @@
 --- @type boolean|nil
 LuaLogFlag = false
 
+--- Database record
+---
 --- @class Prototype : Object
 Prototype = {}
 
+--- Instancable object
+---
 --- @class Instance : Object
 Instance = {}
 
+--- Integer vector 3
+---
 --- @class Vec3i
 --- @field zero Vec3i = (0, 0, 0)
 --- @field one Vec3i = (1, 1, 1)
@@ -18,6 +24,8 @@ Instance = {}
 --- @field back Vec3i = (-1, 0, 0)
 Vec3i = {}
 
+--- Float vector 3
+---
 --- @class Vec3
 --- @field zero Vec3 = (0, 0, 0)
 --- @field one Vec3 = (1, 1, 1)
@@ -35,6 +43,8 @@ Vec3 = {}
 --- @return Vec3i
 function Vec3i.new(x, y, z) end
 
+--- Integer vector 2
+---
 --- @class Vec2i
 --- @field zero Vec2i
 --- @field one Vec2i
@@ -45,15 +55,18 @@ Vec2i = {}
 --- @return Vec2i
 function Vec2i.new(x, y) end
 
---- @class Vector
-Vector = {}
-
+---
+---
 --- @class Class
 Class = {}
 
+---
+---
 --- @class Texture
 Texture = {}
 
+---
+---
 --- @class Material
 Material = {}
 
@@ -61,15 +74,23 @@ Material = {}
 --- @return Material
 function Material.load(path) end
 
+--- Global object
+---
 --- @class Object
 Object = {}
 
+--- Global object
+---
 --- @class DB
 db = {}
 
+--- Global object
+---
 --- @class RegionMap
 regions = {}
 
+--- Localization data entry
+---
 --- @class Loc
 Loc = {}
 
