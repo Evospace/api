@@ -173,6 +173,12 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual void OpenWidget(class UHudWidget *widget);
 
+  UFUNCTION(BlueprintCallable)
+  virtual bool HasAction() const { return false; }
+
+  UFUNCTION(BlueprintCallable)
+  void SimulateAction();
+
   // No code
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
 
