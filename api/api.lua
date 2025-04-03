@@ -188,6 +188,30 @@ function Accessor.cast(object) end
 
 --- 
 --- 
+--- @class AutoCrafter : SelectCrafter
+AutoCrafter = {}
+
+--- Creates a new AutoCrafter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return AutoCrafter
+function AutoCrafter.new(parent, new_name) end
+
+--- Creates a new AutoCrafter instance
+--- @return AutoCrafter
+function AutoCrafter.new_simple() end
+
+--- Return AutoCrafter class object
+--- @return Class
+function AutoCrafter.get_class() end
+
+--- Trying to cast Object into AutoCrafter
+--- @param object Object to cast
+--- @return AutoCrafter
+function AutoCrafter.cast(object) end
+
+--- 
+--- 
 --- @class AutosizeInventory : Inventory
 AutosizeInventory = {}
 
@@ -328,9 +352,17 @@ DB = {}
 ---@param proto Prototype Prototype to register
 function DB:reg(proto) end
 
+---Register object with class "class" and name "name" from table, filling all other properties from from table too
+---@param table table Object table
+function DB:from_table(table) end
+
 ---Register mod table
 ---@param table table Mod table
 function DB:mod(table) end
+
+---Return all registered objects
+---@return Object[]
+function DB:objects() end
 
 --- Creates a new DB instance
 --- @param parent Object Object of parent
@@ -708,6 +740,30 @@ function ResourceInventory.get_class() end
 --- @param object Object to cast
 --- @return ResourceInventory
 function ResourceInventory.cast(object) end
+
+--- 
+--- 
+--- @class SelectCrafter : AutoCrafter
+SelectCrafter = {}
+
+--- Creates a new SelectCrafter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return SelectCrafter
+function SelectCrafter.new(parent, new_name) end
+
+--- Creates a new SelectCrafter instance
+--- @return SelectCrafter
+function SelectCrafter.new_simple() end
+
+--- Return SelectCrafter class object
+--- @return Class
+function SelectCrafter.get_class() end
+
+--- Trying to cast Object into SelectCrafter
+--- @param object Object to cast
+--- @return SelectCrafter
+function SelectCrafter.cast(object) end
 
 --- 
 --- 

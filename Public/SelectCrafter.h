@@ -19,7 +19,7 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   EVO_CODEGEN_INSTANCE(SelectCrafter)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UAbstractCrafter>("SelectCrafter")
+      .deriveClass<Self, UAbstractCrafter>("SelectCrafter") //@class SelectCrafter : AutoCrafter
       .endClass();
   }
   GENERATED_BODY()

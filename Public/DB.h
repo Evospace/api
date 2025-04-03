@@ -61,6 +61,10 @@ class EVOSPACE_API UDB : public UInstance {
           self->RegisterPrototype(self->mCurrentMod, proto);
         }
       })
+      //direct:
+      //---Register object with class "class" and name "name" from table, filling all other properties from from table too
+      //---@param table table Object table
+      //function DB:from_table(table) end
       .addFunction("from_table", [](UDB *self, const luabridge::LuaRef &table) {
         self->mJsonObjectLibrary->ObjectFromTable(self->mCurrentMod, table);
       })
@@ -71,6 +75,10 @@ class EVOSPACE_API UDB : public UInstance {
       .addFunction("mod", [](UDB *self, const luabridge::LuaRef &table) {
         self->ModInitTable(table);
       })
+      //direct:
+      //---Return all registered objects
+      //---@return Object[]
+      //function DB:objects() end
       .addFunction("objects", [](UDB *self) {
         return self->GetPrototypes();
       })
