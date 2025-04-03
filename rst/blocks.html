@@ -35,6 +35,8 @@
             
   <section id="blocks">
 <h1>Blocks<a class="headerlink" href="#blocks" title="Link to this heading">¶</a></h1>
+<section id="block-base-classes">
+<h2>Block Base Classes<a class="headerlink" href="#block-base-classes" title="Link to this heading">¶</a></h2>
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-StaticBlock">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StaticBlock</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticObject" title="StaticObject"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticObject</span></code></a><a class="headerlink" href="#lua-StaticBlock" title="Link to this definition">¶</a></dt>
@@ -52,58 +54,6 @@
 <dt class="sig sig-object lua" id="lua-StaticBlock.selector">
 <span class="sig-name descname"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code><a class="headerlink" href="#lua-StaticBlock.selector" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="lua class">
-<dt class="sig sig-object lua" id="lua-BlockLogic">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-BlockLogic" title="Link to this definition">¶</a></dt>
-<dd><dl class="lua data">
-<dt class="sig sig-object lua" id="lua-BlockLogic.static_block">
-<span class="sig-name descname"><span class="pre">static_block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticBlock" title="StaticBlock"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticBlock</span></code></a><a class="headerlink" href="#lua-BlockLogic.static_block" title="Link to this definition">¶</a></dt>
-<dd><p>comment</p>
-</dd></dl>
-
-<dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-BlockLogic.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.new" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new BlockLogic instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
-<li><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-BlockLogic.new_simple">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_simple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.new_simple" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new BlockLogic instance</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-<dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-BlockLogic.get_class">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-BlockLogic.get_class" title="Link to this definition">¶</a></dt>
-<dd><p>Return BlockLogic class object</p>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-<dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-BlockLogic.cast">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.cast" title="Link to this definition">¶</a></dt>
-<dd><p>Trying to cast Object into BlockLogic</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
-</dd>
-</dl>
-</dd></dl>
 
 </dd></dl>
 
@@ -174,6 +124,245 @@
 
 </dd></dl>
 
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-BlockLogic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-BlockLogic" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-BlockLogic.static_block">
+<span class="sig-name descname"><span class="pre">static_block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticBlock" title="StaticBlock"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticBlock</span></code></a><a class="headerlink" href="#lua-BlockLogic.static_block" title="Link to this definition">¶</a></dt>
+<dd><p>comment</p>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-BlockLogic.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new BlockLogic instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
+<li><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-BlockLogic.new_simple">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_simple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.new_simple" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new BlockLogic instance</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-BlockLogic.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-BlockLogic.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return BlockLogic class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-BlockLogic.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></span></span><a class="headerlink" href="#lua-BlockLogic.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into BlockLogic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AbstractCrafter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><a class="headerlink" href="#lua-AbstractCrafter" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.recipes">
+<span class="sig-name descname"><span class="pre">recipes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">RecipeDictionary</span></code><a class="headerlink" href="#lua-AbstractCrafter.recipes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.energy_input_inventory">
+<span class="sig-name descname"><span class="pre">energy_input_inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceInventory" title="ResourceInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceInventory</span></code></a><a class="headerlink" href="#lua-AbstractCrafter.energy_input_inventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.energy_output_inventory">
+<span class="sig-name descname"><span class="pre">energy_output_inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceInventory" title="ResourceInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceInventory</span></code></a><a class="headerlink" href="#lua-AbstractCrafter.energy_output_inventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.crafter_input_container">
+<span class="sig-name descname"><span class="pre">crafter_input_container</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="items.html#lua-InventoryContainer" title="InventoryContainer"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryContainer</span></code></a><a class="headerlink" href="#lua-AbstractCrafter.crafter_input_container" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.crafter_output_container">
+<span class="sig-name descname"><span class="pre">crafter_output_container</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="items.html#lua-InventoryContainer" title="InventoryContainer"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryContainer</span></code></a><a class="headerlink" href="#lua-AbstractCrafter.crafter_output_container" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="logic-blocks">
+<h2>Logic Blocks<a class="headerlink" href="#logic-blocks" title="Link to this heading">¶</a></h2>
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-SelectCrafter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SelectCrafter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-AutoCrafter" title="AutoCrafter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">AutoCrafter</span></code></a><a class="headerlink" href="#lua-SelectCrafter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-AutoCrafter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AutoCrafter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-SelectCrafter" title="SelectCrafter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">SelectCrafter</span></code></a><a class="headerlink" href="#lua-AutoCrafter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-ComputerBlockLogic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ComputerBlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><a class="headerlink" href="#lua-ComputerBlockLogic" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ComputerBlockLogic.energy_inventory">
+<span class="sig-name descname"><span class="pre">energy_inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceInventory" title="ResourceInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceInventory</span></code></a><a class="headerlink" href="#lua-ComputerBlockLogic.energy_inventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ComputerBlockLogic.energy_input">
+<span class="sig-name descname"><span class="pre">energy_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceAccessor" title="ResourceAccessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceAccessor</span></code></a><a class="headerlink" href="#lua-ComputerBlockLogic.energy_input" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ConductorBlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StorageBlockLogic" title="StorageBlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StorageBlockLogic</span></code></a><a class="headerlink" href="#lua-ConductorBlockLogic" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.side_cover">
+<span class="sig-name descname"><span class="pre">side_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.side_cover" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.center_cover">
+<span class="sig-name descname"><span class="pre">center_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.center_cover" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.resistance">
+<span class="sig-name descname"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.resistance" title="Link to this definition">¶</a></dt>
+<dd><p>mOhm</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.voltage">
+<span class="sig-name descname"><span class="pre">voltage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.voltage" title="Link to this definition">¶</a></dt>
+<dd><p>Volt</p>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.add_wire">
+<span class="sig-name descname"><span class="pre">add_wire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ConductorBlockLogic" title="ConductorBlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ConductorBlockLogic</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">acc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceAccessor" title="ResourceAccessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceAccessor</span></code></a></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-ConductorBlockLogic.add_wire" title="Link to this definition">¶</a></dt>
+<dd><p>Add side wire</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-FluidContainerBlockLogic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FluidContainerBlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ConductorBlockLogic" title="ConductorBlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ConductorBlockLogic</span></code></a><a class="headerlink" href="#lua-FluidContainerBlockLogic" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-StorageBlockLogic">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StorageBlockLogic</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><a class="headerlink" href="#lua-StorageBlockLogic" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="supporting-logic">
+<h2>Supporting Logic<a class="headerlink" href="#supporting-logic" title="Link to this heading">¶</a></h2>
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-Accessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Accessor</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-Accessor" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-Accessor.side">
+<span class="sig-name descname"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Vec3i</span></code><a class="headerlink" href="#lua-Accessor.side" title="Link to this definition">¶</a></dt>
+<dd><p>Integer vector 3</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-Accessor.pos">
+<span class="sig-name descname"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Vec3i</span></code><a class="headerlink" href="#lua-Accessor.pos" title="Link to this definition">¶</a></dt>
+<dd><p>Integer vector 3</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-Accessor.owner">
+<span class="sig-name descname"><span class="pre">owner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><a class="headerlink" href="#lua-Accessor.owner" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-Accessor.cover">
+<span class="sig-name descname"><span class="pre">cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-Accessor.cover" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Accessor.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Accessor" title="Accessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Accessor</span></code></a></span></span><a class="headerlink" href="#lua-Accessor.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new Accessor instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
+<li><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Accessor.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-Accessor.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return Accessor class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Accessor.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Accessor" title="Accessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Accessor</span></code></a></span></span><a class="headerlink" href="#lua-Accessor.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into Accessor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-ResourceAccessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResourceAccessor</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-Accessor" title="Accessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Accessor</span></code></a><a class="headerlink" href="#lua-ResourceAccessor" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ResourceAccessor.inventory">
+<span class="sig-name descname"><span class="pre">inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceInventory" title="ResourceInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">ResourceInventory</span></code></a><a class="headerlink" href="#lua-ResourceAccessor.inventory" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-ResourceInventory">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ResourceInventory</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="items.html#lua-SingleSlotInventory" title="SingleSlotInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">SingleSlotInventory</span></code></a><a class="headerlink" href="#lua-ResourceInventory" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ResourceInventory.item">
+<span class="sig-name descname"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="items.html#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a><a class="headerlink" href="#lua-ResourceInventory.item" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -207,10 +396,9 @@
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="items.html">Items</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Blocks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#lua-StaticBlock"><code class="docutils literal notranslate"><span class="pre">StaticBlock</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lua-BlockLogic"><code class="docutils literal notranslate"><span class="pre">BlockLogic</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lua-StaticObject"><code class="docutils literal notranslate"><span class="pre">StaticObject</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lua-StaticProp"><code class="docutils literal notranslate"><span class="pre">StaticProp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#block-base-classes">Block Base Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logic-blocks">Logic Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supporting-logic">Supporting Logic</a></li>
 </ul>
 </li>
 </ul>
