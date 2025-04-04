@@ -33,3 +33,18 @@ Item Representation
 
 .. lua:autoobject:: StaticItem
    :members:
+
+Filtering
+-----------------------
+
+.. lua:autoobject:: InventoryFilter
+   :members:
+
+.. lua:autoobject:: InventoryWhiteFilter
+   :members:
+
+.. lua:autoobject:: InventoryBlackFilter
+   :members:
+
+.. lua:autoobject:: InventoryInventoryFilter
+   :members:

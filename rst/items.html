@@ -145,7 +145,13 @@
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-SingleSlotInventory">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SingleSlotInventory</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BaseInventory" title="BaseInventory"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BaseInventory</span></code></a><a class="headerlink" href="#lua-SingleSlotInventory" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-SingleSlotInventory.capacity">
+<span class="sig-name descname"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-SingleSlotInventory.capacity" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+</dd></dl>
 
 </section>
 <section id="item-representation">
@@ -154,9 +160,16 @@
 <dt class="sig sig-object lua" id="lua-ItemData">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ItemData</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Struct</span></code><a class="headerlink" href="#lua-ItemData" title="Link to this definition">¶</a></dt>
 <dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ItemData.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ItemData.count" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
 <dt class="sig sig-object lua" id="lua-ItemData.item">
 <span class="sig-name descname"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticItem" title="StaticItem"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticItem</span></code></a><a class="headerlink" href="#lua-ItemData.item" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>undocumented</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -166,12 +179,32 @@
 <dd><dl class="lua data">
 <dt class="sig sig-object lua" id="lua-StaticItem.image">
 <span class="sig-name descname"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Texture</span></code><a class="headerlink" href="#lua-StaticItem.image" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticItem.stack_size">
+<span class="sig-name descname"><span class="pre">stack_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-StaticItem.stack_size" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticItem.unit_mul">
+<span class="sig-name descname"><span class="pre">unit_mul</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">number</span></code><a class="headerlink" href="#lua-StaticItem.unit_mul" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticItem.mesh">
+<span class="sig-name descname"><span class="pre">mesh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticMesh</span></code><a class="headerlink" href="#lua-StaticItem.mesh" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-StaticItem.object">
 <span class="sig-name descname"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocks.html#lua-StaticObject" title="StaticObject"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticObject</span></code></a><a class="headerlink" href="#lua-StaticItem.object" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>undocumented</p>
+</dd></dl>
 
 <dl class="lua staticmethod">
 <dt class="sig sig-object lua" id="lua-StaticItem.new">
@@ -217,6 +250,88 @@
 </dd></dl>
 
 </section>
+<section id="filtering">
+<h2>Filtering<a class="headerlink" href="#filtering" title="Link to this heading">¶</a></h2>
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryFilter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-InventoryFilter" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryFilter.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a></span></span><a class="headerlink" href="#lua-InventoryFilter.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new InventoryFilter instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
+<li><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryFilter.new_simple">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_simple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a></span></span><a class="headerlink" href="#lua-InventoryFilter.new_simple" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new InventoryFilter instance</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryFilter.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-InventoryFilter.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return InventoryFilter class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-InventoryFilter.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a></span></span><a class="headerlink" href="#lua-InventoryFilter.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into InventoryFilter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryWhiteFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryWhiteFilter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a><a class="headerlink" href="#lua-InventoryWhiteFilter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryBlackFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryBlackFilter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a><a class="headerlink" href="#lua-InventoryBlackFilter" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-InventoryInventoryFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InventoryInventoryFilter</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryFilter" title="InventoryFilter"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryFilter</span></code></a><a class="headerlink" href="#lua-InventoryInventoryFilter" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-InventoryInventoryFilter.inventory">
+<span class="sig-name descname"><span class="pre">inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-InventoryAccess" title="InventoryAccess"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">InventoryAccess</span></code></a><a class="headerlink" href="#lua-InventoryInventoryFilter.inventory" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-InventoryInventoryFilter.is_filtering">
+<span class="sig-name descname"><span class="pre">is_filtering</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#lua-InventoryInventoryFilter.is_filtering" title="Link to this definition">¶</a></dt>
+<dd><p>is filtering enabled</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-InventoryInventoryFilter.is_white">
+<span class="sig-name descname"><span class="pre">is_white</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#lua-InventoryInventoryFilter.is_white" title="Link to this definition">¶</a></dt>
+<dd><p>is white filtering enabled</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -251,6 +366,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Items</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#inventory-system">Inventory System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#item-representation">Item Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filtering">Filtering</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="blocks.html">Blocks</a></li>

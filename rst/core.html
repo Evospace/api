@@ -142,6 +142,55 @@
 
 </dd></dl>
 
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Example usage of db:from_table</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">db</span><span class="p">:</span><span class="n">from_table</span><span class="p">({</span>
+<span class="linenos">2</span>    <span class="n">class</span> <span class="o">=</span> <span class="s2">&quot;StaticTip&quot;</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Accessors1&quot;</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="n">label</span> <span class="o">=</span> <span class="n">Loc</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;Accessors1&quot;</span><span class="p">,</span> <span class="s2">&quot;tips&quot;</span><span class="p">),</span>
+<span class="linenos">5</span>    <span class="n">description</span> <span class="o">=</span> <span class="n">Loc</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;Accessors1Description&quot;</span><span class="p">,</span> <span class="s2">&quot;tips&quot;</span><span class="p">),</span>
+<span class="linenos">6</span>    <span class="n">image</span> <span class="o">=</span> <span class="s2">&quot;Textures/Accessors1.png&quot;</span><span class="p">,</span>
+<span class="linenos">7</span>    <span class="n">context</span> <span class="o">=</span> <span class="n">i_acc</span>
+<span class="linenos">8</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Example usage of db:from_table</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kd">local</span> <span class="n">logic</span> <span class="o">=</span> <span class="kr">function</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+<span class="linenos"> 2</span>    <span class="kd">local</span> <span class="n">crafter</span> <span class="o">=</span> <span class="n">AbstractCrafter</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+<span class="linenos"> 3</span>    <span class="n">crafter</span><span class="p">.</span><span class="n">recipes</span> <span class="o">=</span> <span class="n">RecipeDictionary</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;MaceratorRecipeDictionary&quot;</span><span class="p">)</span>
+<span class="linenos"> 4</span>    <span class="n">crafter</span><span class="p">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">Vlib</span><span class="p">.</span><span class="n">get_speed</span><span class="p">(</span><span class="n">crafter</span><span class="p">)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>    <span class="n">Vlib</span><span class="p">.</span><span class="n">add_single_slot_invs</span><span class="p">(</span><span class="n">crafter</span><span class="p">.</span><span class="n">crafter_input_container</span><span class="p">,</span> <span class="n">crafter</span><span class="p">,</span> <span class="s2">&quot;ii&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos"> 7</span>    <span class="n">Vlib</span><span class="p">.</span><span class="n">add_single_slot_invs</span><span class="p">(</span><span class="n">crafter</span><span class="p">.</span><span class="n">crafter_output_container</span><span class="p">,</span> <span class="n">crafter</span><span class="p">,</span> <span class="s2">&quot;io&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="linenos"> 8</span>        
+<span class="linenos"> 9</span>    <span class="kd">local</span> <span class="n">inv</span> <span class="o">=</span> <span class="n">ResourceInventory</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">crafter</span><span class="p">,</span> <span class="s2">&quot;rii&quot;</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="n">inv</span><span class="p">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">StaticItem</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Kinetic&quot;</span><span class="p">)</span>
+<span class="linenos">11</span>    <span class="n">inv</span><span class="p">.</span><span class="n">capacity</span> <span class="o">=</span> <span class="n">Vlib</span><span class="p">.</span><span class="n">get_consumption</span><span class="p">(</span><span class="n">crafter</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="n">crafter</span><span class="p">.</span><span class="n">energy_input_inventory</span> <span class="o">=</span> <span class="n">inv</span>
+<span class="linenos">13</span>    
+<span class="linenos">14</span>    <span class="kd">local</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">ResourceAccessor</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">crafter</span><span class="p">,</span> <span class="s2">&quot;rai&quot;</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="n">acc</span><span class="p">.</span><span class="n">side</span><span class="p">,</span> <span class="n">acc</span><span class="p">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3i</span><span class="p">.</span><span class="n">back</span><span class="p">,</span> <span class="n">Vec3i</span><span class="p">.</span><span class="n">zero</span>
+<span class="linenos">16</span>    <span class="n">acc</span><span class="p">.</span><span class="n">inventory</span> <span class="o">=</span> <span class="n">inv</span>
+<span class="linenos">17</span>    <span class="n">acc</span><span class="p">.</span><span class="n">is_input</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="linenos">18</span>    <span class="n">acc</span><span class="p">.</span><span class="n">channel</span> <span class="o">=</span> <span class="s2">&quot;Kinetic&quot;</span>
+<span class="linenos">19</span>    <span class="n">acc</span><span class="p">.</span><span class="n">cover</span> <span class="o">=</span> <span class="n">StaticCover</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;KineticInput&quot;</span><span class="p">)</span>
+<span class="linenos">20</span><span class="kr">end</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span><span class="kd">local</span> <span class="n">tables</span> <span class="o">=</span> <span class="p">{</span> <span class="n">logic_init</span> <span class="o">=</span> <span class="n">logic</span> <span class="p">}</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="kd">local</span> <span class="n">block</span> <span class="o">=</span> <span class="n">StaticBlock</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;CopperMacerator&quot;</span><span class="p">)</span>
+<span class="linenos">25</span><span class="kr">if</span> <span class="n">block</span> <span class="o">~=</span> <span class="kc">nil</span> <span class="kr">then</span>
+<span class="linenos">26</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CopperMacerator found, registering lua table&quot;</span><span class="p">)</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>    <span class="kr">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="kr">do</span>
+<span class="linenos">29</span>        <span class="n">block</span><span class="p">.</span><span class="n">lua</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+<span class="linenos">30</span>    <span class="kr">end</span>
+<span class="linenos">31</span><span class="kr">end</span>
+</pre></div>
+</div>
+</div>
 </section>
 
 
