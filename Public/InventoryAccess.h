@@ -22,7 +22,7 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
       .addFunction("add", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
         self->_Add({ item, count });
       })
-      .addProperty("is_can_have_zero_slot", &UInventoryAccess::mCanHaveZeroSlot)
+      .addProperty("is_can_have_zero_slot", &UInventoryAccess::mCanHaveZeroSlot) //@field boolean
       .endClass();
   }
 

@@ -9,9 +9,9 @@ class EVOSPACE_API UInventoryInventoryFilter : public UInventoryFilter {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UInventoryInventoryFilter, UInstance>("InventoryInventoryFilter") //@class InventoryInventoryFilter : InventoryFilter
-      .addProperty("inventory", &Self::Inventory) //@field InventoryAccess
-      .addProperty("is_filtering", &Self::IsFiltering) //@field boolean is filtering enabled
-      .addProperty("is_white", &Self::IsWhite) //@field boolean is white filtering enabled
+      .addProperty("inventory", &Self::Inventory) //@field InventoryAccess (nil by default)
+      .addProperty("is_filtering", &Self::IsFiltering) //@field boolean is filtering enabled (true by default)
+      .addProperty("is_white", &Self::IsWhite) //@field boolean is white filtering enabled (true by default)
       .endClass();
   }
 

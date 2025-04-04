@@ -264,6 +264,10 @@ function BaseInventory.cast(object) end
 --- @field static_block StaticBlock comment
 BlockLogic = {}
 
+--- Register Accessor
+--- @param accessor Accessor Accessor instance to register
+function BlockLogic:reg(accessor) end
+
 --- Creates a new BlockLogic instance
 --- @param parent Object Object of parent
 --- @param new_name string The name of the instance
@@ -486,6 +490,7 @@ function Inventory.cast(object) end
 --- 
 --- 
 --- @class InventoryAccess : InventoryReader
+--- @field is_can_have_zero_slot boolean undocumented
 InventoryAccess = {}
 
 --- Add item with count to InventoryAccess
@@ -593,9 +598,9 @@ function InventoryFilter.cast(object) end
 --- 
 --- 
 --- @class InventoryInventoryFilter : InventoryFilter
---- @field inventory InventoryAccess undocumented
---- @field is_filtering boolean is filtering enabled
---- @field is_white boolean is white filtering enabled
+--- @field inventory InventoryAccess (nil by default)
+--- @field is_filtering boolean is filtering enabled (true by default)
+--- @field is_white boolean is white filtering enabled (true by default)
 InventoryInventoryFilter = {}
 
 --- Creates a new InventoryInventoryFilter instance

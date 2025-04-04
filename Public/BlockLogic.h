@@ -32,6 +32,10 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBlockLogic, UInstance>("BlockLogic") //@class BlockLogic : Instance
+      //direct:
+      //--- Register Accessor
+      //--- @param accessor Accessor Accessor instance to register
+      //function BlockLogic:reg(accessor) end
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
       .addProperty("static_block", &UBlockLogic::mStaticBlock) //@field StaticBlock comment
       .endClass();
