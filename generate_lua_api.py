@@ -39,7 +39,7 @@ def extract_class_details(file_content):
         for prop_name, code, prop_comment in properties:
             prop_parts = prop_comment.split(" ", 1)
             prop_type = prop_parts[0].strip() if prop_parts else "unknown"
-            comment_str = f" {prop_parts[1].strip()}" if len(prop_parts) > 1 else ""
+            comment_str = f" {prop_parts[1].strip()}" if len(prop_parts) > 1 else " undocumented"
             annotation += f"--- @field {prop_name} {prop_type}{comment_str}\n"
             print(f"field {prop_name} {prop_type} {comment_str}")
 

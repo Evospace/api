@@ -4,57 +4,22 @@
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "ItemData.h"
+#include "Prototype.h"
 
 #include "InventoryFilter.generated.h"
 class UInventoryAccess;
 class UStaticItem;
 
 UCLASS(Abstract, BlueprintType)
-class EVOSPACE_API UInventoryFilter : public UObject {
-  GENERATED_BODY()
+class EVOSPACE_API UInventoryFilter : public UInstance {
+  GENERATED_BODY() 
+  EVO_CODEGEN_INSTANCE(InventoryFilter)
+    virtual void lua_reg(lua_State *L) const override {
+      luabridge::getGlobalNamespace(L)
+        .deriveClass<UInventoryFilter, UInstance>("InventoryFilter") //@class InventoryFilter : Instance
+        .endClass();
+    }
 
   public:
   virtual bool Check(const FItemData &data);
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UInventoryWhiteFilter : public UInventoryFilter {
-  GENERATED_BODY()
-
-  public:
-  virtual bool Check(const FItemData &data) override;
-
-  void AddItem(const UStaticItem *item);
-  void Empty();
-
-  UPROPERTY(VisibleAnywhere)
-  TSet<const UStaticItem *> mItems;
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UInventoryBlackFilter : public UInventoryFilter {
-  GENERATED_BODY()
-
-  public:
-  virtual bool Check(const FItemData &data) override;
-};
-
-UCLASS(BlueprintType)
-class EVOSPACE_API UInventoryInventoryFilter : public UInventoryFilter {
-  GENERATED_BODY()
-
-  public:
-  virtual bool Check(const FItemData &data) override;
-
-  void SetInventory(UInventoryAccess *inv);
-  UInventoryAccess *GetInventory() const;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  bool mIsWhite = true;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  bool mIsFiltering = true;
-
-  UPROPERTY()
-  UInventoryAccess *mInventory;
 };

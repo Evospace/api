@@ -128,19 +128,19 @@ function print_warn(message) end
 --- 
 --- 
 --- @class AbstractCrafter : BlockLogic
---- @field recipes RecipeDictionary
---- @field load_independent boolean
---- @field stable_supply boolean
---- @field input_gathered boolean
---- @field switch_on boolean
---- @field ticks_passed integer
---- @field real_ticks_passed integer
---- @field total_production integer
---- @field speed integer
---- @field energy_input_inventory ResourceInventory
---- @field energy_output_inventory ResourceInventory
---- @field crafter_input_container InventoryContainer
---- @field crafter_output_container InventoryContainer
+--- @field recipes RecipeDictionary undocumented
+--- @field load_independent boolean undocumented
+--- @field stable_supply boolean undocumented
+--- @field input_gathered boolean undocumented
+--- @field switch_on boolean undocumented
+--- @field ticks_passed integer undocumented
+--- @field real_ticks_passed integer undocumented
+--- @field total_production integer undocumented
+--- @field speed integer undocumented
+--- @field energy_input_inventory ResourceInventory undocumented
+--- @field energy_output_inventory ResourceInventory undocumented
+--- @field crafter_input_container InventoryContainer undocumented
+--- @field crafter_output_container InventoryContainer undocumented
 AbstractCrafter = {}
 
 --- Creates a new AbstractCrafter instance
@@ -165,10 +165,10 @@ function AbstractCrafter.cast(object) end
 --- 
 --- 
 --- @class Accessor : Instance
---- @field side Vec3i
---- @field pos Vec3i
---- @field owner BlockLogic
---- @field cover StaticCover
+--- @field side Vec3i undocumented
+--- @field pos Vec3i undocumented
+--- @field owner BlockLogic undocumented
+--- @field cover StaticCover undocumented
 Accessor = {}
 
 --- Creates a new Accessor instance
@@ -286,8 +286,8 @@ function BlockLogic.cast(object) end
 --- 
 --- 
 --- @class ComputerBlockLogic : BlockLogic
---- @field energy_inventory ResourceInventory
---- @field energy_input ResourceAccessor
+--- @field energy_inventory ResourceInventory undocumented
+--- @field energy_input ResourceAccessor undocumented
 ComputerBlockLogic = {}
 
 --- Creates a new ComputerBlockLogic instance
@@ -312,12 +312,12 @@ function ComputerBlockLogic.cast(object) end
 --- 
 --- 
 --- @class ConductorBlockLogic : StorageBlockLogic
---- @field side_cover StaticCover
---- @field center_cover StaticCover
+--- @field side_cover StaticCover undocumented
+--- @field center_cover StaticCover undocumented
 --- @field resistance integer mOhm
 --- @field voltage integer Volt
---- @field channel string
---- @field conductor_channel integer
+--- @field channel string undocumented
+--- @field conductor_channel integer undocumented
 ConductorBlockLogic = {}
 
 ---Add side wire
@@ -386,7 +386,7 @@ function DB.cast(object) end
 --- 
 --- 
 --- @class Dimension : Actor
---- @field settings GameSessionData
+--- @field settings GameSessionData undocumented
 Dimension = {}
 
 --- 
@@ -417,10 +417,10 @@ function EventSystem:emmit(event, table) end
 --- 
 --- 
 --- @class ExtractionData : Object
---- @field item StaticItem
---- @field prop StaticProp
---- @field speed integer
---- @field initial_capacity integer
+--- @field item StaticItem undocumented
+--- @field prop StaticProp undocumented
+--- @field speed integer undocumented
+--- @field initial_capacity integer undocumented
 ExtractionData = {}
 
 --- Create new instance of ExtractionData
@@ -430,8 +430,8 @@ function ExtractionData.new() end
 --- 
 --- 
 --- @class FluidContainerBlockLogic : ConductorBlockLogic
---- @field capacity integer
---- @field charge integer
+--- @field capacity integer undocumented
+--- @field charge integer undocumented
 FluidContainerBlockLogic = {}
 
 --- Creates a new FluidContainerBlockLogic instance
@@ -456,7 +456,7 @@ function FluidContainerBlockLogic.cast(object) end
 --- 
 --- 
 --- @class GameSessionData : Object
---- @field infinite_ore boolean
+--- @field infinite_ore boolean undocumented
 GameSessionData = {}
 
 --- 
@@ -514,6 +514,30 @@ function InventoryAccess.cast(object) end
 
 --- 
 --- 
+--- @class InventoryBlackFilter : InventoryFilter
+InventoryBlackFilter = {}
+
+--- Creates a new InventoryBlackFilter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return InventoryBlackFilter
+function InventoryBlackFilter.new(parent, new_name) end
+
+--- Creates a new InventoryBlackFilter instance
+--- @return InventoryBlackFilter
+function InventoryBlackFilter.new_simple() end
+
+--- Return InventoryBlackFilter class object
+--- @return Class
+function InventoryBlackFilter.get_class() end
+
+--- Trying to cast Object into InventoryBlackFilter
+--- @param object Object to cast
+--- @return InventoryBlackFilter
+function InventoryBlackFilter.cast(object) end
+
+--- 
+--- 
 --- @class InventoryContainer : InventoryAccess
 InventoryContainer = {}
 
@@ -541,6 +565,57 @@ function InventoryContainer.get_class() end
 --- @param object Object to cast
 --- @return InventoryContainer
 function InventoryContainer.cast(object) end
+
+--- 
+--- 
+--- @class InventoryFilter : Instance
+InventoryFilter = {}
+
+--- Creates a new InventoryFilter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return InventoryFilter
+function InventoryFilter.new(parent, new_name) end
+
+--- Creates a new InventoryFilter instance
+--- @return InventoryFilter
+function InventoryFilter.new_simple() end
+
+--- Return InventoryFilter class object
+--- @return Class
+function InventoryFilter.get_class() end
+
+--- Trying to cast Object into InventoryFilter
+--- @param object Object to cast
+--- @return InventoryFilter
+function InventoryFilter.cast(object) end
+
+--- 
+--- 
+--- @class InventoryInventoryFilter : InventoryFilter
+--- @field inventory InventoryAccess undocumented
+--- @field is_filtering boolean is filtering enabled
+--- @field is_white boolean is white filtering enabled
+InventoryInventoryFilter = {}
+
+--- Creates a new InventoryInventoryFilter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return InventoryInventoryFilter
+function InventoryInventoryFilter.new(parent, new_name) end
+
+--- Creates a new InventoryInventoryFilter instance
+--- @return InventoryInventoryFilter
+function InventoryInventoryFilter.new_simple() end
+
+--- Return InventoryInventoryFilter class object
+--- @return Class
+function InventoryInventoryFilter.get_class() end
+
+--- Trying to cast Object into InventoryInventoryFilter
+--- @param object Object to cast
+--- @return InventoryInventoryFilter
+function InventoryInventoryFilter.cast(object) end
 
 --- 
 --- 
@@ -579,16 +654,40 @@ function InventoryReader.cast(object) end
 
 --- 
 --- 
+--- @class InventoryWhiteFilter : InventoryFilter
+InventoryWhiteFilter = {}
+
+--- Creates a new InventoryWhiteFilter instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return InventoryWhiteFilter
+function InventoryWhiteFilter.new(parent, new_name) end
+
+--- Creates a new InventoryWhiteFilter instance
+--- @return InventoryWhiteFilter
+function InventoryWhiteFilter.new_simple() end
+
+--- Return InventoryWhiteFilter class object
+--- @return Class
+function InventoryWhiteFilter.get_class() end
+
+--- Trying to cast Object into InventoryWhiteFilter
+--- @param object Object to cast
+--- @return InventoryWhiteFilter
+function InventoryWhiteFilter.cast(object) end
+
+--- 
+--- 
 --- @class ItemData : Struct
---- @field count integer
---- @field item StaticItem
+--- @field count integer undocumented
+--- @field item StaticItem undocumented
 ItemData = {}
 
 --- 
 --- 
 --- @class MapStructure : Object
---- @field offset Vec2i
---- @field structure StaticStructure
+--- @field offset Vec2i undocumented
+--- @field structure StaticStructure undocumented
 MapStructure = {}
 
 --- Create new instance of MapStructure
@@ -598,7 +697,7 @@ function MapStructure.new() end
 --- 
 --- 
 --- @class RecipeDictionary : Prototype
---- @field start_tier integer
+--- @field start_tier integer undocumented
 RecipeDictionary = {}
 
 --- Creates a new RecipeDictionary static object
@@ -695,9 +794,9 @@ function RegionMap.cast(object) end
 --- 
 --- 
 --- @class ResourceAccessor : Accessor
---- @field inventory ResourceInventory
---- @field is_input boolean
---- @field is_output boolean
+--- @field inventory ResourceInventory undocumented
+--- @field is_input boolean undocumented
+--- @field is_output boolean undocumented
 ResourceAccessor = {}
 
 --- Creates a new ResourceAccessor instance
@@ -718,8 +817,8 @@ function ResourceAccessor.cast(object) end
 --- 
 --- 
 --- @class ResourceInventory : SingleSlotInventory
---- @field item StaticItem
---- @field drain integer
+--- @field item StaticItem undocumented
+--- @field drain integer undocumented
 ResourceInventory = {}
 
 --- Creates a new ResourceInventory instance
@@ -768,7 +867,7 @@ function SelectCrafter.cast(object) end
 --- 
 --- 
 --- @class SingleSlotInventory : BaseInventory
---- @field capacity integer
+--- @field capacity integer undocumented
 SingleSlotInventory = {}
 
 --- Creates a new SingleSlotInventory instance
@@ -819,16 +918,16 @@ function SourceData.cast(object) end
 --- 
 --- 
 --- @class StaticBlock : StaticObject
---- @field logic Class
---- @field actor Class
---- @field selector Class
---- @field tesselator Tesselator
---- @field replace_tag string
---- @field color_side Vector
---- @field color_top Vector
---- @field tier integer
---- @field level integer
---- @field lua table
+--- @field logic Class undocumented
+--- @field actor Class undocumented
+--- @field selector Class undocumented
+--- @field tesselator Tesselator undocumented
+--- @field replace_tag string undocumented
+--- @field color_side Vector undocumented
+--- @field color_top Vector undocumented
+--- @field tier integer undocumented
+--- @field level integer undocumented
+--- @field lua table undocumented
 StaticBlock = {}
 
 --- Creates a new StaticBlock static object
@@ -877,11 +976,11 @@ function StaticCover.cast(object) end
 --- 
 --- 
 --- @class StaticItem : Prototype
---- @field image Texture
---- @field stack_size integer
---- @field unit_mul number
---- @field mesh StaticMesh
---- @field object StaticObject
+--- @field image Texture undocumented
+--- @field stack_size integer undocumented
+--- @field unit_mul number undocumented
+--- @field mesh StaticMesh undocumented
+--- @field object StaticObject undocumented
 StaticItem = {}
 
 --- Creates a new StaticItem static object
@@ -906,7 +1005,7 @@ function StaticItem.cast(object) end
 --- 
 --- 
 --- @class StaticObject : Prototype
---- @field item StaticItem
+--- @field item StaticItem undocumented
 StaticObject = {}
 
 --- Creates a new StaticObject static object
@@ -931,17 +1030,17 @@ function StaticObject.cast(object) end
 --- 
 --- 
 --- @class StaticProp : StaticObject
---- @field project_to_terrain_power number
---- @field additive_elevation number
---- @field cull_begin number
---- @field cull_end number
---- @field maximum_height number
---- @field minimum_height number
---- @field floating boolean
---- @field is_big boolean
---- @field mesh StaticItem
---- @field no_collision boolean
---- @field is_emitting boolean
+--- @field project_to_terrain_power number undocumented
+--- @field additive_elevation number undocumented
+--- @field cull_begin number undocumented
+--- @field cull_end number undocumented
+--- @field maximum_height number undocumented
+--- @field minimum_height number undocumented
+--- @field floating boolean undocumented
+--- @field is_big boolean undocumented
+--- @field mesh StaticItem undocumented
+--- @field no_collision boolean undocumented
+--- @field is_emitting boolean undocumented
 --- @field break_chance integer Break chance in percents
 StaticProp = {}
 
@@ -991,8 +1090,8 @@ function StaticPropList.cast(object) end
 --- 
 --- 
 --- @class StaticStructure : Instance
---- @field generate function
---- @field size Vec2i
+--- @field generate function undocumented
+--- @field size Vec2i undocumented
 StaticStructure = {}
 
 --- Creates a new StaticStructure static object

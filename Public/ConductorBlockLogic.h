@@ -349,23 +349,6 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UFluidConductorBlockLogic : public UConductorBlockLogic {
-  GENERATED_BODY()
-  public:
-  //UFluidConductorBlockLogic();
-
-  protected:
-  //virtual void BlockBeginPlay() override;
-};
-
-UCLASS()
-class EVOSPACE_API UElectricityConductorBlockLogic : public UConductorBlockLogic {
-  GENERATED_BODY()
-  public:
-  //UElectricityConductorBlockLogic();
-};
-
-UCLASS()
 class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
