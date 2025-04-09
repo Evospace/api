@@ -17,6 +17,7 @@ class EVOSPACE_API UInventory : public UBaseInventory {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UInventory, UBaseInventory>("Inventory") //@class Inventory : BaseInventory
+      .addFunction("remove_empty_slots", &UInventory::RemoveEmptySlots)
       .endClass();
   }
 
@@ -31,6 +32,8 @@ class EVOSPACE_API UInventory : public UBaseInventory {
   void SetAutoSize(bool autosize);
 
   bool GetAutoSize() const;
+
+  void RemoveEmptySlots();
 
   void PopSlot();
 
