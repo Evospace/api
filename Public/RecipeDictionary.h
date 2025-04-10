@@ -18,7 +18,7 @@ class UInventoryReader;
 // };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URecipeDictionary : public UPrototype {
+class EVOSPACE_API URecipeDictionary : public UPrototype, public ISearchable {
   GENERATED_BODY()
   EVO_OWNER(RecipeDictionary);
   EVO_CODEGEN_DB(RecipeDictionary, RecipeDictionary)
@@ -34,6 +34,8 @@ class EVOSPACE_API URecipeDictionary : public UPrototype {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void ModLoadFinalize() override;
+
+  virtual void ComputeSearchMetadata() const;
 
   UFUNCTION(BlueprintCallable)
   void UpdatePerRecipeInventory();
