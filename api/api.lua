@@ -1,11 +1,6 @@
 --- @type boolean|nil
 LuaLogFlag = false
 
---- Database record
----
---- @class Prototype : Object
-Prototype = {}
-
 --- Instancable object
 ---
 --- @class Instance : Object
@@ -701,6 +696,72 @@ function MapStructure.new() end
 
 --- 
 --- 
+--- @class PropListData : Struct
+--- @field chance number undocumented
+--- @field props StaticProp[] undocumented
+PropListData = {}
+
+--- Database record
+--- 
+--- @class Prototype : Object
+--- @field name string Object name
+Prototype = {}
+
+--- Creates a new type instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return type
+function type.new(parent, new_name) end
+
+--- Return type class object
+--- @return Class
+function type.get_class() end
+
+--- Trying to cast Object into type
+--- @param object Object to cast
+--- @return type
+function type.cast(object) end
+
+--- Creates a new type instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return type
+function type.new(parent, new_name) end
+
+--- Creates a new type instance
+--- @return type
+function type.new_simple() end
+
+--- Return type class object
+--- @return Class
+function type.get_class() end
+
+--- Trying to cast Object into type
+--- @param object Object to cast
+--- @return type
+function type.cast(object) end
+
+--- Creates a new type static object
+--- @param new_name string The name of the object
+--- @return type
+function type.new(new_name) end
+
+--- Searching for type in db
+--- @param name string The name of the object
+--- @return type
+function type.find(name) end
+
+--- Return type class object
+--- @return Class
+function type.get_class() end
+
+--- Trying to cast Object into type
+--- @param object Object to cast
+--- @return type
+function type.cast(object) end
+
+--- 
+--- 
 --- @class RecipeDictionary : Prototype
 --- @field start_tier integer undocumented
 RecipeDictionary = {}
@@ -1071,6 +1132,7 @@ function StaticProp.cast(object) end
 --- 
 --- 
 --- @class StaticPropList : Prototype
+--- @field data PropListData[] undocumented
 StaticPropList = {}
 
 --- Creates a new StaticPropList static object

@@ -130,14 +130,16 @@ class UPrototype : public UObject, public ISerializableJson {
   virtual UClass *lua_reg_type() { return UPrototype::StaticClass(); }
   virtual void register_owner(IRegistrar *registrar) {}
   virtual void lua_reg_internal(lua_State *L) const {
-    LOG(INFO_LL) << "Registering lua Prototype";
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UPrototype, UObject>("Prototype")
-      .endClass();
   };
   virtual void lua_reg(lua_State *L) const {
+    LOG(INFO_LL) << "Registering lua Prototype";
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UPrototype, UObject>("Prototype")
+      //@comment Database record
+      .deriveClass<UPrototype, UObject>("Prototype") //@class Prototype : Object
+      .addProperty("name", [](const UPrototype * self) //@field string Object name 
+      {
+        return std::string(TCHAR_TO_UTF8(*self->GetName()));
+      })
       .endClass();
   }
   virtual luabridge::LuaRef to_luaref(lua_State *L) {

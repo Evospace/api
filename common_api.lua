@@ -1,11 +1,6 @@
 --- @type boolean|nil
 LuaLogFlag = false
 
---- Database record
----
---- @class Prototype : Object
-Prototype = {}
-
 --- Instancable object
 ---
 --- @class Instance : Object

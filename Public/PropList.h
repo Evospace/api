@@ -3,25 +3,13 @@
 #pragma once
 
 #include "BlockLogic.h"
+#include "PropListData.h"
 #include "Prototype.h"
-#include "../SerializableJson.h"
 #include "Evospace/Misc/AssetOwner.h"
 
 #include "PropList.generated.h"
 
 class UStaticProp;
-
-USTRUCT()
-struct FPropListData {
-  GENERATED_BODY()
-
-  public:
-  UPROPERTY()
-  TArray<const UStaticProp *> Props;
-
-  UPROPERTY()
-  float Chance = 1.0;
-};
 
 UCLASS()
 class UStaticPropList : public UPrototype {
@@ -29,14 +17,25 @@ class UStaticPropList : public UPrototype {
   EVO_OWNER(StaticPropList)
   EVO_CODEGEN_DB(StaticPropList, StaticPropList)
   virtual void lua_reg(lua_State *L) const override {
+    FPropListData::lua_reg(L);
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
+      .addProperty("data", [](const UStaticPropList * self) //@field PropListData[]
+      {
+        std::vector<const FPropListData *> arr;
+        for (auto & p :self->PropListDatas) {
+          arr.push_back(&p);
+        }
+        return arr;
+      })
       .endClass();
   }
 
   public:
   UPROPERTY()
   TArray<FPropListData> PropListDatas;
+
+  virtual bool ProtoValidCheck() override;
 
   const UStaticProp *PickOne(const Vec2i &start_point);
 
