@@ -1,4 +1,5 @@
 #pragma once
+#include "ThirdParty/luabridge/LuaBridge.h"
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "Prototype.h"
