@@ -25,6 +25,8 @@ public:
   virtual int64 GetCapacity() const override;
   virtual int64 GetCharge() const override;
 
+  virtual void BlockBeginPlay() override;
+
   virtual void UpdateSides(UAccessor *except = nullptr) override;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;

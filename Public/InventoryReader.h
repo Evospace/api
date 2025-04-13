@@ -94,6 +94,12 @@ class EVOSPACE_API UInventoryReader : public UInstance {
   UFUNCTION(BlueprintCallable)
   int32 Num() const { return _Num(); }
 
+  virtual TArray<FItemData> &GetSlotsMut() {
+    checkNoEntry();
+    static TArray<FItemData> dummy;
+    return dummy;
+  }
+  
   virtual const TArray<FItemData> &GetSlots() const {
     checkNoEntry();
     static TArray<FItemData> dummy;

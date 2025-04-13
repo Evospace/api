@@ -22,6 +22,7 @@ class EVOSPACE_API UInventory : public UBaseInventory {
   }
 
   virtual const TArray<FItemData> &GetSlots() const override;
+  virtual TArray<FItemData> &GetSlotsMut() override;
 
   void Resize(int32 size);
 

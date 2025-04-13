@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 
 #pragma once
+#include "ItemData.h"
 #include "Prototype.h"
 #include "Evospace/Common.h"
 #include "Evospace/ISearchable.h"
@@ -34,11 +35,12 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticItem, UPrototype>("StaticItem") //@class StaticItem : Prototype
-      .addProperty("image", &UStaticItem::mImage) //@field Texture
-      .addProperty("stack_size", &UStaticItem::mStackSize) //@field integer
-      .addProperty("unit_mul", &UStaticItem::mUnitMul) //@field number
-      .addProperty("mesh", &UStaticItem::mMesh) //@field StaticMesh
-      .addProperty("object", &UStaticItem::Object) //@field StaticObject
+      .addProperty("image", &UStaticItem::mImage) //@field Texture Item image in UI
+      .addProperty("stack_size", &UStaticItem::mStackSize) //@field integer Size of item stack
+      .addProperty("unit_mul", &UStaticItem::mUnitMul) //@field number multiplier for UI
+      .addProperty("mesh", &UStaticItem::mMesh) //@field StaticMesh Mesh for item rendering in world
+      .addProperty("object", &UStaticItem::Object) //@field StaticObject Buildable object pointer for this item
+      .addProperty("custom_data", &UStaticItem::CustomData) //@field bool Is item instance contains CustomData
       .endClass();
   }
 
@@ -77,6 +79,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticMesh *mMesh;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool CustomData;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TArray<UMaterialInterface *> mMaterials;
