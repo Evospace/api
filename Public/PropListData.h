@@ -1,8 +1,7 @@
 #pragma once
 #include "ThirdParty/luabridge/LuaBridge.h"
+#include "Public/StaticProp.h"
 #include "PropListData.generated.h"
-
-class UStaticProp;
 
 USTRUCT()
 struct FPropListData {
