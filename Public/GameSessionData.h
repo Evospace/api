@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ThirdParty/luabridge/LuaBridge.h"
 #include "Evospace/SerializableJson.h"
 #include "Evospace/SerializableJson.h"
 #include "ThirdParty/lua/lua.h"
-#include "ThirdParty/luabridge/LuaBridge.h"
 #include "UObject/Object.h"
 #include "GameSessionData.generated.h"
 
