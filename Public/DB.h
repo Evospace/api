@@ -140,7 +140,7 @@ class EVOSPACE_API UDB : public UInstance {
   int32 GetPhase() const { return phase; }
 
   private:
-  static bool LoadLoc(const FString &path, const FString &locale, bool isSource);
+  static bool LoadLoc(const FString &path, const FString &locale);
 
   bool LoadVanillaPrepareMods(ModLoadingContext &context);
   bool LuaTickCaller(ModLoadingContext &context, const std::string &function_name, int32 seq);
