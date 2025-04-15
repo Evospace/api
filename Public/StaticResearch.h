@@ -148,6 +148,11 @@ class EVOSPACE_API UStaticResearchBonusInventory : public UStaticResearchBase {
   public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  UPROPERTY(VisibleAnywhere)
+  int BonusSlots = 11;
+
   EVO_OWNED(StaticResearchBonusInventory, StaticResearchBase)
   EVO_CODEGEN_DB(StaticResearchBonusInventory, StaticResearchBase)
   virtual void lua_reg(lua_State *L) const override {}

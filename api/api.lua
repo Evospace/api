@@ -284,6 +284,31 @@ function BlockLogic.cast(object) end
 
 --- 
 --- 
+--- @class ChestBlockLogic : StorageBlockLogic
+--- @field capacity integer undocumented
+ChestBlockLogic = {}
+
+--- Creates a new ChestBlockLogic instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return ChestBlockLogic
+function ChestBlockLogic.new(parent, new_name) end
+
+--- Creates a new ChestBlockLogic instance
+--- @return ChestBlockLogic
+function ChestBlockLogic.new_simple() end
+
+--- Return ChestBlockLogic class object
+--- @return Class
+function ChestBlockLogic.get_class() end
+
+--- Trying to cast Object into ChestBlockLogic
+--- @param object Object to cast
+--- @return ChestBlockLogic
+function ChestBlockLogic.cast(object) end
+
+--- 
+--- 
 --- @class ComputerBlockLogic : BlockLogic
 --- @field energy_inventory ResourceInventory undocumented
 --- @field energy_input ResourceAccessor undocumented
@@ -1042,11 +1067,12 @@ function StaticCover.cast(object) end
 --- 
 --- 
 --- @class StaticItem : Prototype
---- @field image Texture undocumented
---- @field stack_size integer undocumented
---- @field unit_mul number undocumented
---- @field mesh StaticMesh undocumented
---- @field object StaticObject undocumented
+--- @field image Texture Item image in UI
+--- @field stack_size integer Size of item stack
+--- @field unit_mul number multiplier for UI
+--- @field mesh StaticMesh Mesh for item rendering in world
+--- @field object StaticObject Buildable object pointer for this item
+--- @field custom_data bool Is item instance contains CustomData
 StaticItem = {}
 
 --- Creates a new StaticItem static object
