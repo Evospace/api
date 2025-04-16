@@ -220,7 +220,7 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 
 /// Conductors
 
-UCLASS(Abstract)
+UCLASS(BlueprintType)
 class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   using Self = UConductorBlockLogic;
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
