@@ -2,7 +2,6 @@
 #include "Prototype.h"
 #include "SourceData.generated.h"
 
-
 class UStaticItem;
 
 UCLASS(BlueprintType)

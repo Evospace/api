@@ -20,14 +20,14 @@ class UStaticPropList : public UPrototype {
     FPropListData::lua_reg(L);
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
-      .addProperty("data", [](const UStaticPropList * self) //@field PropListData[]
-      {
-        std::vector<const FPropListData *> arr;
-        for (auto & p :self->PropListDatas) {
-          arr.push_back(&p);
-        }
-        return arr;
-      })
+      .addProperty("data", [](const UStaticPropList *self) //@field PropListData[]
+                   {
+                     std::vector<const FPropListData *> arr;
+                     for (auto &p : self->PropListDatas) {
+                       arr.push_back(&p);
+                     }
+                     return arr;
+                   })
       .endClass();
   }
 

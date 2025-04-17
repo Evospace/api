@@ -15,7 +15,7 @@ class EVOSPACE_API UInventoryInventoryFilter : public UInventoryFilter {
       .endClass();
   }
 
-public:
+  public:
   virtual bool Check(const FItemData &data) override;
 
   void SetInventory(UInventoryAccess *inv);

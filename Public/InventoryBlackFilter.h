@@ -11,6 +11,6 @@ class EVOSPACE_API UInventoryBlackFilter : public UInventoryFilter {
       .endClass();
   }
 
-public:
+  public:
   virtual bool Check(const FItemData &data) override;
 };

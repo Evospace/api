@@ -14,7 +14,7 @@ class EVOSPACE_API UFluidContainerBlockLogic : public UConductorBlockLogic {
       .endClass();
   }
   GENERATED_BODY()
-public:
+  public:
   UFluidContainerBlockLogic();
 
   virtual bool IsResourceStorage() const override { return true; }
@@ -37,7 +37,7 @@ public:
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int64 Capacity = 32;
 
-protected:
+  protected:
   UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   UResourceInventory *mInventory;
 };

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Prototype.h"
 #include "Evospace/BreakResult.h"
+#include "Evospace/Common.h"
 #include "Evospace/CoordinameMinimal.h"
 #include "Evospace/Vector.h"
 
@@ -125,6 +126,9 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   virtual TSubclassOf<UBlockWidget> GetHoverWidgetClass() const;
+
+  UFUNCTION(BlueprintCallable)
+  FVector3i GetWorldPosition() const;
 
   UFUNCTION(BlueprintCallable)
   virtual EBlockWidgetType GetWidgetType() const;

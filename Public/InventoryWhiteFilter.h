@@ -14,7 +14,7 @@ class EVOSPACE_API UInventoryWhiteFilter : public UInventoryFilter {
       .endClass();
   }
 
-public:
+  public:
   virtual bool Check(const FItemData &data) override;
 
   void AddItem(const UStaticItem *item);

@@ -99,7 +99,7 @@ class EVOSPACE_API UInventoryReader : public UInstance {
     static TArray<FItemData> dummy;
     return dummy;
   }
-  
+
   virtual const TArray<FItemData> &GetSlots() const {
     checkNoEntry();
     static TArray<FItemData> dummy;

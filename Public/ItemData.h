@@ -21,7 +21,7 @@ class UCustomItemData : public UObject, public ISerializableJson {
   GENERATED_BODY()
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UConstructionBlueprint * Blueprint = nullptr;
+  UConstructionBlueprint *Blueprint = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 Charge = 0;
@@ -30,14 +30,14 @@ class UCustomItemData : public UObject, public ISerializableJson {
   bool FluidContainer = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  const UStaticItem * Item;
+  const UStaticItem *Item;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
 
 USTRUCT(BlueprintType)
-struct FItemData {
+struct FItemData final {
   GENERATED_BODY()
 
   public:

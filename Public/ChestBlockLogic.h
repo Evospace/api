@@ -21,6 +21,7 @@ class EVOSPACE_API UChestBlockLogic : public UStorageBlockLogic {
       .addProperty("capacity", &Self::Capacity) //@field integer Chest slot count
       .endClass();
   }
+
   public:
   UChestBlockLogic();
 
@@ -41,7 +42,6 @@ class EVOSPACE_API UChestBlockLogic : public UStorageBlockLogic {
   int Capacity = 20;
 
   protected:
-  
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   UInventory *mInventory;
 
