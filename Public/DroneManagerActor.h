@@ -48,19 +48,18 @@ class EVOSPACE_API ADroneManagerActor : public AActor {
   int32 LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlockLogic *To, UInventory *Payload);
   void RegisterStation(UDroneStationBlockLogic *s);
 
-  UDroneStationBlockLogic * FindStationByID(const FString & string);
+  UDroneStationBlockLogic *FindStationByID(const FString &string);
 
   UPROPERTY()
   TArray<FDroneInstanceData> Drones;
 
-  FString GenerateStationID()const;
+  FString GenerateStationID() const;
   bool NameUsed(const FString &BaseName) const;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TMap<FString, UDroneStationBlockLogic *> Stations;
 
   protected:
-  
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UInstancedStaticMeshComponent *DroneMesh;
 

@@ -20,7 +20,7 @@ void ADroneManagerActor::UpdateDrones(float DeltaTime) {
     FDroneInstanceData &Drone = Drones[i];
 
     if (Drone.State == EDroneState::Idle) continue;
-    
+
     FVector Direction = (Drone.TargetPosition.world() - Drone.Position).GetSafeNormal();
     Drone.Position += Direction * Drone.Speed * DeltaTime;
 
@@ -84,7 +84,7 @@ void ADroneManagerActor::RegisterStation(UDroneStationBlockLogic *s) {
   Stations.Add(s->StationID, s);
 }
 
-UDroneStationBlockLogic * ADroneManagerActor::FindStationByID(const FString &string){
+UDroneStationBlockLogic *ADroneManagerActor::FindStationByID(const FString &string) {
   auto st = Stations.Find(string);
   return st ? *st : nullptr;
 }

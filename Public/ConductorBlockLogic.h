@@ -349,19 +349,6 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
-  GENERATED_BODY()
-  public:
-  UDataConductorBlockLogic();
-
-  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-
-  virtual int32 GetChannel() const override { return 2000; }
-
-  bool IsDataNetwork() const override;
-};
-
-UCLASS()
 class EVOSPACE_API UHeatConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:

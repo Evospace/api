@@ -39,7 +39,7 @@ struct FDroneRoute final {
 
   // Проверка на готовность к отправке
   bool CanDispatch(float DeltaTime) {
-    
+
     TimeSinceLastSend += DeltaTime;
 
     if (SendCondition == EDroneSendCondition::ManualOnly)
