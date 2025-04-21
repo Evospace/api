@@ -2,13 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BlockLogic.h"
+#include "ContextProvider.h"
 #include "DroneRoute.h"
 #include "DroneStationBlockLogic.generated.h"
 
+class UCondition;
 class UInventory;
 class ADroneManagerActor;
 UCLASS()
-class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic {
+class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider {
   GENERATED_BODY()
 
   public:
@@ -22,6 +24,12 @@ class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   TArray<FDroneRoute> Routes;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  UCondition *Condition;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  ULogicContext *Context;
 
   // Уникальный ID станции
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -45,8 +53,9 @@ class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic {
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
+  virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
+  virtual ULogicContext *GetContext_Implementation() override;
 
   int Delay = 100;
 };

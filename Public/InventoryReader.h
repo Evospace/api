@@ -38,20 +38,11 @@ class EVOSPACE_API UInventoryReader : public UInstance {
       .endClass();
   }
 
-  virtual int32 _Find(const UStaticItem *item) const {
-    checkNoEntry();
-    return 0;
-  };
+  virtual int32 _Find(const UStaticItem *item) const PURE_VIRTUAL(UInventoryReader::_Find, return 0;);
 
-  virtual bool IsEmpty() const {
-    checkNoEntry();
-    return true;
-  };
+  virtual bool IsEmpty() const PURE_VIRTUAL(UInventoryReader::IsEmpty, return 0;);
 
-  virtual int64 _Sum(const UStaticItem *item) const {
-    checkNoEntry();
-    return 0;
-  };
+  virtual int64 _Sum(const UStaticItem *item) const PURE_VIRTUAL(UInventoryReader::_Sum, return 0;);
 
   virtual FItemData &_GetMut(int32 index) {
     checkNoEntry();
@@ -74,16 +65,9 @@ class EVOSPACE_API UInventoryReader : public UInstance {
   };
 
   UFUNCTION(BlueprintCallable)
-  virtual int64 GetCapacity(int32 index) const {
-    checkNoEntry();
-    return 0;
-  };
+  virtual int64 GetCapacity(int32 index) const PURE_VIRTUAL(UInventoryReader::GetCapacity, return 0;);
 
-  //   .
-  virtual int32 _Num() const {
-    checkNoEntry();
-    return 0;
-  };
+  virtual int32 _Num() const PURE_VIRTUAL(UInventoryReader::_Num, return 0;);
 
   UFUNCTION(BlueprintCallable)
   virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const {

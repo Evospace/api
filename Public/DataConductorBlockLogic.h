@@ -8,10 +8,11 @@ class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
   EVO_CODEGEN_INSTANCE(DataConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-    .deriveClass<Self, UConductorBlockLogic>("DataConductorBlockLogic")
-    .endClass();
+      .deriveClass<Self, UConductorBlockLogic>("DataConductorBlockLogic")
+      .endClass();
   }
-public:
+
+  public:
   UDataConductorBlockLogic();
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;

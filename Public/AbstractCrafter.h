@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "BlockState.h"
 #include "Prototype.h"
 #include "Evospace/Blocks/ItemHopperInterface.h"
 #include "Public/TieredBlockLogic.h"
@@ -14,22 +15,7 @@ class URecipeDictionary;
 class UAutosizeInventory;
 class UInventoryContainer;
 
-UENUM(BlueprintType)
-enum class ECrafterState : uint8 {
-  InputShortage,
-  Working,
-  NoRoomInOutput,
-  ResourceSaturated,
-  ResourceRequired,
-  NotInitialized,
-  SwitchOff,
-  Idle
-};
-
-UCLASS(BlueprintType)
-/**
- * 
- */
+UCLASS(Blueprintable, BlueprintType)
 class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   using Self = UAbstractCrafter;
   GENERATED_BODY()
@@ -57,9 +43,6 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
 
   public:
   UAbstractCrafter();
-
-  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  FColor GetStateColor() const;
 
   virtual void SetActor(ABlockActor *actor) override;
 
@@ -159,7 +142,7 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   int32 Speed = 100;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  ECrafterState State = ECrafterState::InputShortage;
+  EBlockState State = EBlockState::InputShortage;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 InputTicks = 0;
