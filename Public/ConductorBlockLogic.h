@@ -437,6 +437,7 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
+  virtual bool HasAction() const override { return true; }
 
   bool IsSwithedOn() const;
 
