@@ -13,6 +13,7 @@ class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
       .deriveClass<UInventoryContainer, UInventoryAccess>("InventoryContainer") //@class InventoryContainer : InventoryAccess
       //direct:
       //---@field index integer
+      //---@return InventoryAccess
       //function InventoryContainer:get_access(index) end
       .addFunction("get_access", &UInventoryContainer::GetAccess)
       //direct:

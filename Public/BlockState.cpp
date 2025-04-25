@@ -14,8 +14,7 @@ static const FBlockStateMeta CrafterStateMap[] = {
 
 static const FBlockStateMeta InvalidMeta{ "status_unknown", { 0.5f, 0.0f, 1.0f } };
 
-FORCEINLINE const auto& GetMeta(EBlockState S)
-{
+FORCEINLINE const auto &GetMeta(EBlockState S) {
   const int32 Idx = static_cast<int32>(S);
   return (Idx >= 0 && Idx < UE_ARRAY_COUNT(CrafterStateMap))
            ? CrafterStateMap[Idx]
@@ -24,11 +23,11 @@ FORCEINLINE const auto& GetMeta(EBlockState S)
 } // namespace
 
 FKeyTableObject UCrafterStateLibrary::GetLocKeys(EBlockState State) {
-  const auto& Meta = GetMeta(State);
-  return {Meta.LabelKey, "block_state"};
+  const auto &Meta = GetMeta(State);
+  return { Meta.LabelKey, "block_state" };
 }
 
 FLinearColor UCrafterStateLibrary::GetLampColor(EBlockState State) {
-  const auto& Meta = GetMeta(State);
+  const auto &Meta = GetMeta(State);
   return Meta.LampColor;
 }

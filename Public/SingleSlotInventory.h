@@ -16,6 +16,10 @@ class EVOSPACE_API USingleSlotInventory : public UBaseInventory {
     luabridge::getGlobalNamespace(L)
       .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory") //@class SingleSlotInventory : BaseInventory
       .addProperty("capacity", &Self::Capacity) //@field integer
+      //direct:
+      //---@field item StaticItem
+      //function SingleSlotInventory:set_simple_filter(item) end
+      .addFunction("set_simple_filter", &Self::SetSimpleFilter)
       .endClass();
   }
 

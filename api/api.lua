@@ -285,7 +285,7 @@ function BlockLogic.cast(object) end
 --- 
 --- 
 --- @class ChestBlockLogic : StorageBlockLogic
---- @field capacity integer undocumented
+--- @field capacity integer Chest slot count
 ChestBlockLogic = {}
 
 --- Creates a new ChestBlockLogic instance
@@ -567,6 +567,7 @@ function InventoryBlackFilter.cast(object) end
 InventoryContainer = {}
 
 ---@field index integer
+---@return InventoryAccess
 function InventoryContainer:get_access(index) end
 
 ---@field inventory InventoryAccess
@@ -960,6 +961,9 @@ function SelectCrafter.cast(object) end
 --- @class SingleSlotInventory : BaseInventory
 --- @field capacity integer undocumented
 SingleSlotInventory = {}
+
+---@field item StaticItem
+function SingleSlotInventory:set_simple_filter(item) end
 
 --- Creates a new SingleSlotInventory instance
 --- @param parent Object Object of parent
