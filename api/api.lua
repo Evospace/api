@@ -1077,6 +1077,7 @@ function StaticCover.cast(object) end
 --- @field mesh StaticMesh Mesh for item rendering in world
 --- @field object StaticObject Buildable object pointer for this item
 --- @field custom_data bool Is item instance contains CustomData
+--- @field category bool Is item instance contains CustomData
 StaticItem = {}
 
 --- Creates a new StaticItem static object

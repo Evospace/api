@@ -7,57 +7,6 @@
 
 class USingleSlotInventory;
 class UResourceComponent;
-UCLASS()
-class EVOSPACE_API UElectricAccessor : public UBaseInventoryAccessor {
-  GENERATED_BODY()
-  public:
-  UElectricAccessor *GetOutsideAccessorCached();
-  const UElectricAccessor *GetOutsideAccessorCached() const;
-
-  protected:
-  virtual UBaseInventoryAccessor *GetAutoOutsideAccessor() override;
-};
-
-UCLASS()
-class EVOSPACE_API UElectricConductorAccessor : public UAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UElectricInputAccessor : public UElectricAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UElectricOutputAccessor : public UElectricAccessor {
-  GENERATED_BODY()
-  public:
-  UElectricOutputAccessor();
-};
-
-UCLASS()
-class EVOSPACE_API UFluidAccessor : public UBaseInventoryAccessor {
-  GENERATED_BODY()
-  public:
-  UFluidAccessor *GetOutsideAccessorCached();
-  const UFluidAccessor *GetOutsideAccessorCached() const;
-
-  protected:
-  virtual UBaseInventoryAccessor *GetAutoOutsideAccessor() override;
-};
-
-UCLASS()
-class EVOSPACE_API UFluidConductorAccessor : public UAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UFluidInputAccessor : public UFluidAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UFluidOutputAccessor : public UFluidAccessor {
-  GENERATED_BODY()
-  public:
-  UFluidOutputAccessor();
-};
 
 UCLASS()
 class UResourceAccessor : public UAccessor {
@@ -118,60 +67,4 @@ class UResourceAccessor : public UAccessor {
   void Bind(UResourceInventory *inv) {
     mInventory = inv;
   }
-};
-
-UCLASS()
-class EVOSPACE_API UKineticAccessor : public UBaseInventoryAccessor {
-  GENERATED_BODY()
-
-  public:
-  UKineticAccessor *GetOutsideAccessorCached();
-  const UKineticAccessor *GetOutsideAccessorCached() const;
-
-  protected:
-  virtual UBaseInventoryAccessor *GetAutoOutsideAccessor() override;
-};
-
-UCLASS()
-class EVOSPACE_API UKineticConductorAccessor : public UAccessor {
-  GENERATED_BODY()
-};
-
-UCLASS()
-class EVOSPACE_API UKineticInputAccessor : public UKineticAccessor {
-  GENERATED_BODY()
-};
-
-UCLASS()
-class EVOSPACE_API UKineticOutputAccessor : public UKineticAccessor {
-  GENERATED_BODY()
-
-  public:
-  UKineticOutputAccessor();
-};
-
-UCLASS()
-class EVOSPACE_API UDataAccessor : public UDataInventoryAccessor {
-  GENERATED_BODY()
-  public:
-  UDataAccessor *GetOutsideAccessorCached();
-  const UDataAccessor *GetOutsideAccessorCached() const;
-
-  protected:
-  virtual UBaseInventoryAccessor *GetAutoOutsideAccessor() override;
-};
-
-UCLASS()
-class EVOSPACE_API UDataConductorAccessor : public UAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UDataInputAccessor : public UDataAccessor {
-  GENERATED_BODY()
-};
-UCLASS()
-class EVOSPACE_API UDataOutputAccessor : public UDataAccessor {
-  GENERATED_BODY()
-  public:
-  UDataOutputAccessor();
 };
