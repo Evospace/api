@@ -65,7 +65,7 @@ class UEngineConsole : public UInstance {
       return res;
     }
 
-    return "";
+    return false;
   }
 
   static float GetFloat(std::string_view s) {
