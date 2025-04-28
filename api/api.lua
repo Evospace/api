@@ -118,6 +118,15 @@ function print_err(message) end
 --- @param message string
 function print_warn(message) end
 
+
+---
+--- @class Game
+--- @field engine_data EngineData
+Game = {}
+
+--- @class Game
+game = {}
+
 -- end of common --
 
 --- 
@@ -367,6 +376,49 @@ function ConductorBlockLogic.get_class() end
 --- @return ConductorBlockLogic
 function ConductorBlockLogic.cast(object) end
 
+--- Engine console
+--- 
+--- @class Console : Instance
+Console = {}
+
+--- Executes engine console command
+--- @param command string
+function Console.run(command) end
+
+--- Get engine console variable
+--- @param variable string
+--- @return string
+function Console.get_string(variable) end
+
+--- Get engine console variable
+--- @param variable string
+--- @return number
+function Console.get_float(variable) end
+
+--- Get engine console variable
+--- @param variable string
+--- @return integer
+function Console.get_int(variable) end
+
+--- Creates a new EngineConsole instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return EngineConsole
+function EngineConsole.new(parent, new_name) end
+
+--- Creates a new EngineConsole instance
+--- @return EngineConsole
+function EngineConsole.new_simple() end
+
+--- Return EngineConsole class object
+--- @return Class
+function EngineConsole.get_class() end
+
+--- Trying to cast Object into EngineConsole
+--- @param object Object to cast
+--- @return EngineConsole
+function EngineConsole.cast(object) end
+
 --- Comment to class
 --- 
 --- @class DB : Instance
@@ -412,6 +464,39 @@ function DB.cast(object) end
 --- @class Dimension : Actor
 --- @field settings GameSessionData undocumented
 Dimension = {}
+
+--- 
+--- 
+--- @class EngineData : Instance
+--- @field props_mul number undocumented
+--- @field props_quality number undocumented
+--- @field reflection_preset integer undocumented
+--- @field transparency_preset integer undocumented
+--- @field gi_preset integer undocumented
+--- @field fps integer undocumented
+--- @field res_x integer undocumented
+--- @field res_y integer undocumented
+--- @field window_mode integer undocumented
+EngineData = {}
+
+--- Creates a new EngineData instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return EngineData
+function EngineData.new(parent, new_name) end
+
+--- Creates a new EngineData instance
+--- @return EngineData
+function EngineData.new_simple() end
+
+--- Return EngineData class object
+--- @return Class
+function EngineData.get_class() end
+
+--- Trying to cast Object into EngineData
+--- @param object Object to cast
+--- @return EngineData
+function EngineData.cast(object) end
 
 --- 
 --- 
@@ -479,9 +564,28 @@ function FluidContainerBlockLogic.cast(object) end
 
 --- 
 --- 
---- @class GameSessionData : Object
+--- @class GameSessionData : Instance
 --- @field infinite_ore boolean undocumented
 GameSessionData = {}
+
+--- Creates a new GameSessionData instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return GameSessionData
+function GameSessionData.new(parent, new_name) end
+
+--- Creates a new GameSessionData instance
+--- @return GameSessionData
+function GameSessionData.new_simple() end
+
+--- Return GameSessionData class object
+--- @return Class
+function GameSessionData.get_class() end
+
+--- Trying to cast Object into GameSessionData
+--- @param object Object to cast
+--- @return GameSessionData
+function GameSessionData.cast(object) end
 
 --- 
 --- 
@@ -958,6 +1062,43 @@ function SelectCrafter.cast(object) end
 
 --- 
 --- 
+--- @class Setting : Prototype
+--- @field set_action function undocumented
+--- @field get_action function undocumented
+--- @field label string undocumented
+--- @field type string undocumented
+--- @field category string undocumented
+--- @field string_value string undocumented
+--- @field string_options string[] undocumented
+--- @field int_value integer undocumented
+--- @field int_default_value integer undocumented
+--- @field max_value integer undocumented
+--- @field min_value integer undocumented
+--- @field key_binding string undocumented
+--- @field default_key string undocumented
+Setting = {}
+
+--- Creates a new Setting static object
+--- @param new_name string The name of the object
+--- @return Setting
+function Setting.new(new_name) end
+
+--- Searching for Setting in db
+--- @param name string The name of the object
+--- @return Setting
+function Setting.find(name) end
+
+--- Return Setting class object
+--- @return Class
+function Setting.get_class() end
+
+--- Trying to cast Object into Setting
+--- @param object Object to cast
+--- @return Setting
+function Setting.cast(object) end
+
+--- 
+--- 
 --- @class SingleSlotInventory : BaseInventory
 --- @field capacity integer undocumented
 SingleSlotInventory = {}
@@ -1077,7 +1218,9 @@ function StaticCover.cast(object) end
 --- @field mesh StaticMesh Mesh for item rendering in world
 --- @field object StaticObject Buildable object pointer for this item
 --- @field custom_data bool Is item instance contains CustomData
---- @field category bool Is item instance contains CustomData
+--- @field custom_data bool Is item instance contains CustomData
+--- @field lua table undocumented
+--- @field category string In-game database category
 StaticItem = {}
 
 --- Creates a new StaticItem static object

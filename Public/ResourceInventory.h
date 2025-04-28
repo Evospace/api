@@ -17,6 +17,8 @@ class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
       .endClass();
   }
 
+  UResourceInventory();
+
   const UStaticItem *GetItem() const;
   void SetItem(UStaticItem *s);
 

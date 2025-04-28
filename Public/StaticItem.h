@@ -44,8 +44,10 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("lua", &Self::Table) //@field table
-      .addProperty("category", [](const Self * self) //@field string In-game database category
-      { return std::string(TCHAR_TO_UTF8(*self->mCategory.ToString())); }, [](Self * self, std::string_view s){ self->mCategory = UTF8_TO_TCHAR(s.data()); })
+      .addProperty(
+        "category", [](const Self *self) //@field string In-game database category
+        { return std::string(TCHAR_TO_UTF8(*self->mCategory.ToString())); },
+        [](Self *self, std::string_view s) { self->mCategory = UTF8_TO_TCHAR(s.data()); })
       .endClass();
   }
 

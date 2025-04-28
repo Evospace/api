@@ -117,3 +117,12 @@ function print_err(message) end
 --- Prints warning to log
 --- @param message string
 function print_warn(message) end
+
+
+---
+--- @class Game
+--- @field engine_data EngineData
+Game = {}
+
+--- @class Game
+game = {}

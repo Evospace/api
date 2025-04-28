@@ -133,11 +133,4 @@ inline void registerComponentClasses(lua_State *L) {
     .deriveClass<ABlockActor, AActor>("BlockActor")
     .addProperty("logic", &ABlockActor::mBlockLogic)
     .endClass();
-
-  getGlobalNamespace(L)
-    .deriveClass<UMainGameInstance, UObject>("Game")
-    .addStaticFunction("set_localization", [](std::string_view s) {
-      UMainGameInstance::ChangeLocalization(UTF8_TO_TCHAR(s.data()));
-    })
-    .endClass();
 }

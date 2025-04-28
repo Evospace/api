@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Prototype.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "Evospace/SerializableJson.h"
 #include "Evospace/SerializableJson.h"
@@ -14,17 +15,18 @@ class USetting;
 class UValueStorage;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
+class EVOSPACE_API UGameSessionData : public UInstance {
   GENERATED_BODY()
-  public:
-  UGameSessionData();
-
-  static void lua_reg(lua_State *L) {
+  EVO_CODEGEN_INSTANCE(GameSessionData)
+  virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UGameSessionData, UObject>("GameSessionData") //@class GameSessionData : Object
-      .addProperty("infinite_ore", &UGameSessionData::mInfiniteOre) //@field boolean
+      .deriveClass<UGameSessionData, UInstance>("GameSessionData") //@class GameSessionData : Instance
+      .addProperty("infinite_ore", &UGameSessionData::InfiniteOre) //@field boolean
       .endClass();
   }
+
+  public:
+  UGameSessionData();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
@@ -32,39 +34,39 @@ class EVOSPACE_API UGameSessionData : public UObject, public ISerializableJson {
   UFUNCTION(BlueprintCallable)
   FString GetModsCombined() const;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  int32 mAutosavePeriod = 600;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 AutosavePeriod = 600;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  float TotalGameTime = 0.f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 TotalGameTicks = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FString Seed;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FString GeneratorName;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool CreativeMode;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool CreativeAllowed;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool InfiniteOre;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  float mTotalGameTime = 0.f;
+  UValueStorage *ValueStorage;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  int64 mTotalGameTicks = 0;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FString Version;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  FString mSeed;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  FString mGeneratorName;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  bool mCreativeMode;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  bool mCreativeAllowed;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  bool mInfiniteOre;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UValueStorage *mValueStorage;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  FString mVersion;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  int32 oreGrid;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 OreGrid;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<FString> mMods;
+  TArray<FString> Mods;
 };
