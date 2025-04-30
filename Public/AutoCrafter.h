@@ -42,7 +42,4 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
   virtual void BlockBeginPlay() override;
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
-
-  int32 cap_replace = 0;
-  bool recipe_prepared = false;
 };

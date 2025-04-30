@@ -469,6 +469,7 @@ Dimension = {}
 --- 
 --- @class EngineData : Instance
 --- @field props_mul number undocumented
+--- @field dpi number undocumented
 --- @field props_quality number undocumented
 --- @field reflection_preset integer undocumented
 --- @field transparency_preset integer undocumented
@@ -476,6 +477,8 @@ Dimension = {}
 --- @field fps integer undocumented
 --- @field res_x integer undocumented
 --- @field res_y integer undocumented
+--- @field fov number undocumented
+--- @field fog number undocumented
 --- @field window_mode integer undocumented
 EngineData = {}
 
@@ -1038,7 +1041,7 @@ function ResourceInventory.cast(object) end
 
 --- 
 --- 
---- @class SelectCrafter : AutoCrafter
+--- @class SelectCrafter : AbstractCrafter
 SelectCrafter = {}
 
 --- Creates a new SelectCrafter instance
