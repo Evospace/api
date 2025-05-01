@@ -118,11 +118,16 @@ function print_err(message) end
 --- @param message string
 function print_warn(message) end
 
-
----
---- @class Game
---- @field engine_data EngineData
-Game = {}
-
 --- @class Game
 game = {}
+
+
+--- Engine sound class
+---
+--- @class SoundClass
+--- @field volume number
+SoundClass = {}
+
+--- @param path string path to the object
+--- @return SoundClass
+function SoundClass.load(path) end

@@ -27,7 +27,30 @@ class LuaState {
   static UClass *FindClass(const std::string &name);
   static UClass *LoadClass(const std::string &name);
   static UTexture2D *FindTexture(const std::string &name);
-  static UMaterialInterface *FindMaterial(const std::string &name);
+  template<typename _Ty>
+  static _Ty *LuaLoadObject(const std::string &name) {
+    auto type = LoadObject<_Ty>(nullptr, UTF8_TO_TCHAR(name.data()));
+
+    if (type == nullptr) {
+      LOG(ERROR_LL) << _Ty::StaticClass()->GetName() << " not found " << UTF8_TO_TCHAR(name.data());
+    } else {
+      //LOG(TRACE_LL) << TCHAR_TO_UTF8(*type->GetName()) << " is loaded";
+    }
+
+    return type;
+  }
+  template<typename _Ty>
+  static _Ty *LuaFindObject(const std::string &name) {
+    auto type = FindObject<_Ty>(ANY_PACKAGE, UTF8_TO_TCHAR(name.data()));
+
+    if (type == nullptr) {
+      LOG(ERROR_LL) << _Ty::StaticClass()->GetName() << " not found " << UTF8_TO_TCHAR(name.data());
+    } else {
+      //LOG(TRACE_LL) << TCHAR_TO_UTF8(*type->GetName()) << " is loaded";
+    }
+
+    return type;
+  }
 
   static int errorHandler(lua_State *L);
 

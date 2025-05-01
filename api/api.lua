@@ -118,14 +118,19 @@ function print_err(message) end
 --- @param message string
 function print_warn(message) end
 
-
----
---- @class Game
---- @field engine_data EngineData
-Game = {}
-
 --- @class Game
 game = {}
+
+
+--- Engine sound class
+---
+--- @class SoundClass
+--- @field volume number
+SoundClass = {}
+
+--- @param path string path to the object
+--- @return SoundClass
+function SoundClass.load(path) end
 
 -- end of common --
 
@@ -482,6 +487,8 @@ Dimension = {}
 --- @field window_mode integer undocumented
 EngineData = {}
 
+function EngineData:apply() end
+
 --- Creates a new EngineData instance
 --- @param parent Object Object of parent
 --- @param new_name string The name of the instance
@@ -564,6 +571,14 @@ function FluidContainerBlockLogic.get_class() end
 --- @param object Object to cast
 --- @return FluidContainerBlockLogic
 function FluidContainerBlockLogic.cast(object) end
+
+--- 
+--- 
+--- @class Game : Object
+--- @field engine_data EngineData undocumented
+--- @field localization string undocumented
+--- @field build_string string undocumented
+Game = {}
 
 --- 
 --- 
@@ -1042,6 +1057,7 @@ function ResourceInventory.cast(object) end
 --- 
 --- 
 --- @class SelectCrafter : AbstractCrafter
+--- @field ignore_extra_slots bool undocumented
 SelectCrafter = {}
 
 --- Creates a new SelectCrafter instance

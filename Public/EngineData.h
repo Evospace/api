@@ -24,6 +24,8 @@ class EVOSPACE_API UEngineData : public UInstance {
       .addProperty("fov", &UEngineData::Fov) //@field number
       .addProperty("fog", &UEngineData::Fog) //@field number
       .addProperty("window_mode", &UEngineData::Windowed) //@field integer
+      //direct:
+      //function EngineData:apply() end
       .addFunction("apply", &UEngineData::ApplyData)
       .endClass();
   }
@@ -45,19 +47,19 @@ class EVOSPACE_API UEngineData : public UInstance {
   int32 GiPreset;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 Fps;
+  int32 Fps = 60;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  float Fov;
+  float Fov = 80;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  float Fog;
+  float Fog = 1;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 ResolutionX;
+  int32 ResolutionX = 1920;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 ResolutionY;
+  int32 ResolutionY = 1080;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 Windowed;

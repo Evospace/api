@@ -38,8 +38,6 @@ class USetting : public UPrototype {
           return TCHAR_TO_UTF8(*s); },
         [](USetting *self, std::string_view s) { self->mDefaultKey = json_helper::ParseKeystrokeToKeyChord(UTF8_TO_TCHAR(s.data())); })
       .addStaticFunction("update_widgets", &Self::UpdateSettingsWidgets)
-      .addStaticFunction("set_localization", &Self::SetLocalization)
-      .addStaticFunction("get_localization", &Self::GetLocalization)
       .endClass();
   }
 
@@ -81,8 +79,6 @@ class USetting : public UPrototype {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   static void UpdateSettingsWidgets();
-  static void SetLocalization(std::string_view s);
-  static std::string GetLocalization();
 
   public:
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)

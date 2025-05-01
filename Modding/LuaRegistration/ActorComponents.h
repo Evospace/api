@@ -4,10 +4,11 @@
 #include "ThirdParty/luabridge/luabridge.h"
 #include "Evospace/Common.h"
 #include "Public/Dimension.h"
-#include "Evospace/MainGameInstance.h"
+#include "Public/MainGameInstance.h"
 #include "Evospace/Blocks/BlockActor.h"
 #include "Evospace/Item/SlotWidget.h"
 #include "Public/ItemData.h"
+#include "Sound/SoundClass.h"
 
 class UIcoGenerator;
 struct FItemData;
@@ -39,7 +40,14 @@ inline void registerComponentClasses(lua_State *L) {
 
   getGlobalNamespace(L)
     .deriveClass<UMaterialInterface, UObject>("Material")
-    .addStaticFunction("load", &evo::LuaState::FindMaterial)
+    .addStaticFunction("load", &evo::LuaState::LuaLoadObject<UMaterialInterface>)
+    .endClass();
+
+  getGlobalNamespace(L)
+    .deriveClass<USoundClass, UObject>("SoundClass")
+    .addStaticFunction("load", &evo::LuaState::LuaLoadObject<USoundClass>)
+    .addProperty("volume", [](USoundClass * self) //@field numeric
+    { return self->Properties.Volume; }, [](USoundClass * self, float volume)  { self->Properties.Volume = volume; })
     .endClass();
 
   getGlobalNamespace(L)

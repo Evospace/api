@@ -1,0 +1,391 @@
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
+#pragma once
+#include "CoreMinimal.h"
+#include "Public/WorldGenerator.h"
+#include "SteamGameInstance.h"
+#include "Modding/LegacyLuaState.h"
+
+#include <Containers/Array.h>
+#include <Containers/Map.h>
+#include <Engine/DPICustomScalingRule.h>
+#include <Engine/GameInstance.h>
+
+#if WITH_EDITOR
+#include "Editor/EditorEngine.h"
+#endif
+
+#include "MainGameInstance.generated.h"
+
+class UEngineData;
+class UNeiComponent;
+class URegionMap;
+class AViewCapture;
+class UDB;
+class UInventoryAccess;
+class UUserWidget;
+class UStaticBlock;
+class UStaticItem;
+class UObjectLibrary;
+class UAssetOwner;
+
+UENUM(BlueprintType)
+enum class EJoyImageFormats : uint8 {
+  JPG UMETA(DisplayName = "JPG        "),
+  PNG UMETA(DisplayName = "PNG        "),
+  BMP UMETA(DisplayName = "BMP        "),
+  ICO UMETA(DisplayName = "ICO        "),
+  EXR UMETA(DisplayName = "EXR        "),
+  ICNS UMETA(DisplayName = "ICNS        ")
+};
+
+USTRUCT(BlueprintType)
+struct FScreenResolution {
+  GENERATED_BODY()
+
+  public:
+  uint32 Width;
+  uint32 Height;
+};
+
+USTRUCT(BlueprintType)
+struct EVOSPACE_API FLocalizationTable {
+  GENERATED_BODY()
+
+  public:
+  UPROPERTY()
+  TMap<FName, FString> mLocTexts;
+};
+
+UCLASS()
+class EVOSPACE_API UCustomDPI : public UDPICustomScalingRule {
+  GENERATED_BODY()
+
+  public:
+  virtual float GetDPIScaleBasedOnSize(FIntPoint Size) const override;
+};
+
+UCLASS()
+class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
+  GENERATED_BODY()
+  void lua_reg(lua_State *L) {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
+      .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
+      .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization)  //@field string
+      .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
+      .endClass();
+    lua_reg_detail(L);
+  }
+  void lua_reg_detail(lua_State*L);
+
+  public:
+  UMainGameInstance();
+  ~UMainGameInstance();
+
+  UFUNCTION(BlueprintCallable)
+  void SetStringSeed(const FString &str);
+
+  UFUNCTION(BlueprintCallable)
+  FString GetStringSeed() const;
+
+  UFUNCTION(BlueprintCallable)
+  int32 GetSeed() const;
+
+  UFUNCTION(BlueprintCallable)
+  void SetSaveName(const FString &str);
+
+  UFUNCTION(BlueprintCallable)
+  FString GetSaveName() const;
+
+  UFUNCTION(BlueprintCallable)
+  UInventoryAccess *GetNamedInventory(const FString &name);
+
+  UFUNCTION(BlueprintCallable)
+  static TArray<UStaticTip *> GetAllStaticTips();
+
+  UFUNCTION(BlueprintCallable)
+  UWorldGenerator *GetWorldGenerator() const;
+
+  UFUNCTION(BlueprintCallable)
+  TArray<UWorldGenerator *> GetWorldGeneratorList();
+
+  UFUNCTION(BlueprintCallable)
+  void SetWorldGenerator(UWorldGenerator *gen);
+
+  private:
+  UPROPERTY()
+  TArray<UWorldGenerator *> mWorldGenerators;
+
+  UPROPERTY()
+  UWorldGenerator *mWorldGenerator;
+
+  public:
+  UFUNCTION(BlueprintCallable)
+  void SetCreativeAllowed(bool allowed);
+
+  UFUNCTION(BlueprintCallable)
+  bool GetCreativeAllowed();
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UNeiComponent *mNei;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+  bool mAllResearchesFinished = false;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static TArray<int32> SpiralMatrixCoords(int32 size);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static float GetNextTime(float time, float delta);
+
+  //TODO: check usage
+  UFUNCTION(BlueprintCallable)
+  static void SetDPI(float scale);
+
+  //TODO: check usage
+  static float DPIScale;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString StringFromInt64(const int64 s);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString StringHexFromInt64(const int64 s);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString StringBinFromInt64(int64 s);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static float Smoothstep(float edge0, float edge1, float x);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static bool IsValidSteamString(const FString &s);
+
+  UFUNCTION(BlueprintCallable)
+  static void ClipboardPaste(FString &dest);
+
+  UFUNCTION(BlueprintCallable)
+  static void ClipboardCopy(const FString &s);
+
+  /** Get the coordinates of the center of the player's screen / viewport.
+   * Returns false if the operation could not occur */
+  UFUNCTION(BlueprintPure)
+  static bool Viewport__GetCenterOfViewport(const APlayerController *ThePC, float &PosX, float &PosY);
+
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic, Meta = (WorldContext = "WorldContextObject", DeterminesOutputType = "WidgetClass"))
+  static UUserWidget *GetFirstWidgetOfClass(UObject *WorldContextObject, TSubclassOf<UUserWidget> WidgetClass, bool TopLevelOnly);
+
+  /** Only hardware dependent, no smoothing */
+  UFUNCTION(BlueprintCallable)
+  static void GraphicsSettings__SetFrameRateToBeUnbound();
+
+  /** Set the Max Frame Rate. Min value is 10. */
+  UFUNCTION(BlueprintCallable)
+  static void GraphicsSettings__SetFrameRateCap(float NewValue);
+
+  UFUNCTION(BlueprintCallable)
+  void OnWindowFocusChanged(bool bIsFocused);
+
+  const UJsonObjectLibrary *GetObjectLibrary() const;
+
+  UFUNCTION(BlueprintCallable)
+  void PostModLoad();
+
+  static evo::LegacyLuaState *GetLuaState();
+  static UMainGameInstance *GetMainGameInstance();
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+  TArray<FSteamUGCDetails> mSubscriptionDetails;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+  bool mIsSubscriptionQueryDone = false;
+
+  UFUNCTION(BlueprintCallable)
+  static void SetSoundClassVolume(USoundClass *sound_class, float volume);
+
+  UFUNCTION(BlueprintCallable)
+  static float GetSoundClassVolume(USoundClass *sound_class);
+
+  UFUNCTION(BlueprintCallable)
+  static bool IsSaveExists(FString name);
+
+  UFUNCTION(BlueprintCallable)
+  static bool DeleteSave(FString name);
+
+  UFUNCTION(BlueprintCallable)
+  static FString GetBuildString();
+
+  std::string GetBuildLuaString() const;
+
+  UFUNCTION(BlueprintCallable)
+  static UTexture2D *Victory_LoadTexture2D_FromFile(const FString &FullFilePath, bool &IsValid, int32 &Width, int32 &Height);
+
+  static UTexture2D *LoadTexture2DFromFile(const FString &FullFilePath);
+
+  static UTexture2D *Victory_LoadTexture2D_FromArray(const TArray<FColor> &RawFileData, bool &IsValid, int32 &Width, int32 &Height);
+
+  UFUNCTION(BlueprintCallable)
+  static TArray<FAssetData> ListAllAssets();
+
+  UFUNCTION(BlueprintCallable)
+  static UClass *GetClassFromAssetData(const FAssetData &InAssetData);
+
+  UFUNCTION(BlueprintCallable)
+  static void SetCameraFromOriginAndBoxExtent(AActor *Camera, const FVector &Origin, const FVector &BoxExtent);
+
+  static bool Victory_SavePixels(const FString &FullFilePath, int32 Width, int32 Height, const TArray<FColor> &ImagePixels, bool sRGB);
+
+  UFUNCTION(BlueprintCallable)
+  static int32 GreatestCommonDivisor(int32 a, int32 b);
+
+  UFUNCTION(BlueprintCallable)
+  static TArray<FString> GetLocalizations();
+
+  UFUNCTION(BlueprintCallable)
+  static void ChangeLocalization(FString target);
+
+  void SetLocalization(std::string culture);
+  std::string GetLocalization() const;
+
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  static void OpenDiscord();
+
+  UFUNCTION(BlueprintCallable)
+  static TArray<FString> GetErrors();
+
+  UFUNCTION(BlueprintCallable)
+  static bool HasErrors();
+
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  static bool ContainsAllResearches(const TSet<UStaticResearch *> where, const TArray<UStaticResearch *> what);
+
+  UFUNCTION(BlueprintCallable)
+  void SetFilterString(const FString &str);
+
+  UPROPERTY(BlueprintReadWrite)
+  TArray<UStaticItem *> FilteredItems;
+
+  UPROPERTY(BlueprintReadWrite)
+  TArray<UStaticBlock *> FilteredBlocks;
+
+  UPROPERTY(BlueprintReadWrite)
+  bool mTickFailed = false;
+
+  UPROPERTY(BlueprintReadWrite)
+  int32 VanillaJsonCount = 0;
+
+  UPROPERTY(BlueprintReadWrite)
+  int32 ModdedJsonCount = 0;
+
+  UPROPERTY(BlueprintReadWrite)
+  int32 ModdedAssetCount = 0;
+
+  UPROPERTY(BlueprintReadWrite)
+  FString LoadingMessage = "";
+
+  UPROPERTY(BlueprintReadWrite)
+  AViewCapture *mCaptureActor;
+
+  UPROPERTY(BlueprintReadWrite)
+  UEngineData *EngineData;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FLinearColor IndexToColor(int32 index);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FLinearColor HashToColor(const UStaticItem *Pointer);
+
+  static FLinearColor VoidToColor(const void *Pointer);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLocalizedParts(const TArray<FKeyTableObject> &label_parts, const FString &separator = " ");
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLocalizedKeyTable(const FName &key, const FName &table);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLocalizedObject(const FKeyTableObject &object);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLocalizedPartsFormat(const TArray<FKeyTableObject> &label_parts, const FKeyTableObject &format);
+
+  UFUNCTION(BlueprintCallable)
+  bool IsContentLoaded() const;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FVector2D ViewportSize();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static float GetDPI();
+
+  static void ResearchReset();
+
+  UFUNCTION(BlueprintCallable)
+  FString GetCurrentRHI();
+
+  UFUNCTION(BlueprintCallable)
+  FString GetLastLoadingMessage() const;
+
+  static TMap<FName, FLocalizationTable> mLocTables;
+
+  UPROPERTY(BlueprintReadWrite)
+  bool mSteamworksIsReady = false;
+
+  static bool IsPIEPaused() {
+#if WITH_EDITOR
+    if (GEditor) {
+      if (GEditor->PlayWorld) {
+        return GEditor->PlayWorld->IsPaused();
+      }
+    }
+#endif
+
+    return false;
+  }
+
+  protected:
+  virtual void OnStart() override;
+
+  void OnContentLoaded();
+
+  bool LoadTick(float Delta);
+
+  virtual void Shutdown() override;
+
+  FString mFilterString;
+
+  public:
+  std::unique_ptr<evo::LegacyLuaState> legacyLuaState;
+  //std::unique_ptr<evo::ModLoadingLuaState> modLoadingLuaState;
+  std::unique_ptr<ModLoadingContext> mlc;
+
+  UObject *GetAssetOwner() const;
+
+  FTSTicker::FDelegateHandle TickDelegateHandle;
+  FTSTicker::FDelegateHandle LoadingDelegate;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UDB *DB;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UJsonObjectLibrary *mJsonObjectLibrary;
+
+  UPROPERTY()
+  TMap<UClass *, UAssetOwner *> mAssetTypeOwners;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  FDateTime mLastSave = {};
+
+  FString mStringSeed = "Default";
+  FString mSaveName = "Default";
+  int32 mSeed = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  URegionMap *mRegionMap;
+
+  bool mCreativeAllowed = true;
+  bool mContentLoaded = false;
+  bool mSubscriptionState = false;
+
+  TArray<UStaticItem *> mUnfilteredItems;
+  TArray<UStaticBlock *> mUnfilteredBlocks;
+};

@@ -2,7 +2,7 @@
 #include "Dimension.h"
 #include "EngineUtils.h"
 #include "Evospace/JsonHelper.h"
-#include "Evospace/MainGameInstance.h"
+#include "Public/MainGameInstance.h"
 #include "Evospace/WorldEntities/WorldFeaturesManager.h"
 
 void UEngineData::ApplyData() const {
