@@ -50,7 +50,7 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   void ResetCrafterState();
 
   virtual void BlockBeginPlay() override;
-  
+
   UPROPERTY(EditAnywhere)
   bool IgnoreExtraSlots = false;
 

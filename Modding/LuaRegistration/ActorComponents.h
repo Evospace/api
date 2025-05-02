@@ -46,8 +46,10 @@ inline void registerComponentClasses(lua_State *L) {
   getGlobalNamespace(L)
     .deriveClass<USoundClass, UObject>("SoundClass")
     .addStaticFunction("load", &evo::LuaState::LuaLoadObject<USoundClass>)
-    .addProperty("volume", [](USoundClass * self) //@field numeric
-    { return self->Properties.Volume; }, [](USoundClass * self, float volume)  { self->Properties.Volume = volume; })
+    .addProperty(
+      "volume", [](USoundClass *self) //@field numeric
+      { return self->Properties.Volume; },
+      [](USoundClass *self, float volume) { self->Properties.Volume = volume; })
     .endClass();
 
   getGlobalNamespace(L)

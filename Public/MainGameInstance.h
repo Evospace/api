@@ -71,12 +71,12 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
       .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
-      .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization)  //@field string
+      .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
       .endClass();
     lua_reg_detail(L);
   }
-  void lua_reg_detail(lua_State*L);
+  void lua_reg_detail(lua_State *L);
 
   public:
   UMainGameInstance();

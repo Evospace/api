@@ -27,7 +27,7 @@ class LuaState {
   static UClass *FindClass(const std::string &name);
   static UClass *LoadClass(const std::string &name);
   static UTexture2D *FindTexture(const std::string &name);
-  template<typename _Ty>
+  template <typename _Ty>
   static _Ty *LuaLoadObject(const std::string &name) {
     auto type = LoadObject<_Ty>(nullptr, UTF8_TO_TCHAR(name.data()));
 
@@ -39,7 +39,7 @@ class LuaState {
 
     return type;
   }
-  template<typename _Ty>
+  template <typename _Ty>
   static _Ty *LuaFindObject(const std::string &name) {
     auto type = FindObject<_Ty>(ANY_PACKAGE, UTF8_TO_TCHAR(name.data()));
 
