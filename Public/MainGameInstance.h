@@ -71,6 +71,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
       .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
+      .addStaticFunction("get_supported_resolutions", &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
       .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
       .endClass();
@@ -295,6 +296,8 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static FLinearColor HashToColor(const UStaticItem *Pointer);
 
   static FLinearColor VoidToColor(const void *Pointer);
+
+  static std::vector<std::string> GetAllSupportedResolutions() ;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLocalizedParts(const TArray<FKeyTableObject> &label_parts, const FString &separator = " ");
