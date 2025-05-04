@@ -21,6 +21,11 @@ class EVOSPACE_API UEngineData : public UInstance {
       .addProperty("fps", &UEngineData::Fps) //@field integer
       .addProperty("res_x", &UEngineData::ResolutionX) //@field integer
       .addProperty("res_y", &UEngineData::ResolutionY) //@field integer
+      .addProperty("loading_range", &UEngineData::LoadingRange) //@field integer
+      .addProperty("performance", &UEngineData::Performance) //@field boolean
+      .addProperty("ctrl_hotbar", &UEngineData::CtrlHotbar) //@field boolean
+      .addProperty("alt_hotbar", &UEngineData::AltHotbar) //@field boolean
+      .addProperty("shift_hotbar", &UEngineData::ShiftHotbar) //@field boolean
       .addProperty("fov", &UEngineData::Fov) //@field number
       .addProperty("fog", &UEngineData::Fog) //@field number
       .addProperty("window_mode", &UEngineData::Windowed) //@field integer
@@ -31,41 +36,58 @@ class EVOSPACE_API UEngineData : public UInstance {
   }
 
   public:
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   float PropsMul = 1.0;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   float PropsQuality = 1.0;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 ReflectionPreset;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 TransparencyPreset;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 GiPreset;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
+  bool Performance;
+
+  UPROPERTY(EditAnywhere)
+  bool CtrlHotbar;
+
+  UPROPERTY(EditAnywhere)
+  bool AltHotbar;
+
+  UPROPERTY(EditAnywhere)
+  bool ShiftHotbar;
+
+  UPROPERTY(EditAnywhere)
   int32 Fps = 60;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
+  int32 LoadingRange = 9;
+
+  UPROPERTY(EditAnywhere)
   float Fov = 80;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   float Fog = 1;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 ResolutionX = 1920;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 ResolutionY = 1080;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   int32 Windowed;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(EditAnywhere)
   float Dpi = 1.0;
 
   void ApplyData() const;
+
+  void ApplyControllerData() const;
 };

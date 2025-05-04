@@ -267,25 +267,25 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UPROPERTY(BlueprintReadWrite)
   TArray<UStaticBlock *> FilteredBlocks;
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   bool mTickFailed = false;
 
   UPROPERTY(BlueprintReadWrite)
   int32 VanillaJsonCount = 0;
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   int32 ModdedJsonCount = 0;
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   int32 ModdedAssetCount = 0;
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   FString LoadingMessage = "";
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   AViewCapture *mCaptureActor;
 
-  UPROPERTY(BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UEngineData *EngineData;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)

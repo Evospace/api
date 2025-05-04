@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "EvoRingBuffer.h"
 #include "Evospace/ThreadWorker.h"
 #include "Evospace/Vector.h"
 #include "Evospace/Props/DimensionPropComponent.h"
@@ -70,6 +71,9 @@ class ADimension : public AActor {
 
   UFUNCTION(BlueprintCallable)
   float GetTps() const;
+
+  UFUNCTION(BlueprintCallable)
+  float GetFps()const;
 
   UFUNCTION(BlueprintCallable)
   float GetTickDuration() const;
@@ -157,10 +161,10 @@ class ADimension : public AActor {
   float DeltaRemain = 0.f;
   int32 Ticks = 0;
   int32 HalfTps = 0;
-  TCircularBuffer<float> TpsBuffer = TCircularBuffer<float>(16, 0);
-  int32 TpsIndex = 0;
-  TCircularBuffer<float> CyclesBuffer = TCircularBuffer<float>(16, 0);
-  int32 CyclesIndex = 0;
+  int32 FrameCount = 0;
+  EvoRingBuffer<float> TpsBuffer = EvoRingBuffer<float>(16, 0);
+  EvoRingBuffer<float> CyclesBuffer = EvoRingBuffer<float>(16, 0);
+  EvoRingBuffer<float> FpsBuffer = EvoRingBuffer<float>(4, 0);
   bool Paused = false;
   int32 MaxTps = 20;
 

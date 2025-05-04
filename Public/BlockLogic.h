@@ -65,6 +65,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual void HandleRecipeSelection(UStaticItem *item);
   void SetAccessorsInstances(bool show);
 
+  virtual void RotationPostprocess();
+
   virtual void SetRenderable();
 
   virtual void SetActor(ABlockActor *actor);
