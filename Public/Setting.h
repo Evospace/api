@@ -35,7 +35,7 @@ class USetting : public UPrototype {
         "default_key", [](USetting *self) //@field string
         -> std::string {
           auto & chord = self->mDefaultKey;
-          FString s = FString("") + (chord.bAlt ? "Alt+" : "") + (chord.bCtrl ? "Ctrl+" : "") + (chord.bShift ? "Shift+" : "") + (chord.bCmd ? "Cmd+" : "") + chord.Key.ToString();;
+          FString s = FString("") + (chord.bAlt ? "Alt+" : "") + (chord.bCtrl ? "Ctrl+" : "") + (chord.bShift ? "Shift+" : "") + (chord.bCmd ? "Cmd+" : "") + chord.Key.ToString();
           return TCHAR_TO_UTF8(*s); },
         [](USetting *self, std::string_view s) { self->mDefaultKey = json_helper::ParseKeystrokeToKeyChord(UTF8_TO_TCHAR(s.data())); })
       .addStaticFunction("update_widgets", &Self::UpdateSettingsWidgets)

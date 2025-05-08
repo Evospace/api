@@ -11,3 +11,5 @@ Evospace documentation
    rst/core
    rst/items
    rst/blocks
+   rst/researches
+   rst/misc

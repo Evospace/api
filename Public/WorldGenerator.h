@@ -42,7 +42,7 @@ class EVOSPACE_API UWorldGenerator : public UPrototype {
   EVO_CODEGEN_DB(WorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UWorldGenerator, UPrototype>("WorldGenerator")
+      .deriveClass<UWorldGenerator, UPrototype>("WorldGenerator") //@class WorldGenerator : Prototype
       .endClass();
   }
 };

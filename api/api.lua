@@ -1557,6 +1557,30 @@ function StaticStructure.cast(object) end
 
 --- 
 --- 
+--- @class StaticTip : Prototype
+StaticTip = {}
+
+--- Creates a new StaticTip static object
+--- @param new_name string The name of the object
+--- @return StaticTip
+function StaticTip.new(new_name) end
+
+--- Searching for StaticTip in db
+--- @param name string The name of the object
+--- @return StaticTip
+function StaticTip.find(name) end
+
+--- Return StaticTip class object
+--- @return Class
+function StaticTip.get_class() end
+
+--- Trying to cast Object into StaticTip
+--- @param object Object to cast
+--- @return StaticTip
+function StaticTip.cast(object) end
+
+--- 
+--- 
 --- @class StorageBlockLogic : BlockLogic
 StorageBlockLogic = {}
 
@@ -1578,4 +1602,28 @@ function StorageBlockLogic.get_class() end
 --- @param object Object to cast
 --- @return StorageBlockLogic
 function StorageBlockLogic.cast(object) end
+
+--- 
+--- 
+--- @class WorldGenerator : Prototype
+WorldGenerator = {}
+
+--- Creates a new WorldGenerator static object
+--- @param new_name string The name of the object
+--- @return WorldGenerator
+function WorldGenerator.new(new_name) end
+
+--- Searching for WorldGenerator in db
+--- @param name string The name of the object
+--- @return WorldGenerator
+function WorldGenerator.find(name) end
+
+--- Return WorldGenerator class object
+--- @return Class
+function WorldGenerator.get_class() end
+
+--- Trying to cast Object into WorldGenerator
+--- @param object Object to cast
+--- @return WorldGenerator
+function WorldGenerator.cast(object) end
 

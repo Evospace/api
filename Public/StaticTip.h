@@ -43,7 +43,7 @@ class UStaticTip : public UPrototype {
   EVO_CODEGEN_DB(StaticTip, StaticTip)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticTip, UPrototype>("StaticTip")
+      .deriveClass<UStaticTip, UPrototype>("StaticTip") //@class StaticTip : Prototype
       .addProperty("label", &UStaticTip::mLabel)
       .addProperty("description", &UStaticTip::mDescription)
       .addProperty("image", &UStaticTip::mImagePath)
