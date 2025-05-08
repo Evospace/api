@@ -257,7 +257,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static bool HasErrors();
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  static bool ContainsAllResearches(const TSet<UStaticResearch *> where, const TArray<UStaticResearch *> what);
+  static bool ContainsAllResearches(const TSet<UStaticResearchRecipe *> where, const TArray<UStaticResearchRecipe *> what);
 
   UFUNCTION(BlueprintCallable)
   void SetFilterString(const FString &str);
@@ -297,7 +297,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   static FLinearColor VoidToColor(const void *Pointer);
 
-  static std::vector<std::string> GetAllSupportedResolutions() ;
+  static std::vector<std::string> GetAllSupportedResolutions();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLocalizedParts(const TArray<FKeyTableObject> &label_parts, const FString &separator = " ");

@@ -47,21 +47,24 @@ enum class ModTickLoadStatus {
 UCLASS()
 class EVOSPACE_API UDB : public UInstance {
   GENERATED_BODY()
+  using Self = UDB;
   public:
   EVO_CODEGEN_INSTANCE(DB)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       //@comment Comment to class
-      .deriveClass<UDB, UInstance>("DB") //@class DB : Instance
+      .deriveClass<Self, UInstance>("DB") //@class DB : Instance
       //direct:
       //---Register Prototype in DB
       //---@param proto Prototype Prototype to register
       //function DB:reg(proto) end
-      .addFunction("reg", [](UDB *self, UPrototype *proto) {
-        if (ensure_log(proto, FString("Trying to register nullptr from ") + UTF8_TO_TCHAR(self->mCurrentMod->mName.data()))) {
-          self->RegisterPrototype(self->mCurrentMod, proto);
-        }
-      })
+      .addFunction("reg", &Self::RegisterPrototypeLua)
+      //direct:
+      //---Remove Prototype from DB
+      //---@param proto Prototype Prototype to remove
+      //---@return boolean was Prototype removed
+      //function DB:remove(proto) end
+      .addFunction("remove", &Self::RemovePrototype)
       //direct:
       //---Register object with class "class" and name "name" from table, filling all other properties from from table too
       //---@param table table Object table
@@ -118,6 +121,7 @@ class EVOSPACE_API UDB : public UInstance {
   static UDB *GetMainGameModLoader();
 
   void RegisterPrototype(const UMod *owner, UPrototype *proto) const;
+  void RegisterPrototypeLua(UPrototype *proto) const;
 
   void LoadSettings();
   void SaveSettings();
@@ -153,6 +157,7 @@ class EVOSPACE_API UDB : public UInstance {
   bool ResearchPostprocess(ModLoadingContext &context);
   bool LuaPostprocess(ModLoadingContext &context);
   bool CollectingItems(ModLoadingContext &context);
+  bool RemovePrototype(UPrototype*proto)const;
   bool ModContentLoad(int phase);
 
   UPROPERTY()

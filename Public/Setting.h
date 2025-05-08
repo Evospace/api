@@ -14,6 +14,7 @@ class USetting : public UPrototype {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<USetting, UPrototype>("Setting") //@class Setting : Prototype
+      .addProperty("restart", &Self::Restart) //@field boolean
       .addProperty("set_action", &Self::SetAction) //@field function
       .addProperty("get_action", &Self::GetAction) //@field function
       .addProperty("label", &Self::Label) //@field string
@@ -89,6 +90,9 @@ class USetting : public UPrototype {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   FName mKeyBinging;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  bool Restart = false;
 
   std::string DefaultStringValue;
   std::string StringValue;

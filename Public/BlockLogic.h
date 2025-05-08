@@ -39,6 +39,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
       //function BlockLogic:reg(accessor) end
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
       .addProperty("static_block", &UBlockLogic::mStaticBlock) //@field StaticBlock comment
+      .addFunction("find_accessor", &UBlockLogic::GetAccessor)
       .endClass();
   }
 
@@ -79,6 +80,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   virtual bool IsBlockTicks() const;
   virtual void Tick();
   virtual void TickAccessor();
+
+  UAccessor *GetAccessor(const std::string &name);
 
   ADimension *GetDim() const { return mDimension; }
 

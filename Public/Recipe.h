@@ -11,7 +11,7 @@
 
 class URecipeDictionary;
 class URecipeInventory;
-class UStaticResearch;
+class UStaticResearchRecipe;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
@@ -78,7 +78,7 @@ class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   int32 mProductivityBonus = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UStaticResearch *mUnlocksBy;
+  UStaticResearchRecipe *mUnlocksBy;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<FLinearColor> Colors;

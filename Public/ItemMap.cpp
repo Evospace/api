@@ -30,7 +30,7 @@ void UItemMap::Add(const UStaticItem *Item, int64 Delta) {
   }
 }
 void UItemMap::FromInventory(const UInventoryReader *reader) {
-  if (!expect_once(reader, "UItemMap::FromInventory with nullptr InventoryReader"))
+  if (!expect_once(reader, "ItemMap::FromInventory with nullptr InventoryReader"))
     return;
 
   for (const auto &data : reader->GetSlots()) {

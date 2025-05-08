@@ -73,7 +73,7 @@ class ADimension : public AActor {
   float GetTps() const;
 
   UFUNCTION(BlueprintCallable)
-  float GetFps()const;
+  float GetFps() const;
 
   UFUNCTION(BlueprintCallable)
   float GetTickDuration() const;

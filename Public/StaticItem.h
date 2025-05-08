@@ -5,6 +5,7 @@
 #include "Prototype.h"
 #include "Evospace/Common.h"
 #include "Evospace/ISearchable.h"
+#include "Evospace/Misc/ArrayConverter.h"
 
 #include "Evospace/Misc/AssetOwner.h"
 
@@ -43,11 +44,24 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("object", &Self::Object) //@field StaticObject Buildable object pointer for this item
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
+      .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
       .addProperty(
         "category", [](const Self *self) //@field string In-game database category
         { return std::string(TCHAR_TO_UTF8(*self->mCategory.ToString())); },
         [](Self *self, std::string_view s) { self->mCategory = UTF8_TO_TCHAR(s.data()); })
+      .addProperty(
+        "label_parts", [](const Self *self) //@field Loc[]
+        { return evo::to_vector(self->mLabelParts); },
+        [](Self *self, const std::vector<FKeyTableObject> &value) {
+          self->mLabelParts = evo::to_array(value);
+        })
+      .addProperty(
+        "description_parts", [](const Self *self) //@field Loc[]
+        { return evo::to_vector(self->mDescriptionParts); },
+        [](Self *self, const std::vector<FKeyTableObject> &value) {
+          self->mDescriptionParts = evo::to_array(value);
+        })
       .endClass();
   }
 
@@ -84,7 +98,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   UTexture2D *mImage = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TSubclassOf<AItemLogic> mItemLogic;
+  UClass * mItemLogic;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticMesh *mMesh;
@@ -96,7 +110,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   TArray<UMaterialInterface *> mMaterials;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  int64 mStackSize = 0;
+  int64 mStackSize = 1;
 
   // Item database category
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -114,9 +128,6 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool mStackable = true;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  bool mIncomplete = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int64 mMaxCharge = 0;

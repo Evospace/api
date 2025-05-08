@@ -433,6 +433,11 @@ DB = {}
 ---@param proto Prototype Prototype to register
 function DB:reg(proto) end
 
+---Remove Prototype from DB
+---@param proto Prototype Prototype to remove
+---@return boolean was Prototype removed
+function DB:remove(proto) end
+
 ---Register object with class "class" and name "name" from table, filling all other properties from from table too
 ---@param table table Object table
 function DB:from_table(table) end
@@ -482,6 +487,11 @@ Dimension = {}
 --- @field fps integer undocumented
 --- @field res_x integer undocumented
 --- @field res_y integer undocumented
+--- @field loading_range integer undocumented
+--- @field performance boolean undocumented
+--- @field ctrl_hotbar boolean undocumented
+--- @field alt_hotbar boolean undocumented
+--- @field shift_hotbar boolean undocumented
 --- @field fov number undocumented
 --- @field fog number undocumented
 --- @field window_mode integer undocumented
@@ -1082,6 +1092,7 @@ function SelectCrafter.cast(object) end
 --- 
 --- 
 --- @class Setting : Prototype
+--- @field restart boolean undocumented
 --- @field set_action function undocumented
 --- @field get_action function undocumented
 --- @field label string undocumented
@@ -1178,8 +1189,8 @@ function SourceData.cast(object) end
 --- @field selector Class undocumented
 --- @field tesselator Tesselator undocumented
 --- @field replace_tag string undocumented
---- @field color_side Vector undocumented
---- @field color_top Vector undocumented
+--- @field color_side Vec3 undocumented
+--- @field color_top Vec3 undocumented
 --- @field tier integer undocumented
 --- @field level integer undocumented
 --- @field lua table undocumented
@@ -1238,8 +1249,11 @@ function StaticCover.cast(object) end
 --- @field object StaticObject Buildable object pointer for this item
 --- @field custom_data bool Is item instance contains CustomData
 --- @field custom_data bool Is item instance contains CustomData
+--- @field logic Class Class for item while in hand
 --- @field lua table undocumented
 --- @field category string In-game database category
+--- @field label_parts Loc[] undocumented
+--- @field description_parts Loc[] undocumented
 StaticItem = {}
 
 --- Creates a new StaticItem static object
@@ -1346,6 +1360,174 @@ function StaticPropList.get_class() end
 --- @param object Object to cast
 --- @return StaticPropList
 function StaticPropList.cast(object) end
+
+--- Research base class
+--- 
+--- @class StaticResearch : Prototype
+StaticResearch = {}
+
+--- Creates a new StaticResearch static object
+--- @param new_name string The name of the object
+--- @return StaticResearch
+function StaticResearch.new(new_name) end
+
+--- Searching for StaticResearch in db
+--- @param name string The name of the object
+--- @return StaticResearch
+function StaticResearch.find(name) end
+
+--- Return StaticResearch class object
+--- @return Class
+function StaticResearch.get_class() end
+
+--- Trying to cast Object into StaticResearch
+--- @param object Object to cast
+--- @return StaticResearch
+function StaticResearch.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchBonusInventory : StaticResearch
+StaticResearchBonusInventory = {}
+
+--- Creates a new StaticResearchBonusInventory static object
+--- @param new_name string The name of the object
+--- @return StaticResearchBonusInventory
+function StaticResearchBonusInventory.new(new_name) end
+
+--- Searching for StaticResearchBonusInventory in db
+--- @param name string The name of the object
+--- @return StaticResearchBonusInventory
+function StaticResearchBonusInventory.find(name) end
+
+--- Return StaticResearchBonusInventory class object
+--- @return Class
+function StaticResearchBonusInventory.get_class() end
+
+--- Trying to cast Object into StaticResearchBonusInventory
+--- @param object Object to cast
+--- @return StaticResearchBonusInventory
+function StaticResearchBonusInventory.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchDecorationUnlock : StaticResearch
+StaticResearchDecorationUnlock = {}
+
+--- Creates a new StaticResearchDecorationUnlock static object
+--- @param new_name string The name of the object
+--- @return StaticResearchDecorationUnlock
+function StaticResearchDecorationUnlock.new(new_name) end
+
+--- Searching for StaticResearchDecorationUnlock in db
+--- @param name string The name of the object
+--- @return StaticResearchDecorationUnlock
+function StaticResearchDecorationUnlock.find(name) end
+
+--- Return StaticResearchDecorationUnlock class object
+--- @return Class
+function StaticResearchDecorationUnlock.get_class() end
+
+--- Trying to cast Object into StaticResearchDecorationUnlock
+--- @param object Object to cast
+--- @return StaticResearchDecorationUnlock
+function StaticResearchDecorationUnlock.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchEfficiency : StaticResearch
+StaticResearchEfficiency = {}
+
+--- Creates a new StaticResearchEfficiency static object
+--- @param new_name string The name of the object
+--- @return StaticResearchEfficiency
+function StaticResearchEfficiency.new(new_name) end
+
+--- Searching for StaticResearchEfficiency in db
+--- @param name string The name of the object
+--- @return StaticResearchEfficiency
+function StaticResearchEfficiency.find(name) end
+
+--- Return StaticResearchEfficiency class object
+--- @return Class
+function StaticResearchEfficiency.get_class() end
+
+--- Trying to cast Object into StaticResearchEfficiency
+--- @param object Object to cast
+--- @return StaticResearchEfficiency
+function StaticResearchEfficiency.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchModifier : StaticResearch
+StaticResearchModifier = {}
+
+--- Creates a new StaticResearchModifier static object
+--- @param new_name string The name of the object
+--- @return StaticResearchModifier
+function StaticResearchModifier.new(new_name) end
+
+--- Searching for StaticResearchModifier in db
+--- @param name string The name of the object
+--- @return StaticResearchModifier
+function StaticResearchModifier.find(name) end
+
+--- Return StaticResearchModifier class object
+--- @return Class
+function StaticResearchModifier.get_class() end
+
+--- Trying to cast Object into StaticResearchModifier
+--- @param object Object to cast
+--- @return StaticResearchModifier
+function StaticResearchModifier.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchRecipe : StaticResearch
+StaticResearchRecipe = {}
+
+--- Creates a new StaticResearchRecipe static object
+--- @param new_name string The name of the object
+--- @return StaticResearchRecipe
+function StaticResearchRecipe.new(new_name) end
+
+--- Searching for StaticResearchRecipe in db
+--- @param name string The name of the object
+--- @return StaticResearchRecipe
+function StaticResearchRecipe.find(name) end
+
+--- Return StaticResearchRecipe class object
+--- @return Class
+function StaticResearchRecipe.get_class() end
+
+--- Trying to cast Object into StaticResearchRecipe
+--- @param object Object to cast
+--- @return StaticResearchRecipe
+function StaticResearchRecipe.cast(object) end
+
+--- 
+--- 
+--- @class StaticResearchToolUnlock : StaticResearch
+StaticResearchToolUnlock = {}
+
+--- Creates a new StaticResearchToolUnlock static object
+--- @param new_name string The name of the object
+--- @return StaticResearchToolUnlock
+function StaticResearchToolUnlock.new(new_name) end
+
+--- Searching for StaticResearchToolUnlock in db
+--- @param name string The name of the object
+--- @return StaticResearchToolUnlock
+function StaticResearchToolUnlock.find(name) end
+
+--- Return StaticResearchToolUnlock class object
+--- @return Class
+function StaticResearchToolUnlock.get_class() end
+
+--- Trying to cast Object into StaticResearchToolUnlock
+--- @param object Object to cast
+--- @return StaticResearchToolUnlock
+function StaticResearchToolUnlock.cast(object) end
 
 --- 
 --- 

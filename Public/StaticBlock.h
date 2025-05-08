@@ -34,9 +34,11 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
       .addProperty("tesselator", &Self::Tesselator) //@field Tesselator
       .addProperty("sub_blocks", &Self::Positions)
       .addProperty(
-        "replace_tag", [](const Self *self) -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); }, [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //@field string
-      .addProperty("color_side", &Self::mColorSide) //@field Vector
-      .addProperty("color_top", &Self::mColorTop) //@field Vector
+        "replace_tag", [](const Self *self) //@field string
+        -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); },
+        [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //@field string
+      .addProperty("color_side", &Self::mColorSide) //@field Vec3
+      .addProperty("color_top", &Self::mColorTop) //@field Vec3
       .addProperty("tier", &Self::Tier) //@field integer
       .addProperty("level", &Self::Level) //@field integer
       .addProperty("lua", &Self::Table) //@field table
@@ -47,20 +49,38 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  UPROPERTY(BlueprintReadOnly)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UTesselator *Tesselator;
 
-  UPROPERTY(BlueprintReadOnly)
-  TSubclassOf<UBlockLogic> mBlockLogic = nullptr;
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UClass *mBlockLogic = nullptr;
 
-  UPROPERTY(BlueprintReadOnly)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UClass *mActorClass = nullptr;
 
-  UPROPERTY(BlueprintReadOnly)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool NoActorRenderable = false;
 
-  UPROPERTY(BlueprintReadOnly)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UClass *mSelectorClass = nullptr;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  FVector mColorSide = FVector(1);
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  FVector mColorTop = FVector(1);
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  TArray<FVector3i> Positions;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  FName ReplaceTag;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  int32 Tier = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  int32 Level = 0;
 
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 
@@ -71,22 +91,7 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
 
   virtual void Release() override;
 
-  UPROPERTY(BlueprintReadOnly)
-  FVector mColorSide = FVector(1);
-
-  UPROPERTY(BlueprintReadOnly)
-  FVector mColorTop = FVector(1);
-
   const TArray<FVector3i> &GetPositions() const;
-  TArray<FVector3i> Positions;
-
-  FName ReplaceTag;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  int32 Tier = 0;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  int32 Level = 0;
 
   virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
 
