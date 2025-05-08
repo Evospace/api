@@ -13,7 +13,8 @@ class EVOSPACE_API UStaticResearchRecipe : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchRecipe") //@class StaticResearchRecipe : StaticResearch
       .endClass();
   }
-public:
+
+  public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<class URecipe *> RecipeUnlocks;
   std::unique_ptr<FResearchUnlockLevel> RecipeUnlocksTemp;

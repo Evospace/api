@@ -13,7 +13,8 @@ class EVOSPACE_API UStaticResearchBonusInventory : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchBonusInventory") //@class StaticResearchBonusInventory : StaticResearch
       .endClass();
   }
-public:
+
+  public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

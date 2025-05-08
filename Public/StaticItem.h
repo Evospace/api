@@ -98,7 +98,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   UTexture2D *mImage = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UClass * mItemLogic;
+  UClass *mItemLogic;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticMesh *mMesh;

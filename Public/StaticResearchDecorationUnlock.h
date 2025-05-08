@@ -13,7 +13,8 @@ class EVOSPACE_API UStaticResearchDecorationUnlock : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchDecorationUnlock") //@class StaticResearchDecorationUnlock : StaticResearch
       .endClass();
   }
-public:
+
+  public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

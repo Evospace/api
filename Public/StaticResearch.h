@@ -63,7 +63,8 @@ class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
       .deriveClass<Self, UPrototype>("StaticResearch") //@class StaticResearch : Prototype
       .endClass();
   }
-public:
+
+  public:
   UStaticResearch();
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

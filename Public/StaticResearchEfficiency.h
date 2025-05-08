@@ -13,7 +13,8 @@ class EVOSPACE_API UStaticResearchEfficiency : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchEfficiency") //@class StaticResearchEfficiency : StaticResearch
       .endClass();
   }
-public:
+
+  public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

@@ -13,6 +13,7 @@ class EVOSPACE_API UStaticResearchToolUnlock : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchToolUnlock") //@class StaticResearchToolUnlock : StaticResearch
       .endClass();
   }
-public:
+
+  public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
 };

@@ -48,6 +48,7 @@ UCLASS()
 class EVOSPACE_API UDB : public UInstance {
   GENERATED_BODY()
   using Self = UDB;
+
   public:
   EVO_CODEGEN_INSTANCE(DB)
   virtual void lua_reg(lua_State *L) const override {
@@ -157,7 +158,7 @@ class EVOSPACE_API UDB : public UInstance {
   bool ResearchPostprocess(ModLoadingContext &context);
   bool LuaPostprocess(ModLoadingContext &context);
   bool CollectingItems(ModLoadingContext &context);
-  bool RemovePrototype(UPrototype*proto)const;
+  bool RemovePrototype(UPrototype *proto) const;
   bool ModContentLoad(int phase);
 
   UPROPERTY()
