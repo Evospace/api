@@ -16,7 +16,6 @@ class USetting : public UPrototype {
       .deriveClass<USetting, UPrototype>("Setting") //@class Setting : Prototype
       .addProperty("restart", &Self::Restart) //@field boolean
       .addProperty("set_action", &Self::SetAction) //@field function
-      .addProperty("get_action", &Self::GetAction) //@field function
       .addProperty("label", &Self::Label) //@field string
       .addProperty("type", &Self::Type) //@field string
       .addProperty("category", &Self::Category) //@field string
@@ -53,16 +52,12 @@ class USetting : public UPrototype {
 
   virtual void Release() override;
   bool TryMakeAction();
-  bool TryMakeGetAction();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsValueChanged() const;
 
   UFUNCTION(BlueprintCallable)
   void MakeAction();
-
-  UFUNCTION(BlueprintCallable)
-  void MakeGetAction();
 
   UFUNCTION(BlueprintCallable)
   void ApplySetting();

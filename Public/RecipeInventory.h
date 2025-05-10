@@ -17,6 +17,13 @@ class URecipe;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipeInventory : public UAutosizeInventory {
   GENERATED_BODY()
+  EVO_CODEGEN_INSTANCE(RecipeInventory)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<URecipeInventory, UInventory>("RecipeInventory") //@class RecipeInventory : AutosizeInventory
+      .addProperty("recipe", &URecipeInventory::mRecipe) //@field Recipe
+      .endClass();
+  }
 
   public:
   virtual void SortKeyAZ() override;

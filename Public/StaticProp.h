@@ -26,7 +26,7 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
       .addProperty("minimum_height", &Self::MinimumHeight) //@field number
       .addProperty("floating", &Self::Floating) //@field boolean
       .addProperty("is_big", &Self::IsBig) //@field boolean
-      .addProperty("mesh", &Self::Mesh) //@field StaticItem
+      .addProperty("mesh", &Self::Mesh) //@field StaticMesh
       .addProperty("no_collision", &Self::NoCollision) //@field boolean
       .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
       .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents

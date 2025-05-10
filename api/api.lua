@@ -128,6 +128,17 @@ game = {}
 --- @field volume number
 SoundClass = {}
 
+--- Engine static mesh
+---
+--- @class StaticMesh
+--- @field name string
+StaticMesh = {}
+
+--- @param path string path to the object
+--- @return StaticMesh
+function StaticMesh.load(path) end
+
+
 --- @param path string path to the object
 --- @return SoundClass
 function SoundClass.load(path) end
@@ -642,13 +653,20 @@ function Inventory.cast(object) end
 --- 
 --- 
 --- @class InventoryAccess : InventoryReader
---- @field is_can_have_zero_slot boolean undocumented
+--- @field zero_slots boolean undocumented
 InventoryAccess = {}
 
 --- Add item with count to InventoryAccess
 --- @param item StaticItem
 --- @param count integer
+--- @return integer Remainder
 function InventoryAccess:add(item, count) end
+
+--- Remove item with count from InventoryAccess
+--- @param item StaticItem
+--- @param count integer
+--- @return integer Remainder
+function InventoryAccess:rem(item, count) end
 
 --- Creates a new InventoryAccess instance
 --- @param parent Object Object of parent
@@ -920,6 +938,38 @@ function type.cast(object) end
 
 --- 
 --- 
+--- @class Recipe : Prototype
+--- @field ticks integer undocumented
+--- @field default_locked boolean undocumented
+--- @field locked boolean undocumented
+--- @field productivity integer undocumented
+--- @field input RecipeInventory undocumented
+--- @field output RecipeInventory undocumented
+--- @field tier integer undocumented
+--- @field start_tier integer undocumented
+Recipe = {}
+
+--- Creates a new Recipe static object
+--- @param new_name string The name of the object
+--- @return Recipe
+function Recipe.new(new_name) end
+
+--- Searching for Recipe in db
+--- @param name string The name of the object
+--- @return Recipe
+function Recipe.find(name) end
+
+--- Return Recipe class object
+--- @return Class
+function Recipe.get_class() end
+
+--- Trying to cast Object into Recipe
+--- @param object Object to cast
+--- @return Recipe
+function Recipe.cast(object) end
+
+--- 
+--- 
 --- @class RecipeDictionary : Prototype
 --- @field start_tier integer undocumented
 RecipeDictionary = {}
@@ -942,6 +992,31 @@ function RecipeDictionary.get_class() end
 --- @param object Object to cast
 --- @return RecipeDictionary
 function RecipeDictionary.cast(object) end
+
+--- 
+--- 
+--- @class RecipeInventory : AutosizeInventory
+--- @field recipe Recipe undocumented
+RecipeInventory = {}
+
+--- Creates a new RecipeInventory instance
+--- @param parent Object Object of parent
+--- @param new_name string The name of the instance
+--- @return RecipeInventory
+function RecipeInventory.new(parent, new_name) end
+
+--- Creates a new RecipeInventory instance
+--- @return RecipeInventory
+function RecipeInventory.new_simple() end
+
+--- Return RecipeInventory class object
+--- @return Class
+function RecipeInventory.get_class() end
+
+--- Trying to cast Object into RecipeInventory
+--- @param object Object to cast
+--- @return RecipeInventory
+function RecipeInventory.cast(object) end
 
 --- 
 --- 
@@ -1094,7 +1169,6 @@ function SelectCrafter.cast(object) end
 --- @class Setting : Prototype
 --- @field restart boolean undocumented
 --- @field set_action function undocumented
---- @field get_action function undocumented
 --- @field label string undocumented
 --- @field type string undocumented
 --- @field category string undocumented
@@ -1311,7 +1385,7 @@ function StaticObject.cast(object) end
 --- @field minimum_height number undocumented
 --- @field floating boolean undocumented
 --- @field is_big boolean undocumented
---- @field mesh StaticItem undocumented
+--- @field mesh StaticMesh undocumented
 --- @field no_collision boolean undocumented
 --- @field is_emitting boolean undocumented
 --- @field break_chance integer Break chance in percents

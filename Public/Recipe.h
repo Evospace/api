@@ -3,6 +3,7 @@
 #pragma once
 #include "ItemData.h"
 #include "Evospace/ISearchable.h"
+#include "Evospace/Misc/AssetOwner.h"
 #include "Public/Prototype.h"
 
 #include <Dom/JsonObject.h>
@@ -16,18 +17,19 @@ class UStaticResearchRecipe;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   GENERATED_BODY()
+  EVO_OWNER(Recipe)
   EVO_CODEGEN_DB(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<URecipe, UPrototype>("Recipe")
-      .addProperty("ticks", &URecipe::mDuration)
-      .addProperty("default_locked", &URecipe::mDefaultLocked, false)
-      .addProperty("locked", &URecipe::mLocked, false)
-      .addProperty("productivity", &URecipe::mProductivityBonus)
-      .addProperty("input", &URecipe::mInput, false)
-      .addProperty("output", &URecipe::mOutput, false)
-      .addProperty("tier", &URecipe::Tier)
-      .addProperty("start_tier", &URecipe::StartTier)
+      .deriveClass<URecipe, UPrototype>("Recipe") //@class Recipe : Prototype
+      .addProperty("ticks", &URecipe::mDuration) //@field integer
+      .addProperty("default_locked", &URecipe::mDefaultLocked) //@field boolean
+      .addProperty("locked", &URecipe::mLocked) //@field boolean
+      .addProperty("productivity", &URecipe::mProductivityBonus) //@field integer
+      .addProperty("input", &URecipe::mInput, false) //@field RecipeInventory
+      .addProperty("output", &URecipe::mOutput, false) //@field RecipeInventory
+      .addProperty("tier", &URecipe::Tier) //@field integer
+      .addProperty("start_tier", &URecipe::StartTier) //@field integer
       .endClass();
   }
 

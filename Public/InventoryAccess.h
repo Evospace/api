@@ -18,11 +18,21 @@ class EVOSPACE_API UInventoryAccess : public UInventoryReader {
       //--- Add item with count to InventoryAccess
       //--- @param item StaticItem
       //--- @param count integer
+      //--- @return integer Remainder
       //function InventoryAccess:add(item, count) end
       .addFunction("add", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
-        self->_Add({ item, count });
+        return self->_Add({ item, count });
       })
-      .addProperty("is_can_have_zero_slot", &UInventoryAccess::mCanHaveZeroSlot) //@field boolean
+      //direct:
+      //--- Remove item with count from InventoryAccess
+      //--- @param item StaticItem
+      //--- @param count integer
+      //--- @return integer Remainder
+      //function InventoryAccess:sub(item, count) end
+      .addFunction("sub", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
+        return self->_Sub({ item, count });
+      })
+      .addProperty("zero_slots", &UInventoryAccess::mCanHaveZeroSlot) //@field boolean
       .endClass();
   }
 

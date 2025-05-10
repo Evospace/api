@@ -81,7 +81,6 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   public:
   UMainGameInstance();
-  ~UMainGameInstance();
 
   UFUNCTION(BlueprintCallable)
   void SetStringSeed(const FString &str);

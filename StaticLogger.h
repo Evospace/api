@@ -46,6 +46,7 @@ class FSimpleLogger {
   }
 
   void Clear() {
+    perLevelCount.Empty();
     perLevelCount.SetNumZeroed(ELogLevel_Count);
     LogEntries.Empty();
     ErrorEntries.Empty();

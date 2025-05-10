@@ -21,7 +21,7 @@ inline void registerComponentClasses(lua_State *L) {
     .addStaticFunction(
       "find", +[](std::string_view name) { return FindObject<UObject>(MainGameOwner<UObject>::Get(), UTF8_TO_TCHAR(name.data())); })
     .addStaticFunction("cast", [](UObject *obj) { return obj; })
-    .addFunction("get_name", [](UObject *obj) { return std::string(TCHAR_TO_UTF8(*obj->GetName())); })
+    .addProperty("name", [](const UObject *self) { return evo::to_string(self->GetName()); })
     .addFunction("get_class", [](UObject *obj) { return obj->GetClass(); })
     .addStaticFunction(
       "get_class", +[]() { return UObject::StaticClass(); })
@@ -36,16 +36,19 @@ inline void registerComponentClasses(lua_State *L) {
   getGlobalNamespace(L)
     .deriveClass<UTexture2D, UObject>("Texture")
     .addStaticFunction("find", &evo::LuaState::FindTexture)
+    .addProperty("name", [](const UTexture2D *self) { return evo::to_string(self->GetName()); })
     .endClass();
 
   getGlobalNamespace(L)
     .deriveClass<UMaterialInterface, UObject>("Material")
+    .addProperty("name", [](const UMaterialInterface *self) { return evo::to_string(self->GetName()); })
     .addStaticFunction("load", &evo::LuaState::LuaLoadObject<UMaterialInterface>)
     .endClass();
 
   getGlobalNamespace(L)
     .deriveClass<USoundClass, UObject>("SoundClass")
     .addStaticFunction("load", &evo::LuaState::LuaLoadObject<USoundClass>)
+    .addProperty("name", [](const USoundClass *self) { return evo::to_string(self->GetName()); })
     .addProperty(
       "volume", [](USoundClass *self) //@field numeric
       { return self->Properties.Volume; },
@@ -54,6 +57,8 @@ inline void registerComponentClasses(lua_State *L) {
 
   getGlobalNamespace(L)
     .deriveClass<UStaticMesh, UObject>("StaticMesh")
+    .addStaticFunction("load", &evo::LuaState::LuaLoadObject<UStaticMesh>)
+    .addProperty("name", [](const UStaticMesh *self) { return evo::to_string(self->GetName()); })
     .endClass();
 
   getGlobalNamespace(L)
@@ -61,8 +66,7 @@ inline void registerComponentClasses(lua_State *L) {
     .addStaticFunction("find", &evo::LuaState::FindClass)
     .addStaticFunction("load", &evo::LuaState::LoadClass)
     .addStaticFunction("cast", [](UObject *obj) { return Cast<UClass>(obj); })
-    .addFunction(
-      "get_name", +[](const UClass *cl) { return std::string(TCHAR_TO_UTF8(*cl->GetName())); })
+    .addProperty("name", [](const UClass *self) { return evo::to_string(self->GetName()); })
     .addFunction("is_child_of", [](const UClass *self, const UClass *other) {
       return self->IsChildOf(other);
     })
@@ -105,11 +109,7 @@ inline void registerComponentClasses(lua_State *L) {
 
   getGlobalNamespace(L)
     .beginClass<UActorComponent>("ActorComponent")
-    .addProperty(
-      "name",
-      [](UActorComponent *comp) {
-        return std::string(TCHAR_TO_UTF8(*comp->GetName()));
-      })
+    .addProperty("name", [](const UActorComponent *self) { return evo::to_string(self->GetName()); })
     .endClass();
 
   getGlobalNamespace(L)

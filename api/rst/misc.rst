@@ -1,6 +1,9 @@
 Misc
 ---------------
 
+.. lua:autoobject:: Recipe
+   :members:
+
 .. lua:autoobject:: StaticProp
    :members:
 

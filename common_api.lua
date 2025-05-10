@@ -128,6 +128,17 @@ game = {}
 --- @field volume number
 SoundClass = {}
 
+--- Engine static mesh
+---
+--- @class StaticMesh
+--- @field name string
+StaticMesh = {}
+
+--- @param path string path to the object
+--- @return StaticMesh
+function StaticMesh.load(path) end
+
+
 --- @param path string path to the object
 --- @return SoundClass
 function SoundClass.load(path) end
