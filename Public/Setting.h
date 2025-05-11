@@ -1,6 +1,7 @@
 #pragma once
 #include "Evospace/JsonHelper.h"
 #include "Evospace/Misc/AssetOwner.h"
+#include "Evospace/Misc/EvoConverter.h"
 
 #include <Public/Prototype.h>
 #include "Setting.generated.h"
@@ -26,10 +27,7 @@ class USetting : public UPrototype {
       .addProperty("int_default_value", &Self::DefaultIntValue) //@field integer
       .addProperty("max_value", &Self::MaxValue) //@field integer
       .addProperty("min_value", &Self::MinValue) //@field integer
-      .addProperty(
-        "key_binding", [](USetting *self) //@field string
-        -> std::string { return TCHAR_TO_UTF8(*self->mKeyBinging.ToString()); },
-        [](USetting *self, std::string_view s) { self->mKeyBinging = UTF8_TO_TCHAR(s.data()); })
+      .addProperty("key_binding", EVO_NAME_GET_SET(mKeyBinging)) //@field string
       .addProperty(
         "default_key", [](USetting *self) //@field string
         -> std::string {

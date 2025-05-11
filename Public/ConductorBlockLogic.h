@@ -231,8 +231,7 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
       .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
       .addProperty("resistance", &Self::Resistance) //@field integer mOhm
       .addProperty("voltage", &Self::Voltage) //@field integer Volt
-      .addProperty(
-        "channel", [](const UConductorBlockLogic *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](UConductorBlockLogic *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); }) //@field string
+      .addProperty("channel", EVO_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
       //direct:
       //---Add side wire
