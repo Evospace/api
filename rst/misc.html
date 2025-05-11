@@ -38,61 +38,62 @@
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-Recipe">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Recipe</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-Recipe" title="Link to this definition">¶</a></dt>
-<dd><dl class="lua data">
+<dd><p>Crafting-recipe prototype used by machines and crafting UIs</p>
+<dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.ticks">
 <span class="sig-name descname"><span class="pre">ticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-Recipe.ticks" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p><em>Craft time</em> in engine ticks</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.default_locked">
 <span class="sig-name descname"><span class="pre">default_locked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#lua-Recipe.default_locked" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>If <strong>true</strong>, the recipe starts hidden until research unlocks it.</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.locked">
 <span class="sig-name descname"><span class="pre">locked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#lua-Recipe.locked" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Currently locked if <strong>true</strong></p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.productivity">
 <span class="sig-name descname"><span class="pre">productivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-Recipe.productivity" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Percentage bonus (e.g. <cite>20</cite> = +20 %)</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.input">
 <span class="sig-name descname"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">RecipeInventory</span></code><a class="headerlink" href="#lua-Recipe.input" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Read/write container of required items</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.output">
 <span class="sig-name descname"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">RecipeInventory</span></code><a class="headerlink" href="#lua-Recipe.output" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Read/write container of produced items</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.tier">
 <span class="sig-name descname"><span class="pre">tier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-Recipe.tier" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Recipe tier used for speed scaling: every tier <strong>above</strong> the machine tier halves speed; every tier <strong>below</strong> doubles it.</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-Recipe.start_tier">
 <span class="sig-name descname"><span class="pre">start_tier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-Recipe.start_tier" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
+<dd><p>Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.</p>
 </dd></dl>
 
 <dl class="lua staticmethod">
 <dt class="sig sig-object lua" id="lua-Recipe.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Recipe" title="Recipe"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Recipe</span></code></a></span></span><a class="headerlink" href="#lua-Recipe.new" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Recipe" title="Recipe"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Recipe</span></code></a></span></span><a class="headerlink" href="#lua-Recipe.new" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Recipe static object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -120,6 +121,52 @@
 <dt class="sig sig-object lua" id="lua-Recipe.cast">
 <em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Recipe" title="Recipe"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Recipe</span></code></a></span></span><a class="headerlink" href="#lua-Recipe.cast" title="Link to this definition">¶</a></dt>
 <dd><p>Trying to cast Object into Recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-StaticTip">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StaticTip</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-StaticTip" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticTip.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new StaticTip static object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticTip.find">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.find" title="Link to this definition">¶</a></dt>
+<dd><p>Searching for StaticTip in db</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticTip.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-StaticTip.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return StaticTip class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticTip.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into StaticTip</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
@@ -207,23 +254,37 @@
 </dd></dl>
 
 <dl class="lua class">
-<dt class="sig sig-object lua" id="lua-StaticTip">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StaticTip</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-StaticTip" title="Link to this definition">¶</a></dt>
-<dd><dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-StaticTip.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.new" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new StaticTip static object</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
-</dd>
-</dl>
+<dt class="sig sig-object lua" id="lua-PropListData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PropListData</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Struct</span></code><a class="headerlink" href="#lua-PropListData" title="Link to this definition">¶</a></dt>
+<dd><p>Structure that stores several StaticProp records (prop variations) with shared spawn chance</p>
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-PropListData.chance">
+<span class="sig-name descname"><span class="pre">chance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">number</span></code><a class="headerlink" href="#lua-PropListData.chance" title="Link to this definition">¶</a></dt>
+<dd><p>Spawn probability 0.0–1.0</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-PropListData.props">
+<span class="sig-name descname"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StaticProp" title="StaticProp"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticProp</span></code></a><span class="p"><span class="pre">[]</span></span><a class="headerlink" href="#lua-PropListData.props" title="Link to this definition">¶</a></dt>
+<dd><p>List of prop assets (prop variations)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-StaticPropList">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StaticPropList</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-StaticPropList" title="Link to this definition">¶</a></dt>
+<dd><p>Prototype asset that owns several PropListData records</p>
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticPropList.data">
+<span class="sig-name descname"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-PropListData" title="PropListData"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">PropListData</span></code></a><span class="p"><span class="pre">[]</span></span><a class="headerlink" href="#lua-StaticPropList.data" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
 </dd></dl>
 
 <dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-StaticTip.find">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.find" title="Link to this definition">¶</a></dt>
-<dd><p>Searching for StaticTip in db</p>
+<dt class="sig sig-object lua" id="lua-StaticPropList.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticPropList" title="StaticPropList"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticPropList</span></code></a></span></span><a class="headerlink" href="#lua-StaticPropList.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new StaticPropList static object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
@@ -232,17 +293,28 @@
 </dd></dl>
 
 <dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-StaticTip.get_class">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-StaticTip.get_class" title="Link to this definition">¶</a></dt>
-<dd><p>Return StaticTip class object</p>
+<dt class="sig sig-object lua" id="lua-StaticPropList.find">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticPropList" title="StaticPropList"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticPropList</span></code></a></span></span><a class="headerlink" href="#lua-StaticPropList.find" title="Link to this definition">¶</a></dt>
+<dd><p>Searching for StaticPropList in db</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-StaticPropList.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-StaticPropList.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return StaticPropList class object</p>
 <dl class="field-list simple">
 </dl>
 </dd></dl>
 
 <dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua-StaticTip.cast">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticTip" title="StaticTip"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticTip</span></code></a></span></span><a class="headerlink" href="#lua-StaticTip.cast" title="Link to this definition">¶</a></dt>
-<dd><p>Trying to cast Object into StaticTip</p>
+<dt class="sig sig-object lua" id="lua-StaticPropList.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-StaticPropList" title="StaticPropList"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticPropList</span></code></a></span></span><a class="headerlink" href="#lua-StaticPropList.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into StaticPropList</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
@@ -257,11 +329,11 @@
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WorldGenerator</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Prototype" title="Prototype"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Prototype</span></code></a><a class="headerlink" href="#lua-WorldGenerator" title="Link to this definition">¶</a></dt>
 <dd><dl class="lua staticmethod">
 <dt class="sig sig-object lua" id="lua-WorldGenerator.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-WorldGenerator" title="WorldGenerator"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">WorldGenerator</span></code></a></span></span><a class="headerlink" href="#lua-WorldGenerator.new" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-WorldGenerator" title="WorldGenerator"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">WorldGenerator</span></code></a></span></span><a class="headerlink" href="#lua-WorldGenerator.new" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new WorldGenerator static object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new_name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
+<dd class="field-odd"><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -334,8 +406,10 @@
 <li class="toctree-l1"><a class="reference internal" href="researches.html">Researches</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Misc</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#lua-Recipe"><code class="docutils literal notranslate"><span class="pre">Recipe</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lua-StaticProp"><code class="docutils literal notranslate"><span class="pre">StaticProp</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lua-StaticTip"><code class="docutils literal notranslate"><span class="pre">StaticTip</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-StaticProp"><code class="docutils literal notranslate"><span class="pre">StaticProp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-PropListData"><code class="docutils literal notranslate"><span class="pre">PropListData</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-StaticPropList"><code class="docutils literal notranslate"><span class="pre">StaticPropList</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lua-WorldGenerator"><code class="docutils literal notranslate"><span class="pre">WorldGenerator</span></code></a></li>
 </ul>
 </li>
