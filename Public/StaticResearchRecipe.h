@@ -17,12 +17,9 @@ class EVOSPACE_API UStaticResearchRecipe : public UStaticResearch {
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<class URecipe *> RecipeUnlocks;
-  std::unique_ptr<FResearchUnlockLevel> RecipeUnlocksTemp;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FVector2i LevelMinMax;
-
-  virtual void PostDeserializeJson() override;
 
   virtual void ComputeSearchMetadata() const override;
 

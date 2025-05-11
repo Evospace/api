@@ -31,26 +31,6 @@ enum class EResearchStatus : uint8 {
   Restricted
 };
 
-USTRUCT(BlueprintType)
-struct EVOSPACE_API FResearchUnlock {
-  GENERATED_BODY()
-
-  public:
-  FName Dictionary;
-  FName Recipe;
-};
-
-USTRUCT(BlueprintType)
-struct EVOSPACE_API FResearchUnlockLevel {
-  GENERATED_BODY()
-
-  public:
-  TArray<FResearchUnlock> Unlocks;
-
-  UPROPERTY()
-  TArray<class URecipe *> Recipes;
-};
-
 UCLASS(BlueprintType, Abstract)
 class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
   GENERATED_BODY()
@@ -80,9 +60,6 @@ class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
   int mLevel = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  TArray<FName> RequiredResearchNames = {};
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<UStaticResearch *> RequiredResearch = {};
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -105,8 +82,6 @@ class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level);
-
-  virtual void PostDeserializeJson() override;
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FText GetLabel() const;

@@ -55,8 +55,6 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  virtual void PostDeserializeJson() override;
-
   virtual void ComputeSearchMetadata() const override;
 
   AItemLogic *SpawnLogicItemDeferred(UWorld *world, const FTransform &transform) const;
@@ -118,9 +116,6 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int64 mMaxCharge = 0;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FName ObjectName;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticObject *Object;
