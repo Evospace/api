@@ -27,8 +27,8 @@ class Base;
 /*.addStaticFunction("get", &evo::DB::get<U##type>) */ /*.addStaticFunction("get_derived", &evo::DB::get_derived<U##type>) */
 #define EVO_CODEGEN_DB(type, topmost_not_prototype)                                                                                                           \
   __EVO_COMMON_CODEGEN(type)                                                                                                                                  \
-  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry) override {                                                               \
-    return _get_or_register<U##topmost_not_prototype, U##type>(obj_name, registry);                                                                           \
+  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry, bool only_get) override {                                                \
+    return _get_or_register<U##topmost_not_prototype, U##type>(obj_name, registry, only_get);                                                                 \
   }                                                                                                                                                           \
   virtual void lua_reg_internal(lua_State *L) const override {                                                                                                \
     LOG(INFO_LL) << "Registering lua prototype " << TEXT(#type);                                                                                              \
@@ -165,17 +165,17 @@ class UPrototype : public UObject, public ISerializableJson {
     return TCHAR_TO_UTF8(*("(" + GetClass()->GetName() + ": " + GetName() + ")"));
   }
 
-  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry) {
+  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry, bool only_get) {
     checkNoEntry();
     return nullptr;
   }
 
   protected:
   template <typename BaseType, typename RealType>
-  inline UPrototype *_get_or_register(const FString &obj_name, IRegistrar &registry) {
+  inline UPrototype *_get_or_register(const FString &obj_name, IRegistrar &registry, bool only_get) {
     auto owner = MainGameOwner<BaseType>::Get();
     auto obj = FindObject<BaseType>(owner, *obj_name);
-    if (!obj) {
+    if (!obj && !only_get) {
       obj = NewObject<BaseType>(owner, RealType::StaticClass(), *obj_name);
       LOG(INFO_LL) << "Register " << BaseType::StaticClass()->GetName() << " " << obj_name;
       registry.Register(obj);

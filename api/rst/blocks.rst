@@ -10,8 +10,6 @@ Block Base Classes
 .. lua:autoobject:: StaticObject
    :members:
 
-.. lua:autoobject:: StaticProp
-   :members:
 
 .. lua:autoobject:: BlockLogic
    :members:

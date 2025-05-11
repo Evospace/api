@@ -165,9 +165,9 @@ AbstractCrafter = {}
 
 --- Creates a new AbstractCrafter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return AbstractCrafter
-function AbstractCrafter.new(parent, new_name) end
+function AbstractCrafter.new(parent, name) end
 
 --- Creates a new AbstractCrafter instance
 --- @return AbstractCrafter
@@ -193,9 +193,9 @@ Accessor = {}
 
 --- Creates a new Accessor instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return Accessor
-function Accessor.new(parent, new_name) end
+function Accessor.new(parent, name) end
 
 --- Return Accessor class object
 --- @return Class
@@ -213,9 +213,9 @@ AutoCrafter = {}
 
 --- Creates a new AutoCrafter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return AutoCrafter
-function AutoCrafter.new(parent, new_name) end
+function AutoCrafter.new(parent, name) end
 
 --- Creates a new AutoCrafter instance
 --- @return AutoCrafter
@@ -237,9 +237,9 @@ AutosizeInventory = {}
 
 --- Creates a new AutosizeInventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return AutosizeInventory
-function AutosizeInventory.new(parent, new_name) end
+function AutosizeInventory.new(parent, name) end
 
 --- Creates a new AutosizeInventory instance
 --- @return AutosizeInventory
@@ -261,9 +261,9 @@ BaseInventory = {}
 
 --- Creates a new BaseInventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return BaseInventory
-function BaseInventory.new(parent, new_name) end
+function BaseInventory.new(parent, name) end
 
 --- Creates a new BaseInventory instance
 --- @return BaseInventory
@@ -290,9 +290,9 @@ function BlockLogic:reg(accessor) end
 
 --- Creates a new BlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return BlockLogic
-function BlockLogic.new(parent, new_name) end
+function BlockLogic.new(parent, name) end
 
 --- Creates a new BlockLogic instance
 --- @return BlockLogic
@@ -315,9 +315,9 @@ ChestBlockLogic = {}
 
 --- Creates a new ChestBlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return ChestBlockLogic
-function ChestBlockLogic.new(parent, new_name) end
+function ChestBlockLogic.new(parent, name) end
 
 --- Creates a new ChestBlockLogic instance
 --- @return ChestBlockLogic
@@ -341,9 +341,9 @@ ComputerBlockLogic = {}
 
 --- Creates a new ComputerBlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return ComputerBlockLogic
-function ComputerBlockLogic.new(parent, new_name) end
+function ComputerBlockLogic.new(parent, name) end
 
 --- Creates a new ComputerBlockLogic instance
 --- @return ComputerBlockLogic
@@ -375,9 +375,9 @@ function ConductorBlockLogic:add_wire(acc) end
 
 --- Creates a new ConductorBlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return ConductorBlockLogic
-function ConductorBlockLogic.new(parent, new_name) end
+function ConductorBlockLogic.new(parent, name) end
 
 --- Creates a new ConductorBlockLogic instance
 --- @return ConductorBlockLogic
@@ -418,9 +418,9 @@ function Console.get_int(variable) end
 
 --- Creates a new EngineConsole instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return EngineConsole
-function EngineConsole.new(parent, new_name) end
+function EngineConsole.new(parent, name) end
 
 --- Creates a new EngineConsole instance
 --- @return EngineConsole
@@ -463,9 +463,9 @@ function DB:objects() end
 
 --- Creates a new DB instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return DB
-function DB.new(parent, new_name) end
+function DB.new(parent, name) end
 
 --- Creates a new DB instance
 --- @return DB
@@ -512,9 +512,9 @@ function EngineData:apply() end
 
 --- Creates a new EngineData instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return EngineData
-function EngineData.new(parent, new_name) end
+function EngineData.new(parent, name) end
 
 --- Creates a new EngineData instance
 --- @return EngineData
@@ -576,9 +576,9 @@ FluidContainerBlockLogic = {}
 
 --- Creates a new FluidContainerBlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return FluidContainerBlockLogic
-function FluidContainerBlockLogic.new(parent, new_name) end
+function FluidContainerBlockLogic.new(parent, name) end
 
 --- Creates a new FluidContainerBlockLogic instance
 --- @return FluidContainerBlockLogic
@@ -609,9 +609,9 @@ GameSessionData = {}
 
 --- Creates a new GameSessionData instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return GameSessionData
-function GameSessionData.new(parent, new_name) end
+function GameSessionData.new(parent, name) end
 
 --- Creates a new GameSessionData instance
 --- @return GameSessionData
@@ -633,9 +633,9 @@ Inventory = {}
 
 --- Creates a new Inventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return Inventory
-function Inventory.new(parent, new_name) end
+function Inventory.new(parent, name) end
 
 --- Creates a new Inventory instance
 --- @return Inventory
@@ -666,13 +666,13 @@ function InventoryAccess:add(item, count) end
 --- @param item StaticItem
 --- @param count integer
 --- @return integer Remainder
-function InventoryAccess:rem(item, count) end
+function InventoryAccess:sub(item, count) end
 
 --- Creates a new InventoryAccess instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryAccess
-function InventoryAccess.new(parent, new_name) end
+function InventoryAccess.new(parent, name) end
 
 --- Creates a new InventoryAccess instance
 --- @return InventoryAccess
@@ -694,9 +694,9 @@ InventoryBlackFilter = {}
 
 --- Creates a new InventoryBlackFilter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryBlackFilter
-function InventoryBlackFilter.new(parent, new_name) end
+function InventoryBlackFilter.new(parent, name) end
 
 --- Creates a new InventoryBlackFilter instance
 --- @return InventoryBlackFilter
@@ -725,9 +725,9 @@ function InventoryContainer:bind(inventory) end
 
 --- Creates a new InventoryContainer instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryContainer
-function InventoryContainer.new(parent, new_name) end
+function InventoryContainer.new(parent, name) end
 
 --- Creates a new InventoryContainer instance
 --- @return InventoryContainer
@@ -749,9 +749,9 @@ InventoryFilter = {}
 
 --- Creates a new InventoryFilter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryFilter
-function InventoryFilter.new(parent, new_name) end
+function InventoryFilter.new(parent, name) end
 
 --- Creates a new InventoryFilter instance
 --- @return InventoryFilter
@@ -776,9 +776,9 @@ InventoryInventoryFilter = {}
 
 --- Creates a new InventoryInventoryFilter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryInventoryFilter
-function InventoryInventoryFilter.new(parent, new_name) end
+function InventoryInventoryFilter.new(parent, name) end
 
 --- Creates a new InventoryInventoryFilter instance
 --- @return InventoryInventoryFilter
@@ -811,9 +811,9 @@ function InventoryReader:find(item) end
 
 --- Creates a new InventoryReader instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryReader
-function InventoryReader.new(parent, new_name) end
+function InventoryReader.new(parent, name) end
 
 --- Creates a new InventoryReader instance
 --- @return InventoryReader
@@ -835,9 +835,9 @@ InventoryWhiteFilter = {}
 
 --- Creates a new InventoryWhiteFilter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return InventoryWhiteFilter
-function InventoryWhiteFilter.new(parent, new_name) end
+function InventoryWhiteFilter.new(parent, name) end
 
 --- Creates a new InventoryWhiteFilter instance
 --- @return InventoryWhiteFilter
@@ -870,12 +870,15 @@ MapStructure = {}
 --- @return MapStructure
 function MapStructure.new() end
 
---- 
+--- Structure that stores several StaticProp records (prop variations) with shared spawn chance
 --- 
 --- @class PropListData : Struct
---- @field chance number undocumented
---- @field props StaticProp[] undocumented
+--- @field chance number Spawn probability 0.0–1.0
+--- @field props StaticProp[] List of prop assets (prop variations)
 PropListData = {}
+
+--- @return PropListData
+function PropListData.new() end
 
 --- Database record
 --- 
@@ -885,9 +888,9 @@ Prototype = {}
 
 --- Creates a new type instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return type
-function type.new(parent, new_name) end
+function type.new(parent, name) end
 
 --- Return type class object
 --- @return Class
@@ -900,9 +903,9 @@ function type.cast(object) end
 
 --- Creates a new type instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return type
-function type.new(parent, new_name) end
+function type.new(parent, name) end
 
 --- Creates a new type instance
 --- @return type
@@ -918,9 +921,9 @@ function type.get_class() end
 function type.cast(object) end
 
 --- Creates a new type static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return type
-function type.new(new_name) end
+function type.new(name) end
 
 --- Searching for type in db
 --- @param name string The name of the object
@@ -936,23 +939,23 @@ function type.get_class() end
 --- @return type
 function type.cast(object) end
 
---- 
+--- Crafting-recipe prototype used by machines and crafting UIs
 --- 
 --- @class Recipe : Prototype
---- @field ticks integer undocumented
---- @field default_locked boolean undocumented
---- @field locked boolean undocumented
---- @field productivity integer undocumented
---- @field input RecipeInventory undocumented
---- @field output RecipeInventory undocumented
---- @field tier integer undocumented
---- @field start_tier integer undocumented
+--- @field ticks integer *Craft time* in engine ticks
+--- @field default_locked boolean If **true**, the recipe starts hidden until research unlocks it.
+--- @field locked boolean Currently locked if **true**
+--- @field productivity integer Percentage bonus (e.g. `20` = +20 %)
+--- @field input RecipeInventory Read/write container of required items
+--- @field output RecipeInventory Read/write container of produced items
+--- @field tier integer Recipe tier used for speed scaling: every tier **above** the machine tier halves speed; every tier **below** doubles it.
+--- @field start_tier integer Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.
 Recipe = {}
 
 --- Creates a new Recipe static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return Recipe
-function Recipe.new(new_name) end
+function Recipe.new(name) end
 
 --- Searching for Recipe in db
 --- @param name string The name of the object
@@ -975,9 +978,9 @@ function Recipe.cast(object) end
 RecipeDictionary = {}
 
 --- Creates a new RecipeDictionary static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return RecipeDictionary
-function RecipeDictionary.new(new_name) end
+function RecipeDictionary.new(name) end
 
 --- Searching for RecipeDictionary in db
 --- @param name string The name of the object
@@ -1001,9 +1004,9 @@ RecipeInventory = {}
 
 --- Creates a new RecipeInventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return RecipeInventory
-function RecipeInventory.new(parent, new_name) end
+function RecipeInventory.new(parent, name) end
 
 --- Creates a new RecipeInventory instance
 --- @return RecipeInventory
@@ -1029,9 +1032,9 @@ function Region:add_source(spos) end
 
 --- Creates a new Region instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return Region
-function Region.new(parent, new_name) end
+function Region.new(parent, name) end
 
 --- Creates a new Region instance
 --- @return Region
@@ -1073,9 +1076,9 @@ function RegionMap.world_block_to_grid(bpos) end
 
 --- Creates a new RegionMap instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return RegionMap
-function RegionMap.new(parent, new_name) end
+function RegionMap.new(parent, name) end
 
 --- Creates a new RegionMap instance
 --- @return RegionMap
@@ -1100,9 +1103,9 @@ ResourceAccessor = {}
 
 --- Creates a new ResourceAccessor instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return ResourceAccessor
-function ResourceAccessor.new(parent, new_name) end
+function ResourceAccessor.new(parent, name) end
 
 --- Return ResourceAccessor class object
 --- @return Class
@@ -1122,9 +1125,9 @@ ResourceInventory = {}
 
 --- Creates a new ResourceInventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return ResourceInventory
-function ResourceInventory.new(parent, new_name) end
+function ResourceInventory.new(parent, name) end
 
 --- Creates a new ResourceInventory instance
 --- @return ResourceInventory
@@ -1147,9 +1150,9 @@ SelectCrafter = {}
 
 --- Creates a new SelectCrafter instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return SelectCrafter
-function SelectCrafter.new(parent, new_name) end
+function SelectCrafter.new(parent, name) end
 
 --- Creates a new SelectCrafter instance
 --- @return SelectCrafter
@@ -1183,9 +1186,9 @@ function SelectCrafter.cast(object) end
 Setting = {}
 
 --- Creates a new Setting static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return Setting
-function Setting.new(new_name) end
+function Setting.new(name) end
 
 --- Searching for Setting in db
 --- @param name string The name of the object
@@ -1212,9 +1215,9 @@ function SingleSlotInventory:set_simple_filter(item) end
 
 --- Creates a new SingleSlotInventory instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return SingleSlotInventory
-function SingleSlotInventory.new(parent, new_name) end
+function SingleSlotInventory.new(parent, name) end
 
 --- Creates a new SingleSlotInventory instance
 --- @return SingleSlotInventory
@@ -1238,9 +1241,9 @@ SourceData = {}
 
 --- Creates a new SourceData instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return SourceData
-function SourceData.new(parent, new_name) end
+function SourceData.new(parent, name) end
 
 --- Creates a new SourceData instance
 --- @return SourceData
@@ -1271,9 +1274,9 @@ function SourceData.cast(object) end
 StaticBlock = {}
 
 --- Creates a new StaticBlock static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticBlock
-function StaticBlock.new(new_name) end
+function StaticBlock.new(name) end
 
 --- Searching for StaticBlock in db
 --- @param name string The name of the object
@@ -1295,9 +1298,9 @@ function StaticBlock.cast(object) end
 StaticCover = {}
 
 --- Creates a new StaticCover static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticCover
-function StaticCover.new(new_name) end
+function StaticCover.new(name) end
 
 --- Searching for StaticCover in db
 --- @param name string The name of the object
@@ -1331,9 +1334,9 @@ function StaticCover.cast(object) end
 StaticItem = {}
 
 --- Creates a new StaticItem static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticItem
-function StaticItem.new(new_name) end
+function StaticItem.new(name) end
 
 --- Searching for StaticItem in db
 --- @param name string The name of the object
@@ -1356,9 +1359,9 @@ function StaticItem.cast(object) end
 StaticObject = {}
 
 --- Creates a new StaticObject static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticObject
-function StaticObject.new(new_name) end
+function StaticObject.new(name) end
 
 --- Searching for StaticObject in db
 --- @param name string The name of the object
@@ -1392,9 +1395,9 @@ function StaticObject.cast(object) end
 StaticProp = {}
 
 --- Creates a new StaticProp static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticProp
-function StaticProp.new(new_name) end
+function StaticProp.new(name) end
 
 --- Searching for StaticProp in db
 --- @param name string The name of the object
@@ -1410,16 +1413,16 @@ function StaticProp.get_class() end
 --- @return StaticProp
 function StaticProp.cast(object) end
 
---- 
+--- Prototype asset that owns several PropListData records
 --- 
 --- @class StaticPropList : Prototype
 --- @field data PropListData[] undocumented
 StaticPropList = {}
 
 --- Creates a new StaticPropList static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticPropList
-function StaticPropList.new(new_name) end
+function StaticPropList.new(name) end
 
 --- Searching for StaticPropList in db
 --- @param name string The name of the object
@@ -1441,9 +1444,9 @@ function StaticPropList.cast(object) end
 StaticResearch = {}
 
 --- Creates a new StaticResearch static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearch
-function StaticResearch.new(new_name) end
+function StaticResearch.new(name) end
 
 --- Searching for StaticResearch in db
 --- @param name string The name of the object
@@ -1465,9 +1468,9 @@ function StaticResearch.cast(object) end
 StaticResearchBonusInventory = {}
 
 --- Creates a new StaticResearchBonusInventory static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchBonusInventory
-function StaticResearchBonusInventory.new(new_name) end
+function StaticResearchBonusInventory.new(name) end
 
 --- Searching for StaticResearchBonusInventory in db
 --- @param name string The name of the object
@@ -1489,9 +1492,9 @@ function StaticResearchBonusInventory.cast(object) end
 StaticResearchDecorationUnlock = {}
 
 --- Creates a new StaticResearchDecorationUnlock static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchDecorationUnlock
-function StaticResearchDecorationUnlock.new(new_name) end
+function StaticResearchDecorationUnlock.new(name) end
 
 --- Searching for StaticResearchDecorationUnlock in db
 --- @param name string The name of the object
@@ -1513,9 +1516,9 @@ function StaticResearchDecorationUnlock.cast(object) end
 StaticResearchEfficiency = {}
 
 --- Creates a new StaticResearchEfficiency static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchEfficiency
-function StaticResearchEfficiency.new(new_name) end
+function StaticResearchEfficiency.new(name) end
 
 --- Searching for StaticResearchEfficiency in db
 --- @param name string The name of the object
@@ -1537,9 +1540,9 @@ function StaticResearchEfficiency.cast(object) end
 StaticResearchModifier = {}
 
 --- Creates a new StaticResearchModifier static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchModifier
-function StaticResearchModifier.new(new_name) end
+function StaticResearchModifier.new(name) end
 
 --- Searching for StaticResearchModifier in db
 --- @param name string The name of the object
@@ -1561,9 +1564,9 @@ function StaticResearchModifier.cast(object) end
 StaticResearchRecipe = {}
 
 --- Creates a new StaticResearchRecipe static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchRecipe
-function StaticResearchRecipe.new(new_name) end
+function StaticResearchRecipe.new(name) end
 
 --- Searching for StaticResearchRecipe in db
 --- @param name string The name of the object
@@ -1585,9 +1588,9 @@ function StaticResearchRecipe.cast(object) end
 StaticResearchToolUnlock = {}
 
 --- Creates a new StaticResearchToolUnlock static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticResearchToolUnlock
-function StaticResearchToolUnlock.new(new_name) end
+function StaticResearchToolUnlock.new(name) end
 
 --- Searching for StaticResearchToolUnlock in db
 --- @param name string The name of the object
@@ -1611,9 +1614,9 @@ function StaticResearchToolUnlock.cast(object) end
 StaticStructure = {}
 
 --- Creates a new StaticStructure static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticStructure
-function StaticStructure.new(new_name) end
+function StaticStructure.new(name) end
 
 --- Searching for StaticStructure in db
 --- @param name string The name of the object
@@ -1635,9 +1638,9 @@ function StaticStructure.cast(object) end
 StaticTip = {}
 
 --- Creates a new StaticTip static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return StaticTip
-function StaticTip.new(new_name) end
+function StaticTip.new(name) end
 
 --- Searching for StaticTip in db
 --- @param name string The name of the object
@@ -1660,9 +1663,9 @@ StorageBlockLogic = {}
 
 --- Creates a new StorageBlockLogic instance
 --- @param parent Object Object of parent
---- @param new_name string The name of the instance
+--- @param name string The name of the instance
 --- @return StorageBlockLogic
-function StorageBlockLogic.new(parent, new_name) end
+function StorageBlockLogic.new(parent, name) end
 
 --- Creates a new StorageBlockLogic instance
 --- @return StorageBlockLogic
@@ -1683,9 +1686,9 @@ function StorageBlockLogic.cast(object) end
 WorldGenerator = {}
 
 --- Creates a new WorldGenerator static object
---- @param new_name string The name of the object
+--- @param name string The name of the object
 --- @return WorldGenerator
-function WorldGenerator.new(new_name) end
+function WorldGenerator.new(name) end
 
 --- Searching for WorldGenerator in db
 --- @param name string The name of the object

@@ -4,6 +4,7 @@
 #include "Evospace/CoordinateSystem.h"
 #include "Evospace/Vector.h"
 #include "Evospace/Misc/AssetOwner.h"
+#include "Evospace/Misc/EvoConverter.h"
 #include "Public/BlockLogic.h"
 #include "Public/Prototype.h"
 #include "Public/StaticObject.h"
@@ -32,11 +33,8 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
       .addProperty("actor", &Self::mActorClass) //@field Class
       .addProperty("selector", &Self::mSelectorClass) //@field Class
       .addProperty("tesselator", &Self::Tesselator) //@field Tesselator
-      .addProperty("sub_blocks", &Self::Positions)
-      .addProperty(
-        "replace_tag", [](const Self *self) //@field string
-        -> std::string { return TCHAR_TO_UTF8(*self->ReplaceTag.ToString()); },
-        [](Self *self, const std::string &s) { self->ReplaceTag = UTF8_TO_TCHAR(s.data()); }) //@field string
+      .addProperty("sub_blocks", EVO_ARRAY_GET_SET(Positions)) //@field Vec3i[]
+      .addProperty("replace_tag", EVO_NAME_GET_SET(ReplaceTag)) //@field string
       .addProperty("color_side", &Self::mColorSide) //@field Vec3
       .addProperty("color_top", &Self::mColorTop) //@field Vec3
       .addProperty("tier", &Self::Tier) //@field integer

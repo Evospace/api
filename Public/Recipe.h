@@ -21,15 +21,16 @@ class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   EVO_CODEGEN_DB(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
+      //@comment Crafting-recipe prototype used by machines and crafting UIs
       .deriveClass<URecipe, UPrototype>("Recipe") //@class Recipe : Prototype
-      .addProperty("ticks", &URecipe::mDuration) //@field integer
-      .addProperty("default_locked", &URecipe::mDefaultLocked) //@field boolean
-      .addProperty("locked", &URecipe::mLocked) //@field boolean
-      .addProperty("productivity", &URecipe::mProductivityBonus) //@field integer
-      .addProperty("input", &URecipe::mInput, false) //@field RecipeInventory
-      .addProperty("output", &URecipe::mOutput, false) //@field RecipeInventory
-      .addProperty("tier", &URecipe::Tier) //@field integer
-      .addProperty("start_tier", &URecipe::StartTier) //@field integer
+      .addProperty("ticks", &URecipe::mDuration) //@field integer *Craft time* in engine ticks
+      .addProperty("default_locked", &URecipe::mDefaultLocked) //@field boolean If **true**, the recipe starts hidden until research unlocks it.
+      .addProperty("locked", &URecipe::mLocked) //@field boolean Currently locked if **true**
+      .addProperty("productivity", &URecipe::mProductivityBonus) //@field integer Percentage bonus (e.g. `20` = +20 %)
+      .addProperty("input", &URecipe::mInput, false) //@field RecipeInventory Read/write container of required items
+      .addProperty("output", &URecipe::mOutput, false) //@field RecipeInventory Read/write container of produced items
+      .addProperty("tier", &URecipe::Tier) //@field integer Recipe tier used for speed scaling: every tier **above** the machine tier halves speed; every tier **below** doubles it.
+      .addProperty("start_tier", &URecipe::StartTier) //@field integer Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.
       .endClass();
   }
 
@@ -89,7 +90,7 @@ class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   URecipeDictionary *Dictionary;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  int32 Tier = 0;
+  mutable int32 Tier = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   mutable int32 StartTier = 0;

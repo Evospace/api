@@ -46,22 +46,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
-      .addProperty(
-        "category", [](const Self *self) //@field string In-game database category
-        { return std::string(TCHAR_TO_UTF8(*self->mCategory.ToString())); },
-        [](Self *self, std::string_view s) { self->mCategory = UTF8_TO_TCHAR(s.data()); })
-      .addProperty(
-        "label_parts", [](const Self *self) //@field Loc[]
-        { return evo::to_vector(self->mLabelParts); },
-        [](Self *self, const std::vector<FKeyTableObject> &value) {
-          self->mLabelParts = evo::to_array(value);
-        })
-      .addProperty(
-        "description_parts", [](const Self *self) //@field Loc[]
-        { return evo::to_vector(self->mDescriptionParts); },
-        [](Self *self, const std::vector<FKeyTableObject> &value) {
-          self->mDescriptionParts = evo::to_array(value);
-        })
+      .addProperty("category", EVO_NAME_GET_SET(mCategory)) //@field string In-game database category
+      .addProperty("label_parts", EVO_ARRAY_GET_SET(mLabelParts)) //@field Loc[]
+      .addProperty("description_parts", EVO_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
       .endClass();
   }
 

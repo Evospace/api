@@ -6,6 +6,7 @@
 #include "PropListData.h"
 #include "Prototype.h"
 #include "Evospace/Misc/AssetOwner.h"
+#include "Evospace/Misc/EvoConverter.h"
 
 #include "PropList.generated.h"
 
@@ -14,20 +15,15 @@ class UStaticProp;
 UCLASS()
 class UStaticPropList : public UPrototype {
   GENERATED_BODY()
+  using Self = UStaticPropList;
   EVO_OWNER(StaticPropList)
   EVO_CODEGEN_DB(StaticPropList, StaticPropList)
   virtual void lua_reg(lua_State *L) const override {
     FPropListData::lua_reg(L);
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UStaticPropList, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
-      .addProperty("data", [](const UStaticPropList *self) //@field PropListData[]
-                   {
-                     std::vector<const FPropListData *> arr;
-                     for (auto &p : self->PropListDatas) {
-                       arr.push_back(&p);
-                     }
-                     return arr;
-                   })
+      //@comment Prototype asset that owns several PropListData records
+      .deriveClass<Self, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
+      .addProperty("data", EVO_ARRAY_GET_SET(PropListDatas)) //@field PropListData[]
       .endClass();
   }
 

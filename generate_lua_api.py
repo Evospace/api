@@ -53,14 +53,14 @@ def extract_class_details(file_content):
         accessor_matches = re.finditer(accessor_pattern, body)
         for accessor_match in accessor_matches:
             accessor_type = accessor_match.group(2)
-            annotation += f"\n--- Creates a new {accessor_type} instance\n--- @param parent Object Object of parent\n--- @param new_name string The name of the instance\n--- @return {accessor_type}\nfunction {accessor_type}.new(parent, new_name) end\n"
+            annotation += f"\n--- Creates a new {accessor_type} instance\n--- @param parent Object Object of parent\n--- @param name string The name of the instance\n--- @return {accessor_type}\nfunction {accessor_type}.new(parent, name) end\n"
             annotation += f"\n--- Return {accessor_type} class object\n--- @return Class\nfunction {accessor_type}.get_class() end\n"
             annotation += f"\n--- Trying to cast Object into {accessor_type}\n--- @param object Object to cast\n--- @return {accessor_type}\nfunction {accessor_type}.cast(object) end\n"
 
         instance_matches = re.finditer(instance_pattern, body)
         for instance_match in instance_matches:
             instance_type = instance_match.group(2)
-            annotation += f"\n--- Creates a new {instance_type} instance\n--- @param parent Object Object of parent\n--- @param new_name string The name of the instance\n--- @return {instance_type}\nfunction {instance_type}.new(parent, new_name) end\n"
+            annotation += f"\n--- Creates a new {instance_type} instance\n--- @param parent Object Object of parent\n--- @param name string The name of the instance\n--- @return {instance_type}\nfunction {instance_type}.new(parent, name) end\n"
             annotation += f"\n--- Creates a new {instance_type} instance\n--- @return {instance_type}\nfunction {instance_type}.new_simple() end\n"
             annotation += f"\n--- Return {instance_type} class object\n--- @return Class\nfunction {instance_type}.get_class() end\n"
             annotation += f"\n--- Trying to cast Object into {instance_type}\n--- @param object Object to cast\n--- @return {instance_type}\nfunction {instance_type}.cast(object) end\n"
@@ -68,7 +68,7 @@ def extract_class_details(file_content):
         static_matches = re.finditer(static_pattern, body)
         for static_match in static_matches:
             static_type = static_match.group(2)
-            annotation += f"\n--- Creates a new {static_type} static object\n--- @param new_name string The name of the object\n--- @return {static_type}\nfunction {static_type}.new(new_name) end\n"
+            annotation += f"\n--- Creates a new {static_type} static object\n--- @param name string The name of the object\n--- @return {static_type}\nfunction {static_type}.new(name) end\n"
             annotation += f"\n--- Searching for {static_type} in db\n--- @param name string The name of the object\n--- @return {static_type}\nfunction {static_type}.find(name) end\n"
             annotation += f"\n--- Return {static_type} class object\n--- @return Class\nfunction {static_type}.get_class() end\n"
             annotation += f"\n--- Trying to cast Object into {static_type}\n--- @param object Object to cast\n--- @return {static_type}\nfunction {static_type}.cast(object) end\n"
