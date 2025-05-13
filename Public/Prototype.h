@@ -27,8 +27,8 @@ class Base;
 /*.addStaticFunction("get", &evo::DB::get<U##type>) */ /*.addStaticFunction("get_derived", &evo::DB::get_derived<U##type>) */
 #define EVO_CODEGEN_DB(type, topmost_not_prototype)                                                                                                           \
   __EVO_COMMON_CODEGEN(type)                                                                                                                                  \
-  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry) override {                                                \
-    return _get_or_register<U##topmost_not_prototype, U##type>(obj_name, registry);                                                                 \
+  virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry) override {                                                               \
+    return _get_or_register<U##topmost_not_prototype, U##type>(obj_name, registry);                                                                           \
   }                                                                                                                                                           \
   virtual void lua_reg_internal(lua_State *L) const override {                                                                                                \
     LOG(INFO_LL) << "Registering lua prototype " << TEXT(#type);                                                                                              \
@@ -51,6 +51,31 @@ class Base;
   }                                                                                                                                                           \
   bool LuaEquals(const UObject &other) const {                                                                                                                \
     return this == &other;                                                                                                                                    \
+  }
+
+#define EVO_CODEGEN_INSTANCE_ALIAS(type, alias)                                                                                                       \
+  __EVO_COMMON_CODEGEN(type)                                                                                                             \
+  virtual void lua_reg_internal(lua_State *L) const override {                                                                           \
+    LOG(INFO_LL) << "Registering lua instance " << TEXT(#alias);                                                                         \
+    luabridge::getGlobalNamespace(L)                                                                                                     \
+      .beginClass<U##type>(#alias)                                                                                                       \
+      .addStaticFunction("cast", &U##type::lua_codegen_cast)                                                                             \
+      .addStaticFunction("get_class", []() { return U##type::StaticClass(); })                                                           \
+      .addFunction("__tostring", &U##type::ToString)                                                                                     \
+      .addFunction("__eq", &U##type::LuaEquals)                                                                                          \
+      .endClass();                                                                                                                       \
+    if (!U##type::StaticClass()->HasAnyClassFlags(CLASS_Abstract)) {                                                                     \
+      luabridge::getGlobalNamespace(L)                                                                                                   \
+        .beginClass<U##type>(#alias)                                                                                                     \
+        .addStaticFunction(                                                                                                              \
+          "new", +[](UInstance *parent, std::string_view newName) { return NewObject<U##type>(parent, UTF8_TO_TCHAR(newName.data())); }) \
+        .addStaticFunction(                                                                                                              \
+          "new_simple", +[]() { return NewObject<U##type>(); })                                                                          \
+        .endClass();                                                                                                                     \
+    }                                                                                                                                    \
+  }                                                                                                                                      \
+  bool LuaEquals(const UObject &other) const {                                                                                           \
+    return this == &other;                                                                                                               \
   }
 
 #define EVO_CODEGEN_INSTANCE(type)                                                                                                       \

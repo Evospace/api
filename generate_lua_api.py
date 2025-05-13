@@ -9,9 +9,10 @@ def extract_class_details(file_content):
     direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR)\((\w+)\)'
     instance_pattern = r'(EVO_CODEGEN_INSTANCE)\((\w+)\)'
-    static_pattern = r'(EVO_CODEGEN_DB)\((\w+),\s*(\w+)\)'
-    just_ue_object_pattern = r'(EVO_JUST_UE)\((\w+),\s*(\w+)\)'
-
+    instance_alias_pattern = r'(EVO_CODEGEN_INSTANCE_ALIAS)\(\s*(\w+)\s*,\s*(\w+)\s*\)'
+    static_pattern = r'(EVO_CODEGEN_DB)\((\w+)\s*,\s*(\w+)\)'
+    just_ue_object_pattern = r'(EVO_JUST_UE)\((\w+)\s*,\s*(\w+)\)'
+    
     matches = re.finditer(class_pattern, file_content)
     annotations = {}
 
@@ -64,6 +65,15 @@ def extract_class_details(file_content):
             annotation += f"\n--- Creates a new {instance_type} instance\n--- @return {instance_type}\nfunction {instance_type}.new_simple() end\n"
             annotation += f"\n--- Return {instance_type} class object\n--- @return Class\nfunction {instance_type}.get_class() end\n"
             annotation += f"\n--- Trying to cast Object into {instance_type}\n--- @param object Object to cast\n--- @return {instance_type}\nfunction {instance_type}.cast(object) end\n"
+
+        instance_matches = re.finditer(instance_alias_pattern, body)
+        for instance_match in instance_matches:
+            instance_type = instance_match.group(3)
+            annotation += f"\n--- Creates a new {instance_type} instance\n--- @param parent Object Object of parent\n--- @param name string The name of the instance\n--- @return {instance_type}\nfunction {instance_type}.new(parent, name) end\n"
+            annotation += f"\n--- Creates a new {instance_type} instance\n--- @return {instance_type}\nfunction {instance_type}.new_simple() end\n"
+            annotation += f"\n--- Return {instance_type} class object\n--- @return Class\nfunction {instance_type}.get_class() end\n"
+            annotation += f"\n--- Trying to cast Object into {instance_type}\n--- @param object Object to cast\n--- @return {instance_type}\nfunction {instance_type}.cast(object) end\n"
+
 
         static_matches = re.finditer(static_pattern, body)
         for static_match in static_matches:

@@ -146,7 +146,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static float DPIScale;
 
   template <typename _Ty>
-  static _Ty * GetPrototype(const FString & name) {
+  static _Ty *GetPrototype(const FString &name) {
     auto cdo = Cast<_Ty>(_Ty::StaticClass()->GetDefaultObject());
     auto o = cdo->get_or_register("LastLogin", *GetMainGameInstance()->mJsonObjectLibrary);
     return Cast<_Ty>(o);

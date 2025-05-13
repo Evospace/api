@@ -920,6 +920,25 @@ function type.get_class() end
 --- @return type
 function type.cast(object) end
 
+--- Creates a new alias instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return alias
+function alias.new(parent, name) end
+
+--- Creates a new alias instance
+--- @return alias
+function alias.new_simple() end
+
+--- Return alias class object
+--- @return Class
+function alias.get_class() end
+
+--- Trying to cast Object into alias
+--- @param object Object to cast
+--- @return alias
+function alias.cast(object) end
+
 --- Creates a new type static object
 --- @param name string The name of the object
 --- @return type
@@ -1265,6 +1284,7 @@ function SourceData.cast(object) end
 --- @field actor Class undocumented
 --- @field selector Class undocumented
 --- @field tesselator Tesselator undocumented
+--- @field sub_blocks Vec3i[] undocumented
 --- @field replace_tag string undocumented
 --- @field color_side Vec3 undocumented
 --- @field color_top Vec3 undocumented
@@ -1679,6 +1699,50 @@ function StorageBlockLogic.get_class() end
 --- @param object Object to cast
 --- @return StorageBlockLogic
 function StorageBlockLogic.cast(object) end
+
+--- 
+--- 
+--- @class Transformer : BlockLogic
+--- @field capacity integer undocumented
+Transformer = {}
+
+--- Creates a new BlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return BlockLogic
+function BlockLogic.new(parent, name) end
+
+--- Creates a new BlockLogic instance
+--- @return BlockLogic
+function BlockLogic.new_simple() end
+
+--- Return BlockLogic class object
+--- @return Class
+function BlockLogic.get_class() end
+
+--- Trying to cast Object into BlockLogic
+--- @param object Object to cast
+--- @return BlockLogic
+function BlockLogic.cast(object) end
+
+--- Creates a new Transformer instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return Transformer
+function Transformer.new(parent, name) end
+
+--- Creates a new Transformer instance
+--- @return Transformer
+function Transformer.new_simple() end
+
+--- Return Transformer class object
+--- @return Class
+function Transformer.get_class() end
+
+--- Trying to cast Object into Transformer
+--- @param object Object to cast
+--- @return Transformer
+function Transformer.cast(object) end
 
 --- 
 --- 
