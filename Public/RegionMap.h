@@ -97,8 +97,6 @@ class EVOSPACE_API URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   UEvoRegion *FindRegion(const FVector2i &grid);
 
-  std::vector<USourceData *> FindOresInSector(const FVector2i &spos);
-
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };

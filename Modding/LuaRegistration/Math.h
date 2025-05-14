@@ -160,13 +160,13 @@ inline void registerMathClasses(lua_State *L) {
   luabridge::getGlobalNamespace(L)
     .beginNamespace("cs")
     .addFunction(
-      "bp2sp", +[](const Vec3i &bpos) { return cs::WBtoS(bpos, gSectorSize); })
+      "bp2sp", +[](const Vec3i &bpos) { return cs::WBtoS(bpos); })
     .addFunction(
       "w2bp", +[](const FVector &world) { return cs::WtoWB(world); })
     .addFunction(
       "bp2w", +[](const Vec3i &bpos) { return cs::WBtoW(bpos); })
     .addFunction(
-      "w2sp", +[](const FVector &world) { return cs::WBtoS(world, gSectorSize); })
+      "w2sp", +[](const FVector &world) { return cs::WBtoS(world); })
     .addProperty(
       "sector_size", +[]() { return gSectorSize; })
     .endNamespace();

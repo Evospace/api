@@ -11,7 +11,8 @@
 
 #include "ConductorBlockLogic.generated.h"
 
-class UResourceAccessor;
+
+class ISectorProxy;class UResourceAccessor;
 class UStaticProp;
 class USwitchBlockLogic;
 class UConductorBlockLogic;
@@ -327,7 +328,7 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   UFUNCTION(BlueprintCallable)
   UBlockNetwork *GetNetwork() const;
 
-  virtual void SetRenderable() override;
+  virtual void SetRenderable(ISectorProxy *sector) override;
 
   virtual void RemoveActorOrRenderable() override;
 
@@ -448,8 +449,6 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
 
   UPROPERTY(VisibleAnywhere)
   int32 mSubnetwork2 = INDEX_NONE;
-
-  virtual void SetActor(ABlockActor *actor) override;
 
   virtual void UpdateSides(UAccessor *except = nullptr) override;
 

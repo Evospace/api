@@ -81,11 +81,11 @@ class ADimension : public AActor {
   public:
   // Core Functions
 
-  ASector *GetSector(const Vec3i &spos);
-  const ASector *GetSector(const Vec3i &spos) const;
+  ISectorProxy *GetSector(const Vec3i &spos);
+  const ISectorProxy *GetSector(const Vec3i &spos) const;
 
-  ASector *FindBlockCell(const Vec3i &pos, IndexType &index);
-  const ASector *FindBlockCell(const Vec3i &pos, IndexType &index) const;
+  ISectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index);
+  const ISectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index) const;
 
   UFUNCTION(BlueprintCallable)
   void SaveDimentionFolder(bool backup = false);
@@ -283,10 +283,10 @@ class ADimension : public AActor {
   bool IsColumnLoaded(const UColumn &column) const;
   bool IsColumnUsed(const UColumn &column) const;
 
-  void CasheColumn(UColumn &column);
+  void CacheColumn(UColumn &column);
   void DecacheColumn(UColumn &column);
 
-  void CacheSector(const Vec3i &pos, ASector *sector);
+  void CacheSector(const Vec3i &pos, ISectorProxy *sector);
 
   void GetNearestColumns(TMap<FVector3i, UColumn *> &data, TArray<NearestColumn> &out);
 

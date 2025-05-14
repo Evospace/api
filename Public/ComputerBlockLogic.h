@@ -34,21 +34,18 @@ class EVOSPACE_API UComputerBlockLogic : public UBlockLogic {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UResourceInventory *energy_inventory;
 
-  FByteProperty *mStatusProperty = nullptr;
-  FByteProperty *mLastTierProperty = nullptr;
-
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   virtual bool IsBlockTicks() const override;
 
-  int8 TicksToGet = 20;
-  int8 mStatus = 0;
-  int8 mLastTier = 0;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  uint8 TicksToGet = 20;
 
-  virtual void SetStatus(int8 w);
-  virtual void SetLastTier(int8 w);
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  uint8 Status = 0;
 
-  virtual void SetActor(ABlockActor *actor) override;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  uint8 LastTier = 0;
 
   virtual void BlockBeginPlay() override;
 
@@ -62,13 +59,13 @@ class EVOSPACE_API UComputerBlockLogic : public UBlockLogic {
   USingleSlotInventory *chip_inventory;
 
   UPROPERTY()
-  const UStaticItem *mCompItem = nullptr;
+  const UStaticItem *CompItem = nullptr;
 
   UPROPERTY(BlueprintReadWrite)
-  int32 mBoostLeft = 0;
+  int32 BoostLeft = 0;
 
   UPROPERTY(BlueprintReadWrite)
-  int32 mBoostForce = 1;
+  int32 BoostForce = 1;
 
   UPROPERTY(BlueprintReadWrite)
   int32 WorkingCD = 20;

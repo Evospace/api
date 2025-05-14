@@ -6,10 +6,12 @@
 #include "Evospace/Common.h"
 #include "Evospace/CoordinameMinimal.h"
 #include "Evospace/Vector.h"
+#include "Evospace/Misc/CoverWrapper.h"
 
 #include "BlockLogic.generated.h"
 
-class UHierarchicalInstancedStaticMeshComponent;
+
+class ISectorProxy;class UHierarchicalInstancedStaticMeshComponent;
 class UStaticCover;
 class UCoreAccessor;
 class AMainPlayerController;
@@ -20,6 +22,7 @@ class UHudWidget;
 class URootBlockComponent;
 
 class ADimension;
+class ASector;
 class AItemLogic;
 class UStaticItem;
 class UInventoryAccess;
@@ -68,11 +71,12 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual void RotationPostprocess();
 
-  virtual void SetRenderable();
-
+  virtual void SetRenderable(ISectorProxy *sector);
   virtual void SetActor(ABlockActor *actor);
-  void DeferredPaintApply() const;
+
   virtual void RemoveActorOrRenderable();
+
+  void DeferredPaintApply() const;
 
   virtual void LuaBlock();
   virtual void BlockDestruction();
@@ -259,9 +263,22 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   const UStaticItem *NetworkSignal = nullptr;
 
+  UPROPERTY()
+  FCoverWrapper Cover;
+
   private:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ADimension *mDimension = nullptr;
+
+  public:
+  void SetWorking(bool working);
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  float LoadRatio;
+
+  private:
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  bool Working;
 };
 
 UCLASS(BlueprintType)

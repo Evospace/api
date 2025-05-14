@@ -53,7 +53,7 @@ class Base;
     return this == &other;                                                                                                                                    \
   }
 
-#define EVO_CODEGEN_INSTANCE_ALIAS(type, alias)                                                                                                       \
+#define EVO_CODEGEN_INSTANCE_ALIAS(type, alias)                                                                                          \
   __EVO_COMMON_CODEGEN(type)                                                                                                             \
   virtual void lua_reg_internal(lua_State *L) const override {                                                                           \
     LOG(INFO_LL) << "Registering lua instance " << TEXT(#alias);                                                                         \

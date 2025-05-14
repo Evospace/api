@@ -15,13 +15,15 @@ class EVOSPACE_API UStaticCover : public UStaticObject {
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  int32 Tier = INDEX_NONE;
 
   UPROPERTY(VisibleAnywhere)
   TArray<UMaterialInterface *> Materials;
 
   UPROPERTY(VisibleAnywhere)
   UStaticMesh *Mesh;
+
+  UPROPERTY(VisibleAnywhere)
+  uint8 NumCustomData = 0;
 
   UPROPERTY(VisibleAnywhere)
   bool NoCollision = false;

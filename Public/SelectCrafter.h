@@ -9,7 +9,8 @@
 #include <Dom/JsonObject.h>
 
 #include "SelectCrafter.generated.h"
-class AMainPlayerController;
+
+class ISectorProxy;class AMainPlayerController;
 class UInventoryContainer;
 class UCoreAccessor;
 
@@ -51,6 +52,8 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
+  virtual void SetRenderable(ISectorProxy *sector) override;
+
   UPROPERTY(EditAnywhere)
   bool IgnoreExtraSlots = false;
 
@@ -61,7 +64,5 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
   virtual void Tick() override;
 
   public:
-  virtual void SetActor(ABlockActor *actor) override;
-
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 };

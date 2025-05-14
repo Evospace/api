@@ -6,7 +6,8 @@
 
 #include "StaticProp.generated.h"
 
-class ASector;
+
+class ISectorProxy;class ASector;
 class UStaticMesh;
 
 UCLASS()
@@ -40,7 +41,7 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
   void OnDamage(const Vec3i &pos) const;
   void OnSpawn(const Vec3i &pos) const;
 
-  virtual bool Create(ASector *sector, const FTransform &transform, const FVector3i &bpos, bool ignored = false) const;
+  virtual bool Create(ISectorProxy *sector, const FTransform &transform, const FVector3i &bpos, bool ignored = false) const;
 
   virtual bool ProtoValidCheck() override;
 

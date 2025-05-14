@@ -44,12 +44,6 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   public:
   UAbstractCrafter();
 
-  virtual void SetActor(ABlockActor *actor) override;
-
-  virtual void SetWorking(bool working);
-
-  FBoolProperty *mWorking = nullptr;
-
   //
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
@@ -153,11 +147,11 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 CollectedProductivity = 0;
 
-  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   URecipeDictionary *RecipeDictionary;
 
   friend class UBlockModdingLuaState;
 
-  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   const URecipe *CurrentRecipe = nullptr;
 };
