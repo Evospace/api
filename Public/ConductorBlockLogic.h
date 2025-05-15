@@ -11,8 +11,8 @@
 
 #include "ConductorBlockLogic.generated.h"
 
-
-class ISectorProxy;class UResourceAccessor;
+class ISectorProxy;
+class UResourceAccessor;
 class UStaticProp;
 class USwitchBlockLogic;
 class UConductorBlockLogic;
@@ -332,8 +332,8 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 
   virtual void RemoveActorOrRenderable() override;
 
-  TArray<int32> mSideIndexes;
-  int32 mCenterInxed = INDEX_NONE;
+  TArray<FCoverWrapper> SideCovers;
+  FCoverWrapper CenterCover;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UBlockNetwork *mNetwork = nullptr;

@@ -10,7 +10,8 @@
 
 #include "SelectCrafter.generated.h"
 
-class ISectorProxy;class AMainPlayerController;
+class ISectorProxy;
+class AMainPlayerController;
 class UInventoryContainer;
 class UCoreAccessor;
 

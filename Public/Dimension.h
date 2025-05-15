@@ -154,6 +154,9 @@ class ADimension : public AActor {
   UPROPERTY(EditAnywhere)
   UBatchBlockLogicManager *BatchManager;
 
+  UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+  TSubclassOf<ASector> mSectorClass;
+  
   protected:
   // Core Tick
 
@@ -179,9 +182,6 @@ class ADimension : public AActor {
   private:
   UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
   bool bSectorGenegateOnly = true;
-
-  UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-  TSubclassOf<ASector> mSectorClass;
 
   void TeleportProcess();
   void LoadingProcess();
@@ -292,6 +292,7 @@ class ADimension : public AActor {
 
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);
+  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<ISectorProxy> old_proxy, TScriptInterface<ISectorProxy>proxy, UColumn*column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
 };

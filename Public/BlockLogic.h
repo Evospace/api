@@ -10,8 +10,8 @@
 
 #include "BlockLogic.generated.h"
 
-
-class ISectorProxy;class UHierarchicalInstancedStaticMeshComponent;
+class ISectorProxy;
+class UHierarchicalInstancedStaticMeshComponent;
 class UStaticCover;
 class UCoreAccessor;
 class AMainPlayerController;
@@ -263,7 +263,6 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   const UStaticItem *NetworkSignal = nullptr;
 
-  UPROPERTY()
   FCoverWrapper Cover;
 
   private:

@@ -18,7 +18,6 @@ class EVOSPACE_API UStorageBlockLogic : public UBlockLogic {
   }
   GENERATED_BODY()
   public:
-
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventoryAccess *mStorageAccess = nullptr;
 

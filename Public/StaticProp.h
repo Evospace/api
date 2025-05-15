@@ -6,8 +6,8 @@
 
 #include "StaticProp.generated.h"
 
-
-class ISectorProxy;class ASector;
+class ISectorProxy;
+class ASector;
 class UStaticMesh;
 
 UCLASS()
