@@ -7,6 +7,9 @@
 #include "Evospace/World/Tesselator.h"
 #include "SectorProxy.generated.h"
 
+
+
+class URealtimeMeshComponent;class ADimension;
 class AColumn;
 class USectorPropComponent;
 class UBlockLogic;
@@ -39,7 +42,7 @@ class ISectorProxy {
   virtual void UnloadSector() = 0;
 
   virtual FVector3i GetPivotPos() const = 0;
-  virtual void SetProxyData(FVector3i value, AActor *actor) = 0;
+  virtual void SetProxyData(FVector3i value, AColumn *actor) = 0;
 
   virtual const AjacentSectors &GetAdjacentSectors() const = 0;
   virtual AjacentSectors &GetAdjacentSectors() = 0;
@@ -58,7 +61,7 @@ class ISectorProxy {
   
   bool SetDataForCompiler(SectorCompilerData &data);
 
-  virtual void ClearBlockProps(IndexType index, bool doDrop = true) {}
+  virtual void ClearBlockProps(IndexType index, bool doDrop = true) = 0;
 
   virtual void Destroy() = 0;
 
@@ -71,7 +74,7 @@ class ISectorProxy {
 
   virtual bool GetSectionGroupCreated() const { return false; }
 
-  virtual USectorPropComponent *GetInstancingComponent() const { return nullptr; }
+  virtual USectorPropComponent *GetInstancingComponent() const = 0;
 };
 
 UCLASS()
@@ -97,7 +100,7 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
   virtual void SetDirty(bool value) override { Dirty = value; }
 
   virtual FVector3i GetPivotPos() const override { return PivotPos; }
-  virtual void SetProxyData(FVector3i value, AActor *actor) override {
+  virtual void SetProxyData(FVector3i value, AColumn *actor) override {
     PivotPos = value;
     owner = actor;
   }
@@ -113,17 +116,18 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
 
   virtual const TArray<FStaticBlockInfo> &GetStaticBlocks() const override { return StaticBlocks; }
 
-  virtual void LoadSector(const AColumn &c) override { StaticBlocks = SectorColdData.mStaticBlocks; column = &c; }
+  virtual void LoadSector(const AColumn &c) override ;
 
-  virtual void UnloadSector() override {
-    SectorColdData = {};
-    SectorColdData.mStaticBlocks = StaticBlocks;
-  }
+  virtual void UnloadSector() override ;
 
   virtual bool ApplyDataFromCompiler(ADimension * dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback) override;
+
+  virtual USectorPropComponent * GetInstancingComponent() const override;
+
+  virtual void ClearBlockProps(IndexType index, bool doDrop) override;
   
   UPROPERTY(VisibleAnywhere)
-  AActor *owner = nullptr;
+  AColumn *owner = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   FVector3i PivotPos = {};
@@ -138,11 +142,17 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
 
   AjacentSectors ajacentSectors;
 
+  UPROPERTY()
+  TMap<int32, UBlockLogic *> RenderBlocks;
+
   TArray<FStaticBlockInfo> StaticBlocks;
 
   UPROPERTY()
   ASector * sector = nullptr;
 
   UPROPERTY()
-  const AColumn * column = nullptr;
+  bool IsSectionGroupCreated = false;
+
+  UPROPERTY()
+  URealtimeMeshComponent * rmc;
 };
