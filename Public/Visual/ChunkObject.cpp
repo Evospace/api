@@ -204,7 +204,7 @@
 //     Ar << Data.mAttaches;
 // }
 //
-// void UChunkObject::LoadFromColumn(const UColumn &column){
+// void UChunkObject::LoadFromColumn(const AColumn &column){
 //   // StaticBlocks = mSectorDataLogic.mStaticBlocks;
 //   //
 //   // for (int i = 0; i < StaticBlocks.Num(); ++i) {

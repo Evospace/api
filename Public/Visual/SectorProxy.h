@@ -7,7 +7,7 @@
 #include "Evospace/World/Tesselator.h"
 #include "SectorProxy.generated.h"
 
-class UColumn;
+class AColumn;
 class USectorPropComponent;
 class UBlockLogic;
 class ABlockActor;
@@ -35,7 +35,7 @@ class ISectorProxy {
   virtual bool GetDirty() const = 0;
   virtual void SetDirty(bool value) = 0;
 
-  virtual void LoadSector(const UColumn &column) = 0;
+  virtual void LoadSector(const AColumn &column) = 0;
   virtual void UnloadSector() = 0;
 
   virtual FVector3i GetPivotPos() const = 0;
@@ -91,7 +91,7 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
 
   virtual void PromoteToSector() override;
 
-  virtual void Destroy() override {}
+  virtual void Destroy() override ;
 
   virtual bool GetDirty() const override { return Dirty; }
   virtual void SetDirty(bool value) override { Dirty = value; }
@@ -113,7 +113,7 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
 
   virtual const TArray<FStaticBlockInfo> &GetStaticBlocks() const override { return StaticBlocks; }
 
-  virtual void LoadSector(const UColumn &c) override { StaticBlocks = SectorColdData.mStaticBlocks; column = &c; }
+  virtual void LoadSector(const AColumn &c) override { StaticBlocks = SectorColdData.mStaticBlocks; column = &c; }
 
   virtual void UnloadSector() override {
     SectorColdData = {};
@@ -141,5 +141,8 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
   TArray<FStaticBlockInfo> StaticBlocks;
 
   UPROPERTY()
-  const UColumn * column = nullptr;
+  ASector * sector = nullptr;
+
+  UPROPERTY()
+  const AColumn * column = nullptr;
 };

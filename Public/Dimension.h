@@ -164,10 +164,9 @@ class ADimension : public AActor {
   float DeltaRemain = 0.f;
   int32 Ticks = 0;
   int32 HalfTps = 0;
-  int32 FrameCount = 0;
   EvoRingBuffer<float> TpsBuffer = EvoRingBuffer<float>(16, 0);
   EvoRingBuffer<float> CyclesBuffer = EvoRingBuffer<float>(16, 0);
-  EvoRingBuffer<float> FpsBuffer = EvoRingBuffer<float>(4, 0);
+
   bool Paused = false;
   int32 MaxTps = 20;
 
@@ -220,12 +219,12 @@ class ADimension : public AActor {
   private:
   // Columns
 
-  friend class UColumn;
+  friend class AColumn;
 
   struct ColumnDataKeyFuncs {
     typedef Vec3i KeyType;
     typedef typename TCallTraits<Vec3i>::ParamType KeyInitType;
-    typedef typename TCallTraits<UColumn *>::ParamType ElementInitType;
+    typedef typename TCallTraits<AColumn *>::ParamType ElementInitType;
 
     enum {
       bAllowDuplicateKeys = false
@@ -245,7 +244,7 @@ class ADimension : public AActor {
   };
 
   struct NearestColumn {
-    UColumn *data;
+    AColumn *data;
     double dist;
   };
 
@@ -254,7 +253,7 @@ class ADimension : public AActor {
   std::unique_ptr<TThreadWorker<FColumnSectorsData>> mSectorSaverWorker;
 
   UPROPERTY(VisibleAnywhere)
-  TMap<FVector3i, UColumn *> mColumns;
+  TMap<FVector3i, AColumn *> mColumns;
 
   UPROPERTY(VisibleAnywhere)
   int32 mCountRemove = 0;
@@ -268,31 +267,31 @@ class ADimension : public AActor {
 
   bool IsCanCreateColumn() const;
   bool IsCanRemoveColumn() const;
-  bool IsCanSaveColumn(const UColumn &tall) const;
-  bool IsColumnChanged(const UColumn &tall) const;
+  bool IsCanSaveColumn(const AColumn &tall) const;
+  bool IsColumnChanged(const AColumn &tall) const;
 
   private:
   void TickProcess(float DeltaTime);
   bool TickBlocks(float DeltaTime);
 
-  bool IsColumnActive(const UColumn &column) const;
-  void SpawnColumn(Vec3i spos, UColumn *tall, FColumnSectorsData &data);
+  bool IsColumnActive(const AColumn &column) const;
+  void SpawnColumn(Vec3i spos, AColumn *tall, FColumnSectorsData &data);
 
-  bool IsColumnActive1(const UColumn &column) const;
-  bool IsColumnRemove(const UColumn &column) const;
-  bool IsColumnLoaded(const UColumn &column) const;
-  bool IsColumnUsed(const UColumn &column) const;
+  bool IsColumnActive1(const AColumn &column) const;
+  bool IsColumnRemove(const AColumn &column) const;
+  bool IsColumnLoaded(const AColumn &column) const;
+  bool IsColumnUsed(const AColumn &column) const;
 
-  void CacheColumn(UColumn &column);
-  void DecacheColumn(UColumn &column);
+  void CacheColumn(AColumn &column);
+  void DecacheColumn(AColumn &column);
 
   void CacheSector(const Vec3i &pos, ISectorProxy *sector);
 
-  void GetNearestColumns(TMap<FVector3i, UColumn *> &data, TArray<NearestColumn> &out);
+  void GetNearestColumns(TMap<FVector3i, AColumn *> &data, TArray<NearestColumn> &out);
 
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);
-  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<ISectorProxy> old_proxy, TScriptInterface<ISectorProxy>proxy, UColumn*column);
+  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<ISectorProxy> old_proxy, TScriptInterface<ISectorProxy>proxy, AColumn*column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
 };

@@ -88,7 +88,7 @@
 //     /* ---------- сериализация ------------------------------------------ */
 //     void SerializeVoxelData(FArchive& Ar);
 //
-//   void LoadFromColumn(const UColumn & column);
+//   void LoadFromColumn(const AColumn & column);
 //   void UnloadSector();
 //     /* по желанию: custom Save/Load */
 //

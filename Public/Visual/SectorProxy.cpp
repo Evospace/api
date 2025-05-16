@@ -7,15 +7,15 @@
 
 #include "Public/StaticBlock.h"
 bool ISectorProxy::SetDataForCompiler(SectorCompilerData &data){
-    SetDirty(false);
+  SetDirty(false);
 
-    for (int i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
-      auto pos = cs::IndexToArea(i, Vec3i(-1, -1, -1), Vec3i(1, 1, 1));
-      data.SetSector(pos, GetAdjacentSectors().Element(pos));
-    }
-
-    return true;
+  for (int i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
+    auto pos = cs::IndexToArea(i, Vec3i(-1, -1, -1), Vec3i(1, 1, 1));
+    data.SetSector(pos, GetAdjacentSectors().Element(pos));
   }
+
+  return true;
+}
 
 USectorProxyHolder::USectorProxyHolder() {
   StaticBlocks.Init({}, gSectorSize.Capacity());
@@ -46,6 +46,13 @@ void USectorProxyHolder::PromoteToSector() {
   //   sector->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
   // }
 }
+
+void USectorProxyHolder::Destroy(){
+    if(IsValid(sector)) {
+        sector->Destroy();
+        sector = nullptr;
+    }
+  }
 void USectorProxyHolder::SetStaticBlock(IndexType index, const UStaticBlock *value) {
   StaticBlocks[index].block = value;
 
@@ -70,13 +77,13 @@ bool USectorProxyHolder::ApplyDataFromCompiler(ADimension * dim, UTesselator::Da
   if (data.Num() > 0) {
     FTransform transform;
     transform.SetLocation(cs::WBtoWd(GetPivotPos()));
-    auto sector = dim->GetWorld()->SpawnActor<ASector>(dim->mSectorClass, transform);
-    sector->SetProxyData(GetPivotPos(), owner);
-    sector->LoadSector(*column);
-    sector->ApplyDataFromCompiler(dim, MoveTemp(data), lod, callback);
-    dim->ReplaceSectorProxy(GetPivotPos(), this, sector, const_cast<UColumn *>(column));
+    auto actor = dim->GetWorld()->SpawnActor<ASector>(dim->mSectorClass, transform);
+    actor->SetProxyData(GetPivotPos(), owner);
+    actor->LoadSector(*column);
+    actor->ApplyDataFromCompiler(dim, MoveTemp(data), lod, callback);
+    this->sector = actor;
+  } else {
+    callback();
   }
-
-  callback();
   return true;
 }
