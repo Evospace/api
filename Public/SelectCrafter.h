@@ -10,7 +10,7 @@
 
 #include "SelectCrafter.generated.h"
 
-class ISectorProxy;
+class USectorProxy;
 class AMainPlayerController;
 class UInventoryContainer;
 class UCoreAccessor;
@@ -53,7 +53,7 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
-  virtual void SetRenderable(ISectorProxy *sector) override;
+  virtual void SetRenderable(AColumn *sector) override;
 
   UPROPERTY(EditAnywhere)
   bool IgnoreExtraSlots = false;

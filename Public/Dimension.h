@@ -81,11 +81,11 @@ class ADimension : public AActor {
   public:
   // Core Functions
 
-  ISectorProxy *GetSector(const Vec3i &spos);
-  const ISectorProxy *GetSector(const Vec3i &spos) const;
+  USectorProxy *GetSector(const Vec3i &spos);
+  const USectorProxy *GetSector(const Vec3i &spos) const;
 
-  ISectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index);
-  const ISectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index) const;
+  USectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index);
+  const USectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index) const;
 
   UFUNCTION(BlueprintCallable)
   void SaveDimentionFolder(bool backup = false);
@@ -156,7 +156,7 @@ class ADimension : public AActor {
 
   UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
   TSubclassOf<ASector> mSectorClass;
-  
+
   protected:
   // Core Tick
 
@@ -268,7 +268,6 @@ class ADimension : public AActor {
   bool IsCanCreateColumn() const;
   bool IsCanRemoveColumn() const;
   bool IsCanSaveColumn(const AColumn &tall) const;
-  bool IsColumnChanged(const AColumn &tall) const;
 
   private:
   void TickProcess(float DeltaTime);
@@ -285,13 +284,13 @@ class ADimension : public AActor {
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);
 
-  void CacheSector(const Vec3i &pos, ISectorProxy *sector);
+  void CacheSector(const Vec3i &pos, USectorProxy *sector);
 
   void GetNearestColumns(TMap<FVector3i, AColumn *> &data, TArray<NearestColumn> &out);
 
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);
-  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<ISectorProxy> old_proxy, TScriptInterface<ISectorProxy>proxy, AColumn*column);
+  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<USectorProxy> old_proxy, TScriptInterface<USectorProxy> proxy, AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
 };

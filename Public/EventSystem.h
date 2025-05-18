@@ -86,9 +86,6 @@ class EventSystem {
           register_enum_line(on_player_spawn)
           register_enum_line(on_tick)
           register_enum_line(on_player_at_sector)
-          register_enum_line(on_entity_died)
-          register_enum_line(on_entity_damaged)
-          register_enum_line(on_entity_spawn)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem

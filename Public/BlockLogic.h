@@ -10,7 +10,7 @@
 
 #include "BlockLogic.generated.h"
 
-class ISectorProxy;
+class USectorProxy;
 class UHierarchicalInstancedStaticMeshComponent;
 class UStaticCover;
 class UCoreAccessor;
@@ -28,6 +28,7 @@ class UStaticItem;
 class UInventoryAccess;
 class UStaticBlock;
 class UAccessor;
+class AColumn;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UBlockLogic : public UInstance {
@@ -71,7 +72,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   virtual void RotationPostprocess();
 
-  virtual void SetRenderable(ISectorProxy *sector);
+  virtual void SetRenderable(AColumn *sector);
   virtual void SetActor(ABlockActor *actor);
 
   virtual void RemoveActorOrRenderable();

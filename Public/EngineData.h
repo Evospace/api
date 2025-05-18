@@ -23,6 +23,7 @@ class EVOSPACE_API UEngineData : public UInstance {
       .addProperty("res_y", &UEngineData::ResolutionY) //@field integer
       .addProperty("loading_range", &UEngineData::LoadingRange) //@field integer
       .addProperty("performance", &UEngineData::Performance) //@field boolean
+      .addProperty("performance_graph", &UEngineData::PerformanceGraph) //@field boolean
       .addProperty("ctrl_hotbar", &UEngineData::CtrlHotbar) //@field boolean
       .addProperty("alt_hotbar", &UEngineData::AltHotbar) //@field boolean
       .addProperty("shift_hotbar", &UEngineData::ShiftHotbar) //@field boolean
@@ -53,6 +54,9 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   bool Performance;
+
+  UPROPERTY(EditAnywhere)
+  bool PerformanceGraph;
 
   UPROPERTY(EditAnywhere)
   bool CtrlHotbar;

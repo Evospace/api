@@ -6,6 +6,7 @@
 #include "Evospace/World/SectorArea.h"
 #include "Public/MainGameInstance.h"
 #include "Evospace/WorldEntities/WorldFeaturesManager.h"
+#include "Kismet/GameplayStatics.h"
 
 void UEngineData::ApplyData() const {
   if (Fps == 0) {
@@ -48,6 +49,7 @@ void UEngineData::ApplyControllerData() const {
   auto pc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
   if (pc && pc->BeginPlayFired) {
     pc->SectorArea->SetRadius(LoadingRange);
+    pc->PerformanceGraph = PerformanceGraph;
     pc->Performance = Performance;
 
     pc->AltHotbar = AltHotbar;

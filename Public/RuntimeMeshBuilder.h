@@ -6,8 +6,7 @@
 struct RuntimeMeshBuilder {
   using MeshType = RealtimeMesh::TRealtimeMeshBuilderLocal<uint16, FPackedNormal, FVector2DHalf, 1>;
 
-private:
-  
+  private:
   static int32 BuildSection(MeshType &StaticProvider, const UTesselator::Data &data, int32 section_index, int32 lod_index, int32 precount) {
     auto &index_data = data[section_index];
 
@@ -24,10 +23,9 @@ private:
 
     return data[section_index].Vertices.Num();
   }
-  
-public:
-  
-  static void BuildRealtimeMesh(URealtimeMeshSimple * rm, UTesselator::Data && data, bool & secrionGroup) {
+
+  public:
+  static void BuildRealtimeMesh(URealtimeMeshSimple *rm, UTesselator::Data &&data, bool &secrionGroup) {
     auto groupKey = FRealtimeMeshSectionGroupKey::Create(0, FName("Surface"));
 
     RealtimeMesh::FRealtimeMeshStreamSet StreamSet;
@@ -66,7 +64,7 @@ public:
       const FRealtimeMeshSectionKey PolyGroupKey = FRealtimeMeshSectionKey::CreateForPolyGroup(groupKey, i);
       rm->UpdateSectionConfig(PolyGroupKey, FRealtimeMeshSectionConfig(i), true);
     }
-  
+
     data = {};
   }
 };

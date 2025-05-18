@@ -25,6 +25,9 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventory *OutputInventory;
 
+  UPROPERTY()
+  UResourceAccessor *acc;
+
   public:
   virtual bool IsUniversalCrafter() const override;
 

@@ -17,7 +17,7 @@
 
 #include "Public/StaticBlock.h"
 #include "Public/StaticProp.h"
-bool ISectorProxy::SetDataForCompiler(SectorCompilerData &data){
+bool USectorProxy::SetDataForCompiler(SectorCompilerData &data) {
   SetDirty(false);
 
   for (int i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
@@ -28,63 +28,74 @@ bool ISectorProxy::SetDataForCompiler(SectorCompilerData &data){
   return true;
 }
 
-USectorProxyHolder::USectorProxyHolder() {
+USectorProxy::USectorProxy() {
   StaticBlocks.Init({}, gSectorSize.Capacity());
 }
 
-void USectorProxyHolder::SpawnColumnCallback(const FSectorData &data) {
+void USectorProxy::SpawnColumn(const FSectorData &data) {
   Dirty = true;
   SectorColdData = data;
 }
 
-void USectorProxyHolder::GetSectorDataHot(FSectorData &data) {
-  SaveChanged = false;
+void USectorProxy::GetSectorDataHot(FSectorData &data) {
+  data.mStaticBlocks = StaticBlocks;
+
+  // Костыль, нужно переехать на хранение в колонне
+  if (PivotPos.Z == 0)
+    owner->SectorPropComponent->GetAll(data.mAttaches);
+}
+
+void USectorProxy::GetSectorDataCold(FSectorData &data) {
   data = SectorColdData;
 }
 
-void USectorProxyHolder::GetSectorDataCold(FSectorData &data) {
-  SaveChanged = false;
-  data = SectorColdData;
-}
-
-void USectorProxyHolder::PromoteToSector() {
-  // if (ensure(sector)) {
-  //   sector->mMyColumn = column;
-  //   sector->mPivotPos = spos * gSectorSize;
-  //   sector->SetOwner(this);
-  //   column->sectors.Add(sector);
-  //   column->compiling.Add(false);
-  //   sector->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
-  // }
-}
-
-void USectorProxyHolder::Destroy(){
-    if(IsValid(sector)) {
-        sector->Destroy();
-        sector = nullptr;
-    }
+void USectorProxy::Destroy() {
+  if (IsValid(sector)) {
+    sector->Destroy();
+    sector = nullptr;
   }
-void USectorProxyHolder::SetStaticBlock(IndexType index, const UStaticBlock *value) {
+}
+
+void USectorProxy::SetDirty(IndexType index) {
+  auto pos = cs::IndexToCell(index, gSectorSize);
+
+  Vec3i out(0, 0, 0);
+  out.X += (pos.X == 0 ? -1 : 0);
+  out.X += (pos.X == gSectorSize.X - 1 ? 1 : 0);
+  out.Y += (pos.Y == 0 ? -1 : 0);
+  out.Y += (pos.Y == gSectorSize.Y - 1 ? 1 : 0);
+  out.Z += (pos.Z == 0 ? -1 : 0);
+  out.Z += (pos.Z == gSectorSize.Z - 1 ? 1 : 0);
+
+  for (IndexType i = 0; i < Vec3i(2, 2, 2).Capacity(); ++i) {
+    if (auto sector = ajacentSectors.Element(out * cs::IndexToCell(i, Vec3i(2, 2, 2))))
+      sector->SetDirty(true);
+  }
+
+  owner->SaveDirty = true;
+}
+
+void USectorProxy::SetStaticBlock(IndexType index, const UStaticBlock *value) {
   StaticBlocks[index].block = value;
 
   if (!value || value->Tesselator) {
     SetDirty(index);
   }
 }
-const UStaticBlock *USectorProxyHolder::GetStaticBlock(IndexType index) {
+const UStaticBlock *USectorProxy::GetStaticBlock(IndexType index) {
   return StaticBlocks[index].block;
 }
 
-void USectorProxyHolder::SetBlockDecity(IndexType index, BlockDensity density) {
+void USectorProxy::SetBlockDensity(IndexType index, BlockDensity density) {
   SetDirty(index);
   StaticBlocks[index].dencity = density;
 }
 
-const BlockDensity &USectorProxyHolder::GetBlockDesity(IndexType index) const {
+const BlockDensity &USectorProxy::GetBlockDensity(IndexType index) const {
   return StaticBlocks[index].dencity;
 }
 
-void USectorProxyHolder::LoadSector(const AColumn &c){ 
+void USectorProxy::LoadSector(const AColumn &c) {
   StaticBlocks = SectorColdData.mStaticBlocks;
 
   auto dim = c.Dim;
@@ -112,14 +123,14 @@ void USectorProxyHolder::LoadSector(const AColumn &c){
           FTransform transform(cs::WBtoWd(logic->GetBlockPos()) + gCubeSize / 2.0);
           transform.SetRotation(logic->GetBlockQuat());
           if (staticBlock->NoActorRenderable) {
-            logic->SetRenderable(this);
+            logic->SetRenderable(owner);
           } else if (ABlockActor *actor = logic->GetStaticBlock()->SpawnActorAndLuaDeferred(dim, logic, transform)) {
             logic->SetActor(actor);
             actor->FinishSpawning(transform);
             logic->DeferredPaintApply();
             actor->AttachToActor(owner, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
           }
-          RenderBlocks.Add(cs::CellToIndex(logic->GetBlockPos() - GetPivotPos(), gSectorSize), logic);
+          owner->RenderBlocks.Add(logic->GetBlockPos(), logic);
 
           if (restored) [[unlikely]] {
             for (auto &pos : block->Positions) {
@@ -144,7 +155,7 @@ void USectorProxyHolder::LoadSector(const AColumn &c){
       LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName() << " clearing this cell";
       dim->SetBlockLogic(bpos, nullptr);
       SetStaticBlock(i, nullptr);
-      SetBlockDecity(i, 0);
+      SetBlockDensity(i, 0);
     }
   }
 
@@ -158,17 +169,17 @@ void USectorProxyHolder::LoadSector(const AColumn &c){
   SetDirty(true);
 }
 
-void USectorProxyHolder::UnloadSector(){
+void USectorProxy::UnloadSector() {
   SectorColdData = {};
   SectorColdData.mStaticBlocks = StaticBlocks;
 
-  for (auto i = RenderBlocks.begin(); i != RenderBlocks.end(); ++i) {
+  for (auto i = owner->RenderBlocks.begin(); i != owner->RenderBlocks.end(); ++i) {
     i->Value->RemoveActorOrRenderable();
   }
-  RenderBlocks.Empty();
+  owner->RenderBlocks.Empty();
 }
 
-bool USectorProxyHolder::ApplyDataFromCompiler(ADimension * dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback){
+bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback) {
   if (data.IsEmpty() && rmc) {
     auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
     if (mesh) {
@@ -177,10 +188,10 @@ bool USectorProxyHolder::ApplyDataFromCompiler(ADimension * dim, UTesselator::Da
     callback();
     return true;
   }
-  
+
   if (!rmc) {
     rmc = NewObject<URealtimeMeshComponent>(owner, URealtimeMeshComponent::StaticClass());
-    rmc->AttachToComponent(owner->GetRootComponent(), {EAttachmentRule::KeepWorld, false});
+    rmc->AttachToComponent(owner->GetRootComponent(), { EAttachmentRule::KeepWorld, false });
     rmc->SetMobility(EComponentMobility::Type::Static);
     FTransform tr;
     tr.SetLocation(cs::WBtoWd(GetPivotPos()));
@@ -190,26 +201,26 @@ bool USectorProxyHolder::ApplyDataFromCompiler(ADimension * dim, UTesselator::Da
   }
 
   RuntimeMeshBuilder::BuildRealtimeMesh(rmc->GetRealtimeMeshAs<URealtimeMeshSimple>(), MoveTemp(data), IsSectionGroupCreated);
-  
+
   //sector->ApplyDataFromCompiler(dim, MoveTemp(data), lod, callback);
   callback();
   return true;
 }
 
-USectorPropComponent * USectorProxyHolder::GetInstancingComponent() const{
+USectorPropComponent *USectorProxy::GetInstancingComponent() const {
   return owner->SectorPropComponent;
 }
 
 namespace {
-  void Drop(const UStaticObject *static_object, UInventory *inv) {
-    auto &minable = static_object->mMinable;
-    if (minable.Minable) {
-      UInventoryLibrary::Add(inv, { minable.Result, minable.Count });
-    }
+void Drop(const UStaticObject *static_object, UInventory *inv) {
+  auto &minable = static_object->mMinable;
+  if (minable.Minable) {
+    UInventoryLibrary::Add(inv, { minable.Result, minable.Count });
   }
 }
+} // namespace
 
-void USectorProxyHolder::ClearBlockProps(IndexType index, bool doDrop /*= true*/) {
+void USectorProxy::ClearBlockProps(IndexType index, bool doDrop /*= true*/) {
   const auto pos = cs::IndexToCell(index, gSectorSize);
 
   const auto out_inventory = NewObject<UAutosizeInventory>();
@@ -234,7 +245,7 @@ void USectorProxyHolder::ClearBlockProps(IndexType index, bool doDrop /*= true*/
       sector->GetInstancingComponent()->DestroySmallInBlock(cs::WBtoWd(bpos), s_index);
     }
   }
-  
+
   //TODO: Bad place for that
   if (!out_inventory->IsEmpty()) {
     auto mpc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

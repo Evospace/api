@@ -2,138 +2,75 @@
 
 #include "CoreMinimal.h"
 #include "Evospace/World/BlockCell.h"
-#include "Evospace/World/SectorTools.h"
 #include "StaticLogger.h"
+#include "Evospace/World/SectorTools.h"
 #include "Evospace/World/Tesselator.h"
 #include "SectorProxy.generated.h"
 
-
-
-class URealtimeMeshComponent;class ADimension;
+class URealtimeMeshComponent;
+class ADimension;
 class AColumn;
 class USectorPropComponent;
 class UBlockLogic;
 class ABlockActor;
 
-UINTERFACE()
-class USectorProxy : public UInterface {
-  GENERATED_BODY()
-};
-
-class ISectorProxy {
+UCLASS()
+class USectorProxy : public UObject {
   GENERATED_BODY()
   public:
-  using RenderableVariant = std::variant<bool, ABlockActor *>;
+  USectorProxy();
 
-  virtual void SpawnColumnCallback(const FSectorData &data) = 0;
-
-  // Visible sector can be changed, so we need to fill data here from runtime components
-  virtual void GetSectorDataHot(FSectorData &data) = 0;
-
-  // Invisible sector can't be changed so data remains the same
-  virtual void GetSectorDataCold(FSectorData &data) = 0;
-
-  virtual void PromoteToSector() = 0;
-
-  virtual bool GetDirty() const = 0;
-  virtual void SetDirty(bool value) = 0;
-
-  virtual void LoadSector(const AColumn &column) = 0;
-  virtual void UnloadSector() = 0;
-
-  virtual FVector3i GetPivotPos() const = 0;
-  virtual void SetProxyData(FVector3i value, AColumn *actor) = 0;
-
-  virtual const AjacentSectors &GetAdjacentSectors() const = 0;
-  virtual AjacentSectors &GetAdjacentSectors() = 0;
-
-  virtual void SetRenderable(IndexType index, RenderableVariant value, UBlockLogic *logic) {}
-
-  virtual const TArray<FStaticBlockInfo> &GetStaticBlocks() const = 0;
-
-  virtual void SetStaticBlock(IndexType index, const UStaticBlock *value) = 0;
-  virtual const UStaticBlock *GetStaticBlock(IndexType index) = 0;
-
-  virtual void SetBlockDecity(IndexType index, BlockDensity density) = 0;
-  virtual const BlockDensity &GetBlockDesity(IndexType index) const = 0;
-
-  virtual bool ApplyDataFromCompiler(ADimension * dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback) = 0;
-  
   bool SetDataForCompiler(SectorCompilerData &data);
 
-  virtual void ClearBlockProps(IndexType index, bool doDrop = true) = 0;
-
-  virtual void Destroy() = 0;
-
-  virtual bool IsSaveChanged() const { return false; }
-
-  virtual FRotator GetActorRotation() { return {}; }
-  virtual FVector GetActorLocation() { return {}; }
-
-  virtual void SetActorHiddenInGame(bool v) {}
-
-  virtual bool GetSectionGroupCreated() const { return false; }
-
-  virtual USectorPropComponent *GetInstancingComponent() const = 0;
-};
-
-UCLASS()
-class USectorProxyHolder : public UObject, public ISectorProxy {
-  GENERATED_BODY()
-  public:
-
-  USectorProxyHolder();
-  
-  virtual void SpawnColumnCallback(const FSectorData &data) override;
+  void SpawnColumn(const FSectorData &data);
 
   // Visible sector can be changed, so we need to fill data here from runtime components
-  virtual void GetSectorDataHot(FSectorData &data) override;
+  void GetSectorDataHot(FSectorData &data);
 
   // Invisible sector can't be changed so data remains the same
-  virtual void GetSectorDataCold(FSectorData &data) override;
+  void GetSectorDataCold(FSectorData &data);
 
-  virtual void PromoteToSector() override;
+  void Destroy();
 
-  virtual void Destroy() override ;
+  bool GetDirty() const { return Dirty; }
+  void SetDirty(bool value) { Dirty = value; }
 
-  virtual bool GetDirty() const override { return Dirty; }
-  virtual void SetDirty(bool value) override { Dirty = value; }
+  void SetDirty(IndexType index);
 
-  virtual FVector3i GetPivotPos() const override { return PivotPos; }
-  virtual void SetProxyData(FVector3i value, AColumn *actor) override {
+  FVector3i GetPivotPos() const { return PivotPos; }
+  void SetProxyData(FVector3i value, AColumn *actor) {
     PivotPos = value;
     owner = actor;
   }
 
-  virtual const AjacentSectors &GetAdjacentSectors() const override { return ajacentSectors; }
-  virtual AjacentSectors &GetAdjacentSectors() override { return ajacentSectors; }
+  virtual const AjacentSectors &GetAdjacentSectors() const { return ajacentSectors; }
+  virtual AjacentSectors &GetAdjacentSectors() { return ajacentSectors; }
 
   void SetStaticBlock(IndexType index, const UStaticBlock *value);
   const UStaticBlock *GetStaticBlock(IndexType index);
 
-  virtual void SetBlockDecity(IndexType index, BlockDensity density) override;
-  virtual const BlockDensity &GetBlockDesity(IndexType index) const override;
+  void SetBlockDensity(IndexType index, BlockDensity density);
+  const BlockDensity &GetBlockDensity(IndexType index) const;
 
-  virtual const TArray<FStaticBlockInfo> &GetStaticBlocks() const override { return StaticBlocks; }
+  const TArray<FStaticBlockInfo> &GetStaticBlocks() const { return StaticBlocks; }
 
-  virtual void LoadSector(const AColumn &c) override ;
+  void LoadSector(const AColumn &c);
 
-  virtual void UnloadSector() override ;
+  void UnloadSector();
 
-  virtual bool ApplyDataFromCompiler(ADimension * dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback) override;
+  virtual bool ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback);
 
-  virtual USectorPropComponent * GetInstancingComponent() const override;
+  virtual USectorPropComponent *GetInstancingComponent() const;
 
-  virtual void ClearBlockProps(IndexType index, bool doDrop) override;
-  
+  virtual void ClearBlockProps(IndexType index, bool doDrop);
+
+  AColumn *GetColumn() const { return owner; }
+
   UPROPERTY(VisibleAnywhere)
   AColumn *owner = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   FVector3i PivotPos = {};
-
-  UPROPERTY(VisibleAnywhere)
-  bool SaveChanged = false;
 
   UPROPERTY(VisibleAnywhere)
   bool Dirty = false;
@@ -142,17 +79,14 @@ class USectorProxyHolder : public UObject, public ISectorProxy {
 
   AjacentSectors ajacentSectors;
 
-  UPROPERTY()
-  TMap<int32, UBlockLogic *> RenderBlocks;
-
   TArray<FStaticBlockInfo> StaticBlocks;
 
   UPROPERTY()
-  ASector * sector = nullptr;
+  ASector *sector = nullptr;
 
   UPROPERTY()
   bool IsSectionGroupCreated = false;
 
   UPROPERTY()
-  URealtimeMeshComponent * rmc;
+  URealtimeMeshComponent *rmc;
 };

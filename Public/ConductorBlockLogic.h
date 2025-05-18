@@ -11,7 +11,7 @@
 
 #include "ConductorBlockLogic.generated.h"
 
-class ISectorProxy;
+class USectorProxy;
 class UResourceAccessor;
 class UStaticProp;
 class USwitchBlockLogic;
@@ -328,7 +328,7 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   UFUNCTION(BlueprintCallable)
   UBlockNetwork *GetNetwork() const;
 
-  virtual void SetRenderable(ISectorProxy *sector) override;
+  virtual void SetRenderable(AColumn *sector) override;
 
   virtual void RemoveActorOrRenderable() override;
 
@@ -450,6 +450,12 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
   UPROPERTY(VisibleAnywhere)
   int32 mSubnetwork2 = INDEX_NONE;
 
+  UPROPERTY()
+  UResourceAccessor *swAcc1 = nullptr;
+
+  UPROPERTY()
+  UResourceAccessor *swAcc2 = nullptr;
+
   virtual void UpdateSides(UAccessor *except = nullptr) override;
 
   virtual bool IsBlockTicks() const override;
@@ -464,6 +470,7 @@ UCLASS()
 class EVOSPACE_API UElectricitySwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
+  virtual void BlockBeginPlay() override;
   UElectricitySwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -472,6 +479,7 @@ UCLASS()
 class EVOSPACE_API UFluidSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
+  virtual void BlockBeginPlay() override;
   UFluidSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -480,6 +488,7 @@ UCLASS()
 class EVOSPACE_API UHeatSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
+  virtual void BlockBeginPlay() override;
   UHeatSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -488,6 +497,7 @@ UCLASS()
 class EVOSPACE_API UKineticSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
+  virtual void BlockBeginPlay() override;
   UKineticSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -496,6 +506,7 @@ UCLASS()
 class EVOSPACE_API UDataSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
+  virtual void BlockBeginPlay() override;
   UDataSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };

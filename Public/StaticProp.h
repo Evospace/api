@@ -6,7 +6,7 @@
 
 #include "StaticProp.generated.h"
 
-class ISectorProxy;
+class USectorProxy;
 class ASector;
 class UStaticMesh;
 
@@ -30,6 +30,7 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
       .addProperty("mesh", &Self::Mesh) //@field StaticMesh
       .addProperty("no_collision", &Self::NoCollision) //@field boolean
       .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
+      .addProperty("on_spawn", &Self::onSpawn) //@field function
       .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
       .endClass();
   }
@@ -41,7 +42,9 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
   void OnDamage(const Vec3i &pos) const;
   void OnSpawn(const Vec3i &pos) const;
 
-  virtual bool Create(ISectorProxy *sector, const FTransform &transform, const FVector3i &bpos) const;
+  virtual bool Create(USectorProxy *sector, const FTransform &transform, const FVector3i &bpos) const;
+
+  virtual void Release() override;
 
   virtual bool ProtoValidCheck() override;
 
@@ -89,4 +92,6 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
 
   UPROPERTY(VisibleAnywhere)
   bool NoCollision = false;
+
+  std::optional<luabridge::LuaRef> onSpawn;
 };
