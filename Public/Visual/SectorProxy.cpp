@@ -123,14 +123,12 @@ void USectorProxy::LoadSector(const AColumn &c) {
           FTransform transform(cs::WBtoWd(logic->GetBlockPos()) + gCubeSize / 2.0);
           transform.SetRotation(logic->GetBlockQuat());
           if (staticBlock->NoActorRenderable) {
-            logic->SetRenderable(owner);
+            owner->SetRenderable(logic->GetBlockPos(), true, logic);
           } else if (ABlockActor *actor = logic->GetStaticBlock()->SpawnActorAndLuaDeferred(dim, logic, transform)) {
-            logic->SetActor(actor);
-            actor->FinishSpawning(transform);
             logic->DeferredPaintApply();
             actor->AttachToActor(owner, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
+            owner->SetRenderable(logic->GetBlockPos(), actor, logic);
           }
-          owner->RenderBlocks.Add(logic->GetBlockPos(), logic);
 
           if (restored) [[unlikely]] {
             for (auto &pos : block->Positions) {
