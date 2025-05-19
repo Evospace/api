@@ -79,7 +79,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   void DeferredPaintApply() const;
 
-  virtual void LuaBlock();
+  virtual void SpawnBlockPostprocess();
   virtual void BlockDestruction();
 
   virtual bool IsBlockTicks() const;
