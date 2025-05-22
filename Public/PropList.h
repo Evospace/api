@@ -16,7 +16,6 @@ UCLASS()
 class UStaticPropList : public UPrototype {
   GENERATED_BODY()
   using Self = UStaticPropList;
-  EVO_OWNER(StaticPropList)
   EVO_CODEGEN_DB(StaticPropList, StaticPropList)
   virtual void lua_reg(lua_State *L) const override {
     FPropListData::lua_reg(L);
@@ -25,6 +24,9 @@ class UStaticPropList : public UPrototype {
       .deriveClass<Self, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
       .addProperty("data", EVO_ARRAY_GET_SET(PropListDatas)) //@field PropListData[]
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

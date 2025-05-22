@@ -8,7 +8,6 @@ UCLASS(BlueprintType)
  */
 class EVOSPACE_API UStaticStructure : public UPrototype {
   GENERATED_BODY()
-  EVO_OWNER(StaticStructure)
   EVO_CODEGEN_DB(StaticStructure, StaticStructure)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -16,6 +15,9 @@ class EVOSPACE_API UStaticStructure : public UPrototype {
       .addProperty("generate", &UStaticStructure::Generate) //@field function
       .addProperty("size", &UStaticStructure::mSize) //@field Vec2i
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

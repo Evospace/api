@@ -122,7 +122,6 @@ class UNoiseGenerator : public UPrototype {
   float max = 10;
 
   public:
-  EVO_OWNER(NoiseGenerator)
   EVO_CODEGEN_DB(NoiseGenerator, NoiseGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -138,5 +137,8 @@ class UNoiseGenerator : public UPrototype {
       .addProperty("min", &UNoiseGenerator::min)
       .addProperty("max", &UNoiseGenerator::max)
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 };

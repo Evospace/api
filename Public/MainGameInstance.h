@@ -25,7 +25,6 @@ class UInventoryAccess;
 class UUserWidget;
 class UStaticBlock;
 class UStaticItem;
-class UObjectLibrary;
 class UAssetOwner;
 
 UENUM(BlueprintType)
@@ -81,6 +80,8 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   public:
   UMainGameInstance();
+
+  static inline UMainGameInstance *Singleton = nullptr;
 
   UFUNCTION(BlueprintCallable)
   void SetStringSeed(const FString &str);
@@ -148,7 +149,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   template <typename _Ty>
   static _Ty *GetPrototype(const FString &name) {
     auto cdo = Cast<_Ty>(_Ty::StaticClass()->GetDefaultObject());
-    auto o = cdo->get_or_register("LastLogin", *GetMainGameInstance()->mJsonObjectLibrary);
+    auto o = cdo->get_or_register("LastLogin", *Singleton->mJsonObjectLibrary);
     return Cast<_Ty>(o);
   }
 
@@ -192,13 +193,13 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   void OnWindowFocusChanged(bool bIsFocused);
 
-  const UJsonObjectLibrary *GetObjectLibrary() const;
+  //TODO: fix
+  const UDbStorage *GetObjectLibrary() const;
 
   UFUNCTION(BlueprintCallable)
   void PostModLoad();
 
   static evo::LegacyLuaState *GetLuaState();
-  static UMainGameInstance *GetMainGameInstance();
 
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   TArray<FSteamUGCDetails> mSubscriptionDetails;
@@ -309,7 +310,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static FString GetLocalizedParts(const TArray<FKeyTableObject> &label_parts, const FString &separator = " ");
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FString GetLocalizedKeyTable(const FName &key, const FName &table);
+  static FString GetLocalizedKeyTable(FName key, FName table);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLocalizedObject(const FKeyTableObject &object);
@@ -376,7 +377,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UDB *DB;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UJsonObjectLibrary *mJsonObjectLibrary;
+  UDbStorage *mJsonObjectLibrary;
 
   UPROPERTY()
   TMap<UClass *, UAssetOwner *> mAssetTypeOwners;

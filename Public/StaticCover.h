@@ -5,12 +5,14 @@
 UCLASS()
 class EVOSPACE_API UStaticCover : public UStaticObject {
   GENERATED_BODY()
-  EVO_OWNER(StaticCover)
   EVO_CODEGEN_DB(StaticCover, StaticCover)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticCover, UStaticObject>("StaticCover") //@class StaticCover : StaticObject
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

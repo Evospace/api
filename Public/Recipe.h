@@ -17,7 +17,6 @@ class UStaticResearchRecipe;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   GENERATED_BODY()
-  EVO_OWNER(Recipe)
   EVO_CODEGEN_DB(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -32,6 +31,9 @@ class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
       .addProperty("tier", &URecipe::Tier) //@field integer Recipe tier used for speed scaling: every tier **above** the machine tier halves speed; every tier **below** doubles it.
       .addProperty("start_tier", &URecipe::StartTier) //@field integer Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

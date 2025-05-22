@@ -263,8 +263,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   const UStaticItem *NetworkSignal = nullptr;
-
-  FCoverWrapper Cover;
+  
+  RCoverWrapper Cover;
 
   private:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

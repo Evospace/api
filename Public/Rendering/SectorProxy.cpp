@@ -159,7 +159,7 @@ void USectorProxy::LoadSector(const AColumn &c) {
 
   for (const auto &it : SectorColdData.mAttaches)
     for (const auto &tr : it.Value) {
-      auto bpos = cs::WtoWB(tr.GetLocation()) - GetPivotPos();
+      auto bpos = cs::WtoWB(tr.GetLocation());
       it.Key->Create(this, static_cast<FTransform>(tr), bpos);
       it.Key->OnSpawn(cs::WtoWB(tr.GetLocation()));
     }
@@ -171,8 +171,8 @@ void USectorProxy::UnloadSector() {
   SectorColdData = {};
   SectorColdData.mStaticBlocks = StaticBlocks;
 
-  for (auto i = owner->RenderBlocks.begin(); i != owner->RenderBlocks.end(); ++i) {
-    i->Value->RemoveActorOrRenderable();
+  for (auto &i : owner->RenderBlocks) {
+    i.Value->RemoveActorOrRenderable();
   }
   owner->RenderBlocks.Empty();
 }
@@ -210,37 +210,31 @@ USectorPropComponent *USectorProxy::GetInstancingComponent() const {
 }
 
 namespace {
-void Drop(const UStaticObject *static_object, UInventory *inv) {
-  auto &minable = static_object->mMinable;
+void Drop(const UStaticProp *prop, UInventory *inv) {
+  auto &minable = prop->mMinable;
   if (minable.Minable) {
     UInventoryLibrary::Add(inv, { minable.Result, minable.Count });
   }
 }
 } // namespace
 
-void USectorProxy::ClearBlockProps(IndexType index, bool doDrop /*= true*/) {
-  const auto pos = cs::IndexToCell(index, gSectorSize);
-
+void USectorProxy::ClearBlockProps(const FVector3i & _bpos, bool doDrop /*= true*/) {
   const auto out_inventory = NewObject<UAutosizeInventory>();
 
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
-    auto bpos = pos + offset;
+    auto bpos = _bpos + offset + Vec3i(1,1,-1);
 
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
       if (doDrop) {
-        auto props = owner->SectorPropComponent->Get(s_index);
-        for (const auto &it : props) {
-          if (auto prop = Cast<UStaticProp>(it.Key)) {
-            for (const auto &tr : it.Value) {
-              Drop(it.Key, out_inventory);
-            }
-          }
+        auto props = owner->SectorPropComponent->Get(bpos);
+        for (const auto it : props) {
+          Drop(it, out_inventory);
         }
       }
 
-      sector->GetInstancingComponent()->DestroySmallInBlock(cs::WBtoWd(bpos), s_index);
+      sector->GetInstancingComponent()->DestroySmallInBlock(bpos);
     }
   }
 

@@ -19,7 +19,6 @@ class ULuaWorldGenerator : public UWorldGenerator {
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale = 1.f, int32 height_width = 16, bool no_biom = false) const override;
 
   public:
-  EVO_OWNED(LuaWorldGenerator, WorldGenerator)
   EVO_CODEGEN_DB(LuaWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -27,5 +26,8 @@ class ULuaWorldGenerator : public UWorldGenerator {
       .addProperty("biome_family", &ULuaWorldGenerator::mBiomeFamily)
       .addProperty("height", &ULuaWorldGenerator::mHeight)
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return UWorldGenerator::StaticClass();
   }
 };

@@ -6,12 +6,14 @@ UCLASS(BlueprintType)
 class EVOSPACE_API UStaticResearchBonusInventory : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchBonusInventory;
-  EVO_OWNED(StaticResearchBonusInventory, StaticResearch)
   EVO_CODEGEN_DB(StaticResearchBonusInventory, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStaticResearch>("StaticResearchBonusInventory") //@class StaticResearchBonusInventory : StaticResearch
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return UStaticResearch::StaticClass();
   }
 
   public:

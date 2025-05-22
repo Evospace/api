@@ -20,6 +20,8 @@ class LuaState {
   LuaState();
 
   virtual void Init(IRegistrar *registrar);
+  virtual void Release();
+  void LuaClose();
 
   LuaState(const LuaState &v) = delete;
   LuaState &operator=(const LuaState &v) = delete;

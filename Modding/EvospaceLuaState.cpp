@@ -21,12 +21,15 @@ void RegisterClassAndSuper(UClass *Class, TSet<UClass *> &Registered, lua_State 
 
   if (const auto cdo = Class->GetDefaultObject<T>()) {
     if (!Registered.Contains(cdo->lua_reg_type())) {
-      cdo->register_owner(registrar);
       cdo->lua_reg(L);
       cdo->lua_reg_internal(L);
       Registered.Add(Class);
     }
   }
+}
+
+void ModLoadingLuaState::Release() {
+  LuaState::Release();
 }
 
 void ModLoadingLuaState::Init(IRegistrar *registrar) {

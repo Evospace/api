@@ -234,6 +234,14 @@ void LuaState::Init(IRegistrar *registrar) {
     "@jit_test");
 }
 
+void LuaState::Release() {
+}
+
+void LuaState::LuaClose() {
+  lua_close(L);
+  L = nullptr;
+}
+
 UClass *LuaState::FindClass(const std::string &name) {
   auto type = FindObject<UClass>(ANY_PACKAGE, UTF8_TO_TCHAR(name.data()));
 

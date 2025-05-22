@@ -20,7 +20,7 @@ class ModLoadingLuaState;
 } // namespace evo
 class UDB;
 
-class UJsonObjectLibrary;
+class UDbStorage;
 class UMod;
 class ModLoadingContext;
 
@@ -71,7 +71,7 @@ class EVOSPACE_API UDB : public UInstance {
       //---@param table table Object table
       //function DB:from_table(table) end
       .addFunction("from_table", [](UDB *self, const luabridge::LuaRef &table) {
-        self->mJsonObjectLibrary->ObjectFromTable(self->mCurrentMod, table);
+        UDbStorage::Singleton->ObjectFromTable(self->mCurrentMod, table);
       })
       //direct:
       //---Register mod table
@@ -93,10 +93,7 @@ class EVOSPACE_API UDB : public UInstance {
   public:
   UDB();
 
-  UPROPERTY(VisibleAnywhere)
-  UJsonObjectLibrary *mJsonObjectLibrary = nullptr;
-
-  UTexture2D *FindIco(const FName &name) const;
+  UTexture2D *FindIco(FName name) const;
 
   UPROPERTY(VisibleAnywhere)
   TMap<FName, UTexture2D *> IconTextures;

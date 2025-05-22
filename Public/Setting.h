@@ -10,7 +10,6 @@ UCLASS()
 class USetting : public UPrototype {
   using Self = USetting;
   GENERATED_BODY()
-  EVO_OWNER(Setting)
   EVO_CODEGEN_DB(Setting, Setting)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -37,6 +36,9 @@ class USetting : public UPrototype {
         [](USetting *self, std::string_view s) { self->mDefaultKey = json_helper::ParseKeystrokeToKeyChord(UTF8_TO_TCHAR(s.data())); })
       .addStaticFunction("update_widgets", &Self::UpdateSettingsWidgets)
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

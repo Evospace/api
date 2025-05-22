@@ -23,7 +23,6 @@ class ADimension;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UStaticBlock : public UStaticObject {
-  EVO_OWNED(StaticBlock, StaticObject)
   EVO_CODEGEN_DB(StaticBlock, StaticBlock);
   using Self = UStaticBlock;
   virtual void lua_reg(lua_State *L) const override {
@@ -41,6 +40,9 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
       .addProperty("level", &Self::Level) //@field integer
       .addProperty("lua", &Self::Table) //@field table
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
   GENERATED_BODY()
 

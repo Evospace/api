@@ -35,13 +35,15 @@ UCLASS(BlueprintType, Abstract)
 class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
   GENERATED_BODY()
   using Self = UStaticResearch;
-  EVO_OWNER(StaticResearch)
   EVO_CODEGEN_DB(StaticResearch, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       //@comment Research base class
       .deriveClass<Self, UPrototype>("StaticResearch") //@class StaticResearch : Prototype
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

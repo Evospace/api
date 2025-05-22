@@ -19,7 +19,6 @@ class EVOSPACE_API UHeightGenerator : public UPrototype {
   UPROPERTY()
   TArray<UNoiseGenerator *> mNoises;
 
-  EVO_OWNER(HeightGenerator)
   EVO_CODEGEN_DB(HeightGenerator, HeightGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -32,5 +31,8 @@ class EVOSPACE_API UHeightGenerator : public UPrototype {
         self->mNoises.Add(noise);
       })
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 };

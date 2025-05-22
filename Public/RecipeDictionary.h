@@ -20,13 +20,15 @@ class UInventoryReader;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipeDictionary : public UPrototype, public ISearchable {
   GENERATED_BODY()
-  EVO_OWNER(RecipeDictionary);
   EVO_CODEGEN_DB(RecipeDictionary, RecipeDictionary)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<URecipeDictionary, UPrototype>("RecipeDictionary") //@class RecipeDictionary : Prototype
       .addProperty("start_tier", &URecipeDictionary::StartTier) //@field integer
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:
@@ -49,7 +51,7 @@ class EVOSPACE_API URecipeDictionary : public UPrototype, public ISearchable {
 
   const TArray<const UStaticItem *> &GetUsedIn() const;
 
-  URecipe *GetByName(const FName &name) const;
+  URecipe *GetByName(FName name) const;
 
   //   ,
   class UNeiCrafterInventory *GetUsedInInventory();

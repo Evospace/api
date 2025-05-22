@@ -6,12 +6,14 @@ UCLASS(BlueprintType)
 class EVOSPACE_API UStaticResearchModifier : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchModifier;
-  EVO_OWNED(StaticResearchModifier, StaticResearch)
   EVO_CODEGEN_DB(StaticResearchModifier, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStaticResearch>("StaticResearchModifier") //@class StaticResearchModifier : StaticResearch
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return UStaticResearch::StaticClass();
   }
 
   public:

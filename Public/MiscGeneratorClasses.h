@@ -93,8 +93,17 @@ constexpr Vec2i baked_size{ gFlatSectorSize * 2.f + 4.f }; // sub block + bicubi
 constexpr Vec2i baked_smooth_size{ (gFlatSectorSize + SmoothKernelRadius) * 2.f }; // sub block + smooth
 
 UCLASS()
-class ULayeringGenerator : public UObject, public ISerializableJson {
+class ULayeringGenerator : public UPrototype {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(LayeringGenerator, LayeringGenerator)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<ULayeringGenerator, UPrototype>("LayeringGenerator") //@class LayeringGenerator : Prototype
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
+  }
 
   public:
   virtual Layering GetLayering(const Vec2i &pos) const;
@@ -111,6 +120,15 @@ class ULayeringGenerator : public UObject, public ISerializableJson {
 UCLASS()
 class USimpleLayeringGenerator : public ULayeringGenerator {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(SimpleLayeringGenerator, LayeringGenerator)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<USimpleLayeringGenerator, ULayeringGenerator>("SimpleLayeringGenerator") //@class SimpleLayeringGenerator : LayeringGenerator
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return ULayeringGenerator::StaticClass();
+  }
 
   public:
   virtual Layering GetLayering(const Vec2i &pos) const override;
@@ -124,6 +142,15 @@ class USimpleLayeringGenerator : public ULayeringGenerator {
 UCLASS()
 class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(ChancedLayeringGenerator, LayeringGenerator)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UChancedLayeringGenerator, USimpleLayeringGenerator>("ChancedLayeringGenerator") //@class ChancedLayeringGenerator : SimpleLayeringGenerator
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return ULayeringGenerator::StaticClass();
+  }
 
   public:
   virtual Layering GetLayering(const Vec2i &pos) const override;
@@ -136,26 +163,43 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
 };
 
 UCLASS()
-class UPropsGenerator : public UObject, public ISerializableJson {
+class UPropsGenerator : public UPrototype {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(PropsGenerator, PropsGenerator)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UPropsGenerator, UPrototype>("SimpleLayeringGenerator") //@class PropsGenerator : Prototype
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
+  }
 
   public:
-  virtual ~UPropsGenerator() = default;
-
   virtual const UStaticProp *GetSurfaceAttach(const Vec2i &start_point) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  UBiome *mBiome;
+  UPROPERTY()
+  UBiome *mBiome = nullptr;
 
   virtual void SetSeed(int32 seed);
 
-  protected:
+  UPROPERTY()
   UStaticPropList *proplist = nullptr;
 };
 
 UCLASS()
 class UBiome : public UPrototype {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(Biome, Biome)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UBiome, UPrototype>("Biome") //@class Biome : Prototype
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
+  }
 
   public:
   virtual Layering GetLayering(const Vec2i &pos) const;
@@ -172,19 +216,22 @@ class UBiome : public UPrototype {
 
   UPROPERTY()
   UPropsGenerator *props = nullptr;
-
-  EVO_OWNER(Biome)
-  EVO_CODEGEN_DB(Biome, Biome)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiome, UPrototype>("Biome")
-      .endClass();
-  }
 };
 
 UCLASS()
 class UBiomeFamily : public UBiome {
   GENERATED_BODY()
+  EVO_CODEGEN_DB(BiomeFamily, Biome)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UBiomeFamily, UBiome>("BiomeFamily")
+      .addProperty("sub_biomes", &UBiomeFamily::mSubBiomes)
+      .addProperty("sub_frequency", &UBiomeFamily::mSubFrequency)
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return UBiome::StaticClass();
+  }
 
   public:
   UBiomeFamily();
@@ -213,15 +260,4 @@ class UBiomeFamily : public UBiome {
 
   protected:
   std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
-
-  public:
-  EVO_OWNED(BiomeFamily, Biome)
-  EVO_CODEGEN_DB(BiomeFamily, Biome)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiomeFamily, UBiome>("BiomeFamily")
-      .addProperty("sub_biomes", &UBiomeFamily::mSubBiomes)
-      .addProperty("sub_frequency", &UBiomeFamily::mSubFrequency)
-      .endClass();
-  }
 };

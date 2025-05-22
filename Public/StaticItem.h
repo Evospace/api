@@ -16,7 +16,7 @@
 
 #include "StaticItem.generated.h"
 
-class UStaticObject;
+class UStaticBlock;
 class UUserWidgetSlot;
 class AItemLogic;
 
@@ -32,7 +32,6 @@ UCLASS(BlueprintType)
 class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   using Self = UStaticItem;
   GENERATED_BODY()
-  EVO_OWNER(StaticItem)
   EVO_CODEGEN_DB(StaticItem, StaticItem)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -50,6 +49,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("label_parts", EVO_ARRAY_GET_SET(mLabelParts)) //@field Loc[]
       .addProperty("description_parts", EVO_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:
@@ -118,7 +120,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   int64 mMaxCharge = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UStaticObject *Object;
+  UStaticBlock *Object;
 
   virtual void MarkIncomplete() override;
 };

@@ -14,7 +14,6 @@ UCLASS()
 class EVOSPACE_API UStaticProp : public UStaticObject {
   using Self = UStaticProp;
   GENERATED_BODY()
-  EVO_OWNER(StaticProp);
   EVO_CODEGEN_DB(StaticProp, StaticProp)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -33,6 +32,9 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
       .addProperty("on_spawn", &Self::onSpawn) //@field function
       .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 
   public:

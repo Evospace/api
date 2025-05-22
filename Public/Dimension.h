@@ -122,6 +122,9 @@ class ADimension : public AActor {
 
   bool mAccessorsPlanes = false;
 
+  UPROPERTY()
+  TArray<UBlockLogic *> RenderBlocksDeferred;
+
   UFUNCTION(BlueprintCallable)
   void ActorBuildModeToggle(bool enabled);
 
@@ -270,6 +273,7 @@ class ADimension : public AActor {
   bool IsCanSaveColumn(const AColumn &tall) const;
 
   private:
+  void DeferredActorSpawn();
   void TickProcess(float DeltaTime);
   bool TickBlocks(float DeltaTime);
 

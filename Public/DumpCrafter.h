@@ -27,7 +27,7 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   UPROPERTY()
   UResourceAccessor *acc;
-  
+
   virtual void SpawnBlockPostprocess() override;
 
   public:

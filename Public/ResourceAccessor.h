@@ -56,7 +56,7 @@ class UResourceAccessor : public UAccessor {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName Channel = TEXT("Error");
 
-  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output, const FName &channel);
+  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output, FName channel);
 
   bool IsFrozen() const { return false; }
 

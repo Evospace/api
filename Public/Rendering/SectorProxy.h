@@ -62,7 +62,7 @@ class USectorProxy : public UObject {
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 
-  virtual void ClearBlockProps(IndexType index, bool doDrop);
+  virtual void ClearBlockProps(const FVector3i & bpos, bool doDrop);
 
   AColumn *GetColumn() const { return owner; }
 

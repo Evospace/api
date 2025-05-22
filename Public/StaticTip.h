@@ -39,7 +39,6 @@ class UStaticTip : public UPrototype {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  EVO_OWNER(StaticTip)
   EVO_CODEGEN_DB(StaticTip, StaticTip)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -51,5 +50,8 @@ class UStaticTip : public UPrototype {
       .addFunction("clear_context", &UStaticTip::ClearContext)
       .addProperty("context", &UStaticTip::mContextInventory)
       .endClass();
+  }
+  virtual UClass *GetSuperProto() const override {
+    return StaticClass();
   }
 };
