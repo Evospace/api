@@ -226,15 +226,15 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   FQuat mQuat = FQuat(EForceInit::ForceInitToZero);
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UAccessor *> mAccessors;
+  TArray<UAccessor *> Accessors;
 
-  TArray<int32> mAccessorInstances;
+  TArray<int32> AccessorInstances;
 
   // Core
   protected:
   UPROPERTY(VisibleAnywhere)
-  UCoreAccessor *mCore = nullptr;
-  TFunction<UCoreAccessor *()> mCoreInit;
+  UCoreAccessor *Core = nullptr;
+  TFunction<UCoreAccessor *()> CoreInit;
 
   public:
   UFUNCTION(BlueprintCallable)
@@ -243,8 +243,8 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   // Monitor
   protected:
   UPROPERTY(VisibleAnywhere)
-  UCoreAccessor *mMonitor = nullptr;
-  TFunction<UCoreAccessor *()> mMonitorInit;
+  UCoreAccessor *Monitor = nullptr;
+  TFunction<UCoreAccessor *()> MonitorInit;
 
   public:
   UFUNCTION(BlueprintCallable)
@@ -263,7 +263,7 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   const UStaticItem *NetworkSignal = nullptr;
-  
+
   RCoverWrapper Cover;
 
   private:

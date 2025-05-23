@@ -331,9 +331,9 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
   virtual void SetRenderable(AColumn *sector) override;
 
   virtual void RemoveActorOrRenderable() override;
-  
+
   TArray<RCoverWrapper> SideCovers;
-  
+
   RCoverWrapper CenterCover;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

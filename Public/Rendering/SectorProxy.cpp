@@ -218,12 +218,12 @@ void Drop(const UStaticProp *prop, UInventory *inv) {
 }
 } // namespace
 
-void USectorProxy::ClearBlockProps(const FVector3i & _bpos, bool doDrop /*= true*/) {
+void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool doDrop /*= true*/) {
   const auto out_inventory = NewObject<UAutosizeInventory>();
 
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
-    auto bpos = _bpos + offset + Vec3i(1,1,-1);
+    auto bpos = _bpos + offset + Vec3i(1, 1, -1);
 
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
