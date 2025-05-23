@@ -98,7 +98,7 @@ class ADimension : public AActor {
   UBlockLogic *LuaSpawnBlockLogicDefault(const Vec3i &bpos, const UStaticBlock *cl);
   UBlockLogic *LuaSpawnBlockLogic(const Vec3i &bpos, const FQuat &block_q, const UStaticBlock *cl);
 
-  FItemInstancingHandle AddItemInstance(const UStaticItem *prop, const FTransform &t) const;
+  RItemInstancingHandle AddItemInstance(const UStaticItem *prop, const FTransform &t) const;
 
   void RemoveInstance(const UStaticItem *prop, int32 index);
 
