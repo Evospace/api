@@ -88,5 +88,5 @@ class USectorProxy : public UObject {
   bool IsSectionGroupCreated = false;
 
   UPROPERTY()
-  URealtimeMeshComponent *rmc;
+  URealtimeMeshComponent *rmc = nullptr;
 };

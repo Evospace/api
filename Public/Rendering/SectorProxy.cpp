@@ -199,8 +199,7 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
   }
 
   RuntimeMeshBuilder::BuildRealtimeMesh(rmc->GetRealtimeMeshAs<URealtimeMeshSimple>(), MoveTemp(data), IsSectionGroupCreated);
-
-  //sector->ApplyDataFromCompiler(dim, MoveTemp(data), lod, callback);
+  
   callback();
   return true;
 }
@@ -223,7 +222,7 @@ void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool doDrop /*= true*
 
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
-    auto bpos = _bpos + offset + Vec3i(1, 1, -1);
+    auto bpos = _bpos + offset;// + Vec3i(1, 1, -1);
 
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
