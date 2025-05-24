@@ -471,7 +471,7 @@ UCLASS()
 class EVOSPACE_API UElectricitySwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
-  virtual void BlockBeginPlay() override;
+  virtual void SpawnBlockPostprocess() override;
   UElectricitySwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -480,7 +480,7 @@ UCLASS()
 class EVOSPACE_API UFluidSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
-  virtual void BlockBeginPlay() override;
+  virtual void SpawnBlockPostprocess() override;
   UFluidSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -489,7 +489,7 @@ UCLASS()
 class EVOSPACE_API UHeatSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
-  virtual void BlockBeginPlay() override;
+  virtual void SpawnBlockPostprocess() override;
   UHeatSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -498,7 +498,7 @@ UCLASS()
 class EVOSPACE_API UKineticSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
-  virtual void BlockBeginPlay() override;
+  virtual void SpawnBlockPostprocess() override;
   UKineticSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };
@@ -507,7 +507,7 @@ UCLASS()
 class EVOSPACE_API UDataSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
-  virtual void BlockBeginPlay() override;
+  virtual void SpawnBlockPostprocess() override;
   UDataSwitchBlockLogic();
   virtual int32 GetChannel() const override;
 };

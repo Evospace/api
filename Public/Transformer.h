@@ -33,6 +33,8 @@ class EVOSPACE_API UTransformerLVMV : public UBlockLogic, public ISwitchInterfac
 
   virtual void BlockBeginPlay() override;
 
+  virtual void SpawnBlockPostprocess() override;
+
   virtual bool HasAction() const override { return true; }
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
 
