@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Evospace/CoordinateSystem.h"
 #include "Evospace/Vector.h"
+#include "Evospace/Item/Implementation/ObjectBuild/BaseBuildingItemLogic.h"
 #include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/Misc/EvoConverter.h"
 #include "Public/BlockLogic.h"
@@ -78,6 +79,9 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 Tier = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  EBuldingMode BuildingMode = EBuldingMode::BlockLine;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 Level = 0;
