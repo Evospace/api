@@ -19,7 +19,7 @@ void UPerformanceGraphWidget::NativeTick(const FGeometry &MyGeometry, float InDe
 
     FpsBuffer.Push(FPSSubsystem->GetRawFPS());
     ++last;
-    if (last >= FpsBuffer.Capacity())
+    if (last >= static_cast<int>(FpsBuffer.Capacity()))
       last = 0;
 
     Invalidate(EInvalidateWidget::LayoutAndVolatility);
