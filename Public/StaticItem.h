@@ -40,7 +40,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("stack_size", &Self::mStackSize) //@field integer Size of item stack
       .addProperty("unit_mul", &Self::mUnitMul) //@field number multiplier for UI
       .addProperty("mesh", &Self::mMesh) //@field StaticMesh Mesh for item rendering in world
-      .addProperty("object", &Self::Object) //@field StaticObject Buildable object pointer for this item
+      .addProperty("block", &Self::Block) //@field StaticObject Buildable object pointer for this item
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
@@ -120,7 +120,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   int64 mMaxCharge = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UStaticBlock *Object;
+  UStaticBlock *Block;
 
   virtual void MarkIncomplete() override;
 };
