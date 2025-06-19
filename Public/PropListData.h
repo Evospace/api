@@ -16,7 +16,7 @@ struct FPropListData {
       //--- @return PropListData
       //function PropListData.new() end
       .addStaticFunction("new", []() { return FPropListData(); })
-      .addProperty("chance", &FPropListData::Chance) //@field number Spawn probability 0.0–1.0
+      .addProperty("weight", &FPropListData::Weight) //@field integer Spawn weight
       .addProperty("props", EVO_ARRAY_GET_SET(Props)) //@field StaticProp[] List of prop assets (prop variations)
       .endClass();
   }
@@ -26,5 +26,5 @@ struct FPropListData {
   TArray<const UStaticProp *> Props;
 
   UPROPERTY()
-  float Chance = 1.0;
+  int32 Weight = 1;
 };
