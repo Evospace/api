@@ -38,6 +38,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .deriveClass<UStaticItem, UPrototype>("StaticItem") //@class StaticItem : Prototype
       .addProperty("image", &Self::mImage) //@field Texture Item image in UI
       .addProperty("stack_size", &Self::mStackSize) //@field integer Size of item stack
+      .addProperty("tier", &Self::Tier) //@field integer Item unlock tier
       .addProperty("unit_mul", &Self::mUnitMul) //@field number multiplier for UI
       .addProperty("mesh", &Self::mMesh) //@field StaticMesh Mesh for item rendering in world
       .addProperty("block", &Self::Block) //@field StaticObject Buildable object pointer for this item
@@ -80,6 +81,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   float mUnitMul = 1.f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 Tier = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UTexture2D *mImage = nullptr;
