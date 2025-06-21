@@ -18,7 +18,6 @@ struct FExtractionData {
       //--- @return ExtractionData
       //function ExtractionData.new() end
       .addProperty("item", &Self::Item) //@field StaticItem
-      .addProperty("prop", &Self::Prop) //@field StaticProp
       .addProperty("speed", &Self::Speed) //@field integer
       .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer
       .endClass();
@@ -31,8 +30,5 @@ struct FExtractionData {
   int64 InitialCapacity = 10000;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticItem *Item = nullptr;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticProp *Prop = nullptr;
+  const UStaticItem *Item = nullptr;
 };

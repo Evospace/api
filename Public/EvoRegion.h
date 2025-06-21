@@ -25,19 +25,22 @@ class EVOSPACE_API UEvoRegion : public UInstance {
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<USourceData *> mSources;
+  TArray<USourceData *> Sources;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UTexture2D *mTexture;
+  UTexture2D *Texture;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UTexture2D *mTextureHeight;
+  UTexture2D *TextureHeight;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FVector2i RegionPos;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  TArray<FMapStructure> MapStructures;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static UTexture2D *GetFastnoiseTexture(UPARAM(ref) const TArray<float> &array, bool smooth = false);
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<FMapStructure> mMapStructures;
 
   bool SerializeJson(TSharedPtr<FJsonObject> json);
   bool DeserializeJson(TSharedPtr<FJsonObject> json);

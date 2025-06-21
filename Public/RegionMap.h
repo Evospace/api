@@ -12,7 +12,8 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
-class USourceData;
+
+class UOreGenerator;class USourceData;
 class UEvoRegion;
 class ADimension;
 class UStaticItem;
@@ -68,6 +69,9 @@ class EVOSPACE_API URegionMap : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<int32> ResourceGeneratedCount;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UOreGenerator * OreGenerator;
+
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
 
@@ -92,7 +96,7 @@ class EVOSPACE_API URegionMap : public UInstance {
   void AddResource(const FExtractionData &ed);
 
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *GetRegion(const FVector2i &grid);
+  UEvoRegion *GetRegion(const FVector2i &region_pos);
 
   UFUNCTION(BlueprintCallable)
   UEvoRegion *FindRegion(const FVector2i &grid);

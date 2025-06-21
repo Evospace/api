@@ -25,10 +25,10 @@ class EVOSPACE_API USourceData : public UInstance {
   int64 mExtractedCount = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticItem *Item = nullptr;
+  const UStaticItem *Item = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  class UStaticProp *Prop = nullptr;
+  const UStaticProp *Prop = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FVector2i Position;

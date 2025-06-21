@@ -48,9 +48,6 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, caves, caves2;
 
-  UPROPERTY()
-  UStaticPropList *OreList;
-
   public:
   EVO_CODEGEN_DB(BiomeWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
