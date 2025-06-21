@@ -35,7 +35,7 @@ class UStaticPropList : public UPrototype {
 
   virtual bool ProtoValidCheck() override;
 
-  const UStaticProp *PickOne(FRandomStream & rnd, const Vec2i &start_point);
+  const UStaticProp *PickOne(FRandomStream &rnd, const Vec2i &start_point);
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 

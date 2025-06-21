@@ -14,15 +14,17 @@ class EVOSPACE_API USourceData : public UInstance {
       .deriveClass<Self, UInstance>("SourceData") //@class SourceData : Instance
       .addProperty("position", &Self::Position) //@field Vec2i source position in block coordinates
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
+      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer initial source capacity
+      .addProperty("extracted_count", &Self::ExtractedCount) //@field integer count of items already extracted from the source
       .endClass();
   }
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 mInitialCapacity = 10000;
+  int64 InitialCapacity = 10000;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 mExtractedCount = 0;
+  int64 ExtractedCount = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   const UStaticItem *Item = nullptr;

@@ -12,8 +12,8 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
-
-class UOreGenerator;class USourceData;
+class UOreGenerator;
+class USourceData;
 class UEvoRegion;
 class ADimension;
 class UStaticItem;
@@ -70,7 +70,7 @@ class EVOSPACE_API URegionMap : public UInstance {
   TArray<int32> ResourceGeneratedCount;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UOreGenerator * OreGenerator;
+  UOreGenerator *OreGenerator;
 
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }

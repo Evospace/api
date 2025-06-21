@@ -176,7 +176,7 @@ class UPropsGenerator : public UPrototype {
   }
 
   public:
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream & rnd, const Vec2i &start_point) const;
+  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &start_point) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   UPROPERTY()
@@ -205,7 +205,7 @@ class UBiome : public UPrototype {
   virtual Layering GetLayering(const Vec2i &pos) const;
   virtual float GetHeight(const FVector2D &pos) const;
   virtual float GetGrad(const FVector2D &pos) const;
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream & rnd, const Vec2i &pos) const;
+  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
   virtual float GetWeight(const FVector2D &pos) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -244,7 +244,7 @@ class UBiomeFamily : public UBiome {
   virtual float GetGrad(const FVector2D &pos) const override;
 
   // Only baked
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream & rnd, const Vec2i &pos) const override;
+  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;
 
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;
