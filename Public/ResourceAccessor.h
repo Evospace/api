@@ -26,9 +26,7 @@ class UResourceAccessor : public UAccessor {
   }
 
   public:
-  static FName LV() { return TEXT("LV"); }
-  static FName MV() { return TEXT("MV"); }
-  static FName HV() { return TEXT("HV"); }
+  static FName Electricity() { return TEXT("Electricity"); }
   static FName Kinetic() { return TEXT("Kinetic"); }
   static FName Fluid() { return TEXT("Fluid"); }
   static FName Heat() { return TEXT("Heat"); }

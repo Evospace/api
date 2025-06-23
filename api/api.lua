@@ -280,6 +280,125 @@ function BaseInventory.cast(object) end
 
 --- 
 --- 
+--- @class Biome : Prototype
+Biome = {}
+
+--- Creates a new LayeringGenerator static object
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.new(name) end
+
+--- Searching for LayeringGenerator in db
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.find(name) end
+
+--- Return LayeringGenerator class object
+--- @return Class
+function LayeringGenerator.get_class() end
+
+--- Trying to cast Object into LayeringGenerator
+--- @param object Object to cast
+--- @return LayeringGenerator
+function LayeringGenerator.cast(object) end
+
+--- Creates a new SimpleLayeringGenerator static object
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.new(name) end
+
+--- Searching for SimpleLayeringGenerator in db
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.find(name) end
+
+--- Return SimpleLayeringGenerator class object
+--- @return Class
+function SimpleLayeringGenerator.get_class() end
+
+--- Trying to cast Object into SimpleLayeringGenerator
+--- @param object Object to cast
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.cast(object) end
+
+--- Creates a new ChancedLayeringGenerator static object
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.new(name) end
+
+--- Searching for ChancedLayeringGenerator in db
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.find(name) end
+
+--- Return ChancedLayeringGenerator class object
+--- @return Class
+function ChancedLayeringGenerator.get_class() end
+
+--- Trying to cast Object into ChancedLayeringGenerator
+--- @param object Object to cast
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.cast(object) end
+
+--- Creates a new PropsGenerator static object
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.new(name) end
+
+--- Searching for PropsGenerator in db
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.find(name) end
+
+--- Return PropsGenerator class object
+--- @return Class
+function PropsGenerator.get_class() end
+
+--- Trying to cast Object into PropsGenerator
+--- @param object Object to cast
+--- @return PropsGenerator
+function PropsGenerator.cast(object) end
+
+--- Creates a new Biome static object
+--- @param name string The name of the object
+--- @return Biome
+function Biome.new(name) end
+
+--- Searching for Biome in db
+--- @param name string The name of the object
+--- @return Biome
+function Biome.find(name) end
+
+--- Return Biome class object
+--- @return Class
+function Biome.get_class() end
+
+--- Trying to cast Object into Biome
+--- @param object Object to cast
+--- @return Biome
+function Biome.cast(object) end
+
+--- Creates a new BiomeFamily static object
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.new(name) end
+
+--- Searching for BiomeFamily in db
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.find(name) end
+
+--- Return BiomeFamily class object
+--- @return Class
+function BiomeFamily.get_class() end
+
+--- Trying to cast Object into BiomeFamily
+--- @param object Object to cast
+--- @return BiomeFamily
+function BiomeFamily.cast(object) end
+
+--- 
+--- 
 --- @class BlockLogic : Instance
 --- @field static_block StaticBlock comment
 BlockLogic = {}
@@ -306,6 +425,125 @@ function BlockLogic.get_class() end
 --- @param object Object to cast
 --- @return BlockLogic
 function BlockLogic.cast(object) end
+
+--- 
+--- 
+--- @class ChancedLayeringGenerator : SimpleLayeringGenerator
+ChancedLayeringGenerator = {}
+
+--- Creates a new LayeringGenerator static object
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.new(name) end
+
+--- Searching for LayeringGenerator in db
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.find(name) end
+
+--- Return LayeringGenerator class object
+--- @return Class
+function LayeringGenerator.get_class() end
+
+--- Trying to cast Object into LayeringGenerator
+--- @param object Object to cast
+--- @return LayeringGenerator
+function LayeringGenerator.cast(object) end
+
+--- Creates a new SimpleLayeringGenerator static object
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.new(name) end
+
+--- Searching for SimpleLayeringGenerator in db
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.find(name) end
+
+--- Return SimpleLayeringGenerator class object
+--- @return Class
+function SimpleLayeringGenerator.get_class() end
+
+--- Trying to cast Object into SimpleLayeringGenerator
+--- @param object Object to cast
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.cast(object) end
+
+--- Creates a new ChancedLayeringGenerator static object
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.new(name) end
+
+--- Searching for ChancedLayeringGenerator in db
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.find(name) end
+
+--- Return ChancedLayeringGenerator class object
+--- @return Class
+function ChancedLayeringGenerator.get_class() end
+
+--- Trying to cast Object into ChancedLayeringGenerator
+--- @param object Object to cast
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.cast(object) end
+
+--- Creates a new PropsGenerator static object
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.new(name) end
+
+--- Searching for PropsGenerator in db
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.find(name) end
+
+--- Return PropsGenerator class object
+--- @return Class
+function PropsGenerator.get_class() end
+
+--- Trying to cast Object into PropsGenerator
+--- @param object Object to cast
+--- @return PropsGenerator
+function PropsGenerator.cast(object) end
+
+--- Creates a new Biome static object
+--- @param name string The name of the object
+--- @return Biome
+function Biome.new(name) end
+
+--- Searching for Biome in db
+--- @param name string The name of the object
+--- @return Biome
+function Biome.find(name) end
+
+--- Return Biome class object
+--- @return Class
+function Biome.get_class() end
+
+--- Trying to cast Object into Biome
+--- @param object Object to cast
+--- @return Biome
+function Biome.cast(object) end
+
+--- Creates a new BiomeFamily static object
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.new(name) end
+
+--- Searching for BiomeFamily in db
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.find(name) end
+
+--- Return BiomeFamily class object
+--- @return Class
+function BiomeFamily.get_class() end
+
+--- Trying to cast Object into BiomeFamily
+--- @param object Object to cast
+--- @return BiomeFamily
+function BiomeFamily.cast(object) end
 
 --- 
 --- 
@@ -500,6 +738,7 @@ Dimension = {}
 --- @field res_y integer undocumented
 --- @field loading_range integer undocumented
 --- @field performance boolean undocumented
+--- @field performance_graph boolean undocumented
 --- @field ctrl_hotbar boolean undocumented
 --- @field alt_hotbar boolean undocumented
 --- @field shift_hotbar boolean undocumented
@@ -558,7 +797,6 @@ function EventSystem:emmit(event, table) end
 --- 
 --- @class ExtractionData : Object
 --- @field item StaticItem undocumented
---- @field prop StaticProp undocumented
 --- @field speed integer undocumented
 --- @field initial_capacity integer undocumented
 ExtractionData = {}
@@ -861,6 +1099,125 @@ ItemData = {}
 
 --- 
 --- 
+--- @class LayeringGenerator : Prototype
+LayeringGenerator = {}
+
+--- Creates a new LayeringGenerator static object
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.new(name) end
+
+--- Searching for LayeringGenerator in db
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.find(name) end
+
+--- Return LayeringGenerator class object
+--- @return Class
+function LayeringGenerator.get_class() end
+
+--- Trying to cast Object into LayeringGenerator
+--- @param object Object to cast
+--- @return LayeringGenerator
+function LayeringGenerator.cast(object) end
+
+--- Creates a new SimpleLayeringGenerator static object
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.new(name) end
+
+--- Searching for SimpleLayeringGenerator in db
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.find(name) end
+
+--- Return SimpleLayeringGenerator class object
+--- @return Class
+function SimpleLayeringGenerator.get_class() end
+
+--- Trying to cast Object into SimpleLayeringGenerator
+--- @param object Object to cast
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.cast(object) end
+
+--- Creates a new ChancedLayeringGenerator static object
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.new(name) end
+
+--- Searching for ChancedLayeringGenerator in db
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.find(name) end
+
+--- Return ChancedLayeringGenerator class object
+--- @return Class
+function ChancedLayeringGenerator.get_class() end
+
+--- Trying to cast Object into ChancedLayeringGenerator
+--- @param object Object to cast
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.cast(object) end
+
+--- Creates a new PropsGenerator static object
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.new(name) end
+
+--- Searching for PropsGenerator in db
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.find(name) end
+
+--- Return PropsGenerator class object
+--- @return Class
+function PropsGenerator.get_class() end
+
+--- Trying to cast Object into PropsGenerator
+--- @param object Object to cast
+--- @return PropsGenerator
+function PropsGenerator.cast(object) end
+
+--- Creates a new Biome static object
+--- @param name string The name of the object
+--- @return Biome
+function Biome.new(name) end
+
+--- Searching for Biome in db
+--- @param name string The name of the object
+--- @return Biome
+function Biome.find(name) end
+
+--- Return Biome class object
+--- @return Class
+function Biome.get_class() end
+
+--- Trying to cast Object into Biome
+--- @param object Object to cast
+--- @return Biome
+function Biome.cast(object) end
+
+--- Creates a new BiomeFamily static object
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.new(name) end
+
+--- Searching for BiomeFamily in db
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.find(name) end
+
+--- Return BiomeFamily class object
+--- @return Class
+function BiomeFamily.get_class() end
+
+--- Trying to cast Object into BiomeFamily
+--- @param object Object to cast
+--- @return BiomeFamily
+function BiomeFamily.cast(object) end
+
+--- 
+--- 
 --- @class MapStructure : Object
 --- @field offset Vec2i undocumented
 --- @field structure StaticStructure undocumented
@@ -873,12 +1230,131 @@ function MapStructure.new() end
 --- Structure that stores several StaticProp records (prop variations) with shared spawn chance
 --- 
 --- @class PropListData : Struct
---- @field chance number Spawn probability 0.0–1.0
+--- @field weight integer Spawn weight
 --- @field props StaticProp[] List of prop assets (prop variations)
 PropListData = {}
 
 --- @return PropListData
 function PropListData.new() end
+
+--- 
+--- 
+--- @class PropsGenerator : Prototype
+PropsGenerator = {}
+
+--- Creates a new LayeringGenerator static object
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.new(name) end
+
+--- Searching for LayeringGenerator in db
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.find(name) end
+
+--- Return LayeringGenerator class object
+--- @return Class
+function LayeringGenerator.get_class() end
+
+--- Trying to cast Object into LayeringGenerator
+--- @param object Object to cast
+--- @return LayeringGenerator
+function LayeringGenerator.cast(object) end
+
+--- Creates a new SimpleLayeringGenerator static object
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.new(name) end
+
+--- Searching for SimpleLayeringGenerator in db
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.find(name) end
+
+--- Return SimpleLayeringGenerator class object
+--- @return Class
+function SimpleLayeringGenerator.get_class() end
+
+--- Trying to cast Object into SimpleLayeringGenerator
+--- @param object Object to cast
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.cast(object) end
+
+--- Creates a new ChancedLayeringGenerator static object
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.new(name) end
+
+--- Searching for ChancedLayeringGenerator in db
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.find(name) end
+
+--- Return ChancedLayeringGenerator class object
+--- @return Class
+function ChancedLayeringGenerator.get_class() end
+
+--- Trying to cast Object into ChancedLayeringGenerator
+--- @param object Object to cast
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.cast(object) end
+
+--- Creates a new PropsGenerator static object
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.new(name) end
+
+--- Searching for PropsGenerator in db
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.find(name) end
+
+--- Return PropsGenerator class object
+--- @return Class
+function PropsGenerator.get_class() end
+
+--- Trying to cast Object into PropsGenerator
+--- @param object Object to cast
+--- @return PropsGenerator
+function PropsGenerator.cast(object) end
+
+--- Creates a new Biome static object
+--- @param name string The name of the object
+--- @return Biome
+function Biome.new(name) end
+
+--- Searching for Biome in db
+--- @param name string The name of the object
+--- @return Biome
+function Biome.find(name) end
+
+--- Return Biome class object
+--- @return Class
+function Biome.get_class() end
+
+--- Trying to cast Object into Biome
+--- @param object Object to cast
+--- @return Biome
+function Biome.cast(object) end
+
+--- Creates a new BiomeFamily static object
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.new(name) end
+
+--- Searching for BiomeFamily in db
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.find(name) end
+
+--- Return BiomeFamily class object
+--- @return Class
+function BiomeFamily.get_class() end
+
+--- Trying to cast Object into BiomeFamily
+--- @param object Object to cast
+--- @return BiomeFamily
+function BiomeFamily.cast(object) end
 
 --- Database record
 --- 
@@ -1070,8 +1546,36 @@ function Region.cast(object) end
 
 --- 
 --- 
+--- @class RegionLayer : Instance
+--- @field item StaticItem item to mine
+RegionLayer = {}
+
+--- Creates a new RegionLayer instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return RegionLayer
+function RegionLayer.new(parent, name) end
+
+--- Creates a new RegionLayer instance
+--- @return RegionLayer
+function RegionLayer.new_simple() end
+
+--- Return RegionLayer class object
+--- @return Class
+function RegionLayer.get_class() end
+
+--- Trying to cast Object into RegionLayer
+--- @param object Object to cast
+--- @return RegionLayer
+function RegionLayer.cast(object) end
+
+--- 
+--- 
 --- @class RegionMap : Instance
 RegionMap = {}
+
+---Delete all regions
+function RegionMap:reset() end
 
 ---Get Region by its position
 ---@param spos Vec2i position in RegionMap grid
@@ -1225,6 +1729,152 @@ function Setting.cast(object) end
 
 --- 
 --- 
+--- @class SettingsCategory : Prototype
+--- @field settings Setting[] undocumented
+--- @field label string undocumented
+--- @field file_name string undocumented
+SettingsCategory = {}
+
+--- Creates a new SettingsCategory static object
+--- @param name string The name of the object
+--- @return SettingsCategory
+function SettingsCategory.new(name) end
+
+--- Searching for SettingsCategory in db
+--- @param name string The name of the object
+--- @return SettingsCategory
+function SettingsCategory.find(name) end
+
+--- Return SettingsCategory class object
+--- @return Class
+function SettingsCategory.get_class() end
+
+--- Trying to cast Object into SettingsCategory
+--- @param object Object to cast
+--- @return SettingsCategory
+function SettingsCategory.cast(object) end
+
+--- 
+--- 
+--- @class SimpleLayeringGenerator : LayeringGenerator
+SimpleLayeringGenerator = {}
+
+--- Creates a new LayeringGenerator static object
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.new(name) end
+
+--- Searching for LayeringGenerator in db
+--- @param name string The name of the object
+--- @return LayeringGenerator
+function LayeringGenerator.find(name) end
+
+--- Return LayeringGenerator class object
+--- @return Class
+function LayeringGenerator.get_class() end
+
+--- Trying to cast Object into LayeringGenerator
+--- @param object Object to cast
+--- @return LayeringGenerator
+function LayeringGenerator.cast(object) end
+
+--- Creates a new SimpleLayeringGenerator static object
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.new(name) end
+
+--- Searching for SimpleLayeringGenerator in db
+--- @param name string The name of the object
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.find(name) end
+
+--- Return SimpleLayeringGenerator class object
+--- @return Class
+function SimpleLayeringGenerator.get_class() end
+
+--- Trying to cast Object into SimpleLayeringGenerator
+--- @param object Object to cast
+--- @return SimpleLayeringGenerator
+function SimpleLayeringGenerator.cast(object) end
+
+--- Creates a new ChancedLayeringGenerator static object
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.new(name) end
+
+--- Searching for ChancedLayeringGenerator in db
+--- @param name string The name of the object
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.find(name) end
+
+--- Return ChancedLayeringGenerator class object
+--- @return Class
+function ChancedLayeringGenerator.get_class() end
+
+--- Trying to cast Object into ChancedLayeringGenerator
+--- @param object Object to cast
+--- @return ChancedLayeringGenerator
+function ChancedLayeringGenerator.cast(object) end
+
+--- Creates a new PropsGenerator static object
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.new(name) end
+
+--- Searching for PropsGenerator in db
+--- @param name string The name of the object
+--- @return PropsGenerator
+function PropsGenerator.find(name) end
+
+--- Return PropsGenerator class object
+--- @return Class
+function PropsGenerator.get_class() end
+
+--- Trying to cast Object into PropsGenerator
+--- @param object Object to cast
+--- @return PropsGenerator
+function PropsGenerator.cast(object) end
+
+--- Creates a new Biome static object
+--- @param name string The name of the object
+--- @return Biome
+function Biome.new(name) end
+
+--- Searching for Biome in db
+--- @param name string The name of the object
+--- @return Biome
+function Biome.find(name) end
+
+--- Return Biome class object
+--- @return Class
+function Biome.get_class() end
+
+--- Trying to cast Object into Biome
+--- @param object Object to cast
+--- @return Biome
+function Biome.cast(object) end
+
+--- Creates a new BiomeFamily static object
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.new(name) end
+
+--- Searching for BiomeFamily in db
+--- @param name string The name of the object
+--- @return BiomeFamily
+function BiomeFamily.find(name) end
+
+--- Return BiomeFamily class object
+--- @return Class
+function BiomeFamily.get_class() end
+
+--- Trying to cast Object into BiomeFamily
+--- @param object Object to cast
+--- @return BiomeFamily
+function BiomeFamily.cast(object) end
+
+--- 
+--- 
 --- @class SingleSlotInventory : BaseInventory
 --- @field capacity integer undocumented
 SingleSlotInventory = {}
@@ -1256,6 +1906,8 @@ function SingleSlotInventory.cast(object) end
 --- @class SourceData : Instance
 --- @field position Vec2i source position in block coordinates
 --- @field item StaticItem item to mine
+--- @field initial_capacity integer initial source capacity
+--- @field extracted_count integer count of items already extracted from the source
 SourceData = {}
 
 --- Creates a new SourceData instance
@@ -1341,9 +1993,10 @@ function StaticCover.cast(object) end
 --- @class StaticItem : Prototype
 --- @field image Texture Item image in UI
 --- @field stack_size integer Size of item stack
+--- @field tier integer Item unlock tier
 --- @field unit_mul number multiplier for UI
 --- @field mesh StaticMesh Mesh for item rendering in world
---- @field object StaticObject Buildable object pointer for this item
+--- @field block StaticObject Buildable object pointer for this item
 --- @field custom_data bool Is item instance contains CustomData
 --- @field custom_data bool Is item instance contains CustomData
 --- @field logic Class Class for item while in hand
@@ -1411,6 +2064,7 @@ function StaticObject.cast(object) end
 --- @field mesh StaticMesh undocumented
 --- @field no_collision boolean undocumented
 --- @field is_emitting boolean undocumented
+--- @field on_spawn function undocumented
 --- @field break_chance integer Break chance in percents
 StaticProp = {}
 

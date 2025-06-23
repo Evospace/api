@@ -64,9 +64,6 @@ class EVOSPACE_API UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Version;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 OreGrid;
-
   UPROPERTY(VisibleAnywhere)
   TArray<FString> Mods;
 };

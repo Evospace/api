@@ -5,6 +5,23 @@
 class UStaticItem;
 class USourceData;
 
+USTRUCT(BlueprintType)
+struct FSubregionData final {
+  GENERATED_BODY()
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 InitialCapacity = 10000;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 ExtractedCount = 0;
+
+  static constexpr int Subdivision = 4;
+  static constexpr FVector2i SubdivisionSize = { Subdivision, Subdivision };
+
+  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool DeserializeJson(TSharedPtr<FJsonObject> json);
+};
+
 UCLASS(BlueprintType)
 class EVOSPACE_API URegionLayer : public UInstance {
   using Self = URegionLayer;
@@ -14,20 +31,23 @@ class EVOSPACE_API URegionLayer : public UInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("RegionLayer") //@class RegionLayer : Instance
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
-      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer initial source capacity
-      .addProperty("extracted_count", &Self::ExtractedCount) //@field integer count of items already extracted from the source
       .endClass();
   }
-public:
+
+  public:
+  URegionLayer();
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 InitialCapacity = 10000;
+  int64 MaxCapacity = 10000;
+
+  UPROPERTY(VisibleAnywhere)
+  TArray<FSubregionData> Data;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 ExtractedCount = 0;
+  const UStaticItem *Item = nullptr;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  const UStaticItem *Item;
+  UFUNCTION(BlueprintCosmetic, BlueprintPure)
+  float GetVisualPercent(const FVector2i &pos) const;
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

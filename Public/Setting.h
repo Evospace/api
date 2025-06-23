@@ -1,10 +1,13 @@
 #pragma once
+#include "MainGameInstance.h"
 #include "Evospace/JsonHelper.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/Misc/EvoConverter.h"
 
 #include <Public/Prototype.h>
 #include "Setting.generated.h"
+
+
+class UFilterableWidget;
 
 UCLASS()
 class USetting : public UPrototype {
@@ -67,6 +70,13 @@ class USetting : public UPrototype {
 
   FString GetLabel() const;
 
+  UFUNCTION(BlueprintCallable)
+  static USetting *GetSettingBP(const FString &name) {
+    auto cdo = Cast<UPrototype>(USetting::StaticClass()->GetDefaultObject());
+    auto o = cdo->get_or_register(name, *UMainGameInstance::Singleton->mJsonObjectLibrary);
+    return Cast<USetting>(o);
+  }
+
   void ApplyInputKey();
 
   virtual void OnObjectFromTable() override;
@@ -89,20 +99,32 @@ class USetting : public UPrototype {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   bool Restart = false;
 
+  UFUNCTION(BlueprintCallable)
+  UFilterableWidget * CreateWidget(UWidget * owner) const;
+
   std::string DefaultStringValue;
   std::string StringValue;
 
   std::string Category;
   std::string Type;
 
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int DefaultIntValue = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int IntValue = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   bool BoolValue = false;
 
   std::string Label;
 
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int MinValue = 0;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int MaxValue = 0;
+  
   std::vector<std::string> StringOptions;
 
   std::optional<luabridge::LuaRef> SetAction;

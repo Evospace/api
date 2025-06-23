@@ -17,6 +17,7 @@
 #include "MainGameInstance.generated.h"
 
 class UEngineData;
+class UMapgenData;
 class UNeiComponent;
 class URegionMap;
 class AViewCapture;
@@ -70,6 +71,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
       .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
+      .addProperty("mapgen_data", &UMainGameInstance::MapgenData) //@field MapgenData
       .addStaticFunction("get_supported_resolutions", &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
       .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
@@ -147,9 +149,9 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static float DPIScale;
 
   template <typename _Ty>
-  static _Ty *GetPrototype(const FString &name) {
+  static _Ty *GetOrCreatePrototype(const FString &name) {
     auto cdo = Cast<_Ty>(_Ty::StaticClass()->GetDefaultObject());
-    auto o = cdo->get_or_register("LastLogin", *Singleton->mJsonObjectLibrary);
+    auto o = cdo->get_or_register(name, *Singleton->mJsonObjectLibrary);
     return Cast<_Ty>(o);
   }
 
@@ -295,6 +297,9 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UEngineData *EngineData;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+  UMapgenData *MapgenData;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FLinearColor IndexToColor(int32 index);

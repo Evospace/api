@@ -83,6 +83,7 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
   bool LockedInput = false;
 
   virtual void OnCraftPerformed();
+  virtual bool TestCraftAvailable() const;
 
   virtual void BlockEndPlay() override;
 

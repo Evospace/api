@@ -26,7 +26,7 @@ class EVOSPACE_API UEvoRegion : public UInstance {
 
   public:
   UEvoRegion();
-  
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   URegionLayer *OilLayer;
 
@@ -48,10 +48,13 @@ class EVOSPACE_API UEvoRegion : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<FMapStructure> MapStructures;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UMaterialInstanceDynamic *Material;
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static UTexture2D *GetFastnoiseTexture(UPARAM(ref) const TArray<float> &array, bool smooth = false);
 
-  void Initialize(const FVector2i &pos, int32 gridSize);
+  void Initialize(int32 gridSize);
 
   bool SerializeJson(TSharedPtr<FJsonObject> json);
   bool DeserializeJson(TSharedPtr<FJsonObject> json);

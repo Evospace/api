@@ -3,17 +3,16 @@
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "Prototype.h"
-#include "Evospace/Ensure.h"
 #include "Evospace/JsonObjectLibrary.h"
 #include "Modding/Mod.h"
-#include "ThirdParty/luabridge/LuaBridge.h"
 
 #include <string>
 #include <array>
 
 #include "DB.generated.h"
 
-class UPrototype;
+
+class USettingsCategory;class UPrototype;
 namespace evo {
 class LegacyLuaState;
 class ModLoadingLuaState;
@@ -138,6 +137,9 @@ class EVOSPACE_API UDB : public UInstance {
 
   UPROPERTY()
   TArray<FString> error_log;
+
+  // UPROPERTY()
+  // TArray<USettingsCategory *> Settings;
 
   UFUNCTION(BlueprintCallable)
   int32 GetPhase() const { return phase; }

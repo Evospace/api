@@ -30,6 +30,10 @@ class EVOSPACE_API URegionMap : public UInstance {
       .deriveClass<URegionMap, UInstance>("RegionMap") //@class RegionMap : Instance
       .addFunction("add_resource", &URegionMap::AddResource)
       //direct:
+      //---Delete all regions
+      //function RegionMap:reset() end
+      .addFunction("reset", &URegionMap::Reset)
+      //direct:
       //---Get Region by its position
       //---@param spos Vec2i position in RegionMap grid
       //---@return Region
@@ -100,6 +104,9 @@ class EVOSPACE_API URegionMap : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   UEvoRegion *FindRegion(const FVector2i &grid);
+  
+  UFUNCTION(BlueprintCallable)
+  UEvoRegion *FindRegionAt(const FVector3i &position);UEvoRegion*GetRegionAt(const FVector3i&position);
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

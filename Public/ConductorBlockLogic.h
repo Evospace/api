@@ -47,12 +47,6 @@ class USubnetwork : public UObject {
 
   UPROPERTY(VisibleAnywhere)
   int64 Capacity = 0;
-
-  UPROPERTY(VisibleAnywhere)
-  int64 Resistance = 0;
-
-  UPROPERTY(VisibleAnywhere)
-  int64 Voltage = 1000;
 };
 
 class ConnectionInfo {
@@ -75,18 +69,6 @@ struct FNetworkWidgetData {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   float meanFactor = 0;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  float thermalLoss = 0;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  float resistance = 0;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  float electricCurrent = 0;
-
-  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  float voltage = 0;
 };
 
 UCLASS(BlueprintType)
@@ -198,9 +180,6 @@ class EVOSPACE_API UBlockNetwork : public UObject {
   private:
   TArray<int64> Request;
   TArray<int64> TotalProduction;
-  TArray<int64> ThermalLoss;
-  TArray<int64> Resistance;
-  TArray<int64> ElectricCurrent;
   TArray<TArray<UResourceAccessor *>> AllCollectedOutputs;
   TArray<TArray<UResourceAccessor *>> AllCollectedInputs;
   TArray<TArray<UConductorBlockLogic *>> AllCollectedStorages;
@@ -212,8 +191,6 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 
   private:
   // Widget data cache, updates only by widget data request
-  mutable EvoRingBuffer<float> medianLoss = EvoRingBuffer<float>(20, 0);
-  mutable EvoRingBuffer<float> medianCurrent = EvoRingBuffer<float>(20, 0);
   mutable EvoRingBuffer<float> medianCharge = EvoRingBuffer<float>(20, 0);
   mutable EvoRingBuffer<float> medianRequest = EvoRingBuffer<float>(20, 0);
   mutable EvoRingBuffer<float> medianProduction = EvoRingBuffer<float>(20, 0);
@@ -230,8 +207,6 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
       .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
       .addProperty("side_cover", &Self::mSideCover) //@field StaticCover
       .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
-      .addProperty("resistance", &Self::Resistance) //@field integer mOhm
-      .addProperty("voltage", &Self::Voltage) //@field integer Volt
       .addProperty("channel", EVO_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
       //direct:
@@ -341,12 +316,6 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 Subnetwork = 0;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  int64 Resistance = 0;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  int64 Voltage = 1000;
 };
 
 UCLASS()
