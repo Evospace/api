@@ -61,6 +61,12 @@ class EVOSPACE_API URegionLayer : public UInstance {
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetRegen(const FVector2i &pos) const;
 
+  UFUNCTION(BlueprintCallable)
+  int64 GetExtractedCount(const FVector2i & pos) const;
+
+  UFUNCTION(BlueprintCallable)
+  int64 GetInitialCapacity(const FVector2i & pos) const;
+
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };

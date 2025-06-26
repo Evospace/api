@@ -601,8 +601,6 @@ function ComputerBlockLogic.cast(object) end
 --- @class ConductorBlockLogic : StorageBlockLogic
 --- @field side_cover StaticCover undocumented
 --- @field center_cover StaticCover undocumented
---- @field resistance integer mOhm
---- @field voltage integer Volt
 --- @field channel string undocumented
 --- @field conductor_channel integer undocumented
 ConductorBlockLogic = {}
@@ -726,6 +724,60 @@ Dimension = {}
 
 --- 
 --- 
+--- @class DrillingMachineBase : BlockLogic
+--- @field storage_size integer undocumented
+--- @field energy_per_one integer undocumented
+--- @field remaining_energy integer undocumented
+--- @field inventory SingleSlotInventory undocumented
+--- @field energy ResourceInventory undocumented
+DrillingMachineBase = {}
+
+--- Creates a new DrillingMachineBase instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return DrillingMachineBase
+function DrillingMachineBase.new(parent, name) end
+
+--- Creates a new DrillingMachineBase instance
+--- @return DrillingMachineBase
+function DrillingMachineBase.new_simple() end
+
+--- Return DrillingMachineBase class object
+--- @return Class
+function DrillingMachineBase.get_class() end
+
+--- Trying to cast Object into DrillingMachineBase
+--- @param object Object to cast
+--- @return DrillingMachineBase
+function DrillingMachineBase.cast(object) end
+
+--- 
+--- 
+--- @class DrillingRig : DrillingMachineBase
+--- @field source SourceData undocumented
+DrillingRig = {}
+
+--- Creates a new DrillingRig instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return DrillingRig
+function DrillingRig.new(parent, name) end
+
+--- Creates a new DrillingRig instance
+--- @return DrillingRig
+function DrillingRig.new_simple() end
+
+--- Return DrillingRig class object
+--- @return Class
+function DrillingRig.get_class() end
+
+--- Trying to cast Object into DrillingRig
+--- @param object Object to cast
+--- @return DrillingRig
+function DrillingRig.cast(object) end
+
+--- 
+--- 
 --- @class EngineData : Instance
 --- @field props_mul number undocumented
 --- @field dpi number undocumented
@@ -835,6 +887,7 @@ function FluidContainerBlockLogic.cast(object) end
 --- 
 --- @class Game : Object
 --- @field engine_data EngineData undocumented
+--- @field mapgen_data MapgenData undocumented
 --- @field localization string undocumented
 --- @field build_string string undocumented
 Game = {}
@@ -1227,6 +1280,30 @@ MapStructure = {}
 --- @return MapStructure
 function MapStructure.new() end
 
+--- 
+--- 
+--- @class MapgenData : Instance
+MapgenData = {}
+
+--- Creates a new MapgenData instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return MapgenData
+function MapgenData.new(parent, name) end
+
+--- Creates a new MapgenData instance
+--- @return MapgenData
+function MapgenData.new_simple() end
+
+--- Return MapgenData class object
+--- @return Class
+function MapgenData.get_class() end
+
+--- Trying to cast Object into MapgenData
+--- @param object Object to cast
+--- @return MapgenData
+function MapgenData.cast(object) end
+
 --- Structure that stores several StaticProp records (prop variations) with shared spawn chance
 --- 
 --- @class PropListData : Struct
@@ -1433,6 +1510,31 @@ function type.get_class() end
 --- @param object Object to cast
 --- @return type
 function type.cast(object) end
+
+--- 
+--- 
+--- @class Pumpjack : DrillingMachineBase
+--- @field layer RegionLayer undocumented
+Pumpjack = {}
+
+--- Creates a new Pumpjack instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return Pumpjack
+function Pumpjack.new(parent, name) end
+
+--- Creates a new Pumpjack instance
+--- @return Pumpjack
+function Pumpjack.new_simple() end
+
+--- Return Pumpjack class object
+--- @return Class
+function Pumpjack.get_class() end
+
+--- Trying to cast Object into Pumpjack
+--- @param object Object to cast
+--- @return Pumpjack
+function Pumpjack.cast(object) end
 
 --- Crafting-recipe prototype used by machines and crafting UIs
 --- 
@@ -1903,6 +2005,26 @@ function SingleSlotInventory.cast(object) end
 
 --- 
 --- 
+--- @class SolidAccessor : BaseInventoryAccessor
+SolidAccessor = {}
+
+--- Creates a new SolidAccessor instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return SolidAccessor
+function SolidAccessor.new(parent, name) end
+
+--- Return SolidAccessor class object
+--- @return Class
+function SolidAccessor.get_class() end
+
+--- Trying to cast Object into SolidAccessor
+--- @param object Object to cast
+--- @return SolidAccessor
+function SolidAccessor.cast(object) end
+
+--- 
+--- 
 --- @class SourceData : Instance
 --- @field position Vec2i source position in block coordinates
 --- @field item StaticItem item to mine
@@ -2353,50 +2475,6 @@ function StorageBlockLogic.get_class() end
 --- @param object Object to cast
 --- @return StorageBlockLogic
 function StorageBlockLogic.cast(object) end
-
---- 
---- 
---- @class Transformer : BlockLogic
---- @field capacity integer undocumented
-Transformer = {}
-
---- Creates a new BlockLogic instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return BlockLogic
-function BlockLogic.new(parent, name) end
-
---- Creates a new BlockLogic instance
---- @return BlockLogic
-function BlockLogic.new_simple() end
-
---- Return BlockLogic class object
---- @return Class
-function BlockLogic.get_class() end
-
---- Trying to cast Object into BlockLogic
---- @param object Object to cast
---- @return BlockLogic
-function BlockLogic.cast(object) end
-
---- Creates a new Transformer instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return Transformer
-function Transformer.new(parent, name) end
-
---- Creates a new Transformer instance
---- @return Transformer
-function Transformer.new_simple() end
-
---- Return Transformer class object
---- @return Class
-function Transformer.get_class() end
-
---- Trying to cast Object into Transformer
---- @param object Object to cast
---- @return Transformer
-function Transformer.cast(object) end
 
 --- 
 --- 
