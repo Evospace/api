@@ -198,6 +198,14 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
     rmc->InitializeRealtimeMesh<URealtimeMeshSimple>();
   }
 
+  if (data.Num() != LastSectionCount) {
+    IsSectionGroupCreated = false;
+    LastSectionCount = data.Num();
+    if (auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>()) {
+      mesh->Reset();
+    }
+  }
+  
   RuntimeMeshBuilder::BuildRealtimeMesh(rmc->GetRealtimeMeshAs<URealtimeMeshSimple>(), MoveTemp(data), IsSectionGroupCreated);
 
   callback();

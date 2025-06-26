@@ -89,4 +89,6 @@ class USectorProxy : public UObject {
 
   UPROPERTY()
   URealtimeMeshComponent *rmc = nullptr;
+
+  int32 LastSectionCount = 0;
 };
