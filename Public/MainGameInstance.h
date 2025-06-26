@@ -340,6 +340,8 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   FString GetLastLoadingMessage() const;
 
+  void RegionUpdate()const;
+
   static TMap<FName, FLocalizationTable> mLocTables;
 
   UPROPERTY(BlueprintReadWrite)

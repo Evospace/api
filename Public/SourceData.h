@@ -1,8 +1,10 @@
 #pragma once
+#include "ExtractionData.h"
 #include "Prototype.h"
 #include "SourceData.generated.h"
 
-class UStaticItem;
+
+class ADimension;class UStaticItem;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API USourceData : public UInstance {
@@ -39,7 +41,7 @@ class EVOSPACE_API USourceData : public UInstance {
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UFUNCTION(BlueprintCallable)
-  int32 CalculateExtractionSpeed() const;
+  static int32 CalculateExtractionSpeed(int64 extracted, int64 initial);
 
   UFUNCTION(BlueprintCallable)
   FExtractionData ExtractOre(ADimension *dim);

@@ -1,4 +1,6 @@
 #pragma once
+#include "Dimension.h"
+#include "ExtractionData.h"
 #include "Prototype.h"
 #include "RegionLayer.generated.h"
 
@@ -46,8 +48,18 @@ class EVOSPACE_API URegionLayer : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   const UStaticItem *Item = nullptr;
 
+  FExtractionData ExtractItem(const ADimension*dim,const FVector2i &sr);
+
+  const FSubregionData & GetSubregion(const FVector2i & sr) const;
+  FSubregionData & GetSubregion(const FVector2i & sr);
+
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetVisualPercent(const FVector2i &pos) const;
+
+  static int32 CalculateRegen(const FSubregionData & sub);
+
+  UFUNCTION(BlueprintCosmetic, BlueprintPure)
+  float GetRegen(const FVector2i &pos) const;
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

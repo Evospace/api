@@ -12,7 +12,8 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
-class UOreGenerator;
+
+class UWidget;class UOreGenerator;
 class USourceData;
 class UEvoRegion;
 class ADimension;
@@ -89,8 +90,14 @@ class EVOSPACE_API URegionMap : public UInstance {
   UPROPERTY()
   USourceData *StoneSource;
 
+  UFUNCTION(BlueprintCallable)
   static FVector2i SectorToGrid(const FVector2i &pos);
-  static FVector2i WorldBlockToGrid(const Vec3i &pos);
+
+  UFUNCTION(BlueprintCallable)
+  static FVector2i WorldBlockToGrid(const FVector3i &pos);
+
+  UFUNCTION(BlueprintCallable)
+  static FVector2i WorldBlockToSubregion(const FVector3i & pos);
 
   USourceData *FindSource(const Vec3i &wbpos);
 
