@@ -49,3 +49,9 @@ Supporting Logic
 
 .. lua:autoobject:: ResourceInventory
    :members:
+
+.. lua:autoobject:: BaseInventoryAccessor
+   :members:
+
+.. lua:autoobject:: SolidAccessor
+   :members:

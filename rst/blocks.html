@@ -359,18 +359,6 @@
 </dd></dl>
 
 <dl class="lua data">
-<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.resistance">
-<span class="sig-name descname"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.resistance" title="Link to this definition">¶</a></dt>
-<dd><p>mOhm</p>
-</dd></dl>
-
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.voltage">
-<span class="sig-name descname"><span class="pre">voltage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.voltage" title="Link to this definition">¶</a></dt>
-<dd><p>Volt</p>
-</dd></dl>
-
-<dl class="lua data">
 <dt class="sig sig-object lua" id="lua-ConductorBlockLogic.channel">
 <span class="sig-name descname"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.channel" title="Link to this definition">¶</a></dt>
 <dd><p>undocumented</p>
@@ -515,6 +503,44 @@
 <dt class="sig sig-object lua" id="lua-ResourceInventory.drain">
 <span class="sig-name descname"><span class="pre">drain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ResourceInventory.drain" title="Link to this definition">¶</a></dt>
 <dd><p>undocumented</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-SolidAccessor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SolidAccessor</span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BaseInventoryAccessor</span></code><a class="headerlink" href="#lua-SolidAccessor" title="Link to this definition">¶</a></dt>
+<dd><dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-SolidAccessor.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-SolidAccessor" title="SolidAccessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">SolidAccessor</span></code></a></span></span><a class="headerlink" href="#lua-SolidAccessor.new" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new SolidAccessor instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – Object of parent</p></li>
+<li><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – The name of the instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-SolidAccessor.get_class">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Class</span></code></span></span><a class="headerlink" href="#lua-SolidAccessor.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return SolidAccessor class object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-SolidAccessor.cast">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-SolidAccessor" title="SolidAccessor"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">SolidAccessor</span></code></a></span></span><a class="headerlink" href="#lua-SolidAccessor.cast" title="Link to this definition">¶</a></dt>
+<dd><p>Trying to cast Object into SolidAccessor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>object</strong> (<a class="reference internal" href="core.html#lua-Object" title="Object"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Object</span></code></a>) – to cast</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
