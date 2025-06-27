@@ -13,3 +13,5 @@ Evospace documentation
    rst/blocks
    rst/researches
    rst/misc
+   rst/world
+   rst/engine
