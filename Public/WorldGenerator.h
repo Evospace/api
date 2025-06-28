@@ -32,7 +32,7 @@ class EVOSPACE_API UWorldGenerator : public UPrototype {
   FText GetLabel() const;
 
   UPROPERTY()
-  FKeyTableObject mLabel;
+  FLoc mLabel;
 
   protected:
   int32 mSeed = 0;

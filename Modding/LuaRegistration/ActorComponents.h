@@ -77,11 +77,32 @@ inline void registerComponentClasses(lua_State *L) {
     .endClass();
 
   getGlobalNamespace(L)
-    .beginClass<FKeyTableObject>("Loc")
+    .beginClass<FKto>("Kto")
     .addStaticFunction("new", [](std::string_view key, std::string_view table) {
-      auto kt = FKeyTableObject();
+      auto kt = FKto();
       kt.Key = UTF8_TO_TCHAR(key.data());
       kt.Table = UTF8_TO_TCHAR(table.data());
+      return kt;
+    })
+    .addFunction("get", [](FKto *kto) -> std::string {
+      const auto gi = UMainGameInstance::Singleton;
+      return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(kto->Key, kto->Table));
+    })
+    .endClass();
+
+  getGlobalNamespace(L)
+      .beginClass<FLoc>("LocData")
+      .addStaticFunction("set", [](std::string_view key, std::string_view value) {
+        UMainGameInstance::SetLocalizationData(UTF8_TO_TCHAR(key.data()), UTF8_TO_TCHAR(value.data()));
+      })
+      .endClass();
+  
+  getGlobalNamespace(L)
+    .beginClass<FLoc>("Loc")
+    .addStaticFunction("new", [](std::string_view key, std::string_view table) {
+      auto kt = FLoc();
+      kt.Data.Key = UTF8_TO_TCHAR(key.data());
+      kt.Data.Table = UTF8_TO_TCHAR(table.data());
       return kt;
     })
     .addStaticFunction("get", [](std::string_view key, std::string_view table) -> std::string {
@@ -91,17 +112,9 @@ inline void registerComponentClasses(lua_State *L) {
     .addStaticFunction("gui_number", [](float value) -> std::string {
       return TCHAR_TO_UTF8(*UUserWidgetSlot::FloatToGuiCount(value, 1, false, 1).ToString());
     })
-    .addFunction("get", [](FKeyTableObject *kto) -> std::string {
+    .addFunction("get", [](FLoc *loc) -> std::string {
       const auto gi = UMainGameInstance::Singleton;
-      return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(kto->Key, kto->Table));
-    })
-    .addStaticFunction("new_param", [](std::string_view key, std::string_view table, float param) {
-      auto kt = FKeyTableObject();
-      kt.Key = UTF8_TO_TCHAR(key.data());
-      kt.Table = UTF8_TO_TCHAR(table.data());
-      kt.Value = param;
-      kt.Args = 1;
-      return kt;
+      return TCHAR_TO_UTF8(*gi->GetLocalizedLoc(*loc));
     })
     .endClass();
 

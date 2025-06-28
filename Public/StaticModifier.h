@@ -18,10 +18,10 @@ class UStaticModifier : public UPrototype {
   UTexture2D *mImage;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FKeyTableObject mLabel;
+  FLoc mLabel;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FKeyTableObject mDescription;
+  FLoc mDescription;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 

@@ -18,10 +18,10 @@ class UStaticTip : public UPrototype {
   UStaticTip();
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  FKeyTableObject mLabel;
+  FLoc mLabel;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  FKeyTableObject mDescription;
+  FLoc mDescription;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   UAutosizeInventory *mContextInventory;

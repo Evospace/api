@@ -84,6 +84,31 @@ db = {}
 --- @class RegionMap
 regions = {}
 
+--- Non localized data entry
+---
+--- @class LocData
+LocData = {}
+
+--- Set non localized data value by key
+--- @param key string
+--- @param value string
+function LocData.set(key, table) end
+
+--- Localization key table object
+---
+--- @class Kto
+Kto = {}
+
+--- Create new Kto object
+--- @param key string
+--- @param table string
+--- @return Loc
+function Kto.new(key, table) end
+
+--- Resolve Kto to localized string
+--- @return string
+function Kto:get() end
+
 --- Localization data entry
 ---
 --- @class Loc
@@ -725,11 +750,11 @@ Dimension = {}
 --- 
 --- 
 --- @class DrillingMachineBase : BlockLogic
---- @field storage_size integer undocumented
 --- @field energy_per_one integer undocumented
 --- @field remaining_energy integer undocumented
---- @field inventory SingleSlotInventory undocumented
+--- @field inventory InventoryContainer undocumented
 --- @field energy ResourceInventory undocumented
+--- @field production integer undocumented
 DrillingMachineBase = {}
 
 --- Creates a new DrillingMachineBase instance
@@ -2124,7 +2149,7 @@ function StaticCover.cast(object) end
 --- @field logic Class Class for item while in hand
 --- @field lua table undocumented
 --- @field category string In-game database category
---- @field label_parts Loc[] undocumented
+--- @field label Loc undocumented
 --- @field description_parts Loc[] undocumented
 StaticItem = {}
 

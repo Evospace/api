@@ -312,16 +312,22 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   static std::vector<std::string> GetAllSupportedResolutions();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FString GetLocalizedParts(const TArray<FKeyTableObject> &label_parts, const FString &separator = " ");
+  static FString GetLocalizedParts(const TArray<FLoc> &label_parts, const FString &separator = " ");
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLocalizedKeyTable(FName key, FName table);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FString GetLocalizedObject(const FKeyTableObject &object);
+  static FString GetLocalizedKto(const FKto &object);
+
+  UFUNCTION(BlueprintCallable)
+  static void SetLocalizationData(const FName &name, const FString &str);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FString GetLocalizedPartsFormat(const TArray<FKeyTableObject> &label_parts, const FKeyTableObject &format);
+  static FString GetLocalizedLoc(const FLoc &object);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLocalizedPartsFormat(const TArray<FLoc> &label_parts, const FLoc &format);
 
   UFUNCTION(BlueprintCallable)
   bool IsContentLoaded() const;
@@ -342,7 +348,8 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   void RegionUpdate()const;
 
-  static TMap<FName, FLocalizationTable> mLocTables;
+  static TMap<FName, FLocalizationTable> LocTables;
+  static FLocalizationTable LocData;
 
   UPROPERTY(BlueprintReadWrite)
   bool mSteamworksIsReady = false;

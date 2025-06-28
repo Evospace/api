@@ -50,10 +50,10 @@ class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
   UStaticResearch();
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FKeyTableObject> LabelParts = {};
+  FLoc Label;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FKeyTableObject> DescriptionParts = {};
+  TArray<FLoc> DescriptionParts = {};
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UInventory *DataPoints;

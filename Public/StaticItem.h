@@ -47,7 +47,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
       .addProperty("category", EVO_NAME_GET_SET(mCategory)) //@field string In-game database category
-      .addProperty("label_parts", EVO_ARRAY_GET_SET(mLabelParts)) //@field Loc[]
+      .addProperty("label", &Self::mLabel) //@field Loc
       .addProperty("description_parts", EVO_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
       .endClass();
   }
@@ -71,13 +71,10 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   FText GetDescription() const;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FKeyTableObject> mLabelParts = {};
+  FLoc mLabel = {};
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   EStaticItemType mType = EStaticItemType::Solid;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FKeyTableObject mLabelFormat;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   float mUnitMul = 1.f;
@@ -111,7 +108,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   // Description common keys
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FKeyTableObject> mDescriptionParts = {};
+  TArray<FLoc> mDescriptionParts = {};
 
   // Ingame effects color
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -84,6 +84,31 @@ db = {}
 --- @class RegionMap
 regions = {}
 
+--- Non localized data entry
+---
+--- @class LocData
+LocData = {}
+
+--- Set non localized data value by key
+--- @param key string
+--- @param value string
+function LocData.set(key, table) end
+
+--- Localization key table object
+---
+--- @class Kto
+Kto = {}
+
+--- Create new Kto object
+--- @param key string
+--- @param table string
+--- @return Loc
+function Kto.new(key, table) end
+
+--- Resolve Kto to localized string
+--- @return string
+function Kto:get() end
+
 --- Localization data entry
 ---
 --- @class Loc

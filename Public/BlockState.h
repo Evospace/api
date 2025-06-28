@@ -26,7 +26,7 @@ class UCrafterStateLibrary : public UBlueprintFunctionLibrary {
 
   public:
   UFUNCTION(BlueprintPure, Category = "Crafter|Status")
-  static FKeyTableObject GetLocKeys(EBlockState State);
+  static FLoc GetLocKeys(EBlockState State);
 
   UFUNCTION(BlueprintPure, Category = "Crafter|Status")
   static FLinearColor GetLampColor(EBlockState State);
