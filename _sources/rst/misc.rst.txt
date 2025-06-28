@@ -18,3 +18,12 @@ Misc
 
 .. lua:autoobject:: WorldGenerator
    :members:
+
+.. lua:autoobject:: Kto
+   :members:
+
+.. lua:autoobject:: Loc
+   :members:
+
+.. lua:autoobject:: LocData
+   :members:

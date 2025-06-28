@@ -377,6 +377,72 @@
 
 </dd></dl>
 
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-Kto">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Kto</span></span><a class="headerlink" href="#lua-Kto" title="Link to this definition">¶</a></dt>
+<dd><p>Localization key table object</p>
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Kto.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Loc" title="Loc"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Loc</span></code></a></span></span><a class="headerlink" href="#lua-Kto.new" title="Link to this definition">¶</a></dt>
+<dd><p>Create new Kto object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua" id="lua-Kto.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-Kto" title="Kto"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Kto</span></code></a></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></span></span><a class="headerlink" href="#lua-Kto.get" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve Kto to localized string</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-Loc">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Loc</span></span><a class="headerlink" href="#lua-Loc" title="Link to this definition">¶</a></dt>
+<dd><p>Localization data entry</p>
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Loc.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-Loc" title="Loc"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Loc</span></code></a></span></span><a class="headerlink" href="#lua-Loc.new" title="Link to this definition">¶</a></dt>
+<dd><p>Create new Loc object</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Loc.get">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></span></span><a class="headerlink" href="#lua-Loc.get" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve Loc object to localized string</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-Loc.gui_number">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gui_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">number</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></span></span><a class="headerlink" href="#lua-Loc.gui_number" title="Link to this definition">¶</a></dt>
+<dd><p>Get number as string for GUI (3000 -&gt; 3.0k)</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="lua class">
+<dt class="sig sig-object lua" id="lua-LocData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LocData</span></span><a class="headerlink" href="#lua-LocData" title="Link to this definition">¶</a></dt>
+<dd><p>Non localized data entry</p>
+<dl class="lua staticmethod">
+<dt class="sig sig-object lua" id="lua-LocData.set">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-LocData.set" title="Link to this definition">¶</a></dt>
+<dd><p>Set non localized data value by key</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -418,6 +484,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#lua-PropListData"><code class="docutils literal notranslate"><span class="pre">PropListData</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lua-StaticPropList"><code class="docutils literal notranslate"><span class="pre">StaticPropList</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lua-WorldGenerator"><code class="docutils literal notranslate"><span class="pre">WorldGenerator</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-Kto"><code class="docutils literal notranslate"><span class="pre">Kto</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-Loc"><code class="docutils literal notranslate"><span class="pre">Loc</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lua-LocData"><code class="docutils literal notranslate"><span class="pre">LocData</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="world.html">World</a></li>
