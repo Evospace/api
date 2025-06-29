@@ -7,6 +7,7 @@
 #include "Public/MainGameInstance.h"
 #include "Evospace/Blocks/BlockActor.h"
 #include "Evospace/Item/SlotWidget.h"
+#include "Public/GuiTextHelper.h"
 #include "Public/ItemData.h"
 #include "Sound/SoundClass.h"
 
@@ -110,7 +111,7 @@ inline void registerComponentClasses(lua_State *L) {
       return TCHAR_TO_UTF8(*gi->GetLocalizedKeyTable(TCHAR_TO_UTF8(key.data()), TCHAR_TO_UTF8(table.data())));
     })
     .addStaticFunction("gui_number", [](float value) -> std::string {
-      return TCHAR_TO_UTF8(*UUserWidgetSlot::FloatToGuiCount(value, 1, false, 1).ToString());
+      return TCHAR_TO_UTF8(*UGuiTextHelper::FloatToGuiCount(value, 1, false, 1).ToString());
     })
     .addFunction("get", [](FLoc *loc) -> std::string {
       const auto gi = UMainGameInstance::Singleton;

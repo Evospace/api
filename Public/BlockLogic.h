@@ -33,6 +33,7 @@ class AColumn;
 UCLASS(BlueprintType)
 class EVOSPACE_API UBlockLogic : public UInstance {
   GENERATED_BODY()
+  using Self = UBlockLogic;
   EVO_CODEGEN_INSTANCE(BlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
