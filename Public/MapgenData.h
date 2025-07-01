@@ -9,11 +9,11 @@ class EVOSPACE_API UMapgenData : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UMapgenData, UInstance>("MapgenData") //@class MapgenData : Instance
-      
+
       .endClass();
   }
-public:
 
+  public:
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int32 WaterLevel;
 };

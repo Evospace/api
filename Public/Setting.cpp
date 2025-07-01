@@ -155,7 +155,7 @@ void USetting::UpdateSettingsWidgets() {
   }
 }
 
-UFilterableWidget * USetting::CreateWidget(UWidget * owner) const {
+UFilterableWidget *USetting::CreateWidget(UWidget *owner) const {
   UFilterableWidget *wid = nullptr;
   if (Type == "Int") {
     wid = SettingWidgetConstructors::CreateInt(owner, this, this->GetStringValue(), this->IntValue);

@@ -5,8 +5,8 @@
 #include "EvoRingBuffer.h"
 #include "DrillingMachineBase.generated.h"
 
-
-class UInventoryContainer;class UResourceAccessor;
+class UInventoryContainer;
+class UResourceAccessor;
 class USingleSlotInventory;
 class USolidOutputAccessor;
 
@@ -19,7 +19,7 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   GENERATED_BODY()
   using Self = UDrillingMachineBase;
   EVO_CODEGEN_INSTANCE(DrillingMachineBase)
-  virtual void lua_reg(lua_State* L) const override {
+  virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UBlockLogic>("DrillingMachineBase") //@class DrillingMachineBase : BlockLogic
       .addProperty("energy_per_one", &Self::EnergyPerOne) //@field integer
@@ -34,8 +34,8 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
       .addProperty("production", &Self::Production) //@field integer
       .endClass();
   }
-public:
 
+  public:
   UDrillingMachineBase();
 
   // Blueprint interface
@@ -48,26 +48,26 @@ public:
   UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintPure, Category = "Drilling|Energy")
   float CurrentUsage() const;
 
-  int32 Production = 1; 
+  int32 Production = 1;
 
   UFUNCTION(BlueprintCallable, Category = "Drilling|Inventory")
   float GetStorageFullness() const;
 
   // UBlockLogic interface
   virtual void Tick() override;
-  
+
   virtual void BlockBeginPlay() override;
   virtual bool IsBlockTicks() const override { return true; }
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-protected:
+  protected:
   // Core components
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
-  UInventoryContainer* Inventory;
+  UInventoryContainer *Inventory;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
-  class UResourceInventory* Energy;
+  class UResourceInventory *Energy;
 
   // Energy management
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
@@ -81,12 +81,13 @@ protected:
   int32 StorageSize = 100;
 
   // Utility functions
-  void ProcessEnergy();
-  virtual void Drill() PURE_VIRTUAL(UDrillingMachineBase::Drill,);
+  virtual void ProcessEnergy();
+
+  virtual void Drill() PURE_VIRTUAL(UDrillingMachineBase::Drill, );
   bool IsEnergyAvailable() const { return RemainingEnergy > 0; }
   bool HasStorageSpace() const;
 
-private:
+  private:
   static constexpr float basic_duration_tick = 20;
   EvoRingBuffer<int32> SupportRing = EvoRingBuffer<int32>(60);
 };

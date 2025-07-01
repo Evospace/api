@@ -20,7 +20,7 @@ struct FSubregionData final {
   static constexpr int Subdivision = 4;
   static constexpr FVector2i SubdivisionSize = { Subdivision, Subdivision };
 
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 };
 
@@ -40,7 +40,7 @@ class EVOSPACE_API URegionLayer : public UInstance {
   URegionLayer();
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 MaxCapacity = 10000;
+  int64 MaxCapacity = 1000;
 
   UPROPERTY(VisibleAnywhere)
   TArray<FSubregionData> Data;
@@ -48,24 +48,24 @@ class EVOSPACE_API URegionLayer : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   const UStaticItem *Item = nullptr;
 
-  FExtractionData ExtractItem(const ADimension*dim,const FVector2i &sr);
+  FExtractionData ExtractItem(const ADimension *dim, const FVector2i &sr);
 
-  const FSubregionData & GetSubregion(const FVector2i & sr) const;
-  FSubregionData & GetSubregion(const FVector2i & sr);
+  const FSubregionData &GetSubregion(const FVector2i &sr) const;
+  FSubregionData &GetSubregion(const FVector2i &sr);
 
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetVisualPercent(const FVector2i &pos) const;
 
-  static int32 CalculateRegen(const FSubregionData & sub);
+  static int32 CalculateRegen(const FSubregionData &sub);
 
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetRegen(const FVector2i &pos) const;
 
   UFUNCTION(BlueprintCallable)
-  int64 GetExtractedCount(const FVector2i & pos) const;
+  int64 GetExtractedCount(const FVector2i &pos) const;
 
   UFUNCTION(BlueprintCallable)
-  int64 GetInitialCapacity(const FVector2i & pos) const;
+  int64 GetInitialCapacity(const FVector2i &pos) const;
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

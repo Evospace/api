@@ -52,6 +52,6 @@ struct FDroneRoute final {
     TimeSinceLastSend = 0.0f;
   }
 
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 };

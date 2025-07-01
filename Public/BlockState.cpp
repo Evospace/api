@@ -24,7 +24,7 @@ FORCEINLINE const auto &GetMeta(EBlockState S) {
 
 FLoc UCrafterStateLibrary::GetLocKeys(EBlockState State) {
   const auto &Meta = GetMeta(State);
-  return {{Meta.LabelKey, "block_state"}};
+  return { { Meta.LabelKey, "block_state" } };
 }
 
 FLinearColor UCrafterStateLibrary::GetLampColor(EBlockState State) {

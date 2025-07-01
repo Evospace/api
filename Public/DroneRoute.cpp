@@ -1,7 +1,7 @@
 #include "DroneRoute.h"
 
 #include "Evospace/JsonHelper.h"
-bool FDroneRoute::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool FDroneRoute::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "TargetStationID", TargetStationID);
   return true;
 }

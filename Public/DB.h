@@ -11,8 +11,8 @@
 
 #include "DB.generated.h"
 
-
-class USettingsCategory;class UPrototype;
+class USettingsCategory;
+class UPrototype;
 namespace evo {
 class LegacyLuaState;
 class ModLoadingLuaState;

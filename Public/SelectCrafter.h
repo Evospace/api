@@ -40,7 +40,7 @@ class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
 
   virtual void ResetRecipe() override;
 
-  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
+  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const override;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
 
   virtual void CopyOnReplace(UBlockLogic *from) override;

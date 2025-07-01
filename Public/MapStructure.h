@@ -15,7 +15,7 @@ struct FMapStructure {
   UPROPERTY(VisibleAnywhere)
   UStaticStructure *mStruct;
 
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   static void lua_reg(lua_State *L) {

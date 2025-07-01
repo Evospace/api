@@ -13,10 +13,10 @@ class EVOSPACE_API USolidAccessor : public UBaseInventoryAccessor {
       .endClass();
   }
 
-public:
+  public:
   USolidAccessor *GetOutsideAccessorCached();
   const USolidAccessor *GetOutsideAccessorCached() const;
 
-protected:
+  protected:
   virtual UBaseInventoryAccessor *GetAutoOutsideAccessor() override;
 };

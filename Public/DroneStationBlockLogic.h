@@ -53,7 +53,7 @@ class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic, public ILogicCo
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
-  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
+  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual ULogicContext *GetContext_Implementation() override;
 

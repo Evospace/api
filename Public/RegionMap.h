@@ -12,8 +12,8 @@
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
 
-
-class UWidget;class UOreGenerator;
+class UWidget;
+class UOreGenerator;
 class USourceData;
 class UEvoRegion;
 class ADimension;
@@ -97,7 +97,7 @@ class EVOSPACE_API URegionMap : public UInstance {
   static FVector2i WorldBlockToGrid(const FVector3i &pos);
 
   UFUNCTION(BlueprintCallable)
-  static FVector2i WorldBlockToSubregion(const FVector3i & pos);
+  static FVector2i WorldBlockToSubregion(const FVector3i &pos);
 
   USourceData *FindSource(const Vec3i &wbpos);
 
@@ -111,9 +111,10 @@ class EVOSPACE_API URegionMap : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   UEvoRegion *FindRegion(const FVector2i &grid);
-  
+
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *FindRegionAt(const FVector3i &position);UEvoRegion*GetRegionAt(const FVector3i&position);
+  UEvoRegion *FindRegionAt(const FVector3i &position);
+  UEvoRegion *GetRegionAt(const FVector3i &position);
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

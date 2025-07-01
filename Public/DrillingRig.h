@@ -17,21 +17,19 @@ class EVOSPACE_API UDrillingRig : public UDrillingMachineBase {
   GENERATED_BODY()
   using Self = UDrillingRig;
   EVO_CODEGEN_INSTANCE(DrillingRig)
-  virtual void lua_reg(lua_State* L) const override {
+  virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UDrillingMachineBase>("DrillingRig") //@class DrillingRig : DrillingMachineBase
       .addProperty("source", &Self::Source) //@field SourceData
       .endClass();
   }
 
-public:
-  
+  public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
-  USourceData* Source = nullptr;
+  USourceData *Source = nullptr;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
-protected:
+  protected:
   virtual void Drill() override;
-  
 };

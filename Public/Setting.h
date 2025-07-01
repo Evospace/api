@@ -6,7 +6,6 @@
 #include <Public/Prototype.h>
 #include "Setting.generated.h"
 
-
 class UFilterableWidget;
 
 UCLASS()
@@ -100,7 +99,7 @@ class USetting : public UPrototype {
   bool Restart = false;
 
   UFUNCTION(BlueprintCallable)
-  UFilterableWidget * CreateWidget(UWidget * owner) const;
+  UFilterableWidget *CreateWidget(UWidget *owner) const;
 
   std::string DefaultStringValue;
   std::string StringValue;
@@ -124,7 +123,7 @@ class USetting : public UPrototype {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int MaxValue = 0;
-  
+
   std::vector<std::string> StringOptions;
 
   std::optional<luabridge::LuaRef> SetAction;

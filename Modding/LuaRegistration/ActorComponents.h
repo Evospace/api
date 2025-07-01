@@ -92,12 +92,12 @@ inline void registerComponentClasses(lua_State *L) {
     .endClass();
 
   getGlobalNamespace(L)
-      .beginClass<FLoc>("LocData")
-      .addStaticFunction("set", [](std::string_view key, std::string_view value) {
-        UMainGameInstance::SetLocalizationData(UTF8_TO_TCHAR(key.data()), UTF8_TO_TCHAR(value.data()));
-      })
-      .endClass();
-  
+    .beginClass<FLoc>("LocData")
+    .addStaticFunction("set", [](std::string_view key, std::string_view value) {
+      UMainGameInstance::SetLocalizationData(UTF8_TO_TCHAR(key.data()), UTF8_TO_TCHAR(value.data()));
+    })
+    .endClass();
+
   getGlobalNamespace(L)
     .beginClass<FLoc>("Loc")
     .addStaticFunction("new", [](std::string_view key, std::string_view table) {

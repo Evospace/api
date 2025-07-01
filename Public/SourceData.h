@@ -3,8 +3,8 @@
 #include "Prototype.h"
 #include "SourceData.generated.h"
 
-
-class ADimension;class UStaticItem;
+class ADimension;
+class UStaticItem;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API USourceData : public UInstance {
