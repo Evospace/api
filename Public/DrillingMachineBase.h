@@ -48,10 +48,13 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintPure, Category = "Drilling|Energy")
   float CurrentUsage() const;
 
-  int32 Production = 1;
+  int32 Production = 15;
 
   UFUNCTION(BlueprintCallable, Category = "Drilling|Inventory")
   float GetStorageFullness() const;
+
+  UFUNCTION(BlueprintCallable)
+  virtual TArray<UStaticItem *> GetExtractOption() const;
 
   // UBlockLogic interface
   virtual void Tick() override;

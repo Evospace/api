@@ -224,6 +224,9 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   static FString GetBuildString();
 
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static bool IsDemoVersion();
+
   std::string GetBuildLuaString() const;
 
   UFUNCTION(BlueprintCallable)
