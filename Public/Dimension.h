@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "BlockLogicStore.h"
 #include "EvoRingBuffer.h"
 #include "Evospace/ThreadWorker.h"
 #include "Evospace/Vector.h"
@@ -211,7 +212,7 @@ class ADimension : public AActor {
   TMap<FVector3i, UBlockLogic *> mDimensionLogics;
 
   UPROPERTY()
-  TMap<FVector3i, UBlockLogic *> mDimensionLogicsTick;
+  FBlockLogicStore mDimensionLogicsTick;
 
   UPROPERTY()
   TSet<UBlockNetwork *> mBlockNetworks;
