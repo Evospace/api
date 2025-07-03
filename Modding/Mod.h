@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Evospace/SerializableJson.h"
+#include "Qr/SerializableJson.h"
 #include "ThirdParty/luabridge/luabridge.h"
 
 #include <Dom/JsonObject.h>

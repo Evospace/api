@@ -2,8 +2,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Evospace/SerializableJson.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Public/Prototype.h"
 
 #include "StaticObject.generated.h"

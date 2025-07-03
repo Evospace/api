@@ -4,8 +4,8 @@
 #include "Prototype.h"
 #include "Evospace/BreakResult.h"
 #include "Evospace/Common.h"
-#include "Evospace/CoordinameMinimal.h"
-#include "Evospace/Vector.h"
+#include "Qr/CoordinameMinimal.h"
+#include "Qr/Vector.h"
 #include "Evospace/Misc/CoverWrapper.h"
 
 #include "BlockLogic.generated.h"

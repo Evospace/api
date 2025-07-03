@@ -1,7 +1,7 @@
 #pragma once
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "Public/StaticProp.h"
-#include "CommonConverter.h"
+#include "Qr/CommonConverter.h"
 #include "PropListData.generated.h"
 
 USTRUCT()

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Containers/Deque.h"
-#include "Evospace/Vector.h"
+#include "Qr/Vector.h"
 #include "Logging/StructuredLog.h"
 
 #include <string>

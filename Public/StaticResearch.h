@@ -1,7 +1,7 @@
 #pragma once
 #include "Prototype.h"
 #include "Evospace/ISearchable.h"
-#include "Evospace/SerializableJson.h"
+#include "Qr/SerializableJson.h"
 #include "Evospace/Misc/AssetOwner.h"
 
 #include <Evospace/Common.h>

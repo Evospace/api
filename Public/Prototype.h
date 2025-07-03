@@ -3,8 +3,8 @@
 
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "StaticLogger.h"
-#include "JsonObjectLibrary.h"
-#include "SerializableJson.h"
+#include "Qr/JsonObjectLibrary.h"
+#include "Qr/SerializableJson.h"
 
 #include "prototype.generated.h"
 

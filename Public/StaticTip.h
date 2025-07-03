@@ -1,8 +1,6 @@
 #pragma once
 #include "Prototype.h"
 #include "Evospace/Common.h"
-#include "Evospace/SerializableJson.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "StaticTip.generated.h"
 
 class UAutosizeInventory;

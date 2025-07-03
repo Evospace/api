@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "../CoordinateSystem.h"
-#include "../SerializableJson.h"
+#include "Qr/SerializableJson.h"
 #include "CoreMinimal.h"
 #include "Public/BlockLogic.h"
 #include "Public/Prototype.h"

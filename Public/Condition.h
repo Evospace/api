@@ -1,6 +1,6 @@
 #pragma once
 #include "ItemMap.h"
-#include "Evospace/SerializableJson.h"
+#include "Qr/SerializableJson.h"
 #include "Condition.generated.h"
 
 class UInventoryAccess;

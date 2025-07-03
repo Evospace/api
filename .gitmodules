@@ -1,0 +1,3 @@
+[submodule "Qr"]
+	path = Qr
+	url = https://gitlab.com/ishellstrike/quantumrivet.git

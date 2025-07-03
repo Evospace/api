@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Prototype.h"
-#include "Evospace/Common.h"
-#include "Evospace/SerializableJson.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "UObject/Object.h"
 #include "StaticModifier.generated.h"
 

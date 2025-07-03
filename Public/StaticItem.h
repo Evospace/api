@@ -3,12 +3,9 @@
 #pragma once
 #include "ItemData.h"
 #include "Prototype.h"
-#include "Evospace/Common.h"
 #include "Evospace/ISearchable.h"
-#include "CommonConverter.h"
-#include "Loc.h"
-
-#include "Evospace/Misc/AssetOwner.h"
+#include "Qr/CommonConverter.h"
+#include "Qr/Loc.h"
 
 #include <Engine/World.h>
 #include <Internationalization/Text.h>

@@ -3,7 +3,7 @@
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "Prototype.h"
-#include "Evospace/JsonObjectLibrary.h"
+#include "Qr/JsonObjectLibrary.h"
 #include "Modding/Mod.h"
 
 #include <string>

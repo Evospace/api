@@ -2,7 +2,7 @@
 
 #pragma once
 #include "StaticObject.h"
-#include "Evospace/CoordinameMinimal.h"
+#include "Qr/CoordinameMinimal.h"
 
 #include "StaticProp.generated.h"
 

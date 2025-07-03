@@ -1,9 +1,9 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Evospace/Vector.h"
+#include "Qr/Vector.h"
 #include "Evospace/Item/Implementation/ObjectBuild/BaseBuildingItemLogic.h"
-#include "CommonConverter.h"
+#include "Qr/CommonConverter.h"
 #include "Public/BlockLogic.h"
 #include "Public/Prototype.h"
 #include "Public/StaticObject.h"

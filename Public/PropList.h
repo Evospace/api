@@ -5,7 +5,7 @@
 #include "BlockLogic.h"
 #include "PropListData.h"
 #include "Prototype.h"
-#include "CommonConverter.h"
+#include "Qr/CommonConverter.h"
 
 #include "PropList.generated.h"
 

@@ -4,7 +4,7 @@
 #include "Evospace/Common.h"
 #include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/World/BlockCell.h"
-#include "Evospace/qr/Loc.h"
+#include "Qr/Loc.h"
 
 #include "WorldGenerator.generated.h"
 

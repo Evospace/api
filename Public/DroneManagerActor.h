@@ -1,7 +1,7 @@
 #pragma once
 #include "DroneStationBlockLogic.h"
 #include "Inventory.h"
-#include "Evospace/CoordinameMinimal.h"
+#include "Qr/CoordinameMinimal.h"
 #include "DroneManagerActor.generated.h"
 
 class UInventory;

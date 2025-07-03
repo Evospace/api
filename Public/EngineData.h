@@ -2,7 +2,6 @@
 
 #pragma once
 #include "Prototype.h"
-#include "Evospace/SerializableJson.h"
 #include "EngineData.generated.h"
 
 UCLASS()
