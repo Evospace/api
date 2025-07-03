@@ -4,7 +4,7 @@
 #include "Qr/SerializableJson.h"
 #include "CoreMinimal.h"
 #include "Public/BlockLogic.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 
 #include "AccessorComponent.generated.h"
 

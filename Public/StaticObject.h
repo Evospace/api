@@ -2,7 +2,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 
 #include "StaticObject.generated.h"
 

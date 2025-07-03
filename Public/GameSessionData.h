@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "Qr/SerializableJson.h"
 #include "ThirdParty/lua/lua.h"

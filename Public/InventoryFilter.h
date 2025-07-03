@@ -4,7 +4,7 @@
 #include "Containers/Array.h"
 #include "CoreMinimal.h"
 #include "ItemData.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 
 #include "InventoryFilter.generated.h"
 class UInventoryAccess;

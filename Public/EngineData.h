@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 
 #pragma once
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "EngineData.generated.h"
 
 UCLASS()

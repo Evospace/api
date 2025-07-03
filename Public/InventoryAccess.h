@@ -2,7 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "InventoryReader.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 
 #include "InventoryAccess.generated.h"
 class UInventoryFilter;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Dimension.h"
 #include "ExtractionData.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "RegionLayer.generated.h"
 
 class UStaticItem;

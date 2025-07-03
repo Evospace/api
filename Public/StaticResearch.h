@@ -1,8 +1,8 @@
 #pragma once
-#include "Prototype.h"
-#include "Evospace/ISearchable.h"
+#include "Qr/Prototype.h"
+#include "Qr/ISearchable.h"
+#include "Qr/Loc.h"
 #include "Qr/SerializableJson.h"
-#include "Evospace/Misc/AssetOwner.h"
 
 #include <Evospace/Common.h>
 #include "StaticResearch.generated.h"

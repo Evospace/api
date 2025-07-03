@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Evospace/Misc/AssetOwner.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 #include "HeightGenerator.generated.h"
 
 class UNoiseGenerator;

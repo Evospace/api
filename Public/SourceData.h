@@ -1,6 +1,6 @@
 #pragma once
 #include "ExtractionData.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "SourceData.generated.h"
 
 class ADimension;

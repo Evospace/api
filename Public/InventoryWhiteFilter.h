@@ -1,6 +1,6 @@
 #pragma once
 #include "InventoryFilter.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 
 #include "InventoryWhiteFilter.generated.h"
 

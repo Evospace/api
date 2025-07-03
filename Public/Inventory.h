@@ -2,7 +2,7 @@
 #pragma once
 #include "BaseInventory.h"
 #include "CoreMinimal.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 
 #include <Containers/Array.h>
 #include <Templates/SubclassOf.h>

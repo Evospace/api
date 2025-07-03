@@ -2,8 +2,8 @@
 
 #pragma once
 #include "ItemData.h"
-#include "Prototype.h"
-#include "Evospace/ISearchable.h"
+#include "Qr/Prototype.h"
+#include "Qr/ISearchable.h"
 #include "Qr/CommonConverter.h"
 #include "Qr/Loc.h"
 

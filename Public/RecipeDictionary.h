@@ -3,7 +3,7 @@
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
 #include "Evospace/Misc/AssetOwner.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 #include "Public/Recipe.h"
 
 #include "RecipeDictionary.generated.h"

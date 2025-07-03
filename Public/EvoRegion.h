@@ -1,6 +1,6 @@
 #pragma once
 #include "MapStructure.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "EvoRegion.generated.h"
 
 class URegionLayer;

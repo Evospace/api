@@ -4,6 +4,7 @@
 #include "Public/WorldGenerator.h"
 #include "SteamGameInstance.h"
 #include "Modding/LegacyLuaState.h"
+#include "Qr/LocalizationTable.h"
 
 #include <Containers/Array.h>
 #include <Containers/Map.h>
@@ -45,15 +46,6 @@ struct FScreenResolution {
   public:
   uint32 Width;
   uint32 Height;
-};
-
-USTRUCT(BlueprintType)
-struct EVOSPACE_API FLocalizationTable {
-  GENERATED_BODY()
-
-  public:
-  UPROPERTY()
-  TMap<FName, FString> mLocTexts;
 };
 
 UCLASS()

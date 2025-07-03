@@ -7,7 +7,7 @@
 #include "MapStructure.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"

@@ -2,7 +2,7 @@
 #include "FastNoiseSIMD.h"
 #include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/Misc/NoiseArray.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 #include <string>
 #include <unordered_map>
 #include "NoiseGenerator.generated.h"

@@ -2,9 +2,9 @@
 
 #pragma once
 #include "ItemData.h"
-#include "Evospace/ISearchable.h"
+#include "Qr/ISearchable.h"
 #include "Evospace/Misc/AssetOwner.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 
 #include <Dom/JsonObject.h>
 

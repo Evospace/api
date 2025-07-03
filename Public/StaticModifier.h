@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "UObject/Object.h"
 #include "StaticModifier.generated.h"
 

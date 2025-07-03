@@ -16,7 +16,7 @@ void LegacyLuaState::SetCurrent(UBlockLogic *actor) {
 }
 
 void LegacyLuaState::Init(IRegistrar *registrar) {
-  ModLoadingLuaState::Init(registrar);
+  LuaState::Init(registrar);
   using namespace luabridge;
 
   getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", nullptr).endNamespace();

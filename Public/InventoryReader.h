@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "Public/ItemData.h"
 #include <Templates/SubclassOf.h>
 

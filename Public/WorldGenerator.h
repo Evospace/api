@@ -1,6 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "Evospace/Common.h"
 #include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/World/BlockCell.h"

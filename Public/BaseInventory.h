@@ -4,7 +4,7 @@
 #include "InventoryAccess.h"
 #include "Evospace/Item/InventoryWidget.h"
 #include "ItemData.h"
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 
 #include <Templates/Function.h>
 #include <Templates/SubclassOf.h>

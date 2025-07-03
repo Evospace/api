@@ -1,5 +1,5 @@
 #pragma once
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "Evospace/Common.h"
 #include "StaticTip.generated.h"
 

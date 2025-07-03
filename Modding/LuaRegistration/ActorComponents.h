@@ -9,6 +9,8 @@
 #include "Qr/Loc.h"
 #include "Qr/GuiTextHelper.h"
 #include "Public/ItemData.h"
+#include "Qr/LuaState.h"
+#include "Qr/MainGameOwner.h"
 #include "Sound/SoundClass.h"
 
 class UIcoGenerator;

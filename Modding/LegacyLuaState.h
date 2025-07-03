@@ -3,13 +3,13 @@
 #include "CoreMinimal.h"
 #include "EvospaceLuaState.h"
 #include "Public/BlockLogic.h"
-#include "LuaState.h"
+#include "Qr/LuaState.h"
 
 namespace evo {
 /**
  * @brief Legacy lua state for BlockLogic lua script part executing
  */
-class LegacyLuaState : public ModLoadingLuaState {
+class LegacyLuaState : public LuaState {
   public:
   void SetCurrent(AActor *actor);
   void SetCurrent(UBlockLogic *actor);

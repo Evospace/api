@@ -1,5 +1,5 @@
 #pragma once
-#include "Prototype.h"
+#include "Qr/Prototype.h"
 #include "ChangelogStorage.generated.h"
 
 class UAutosizeInventory;

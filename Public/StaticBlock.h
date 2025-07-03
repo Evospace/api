@@ -5,7 +5,7 @@
 #include "Evospace/Item/Implementation/ObjectBuild/BaseBuildingItemLogic.h"
 #include "Qr/CommonConverter.h"
 #include "Public/BlockLogic.h"
-#include "Public/Prototype.h"
+#include "Qr/Prototype.h"
 #include "Public/StaticObject.h"
 
 #include <string>
