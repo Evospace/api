@@ -1,7 +1,7 @@
 #pragma once
 #include "MainGameInstance.h"
 #include "Evospace/JsonHelper.h"
-#include "Evospace/Misc/EvoConverter.h"
+#include "CommonConverter.h"
 
 #include <Public/Prototype.h>
 #include "Setting.generated.h"
@@ -28,7 +28,7 @@ class USetting : public UPrototype {
       .addProperty("int_default_value", &Self::DefaultIntValue) //@field integer
       .addProperty("max_value", &Self::MaxValue) //@field integer
       .addProperty("min_value", &Self::MinValue) //@field integer
-      .addProperty("key_binding", EVO_NAME_GET_SET(mKeyBinging)) //@field string
+      .addProperty("key_binding", QR_NAME_GET_SET(mKeyBinging)) //@field string
       .addProperty(
         "default_key", [](USetting *self) //@field string
         -> std::string {

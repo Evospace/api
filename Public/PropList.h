@@ -5,8 +5,7 @@
 #include "BlockLogic.h"
 #include "PropListData.h"
 #include "Prototype.h"
-#include "Evospace/Misc/AssetOwner.h"
-#include "Evospace/Misc/EvoConverter.h"
+#include "CommonConverter.h"
 
 #include "PropList.generated.h"
 
@@ -22,7 +21,7 @@ class UStaticPropList : public UPrototype {
     luabridge::getGlobalNamespace(L)
       //@comment Prototype asset that owns several PropListData records
       .deriveClass<Self, UPrototype>("StaticPropList") //@class StaticPropList : Prototype
-      .addProperty("data", EVO_ARRAY_GET_SET(PropListDatas)) //@field PropListData[]
+      .addProperty("data", QR_ARRAY_GET_SET(PropListDatas)) //@field PropListData[]
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {

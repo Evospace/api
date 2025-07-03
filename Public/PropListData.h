@@ -1,7 +1,7 @@
 #pragma once
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "Public/StaticProp.h"
-#include "Evospace/Misc/EvoConverter.h"
+#include "CommonConverter.h"
 #include "PropListData.generated.h"
 
 USTRUCT()
@@ -17,7 +17,7 @@ struct FPropListData {
       //function PropListData.new() end
       .addStaticFunction("new", []() { return FPropListData(); })
       .addProperty("weight", &FPropListData::Weight) //@field integer Spawn weight
-      .addProperty("props", EVO_ARRAY_GET_SET(Props)) //@field StaticProp[] List of prop assets (prop variations)
+      .addProperty("props", QR_ARRAY_GET_SET(Props)) //@field StaticProp[] List of prop assets (prop variations)
       .endClass();
   }
 

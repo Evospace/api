@@ -3,9 +3,8 @@
 
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "StaticLogger.h"
-#include "Evospace/JsonObjectLibrary.h"
-#include "Evospace/MainGameOwner.h"
-#include "Evospace/SerializableJson.h"
+#include "JsonObjectLibrary.h"
+#include "SerializableJson.h"
 
 #include "prototype.generated.h"
 
@@ -24,7 +23,6 @@ class Base;
     return luabridge::LuaRef(L, this);                         \
   }
 
-/*.addStaticFunction("get", &evo::DB::get<U##type>) */ /*.addStaticFunction("get_derived", &evo::DB::get_derived<U##type>) */
 #define EVO_CODEGEN_DB(type, topmost_not_prototype)                                                                                                                                     \
   __EVO_COMMON_CODEGEN(type)                                                                                                                                                            \
   virtual UPrototype *get_or_register(const FString &obj_name, IRegistrar &registry) override {                                                                                         \

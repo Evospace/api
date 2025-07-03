@@ -5,7 +5,8 @@
 #include "Prototype.h"
 #include "Evospace/Common.h"
 #include "Evospace/ISearchable.h"
-#include "Evospace/Misc/EvoConverter.h"
+#include "CommonConverter.h"
+#include "Loc.h"
 
 #include "Evospace/Misc/AssetOwner.h"
 
@@ -46,9 +47,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
-      .addProperty("category", EVO_NAME_GET_SET(mCategory)) //@field string In-game database category
+      .addProperty("category", QR_NAME_GET_SET(mCategory)) //@field string In-game database category
       .addProperty("label", &Self::mLabel) //@field Loc
-      .addProperty("description_parts", EVO_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
+      .addProperty("description_parts", QR_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {

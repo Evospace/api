@@ -207,7 +207,7 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
       .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
       .addProperty("side_cover", &Self::mSideCover) //@field StaticCover
       .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
-      .addProperty("channel", EVO_NAME_GET_SET(Channel)) //@field string
+      .addProperty("channel", QR_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
       //direct:
       //---Add side wire
