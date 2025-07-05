@@ -65,4 +65,7 @@ class EVOSPACE_API UGameSessionData : public UInstance {
 
   UPROPERTY(VisibleAnywhere)
   TArray<FString> Mods;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool Cloud = false;
 };

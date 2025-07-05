@@ -44,6 +44,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
+      .addProperty("tags", &Self::Tags) //@field string
       .addProperty("category", QR_NAME_GET_SET(mCategory)) //@field string In-game database category
       .addProperty("label", &Self::mLabel) //@field Loc
       .addProperty("description_parts", QR_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
@@ -73,6 +74,9 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   EStaticItemType mType = EStaticItemType::Solid;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  FString Tags;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   float mUnitMul = 1.f;
