@@ -34,10 +34,10 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticItem, UPrototype>("StaticItem") //@class StaticItem : Prototype
-      .addProperty("image", &Self::mImage) //@field Texture Item image in UI
+      .addProperty("image", &Self::Image) //@field Texture Item image in UI
       .addProperty("stack_size", &Self::mStackSize) //@field integer Size of item stack
       .addProperty("tier", &Self::Tier) //@field integer Item unlock tier
-      .addProperty("unit_mul", &Self::mUnitMul) //@field number multiplier for UI
+      .addProperty("unit_mul", &Self::UnitMul) //@field number multiplier for UI
       .addProperty("mesh", &Self::mMesh) //@field StaticMesh Mesh for item rendering in world
       .addProperty("block", &Self::Block) //@field StaticObject Buildable object pointer for this item
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
@@ -46,8 +46,8 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
       .addProperty("lua", &Self::Table) //@field table
       .addProperty("tags", &Self::Tags) //@field string
       .addProperty("category", QR_NAME_GET_SET(mCategory)) //@field string In-game database category
-      .addProperty("label", &Self::mLabel) //@field Loc
-      .addProperty("description_parts", QR_ARRAY_GET_SET(mDescriptionParts)) //@field Loc[]
+      .addProperty("label", &Self::Label) //@field Loc
+      .addProperty("description_parts", QR_ARRAY_GET_SET(DescriptionParts)) //@field Loc[]
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {
@@ -70,7 +70,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   FText GetDescription() const;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FLoc mLabel = {};
+  FLoc Label = {};
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   EStaticItemType mType = EStaticItemType::Solid;
@@ -79,13 +79,13 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
   FString Tags;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  float mUnitMul = 1.f;
+  float UnitMul = 1.f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 Tier = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UTexture2D *mImage = nullptr;
+  UTexture2D *Image = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UClass *mItemLogic;
@@ -110,7 +110,7 @@ class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
 
   // Description common keys
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  TArray<FLoc> mDescriptionParts = {};
+  TArray<FLoc> DescriptionParts = {};
 
   // Ingame effects color
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
