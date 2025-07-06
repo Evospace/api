@@ -172,7 +172,6 @@ class ADimension : public AActor {
   EvoRingBuffer<float> CyclesBuffer = EvoRingBuffer<float>(16, 0);
 
   bool Paused = false;
-  static constexpr int32 MaxTps = 20;
 
   UPROPERTY(EditAnywhere)
   bool mTicking = true;
