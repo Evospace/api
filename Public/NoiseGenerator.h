@@ -1,6 +1,5 @@
 #pragma once
 #include "FastNoiseSIMD.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/Misc/NoiseArray.h"
 #include "Qr/Prototype.h"
 #include <string>
@@ -122,7 +121,7 @@ class UNoiseGenerator : public UPrototype {
   float max = 10;
 
   public:
-  EVO_CODEGEN_DB(NoiseGenerator, NoiseGenerator)
+  PROTOTYPE_CODEGEN(NoiseGenerator, NoiseGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UNoiseGenerator, UPrototype>("NoiseGenerator")

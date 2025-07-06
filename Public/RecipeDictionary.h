@@ -2,7 +2,6 @@
 #pragma once
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Qr/Prototype.h"
 #include "Public/Recipe.h"
 
@@ -20,7 +19,7 @@ class UInventoryReader;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipeDictionary : public UPrototype, public ISearchable {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(RecipeDictionary, RecipeDictionary)
+  PROTOTYPE_CODEGEN(RecipeDictionary, RecipeDictionary)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<URecipeDictionary, UPrototype>("RecipeDictionary") //@class RecipeDictionary : Prototype

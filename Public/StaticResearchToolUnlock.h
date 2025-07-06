@@ -6,7 +6,7 @@ UCLASS(BlueprintType)
 class EVOSPACE_API UStaticResearchToolUnlock : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchToolUnlock;
-  EVO_CODEGEN_DB(StaticResearchToolUnlock, StaticResearch)
+  PROTOTYPE_CODEGEN(StaticResearchToolUnlock, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStaticResearch>("StaticResearchToolUnlock") //@class StaticResearchToolUnlock : StaticResearch

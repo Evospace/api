@@ -22,7 +22,7 @@ class ADimension;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UStaticBlock : public UStaticObject {
-  EVO_CODEGEN_DB(StaticBlock, StaticBlock);
+  PROTOTYPE_CODEGEN(StaticBlock, StaticBlock);
   using Self = UStaticBlock;
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)

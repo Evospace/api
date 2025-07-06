@@ -49,7 +49,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, caves, caves2;
 
   public:
-  EVO_CODEGEN_DB(BiomeWorldGenerator, WorldGenerator)
+  PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBiomeWorldGenerator, UWorldGenerator>("WorldGeneratorBiome")

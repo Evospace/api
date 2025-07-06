@@ -3,7 +3,6 @@
 #pragma once
 #include "ItemData.h"
 #include "Qr/ISearchable.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Qr/Prototype.h"
 
 #include <Dom/JsonObject.h>
@@ -17,7 +16,7 @@ class UStaticResearchRecipe;
 UCLASS(BlueprintType)
 class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(Recipe, Recipe)
+  PROTOTYPE_CODEGEN(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       //@comment Crafting-recipe prototype used by machines and crafting UIs

@@ -1,8 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Qr/Prototype.h"
-#include "Evospace/Common.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Evospace/World/BlockCell.h"
 #include "Qr/Loc.h"
 
@@ -39,7 +37,7 @@ class EVOSPACE_API UWorldGenerator : public UPrototype {
   int32 mSeed = 0;
 
   public:
-  EVO_CODEGEN_DB(WorldGenerator, WorldGenerator)
+  PROTOTYPE_CODEGEN(WorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UWorldGenerator, UPrototype>("WorldGenerator") //@class WorldGenerator : Prototype

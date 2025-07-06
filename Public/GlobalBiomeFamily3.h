@@ -17,7 +17,7 @@ class UGlobalBiomeFamily3 : public UGlobalBiomeFamily {
   std::unique_ptr<FastNoiseSIMD> river_noise;
 
   public:
-  EVO_CODEGEN_DB(GlobalBiomeFamily3, GlobalBiomeFamily)
+  PROTOTYPE_CODEGEN(GlobalBiomeFamily3, GlobalBiomeFamily)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UGlobalBiomeFamily3, UGlobalBiomeFamily>("GlobalBiomeFamily3")

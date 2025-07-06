@@ -19,7 +19,7 @@ class ULuaWorldGenerator : public UWorldGenerator {
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale = 1.f, int32 height_width = 16, bool no_biom = false) const override;
 
   public:
-  EVO_CODEGEN_DB(LuaWorldGenerator, WorldGenerator)
+  PROTOTYPE_CODEGEN(LuaWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ULuaWorldGenerator, UWorldGenerator>("LuaWorldGenerator")

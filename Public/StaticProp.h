@@ -14,7 +14,7 @@ UCLASS()
 class EVOSPACE_API UStaticProp : public UStaticObject {
   using Self = UStaticProp;
   GENERATED_BODY()
-  EVO_CODEGEN_DB(StaticProp, StaticProp)
+  PROTOTYPE_CODEGEN(StaticProp, StaticProp)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStaticObject>("StaticProp") //@class StaticProp : StaticObject

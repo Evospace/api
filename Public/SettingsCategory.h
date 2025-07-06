@@ -9,7 +9,7 @@
 // class USettingsCategory : public UPrototype {
 //   using Self = USettingsCategory;
 //   GENERATED_BODY()
-//   EVO_CODEGEN_DB(SettingsCategory, SettingsCategory)
+//   PROTOTYPE_CODEGEN(SettingsCategory, SettingsCategory)
 //   virtual void lua_reg(lua_State *L) const override {
 //     luabridge::getGlobalNamespace(L)
 //     .deriveClass<USettingsCategory, UPrototype>("SettingsCategory") //@class SettingsCategory : Prototype

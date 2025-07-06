@@ -95,7 +95,7 @@ constexpr Vec2i baked_smooth_size{ (gFlatSectorSize + SmoothKernelRadius) * 2.f 
 UCLASS()
 class ULayeringGenerator : public UPrototype {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(LayeringGenerator, LayeringGenerator)
+  PROTOTYPE_CODEGEN(LayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ULayeringGenerator, UPrototype>("LayeringGenerator") //@class LayeringGenerator : Prototype
@@ -120,7 +120,7 @@ class ULayeringGenerator : public UPrototype {
 UCLASS()
 class USimpleLayeringGenerator : public ULayeringGenerator {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(SimpleLayeringGenerator, LayeringGenerator)
+  PROTOTYPE_CODEGEN(SimpleLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<USimpleLayeringGenerator, ULayeringGenerator>("SimpleLayeringGenerator") //@class SimpleLayeringGenerator : LayeringGenerator
@@ -142,7 +142,7 @@ class USimpleLayeringGenerator : public ULayeringGenerator {
 UCLASS()
 class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(ChancedLayeringGenerator, LayeringGenerator)
+  PROTOTYPE_CODEGEN(ChancedLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UChancedLayeringGenerator, USimpleLayeringGenerator>("ChancedLayeringGenerator") //@class ChancedLayeringGenerator : SimpleLayeringGenerator
@@ -165,7 +165,7 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
 UCLASS()
 class UPropsGenerator : public UPrototype {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(PropsGenerator, PropsGenerator)
+  PROTOTYPE_CODEGEN(PropsGenerator, PropsGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UPropsGenerator, UPrototype>("SimpleLayeringGenerator") //@class PropsGenerator : Prototype
@@ -191,7 +191,7 @@ class UPropsGenerator : public UPrototype {
 UCLASS()
 class UBiome : public UPrototype {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(Biome, Biome)
+  PROTOTYPE_CODEGEN(Biome, Biome)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBiome, UPrototype>("Biome") //@class Biome : Prototype
@@ -221,7 +221,7 @@ class UBiome : public UPrototype {
 UCLASS()
 class UBiomeFamily : public UBiome {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(BiomeFamily, Biome)
+  PROTOTYPE_CODEGEN(BiomeFamily, Biome)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBiomeFamily, UBiome>("BiomeFamily")

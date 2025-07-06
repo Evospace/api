@@ -7,7 +7,7 @@ struct FNoiseArray;
 UCLASS()
 class UGlobalBiomeFamily : public UBiomeFamily {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(GlobalBiomeFamily, Biome)
+  PROTOTYPE_CODEGEN(GlobalBiomeFamily, Biome)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UGlobalBiomeFamily, UBiomeFamily>("GlobalBiomeFamily")

@@ -15,7 +15,7 @@ UCLASS()
 class UStaticPropList : public UPrototype {
   GENERATED_BODY()
   using Self = UStaticPropList;
-  EVO_CODEGEN_DB(StaticPropList, StaticPropList)
+  PROTOTYPE_CODEGEN(StaticPropList, StaticPropList)
   virtual void lua_reg(lua_State *L) const override {
     FPropListData::lua_reg(L);
     luabridge::getGlobalNamespace(L)

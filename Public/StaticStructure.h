@@ -1,6 +1,5 @@
 #pragma once
 #include "Qr/Prototype.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "StaticStructure.generated.h"
 UCLASS(BlueprintType)
 /**
@@ -8,7 +7,7 @@ UCLASS(BlueprintType)
  */
 class EVOSPACE_API UStaticStructure : public UPrototype {
   GENERATED_BODY()
-  EVO_CODEGEN_DB(StaticStructure, StaticStructure)
+  PROTOTYPE_CODEGEN(StaticStructure, StaticStructure)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticStructure, UInstance>("StaticStructure") //@class StaticStructure : Instance

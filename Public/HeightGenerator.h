@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Evospace/Misc/AssetOwner.h"
 #include "Qr/Prototype.h"
 #include "HeightGenerator.generated.h"
 
@@ -19,7 +18,7 @@ class EVOSPACE_API UHeightGenerator : public UPrototype {
   UPROPERTY()
   TArray<UNoiseGenerator *> mNoises;
 
-  EVO_CODEGEN_DB(HeightGenerator, HeightGenerator)
+  PROTOTYPE_CODEGEN(HeightGenerator, HeightGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UHeightGenerator, UPrototype>("HeightGenerator")
