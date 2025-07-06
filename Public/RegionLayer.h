@@ -42,7 +42,7 @@ class EVOSPACE_API URegionLayer : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 MaxCapacity = 1000;
 
-  UPROPERTY(VisibleAnywhere)
+  UPROPERTY(EditAnywhere)
   TArray<FSubregionData> Data;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -22,6 +22,8 @@ class EVOSPACE_API UPumpjack : public UDrillingMachineBase {
       .endClass();
   }
 
+  UPumpjack();
+
   public:
   std::tuple<URegionLayer *, FVector2i> GetLayer() const;
 

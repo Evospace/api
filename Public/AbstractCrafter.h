@@ -111,16 +111,16 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterfac
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool LoadIndependent = false;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool StableSupply = true;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool InputGathered = false;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool SwitchedOn = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

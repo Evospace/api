@@ -35,7 +35,7 @@ class EVOSPACE_API UAccessor : public UInstance {
   void SetSidePos(const Vec3i &side, const Vec3i &pos);
 
   UPROPERTY(VisibleAnywhere)
-  UStaticCover *Cover;
+  UStaticCover *Cover = nullptr;
 
   const Vec3i &GetPos() const;
   const Vec3i &GetSide() const;
@@ -68,7 +68,7 @@ class EVOSPACE_API UAccessor : public UInstance {
   virtual void TickComponent();
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UBlockLogic *Owner;
+  UBlockLogic *Owner = nullptr;
 
   protected:
   UPROPERTY(VisibleAnywhere)

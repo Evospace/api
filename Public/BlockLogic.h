@@ -159,7 +159,6 @@ class EVOSPACE_API UBlockLogic : public UInstance {
   void SetOwner(void *param1);
 
   UAccessor *GetSideAccessor(UClass *type, Vec3i side, Vec3i pos);
-  UAccessor *GetSideAccessorPred(UClass *type, Vec3i side, Vec3i pos, const TFunction<bool(UAccessor *)> &pred);
 
   template <class Ty_>
   Ty_ *GetSideAccessor(FVector3i side, FVector3i pos) {
