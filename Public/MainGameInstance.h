@@ -193,8 +193,6 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   void PostModLoad();
 
-  static evo::LegacyLuaState *GetLuaState();
-
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   TArray<FSteamUGCDetails> mSubscriptionDetails;
 
@@ -355,8 +353,6 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   FString mFilterString;
 
   public:
-  std::unique_ptr<evo::LegacyLuaState> legacyLuaState;
-  //std::unique_ptr<evo::ModLoadingLuaState> modLoadingLuaState;
   std::unique_ptr<ModLoadingContext> mlc;
 
   UObject *GetAssetOwner() const;

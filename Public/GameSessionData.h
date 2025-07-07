@@ -37,7 +37,7 @@ class EVOSPACE_API UGameSessionData : public UInstance {
   int32 AutosavePeriod = 600;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  float TotalGameTime = 0.f;
+  double TotalGameTime = 0.f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 TotalGameTicks = 0;
