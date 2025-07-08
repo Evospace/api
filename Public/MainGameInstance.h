@@ -358,7 +358,6 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UObject *GetAssetOwner() const;
 
   FTSTicker::FDelegateHandle TickDelegateHandle;
-  FTSTicker::FDelegateHandle LoadingDelegate;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UDB *DB;

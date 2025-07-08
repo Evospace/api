@@ -1,7 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "EvospaceLuaState.h"
 #include "Public/BlockLogic.h"
 #include "Qr/LuaState.h"
 
