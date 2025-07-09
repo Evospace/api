@@ -57,10 +57,10 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   virtual TArray<UStaticItem *> GetExtractOption() const;
 
   UFUNCTION(BlueprintCallable)
-  virtual UStaticItem * GetSelectedOption() const;
+  virtual UStaticItem *GetSelectedOption() const;
 
   UFUNCTION(BlueprintCallable)
-  virtual void SetExtractOption(UStaticItem * item) ;
+  virtual void SetExtractOption(UStaticItem *item);
 
   // UBlockLogic interface
   virtual void Tick() override;

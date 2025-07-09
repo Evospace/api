@@ -50,6 +50,9 @@ class EVOSPACE_API URegionLayer : public UInstance {
 
   FExtractionData ExtractItem(const ADimension *dim, const FVector2i &sr);
 
+  UFUNCTION(BlueprintPure, BlueprintCallable)
+  int32 CalculateExtractionSpeed(const FVector2i &sr) const;
+
   const FSubregionData &GetSubregion(const FVector2i &sr) const;
   FSubregionData &GetSubregion(const FVector2i &sr);
 
