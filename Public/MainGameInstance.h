@@ -127,9 +127,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   bool mAllResearchesFinished = false;
 
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static TArray<int32> SpiralMatrixCoords(int32 size);
-
+  //TODO: what is it?
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static float GetNextTime(float time, float delta);
 

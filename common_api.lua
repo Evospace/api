@@ -91,7 +91,7 @@ LocData = {}
 
 --- Set non localized data value by key
 --- @param key string
---- @param value string
+--- @param table string
 function LocData.set(key, table) end
 
 --- Localization key table object
