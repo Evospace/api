@@ -52,6 +52,11 @@ class EVOSPACE_API URegionMap : public UInstance {
       //---@return SourceData
       //function RegionMap:find_source(wbpos) end
       .addFunction("find_source", &URegionMap::FindSourceWrapper)
+      //direct:
+      //---Is region exists
+      //---@param pos Vec2i region position
+      //---@return boolean
+      //function RegionMap:has_region(pos) end
       .addFunction("has_region", [](URegionMap &self, const FVector2i &pos) { return self.FindRegion(pos) != nullptr; })
       //direct:
       //---Convert Block World position to RegionMap grid cell that contains this position

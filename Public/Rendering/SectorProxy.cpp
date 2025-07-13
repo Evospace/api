@@ -78,6 +78,10 @@ void USectorProxy::SetDirty(IndexType index) {
 void USectorProxy::SetStaticBlock(IndexType index, const UStaticBlock *value) {
   StaticBlocks[index].block = value;
 
+  if (value == nullptr) {
+    StaticBlocks[index].density = {};
+  }
+
   if (!value || value->Tesselator) {
     SetDirty(index);
   }
@@ -88,11 +92,11 @@ const UStaticBlock *USectorProxy::GetStaticBlock(IndexType index) {
 
 void USectorProxy::SetBlockDensity(IndexType index, BlockDensity density) {
   SetDirty(index);
-  StaticBlocks[index].dencity = density;
+  StaticBlocks[index].density = density;
 }
 
 const BlockDensity &USectorProxy::GetBlockDensity(IndexType index) const {
-  return StaticBlocks[index].dencity;
+  return StaticBlocks[index].density;
 }
 
 void USectorProxy::LoadSector(const AColumn &c) {

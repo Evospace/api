@@ -10,7 +10,7 @@ def extract_class_details(file_content):
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR)\((\w+)\)'
     instance_pattern = r'(EVO_CODEGEN_INSTANCE)\((\w+)\)'
     instance_alias_pattern = r'(EVO_CODEGEN_INSTANCE_ALIAS)\(\s*(\w+)\s*,\s*(\w+)\s*\)'
-    static_pattern = r'(EVO_CODEGEN_DB)\((\w+)\s*,\s*(\w+)\)'
+    static_pattern = r'(PROTOTYPE_CODEGEN)\((\w+)\s*,\s*(\w+)\)'
     just_ue_object_pattern = r'(EVO_JUST_UE)\((\w+)\s*,\s*(\w+)\)'
     
     matches = re.finditer(class_pattern, file_content)
@@ -78,7 +78,7 @@ def extract_class_details(file_content):
         static_matches = re.finditer(static_pattern, body)
         for static_match in static_matches:
             static_type = static_match.group(2)
-            annotation += f"\n--- Creates a new {static_type} static object\n--- @param name string The name of the object\n--- @return {static_type}\nfunction {static_type}.new(name) end\n"
+            annotation += f"\n--- Register a new {static_type} static object\n--- @param name string The name of the object\n--- @return {static_type}\nfunction {static_type}.reg(name) end\n"
             annotation += f"\n--- Searching for {static_type} in db\n--- @param name string The name of the object\n--- @return {static_type}\nfunction {static_type}.find(name) end\n"
             annotation += f"\n--- Return {static_type} class object\n--- @return Class\nfunction {static_type}.get_class() end\n"
             annotation += f"\n--- Trying to cast Object into {static_type}\n--- @param object Object to cast\n--- @return {static_type}\nfunction {static_type}.cast(object) end\n"

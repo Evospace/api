@@ -18,6 +18,7 @@ enum class Event {
   on_built_block,
   on_player_spawn,
   on_tick,
+  on_region_spawn,
   on_player_at_sector,
   on_entity_died,
   on_entity_damaged,
@@ -36,6 +37,8 @@ inline const char *ToString(Event event) {
     return "on_player_at_sector";
   case Event::on_player_spawn:
     return "on_player_spawn";
+  case Event::on_region_spawn:
+    return "on_region_spawn";
 
   // ...
   default:
@@ -86,6 +89,7 @@ class EventSystem {
           register_enum_line(on_player_spawn)
           register_enum_line(on_tick)
           register_enum_line(on_player_at_sector)
+          register_enum_line(on_region_spawn)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem

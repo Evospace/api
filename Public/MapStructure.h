@@ -10,13 +10,15 @@ struct FMapStructure {
   GENERATED_BODY()
 
   UPROPERTY(VisibleAnywhere)
-  FVector2i mOffset;
+  FVector2i Offset;
 
   UPROPERTY(VisibleAnywhere)
-  UStaticStructure *mStruct;
+  UStaticStructure *Structure;
 
   bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
+
+  void Release();
 
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
@@ -26,8 +28,8 @@ struct FMapStructure {
       //--- @return MapStructure
       //function MapStructure.new() end
       .addStaticFunction("new", [] { return FMapStructure(); })
-      .addProperty("offset", &FMapStructure::mOffset) //@field Vec2i
-      .addProperty("structure", &FMapStructure::mStruct) //@field StaticStructure
+      .addProperty("offset", &FMapStructure::Offset) //@field Vec2i
+      .addProperty("structure", &FMapStructure::Structure) //@field StaticStructure
       .endClass();
   }
 };

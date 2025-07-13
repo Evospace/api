@@ -15,12 +15,17 @@ class EVOSPACE_API UEvoRegion : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("Region") //@class Region : Instance
+      //direct:
+      //---Add structure to this Region
+      //---@param structure MapStructure
+      //function Region:add_structure(structure) end
       .addFunction("add_structure", &Self::AddStructure)
       //direct:
       //---Add source to this Region
-      //---@param spos SourceData
-      //function Region:add_source(spos) end
+      //---@param source SourceData
+      //function Region:add_source(source) end
       .addFunction("add_source", &Self::AddSource)
+      .addProperty("pos", &Self::Position) //@field Vec2i
       .endClass();
   }
 
@@ -43,13 +48,13 @@ class EVOSPACE_API UEvoRegion : public UInstance {
   UTexture2D *TextureHeight;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FVector2i RegionPos;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<FMapStructure> MapStructures;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UMaterialInstanceDynamic *Material;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FVector2i Position;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static UTexture2D *GetFastnoiseTexture(UPARAM(ref) const TArray<float> &array, bool smooth = false);

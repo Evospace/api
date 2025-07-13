@@ -91,7 +91,7 @@ LocData = {}
 
 --- Set non localized data value by key
 --- @param key string
---- @param value string
+--- @param table string
 function LocData.set(key, table) end
 
 --- Localization key table object
@@ -308,10 +308,10 @@ function BaseInventory.cast(object) end
 --- @class Biome : Prototype
 Biome = {}
 
---- Creates a new LayeringGenerator static object
+--- Register a new LayeringGenerator static object
 --- @param name string The name of the object
 --- @return LayeringGenerator
-function LayeringGenerator.new(name) end
+function LayeringGenerator.reg(name) end
 
 --- Searching for LayeringGenerator in db
 --- @param name string The name of the object
@@ -327,10 +327,10 @@ function LayeringGenerator.get_class() end
 --- @return LayeringGenerator
 function LayeringGenerator.cast(object) end
 
---- Creates a new SimpleLayeringGenerator static object
+--- Register a new SimpleLayeringGenerator static object
 --- @param name string The name of the object
 --- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.new(name) end
+function SimpleLayeringGenerator.reg(name) end
 
 --- Searching for SimpleLayeringGenerator in db
 --- @param name string The name of the object
@@ -346,10 +346,10 @@ function SimpleLayeringGenerator.get_class() end
 --- @return SimpleLayeringGenerator
 function SimpleLayeringGenerator.cast(object) end
 
---- Creates a new ChancedLayeringGenerator static object
+--- Register a new ChancedLayeringGenerator static object
 --- @param name string The name of the object
 --- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.new(name) end
+function ChancedLayeringGenerator.reg(name) end
 
 --- Searching for ChancedLayeringGenerator in db
 --- @param name string The name of the object
@@ -365,10 +365,10 @@ function ChancedLayeringGenerator.get_class() end
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
 
---- Creates a new PropsGenerator static object
+--- Register a new PropsGenerator static object
 --- @param name string The name of the object
 --- @return PropsGenerator
-function PropsGenerator.new(name) end
+function PropsGenerator.reg(name) end
 
 --- Searching for PropsGenerator in db
 --- @param name string The name of the object
@@ -384,10 +384,10 @@ function PropsGenerator.get_class() end
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
 
---- Creates a new Biome static object
+--- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
-function Biome.new(name) end
+function Biome.reg(name) end
 
 --- Searching for Biome in db
 --- @param name string The name of the object
@@ -403,10 +403,10 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
---- Creates a new BiomeFamily static object
+--- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
-function BiomeFamily.new(name) end
+function BiomeFamily.reg(name) end
 
 --- Searching for BiomeFamily in db
 --- @param name string The name of the object
@@ -456,10 +456,10 @@ function BlockLogic.cast(object) end
 --- @class ChancedLayeringGenerator : SimpleLayeringGenerator
 ChancedLayeringGenerator = {}
 
---- Creates a new LayeringGenerator static object
+--- Register a new LayeringGenerator static object
 --- @param name string The name of the object
 --- @return LayeringGenerator
-function LayeringGenerator.new(name) end
+function LayeringGenerator.reg(name) end
 
 --- Searching for LayeringGenerator in db
 --- @param name string The name of the object
@@ -475,10 +475,10 @@ function LayeringGenerator.get_class() end
 --- @return LayeringGenerator
 function LayeringGenerator.cast(object) end
 
---- Creates a new SimpleLayeringGenerator static object
+--- Register a new SimpleLayeringGenerator static object
 --- @param name string The name of the object
 --- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.new(name) end
+function SimpleLayeringGenerator.reg(name) end
 
 --- Searching for SimpleLayeringGenerator in db
 --- @param name string The name of the object
@@ -494,10 +494,10 @@ function SimpleLayeringGenerator.get_class() end
 --- @return SimpleLayeringGenerator
 function SimpleLayeringGenerator.cast(object) end
 
---- Creates a new ChancedLayeringGenerator static object
+--- Register a new ChancedLayeringGenerator static object
 --- @param name string The name of the object
 --- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.new(name) end
+function ChancedLayeringGenerator.reg(name) end
 
 --- Searching for ChancedLayeringGenerator in db
 --- @param name string The name of the object
@@ -513,10 +513,10 @@ function ChancedLayeringGenerator.get_class() end
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
 
---- Creates a new PropsGenerator static object
+--- Register a new PropsGenerator static object
 --- @param name string The name of the object
 --- @return PropsGenerator
-function PropsGenerator.new(name) end
+function PropsGenerator.reg(name) end
 
 --- Searching for PropsGenerator in db
 --- @param name string The name of the object
@@ -532,10 +532,10 @@ function PropsGenerator.get_class() end
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
 
---- Creates a new Biome static object
+--- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
-function Biome.new(name) end
+function Biome.reg(name) end
 
 --- Searching for Biome in db
 --- @param name string The name of the object
@@ -551,10 +551,10 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
---- Creates a new BiomeFamily static object
+--- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
-function BiomeFamily.new(name) end
+function BiomeFamily.reg(name) end
 
 --- Searching for BiomeFamily in db
 --- @param name string The name of the object
@@ -695,6 +695,26 @@ function EngineConsole.get_class() end
 --- @param object Object to cast
 --- @return EngineConsole
 function EngineConsole.cast(object) end
+
+--- 
+--- 
+--- @class ConveyorInventorySideAccessor : SolidInputAccessor
+ConveyorInventorySideAccessor = {}
+
+--- Creates a new ConveyorInventorySideAccessor instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return ConveyorInventorySideAccessor
+function ConveyorInventorySideAccessor.new(parent, name) end
+
+--- Return ConveyorInventorySideAccessor class object
+--- @return Class
+function ConveyorInventorySideAccessor.get_class() end
+
+--- Trying to cast Object into ConveyorInventorySideAccessor
+--- @param object Object to cast
+--- @return ConveyorInventorySideAccessor
+function ConveyorInventorySideAccessor.cast(object) end
 
 --- Comment to class
 --- 
@@ -1180,10 +1200,10 @@ ItemData = {}
 --- @class LayeringGenerator : Prototype
 LayeringGenerator = {}
 
---- Creates a new LayeringGenerator static object
+--- Register a new LayeringGenerator static object
 --- @param name string The name of the object
 --- @return LayeringGenerator
-function LayeringGenerator.new(name) end
+function LayeringGenerator.reg(name) end
 
 --- Searching for LayeringGenerator in db
 --- @param name string The name of the object
@@ -1199,10 +1219,10 @@ function LayeringGenerator.get_class() end
 --- @return LayeringGenerator
 function LayeringGenerator.cast(object) end
 
---- Creates a new SimpleLayeringGenerator static object
+--- Register a new SimpleLayeringGenerator static object
 --- @param name string The name of the object
 --- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.new(name) end
+function SimpleLayeringGenerator.reg(name) end
 
 --- Searching for SimpleLayeringGenerator in db
 --- @param name string The name of the object
@@ -1218,10 +1238,10 @@ function SimpleLayeringGenerator.get_class() end
 --- @return SimpleLayeringGenerator
 function SimpleLayeringGenerator.cast(object) end
 
---- Creates a new ChancedLayeringGenerator static object
+--- Register a new ChancedLayeringGenerator static object
 --- @param name string The name of the object
 --- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.new(name) end
+function ChancedLayeringGenerator.reg(name) end
 
 --- Searching for ChancedLayeringGenerator in db
 --- @param name string The name of the object
@@ -1237,10 +1257,10 @@ function ChancedLayeringGenerator.get_class() end
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
 
---- Creates a new PropsGenerator static object
+--- Register a new PropsGenerator static object
 --- @param name string The name of the object
 --- @return PropsGenerator
-function PropsGenerator.new(name) end
+function PropsGenerator.reg(name) end
 
 --- Searching for PropsGenerator in db
 --- @param name string The name of the object
@@ -1256,10 +1276,10 @@ function PropsGenerator.get_class() end
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
 
---- Creates a new Biome static object
+--- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
-function Biome.new(name) end
+function Biome.reg(name) end
 
 --- Searching for Biome in db
 --- @param name string The name of the object
@@ -1275,10 +1295,10 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
---- Creates a new BiomeFamily static object
+--- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
-function BiomeFamily.new(name) end
+function BiomeFamily.reg(name) end
 
 --- Searching for BiomeFamily in db
 --- @param name string The name of the object
@@ -1344,10 +1364,10 @@ function PropListData.new() end
 --- @class PropsGenerator : Prototype
 PropsGenerator = {}
 
---- Creates a new LayeringGenerator static object
+--- Register a new LayeringGenerator static object
 --- @param name string The name of the object
 --- @return LayeringGenerator
-function LayeringGenerator.new(name) end
+function LayeringGenerator.reg(name) end
 
 --- Searching for LayeringGenerator in db
 --- @param name string The name of the object
@@ -1363,10 +1383,10 @@ function LayeringGenerator.get_class() end
 --- @return LayeringGenerator
 function LayeringGenerator.cast(object) end
 
---- Creates a new SimpleLayeringGenerator static object
+--- Register a new SimpleLayeringGenerator static object
 --- @param name string The name of the object
 --- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.new(name) end
+function SimpleLayeringGenerator.reg(name) end
 
 --- Searching for SimpleLayeringGenerator in db
 --- @param name string The name of the object
@@ -1382,10 +1402,10 @@ function SimpleLayeringGenerator.get_class() end
 --- @return SimpleLayeringGenerator
 function SimpleLayeringGenerator.cast(object) end
 
---- Creates a new ChancedLayeringGenerator static object
+--- Register a new ChancedLayeringGenerator static object
 --- @param name string The name of the object
 --- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.new(name) end
+function ChancedLayeringGenerator.reg(name) end
 
 --- Searching for ChancedLayeringGenerator in db
 --- @param name string The name of the object
@@ -1401,10 +1421,10 @@ function ChancedLayeringGenerator.get_class() end
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
 
---- Creates a new PropsGenerator static object
+--- Register a new PropsGenerator static object
 --- @param name string The name of the object
 --- @return PropsGenerator
-function PropsGenerator.new(name) end
+function PropsGenerator.reg(name) end
 
 --- Searching for PropsGenerator in db
 --- @param name string The name of the object
@@ -1420,10 +1440,10 @@ function PropsGenerator.get_class() end
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
 
---- Creates a new Biome static object
+--- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
-function Biome.new(name) end
+function Biome.reg(name) end
 
 --- Searching for Biome in db
 --- @param name string The name of the object
@@ -1439,10 +1459,10 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
---- Creates a new BiomeFamily static object
+--- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
-function BiomeFamily.new(name) end
+function BiomeFamily.reg(name) end
 
 --- Searching for BiomeFamily in db
 --- @param name string The name of the object
@@ -1498,29 +1518,48 @@ function type.get_class() end
 --- @return type
 function type.cast(object) end
 
---- Creates a new alias instance
+--- Creates a new type instance
 --- @param parent Object Object of parent
 --- @param name string The name of the instance
---- @return alias
-function alias.new(parent, name) end
+--- @return type
+function type.new(parent, name) end
 
---- Creates a new alias instance
---- @return alias
-function alias.new_simple() end
+--- Creates a new type instance
+--- @return type
+function type.new_simple() end
 
---- Return alias class object
+--- Return type class object
 --- @return Class
-function alias.get_class() end
+function type.get_class() end
 
---- Trying to cast Object into alias
+--- Trying to cast Object into type
 --- @param object Object to cast
---- @return alias
-function alias.cast(object) end
+--- @return type
+function type.cast(object) end
 
---- Creates a new type static object
+--- Register a new type static object
 --- @param name string The name of the object
 --- @return type
-function type.new(name) end
+function type.reg(name) end
+
+--- Searching for type in db
+--- @param name string The name of the object
+--- @return type
+function type.find(name) end
+
+--- Return type class object
+--- @return Class
+function type.get_class() end
+
+--- Trying to cast Object into type
+--- @param object Object to cast
+--- @return type
+function type.cast(object) end
+
+--- Register a new type static object
+--- @param name string The name of the object
+--- @return type
+function type.reg(name) end
 
 --- Searching for type in db
 --- @param name string The name of the object
@@ -1574,10 +1613,10 @@ function Pumpjack.cast(object) end
 --- @field start_tier integer Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.
 Recipe = {}
 
---- Creates a new Recipe static object
+--- Register a new Recipe static object
 --- @param name string The name of the object
 --- @return Recipe
-function Recipe.new(name) end
+function Recipe.reg(name) end
 
 --- Searching for Recipe in db
 --- @param name string The name of the object
@@ -1599,10 +1638,10 @@ function Recipe.cast(object) end
 --- @field start_tier integer undocumented
 RecipeDictionary = {}
 
---- Creates a new RecipeDictionary static object
+--- Register a new RecipeDictionary static object
 --- @param name string The name of the object
 --- @return RecipeDictionary
-function RecipeDictionary.new(name) end
+function RecipeDictionary.reg(name) end
 
 --- Searching for RecipeDictionary in db
 --- @param name string The name of the object
@@ -1648,9 +1687,13 @@ function RecipeInventory.cast(object) end
 --- @class Region : Instance
 Region = {}
 
+---Add structure to this Region
+---@param structure MapStructure
+function Region:add_structure(structure) end
+
 ---Add source to this Region
----@param spos SourceData
-function Region:add_source(spos) end
+---@param source SourceData
+function Region:add_source(source) end
 
 --- Creates a new Region instance
 --- @param parent Object Object of parent
@@ -1718,6 +1761,11 @@ function RegionMap:find_region(spos) end
 ---@param wbpos Vec3i position in Dimension grid
 ---@return SourceData
 function RegionMap:find_source(wbpos) end
+
+---Is region exists
+---@param pos Vec2i region position
+---@return boolean
+function RegionMap:has_region(pos) end
 
 ---Convert Block World position to RegionMap grid cell that contains this position
 ---@param bpos Vec3i
@@ -1835,10 +1883,10 @@ function SelectCrafter.cast(object) end
 --- @field default_key string undocumented
 Setting = {}
 
---- Creates a new Setting static object
+--- Register a new Setting static object
 --- @param name string The name of the object
 --- @return Setting
-function Setting.new(name) end
+function Setting.reg(name) end
 
 --- Searching for Setting in db
 --- @param name string The name of the object
@@ -1862,10 +1910,10 @@ function Setting.cast(object) end
 --- @field file_name string undocumented
 SettingsCategory = {}
 
---- Creates a new SettingsCategory static object
+--- Register a new SettingsCategory static object
 --- @param name string The name of the object
 --- @return SettingsCategory
-function SettingsCategory.new(name) end
+function SettingsCategory.reg(name) end
 
 --- Searching for SettingsCategory in db
 --- @param name string The name of the object
@@ -1886,10 +1934,10 @@ function SettingsCategory.cast(object) end
 --- @class SimpleLayeringGenerator : LayeringGenerator
 SimpleLayeringGenerator = {}
 
---- Creates a new LayeringGenerator static object
+--- Register a new LayeringGenerator static object
 --- @param name string The name of the object
 --- @return LayeringGenerator
-function LayeringGenerator.new(name) end
+function LayeringGenerator.reg(name) end
 
 --- Searching for LayeringGenerator in db
 --- @param name string The name of the object
@@ -1905,10 +1953,10 @@ function LayeringGenerator.get_class() end
 --- @return LayeringGenerator
 function LayeringGenerator.cast(object) end
 
---- Creates a new SimpleLayeringGenerator static object
+--- Register a new SimpleLayeringGenerator static object
 --- @param name string The name of the object
 --- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.new(name) end
+function SimpleLayeringGenerator.reg(name) end
 
 --- Searching for SimpleLayeringGenerator in db
 --- @param name string The name of the object
@@ -1924,10 +1972,10 @@ function SimpleLayeringGenerator.get_class() end
 --- @return SimpleLayeringGenerator
 function SimpleLayeringGenerator.cast(object) end
 
---- Creates a new ChancedLayeringGenerator static object
+--- Register a new ChancedLayeringGenerator static object
 --- @param name string The name of the object
 --- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.new(name) end
+function ChancedLayeringGenerator.reg(name) end
 
 --- Searching for ChancedLayeringGenerator in db
 --- @param name string The name of the object
@@ -1943,10 +1991,10 @@ function ChancedLayeringGenerator.get_class() end
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
 
---- Creates a new PropsGenerator static object
+--- Register a new PropsGenerator static object
 --- @param name string The name of the object
 --- @return PropsGenerator
-function PropsGenerator.new(name) end
+function PropsGenerator.reg(name) end
 
 --- Searching for PropsGenerator in db
 --- @param name string The name of the object
@@ -1962,10 +2010,10 @@ function PropsGenerator.get_class() end
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
 
---- Creates a new Biome static object
+--- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
-function Biome.new(name) end
+function Biome.reg(name) end
 
 --- Searching for Biome in db
 --- @param name string The name of the object
@@ -1981,10 +2029,10 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
---- Creates a new BiomeFamily static object
+--- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
-function BiomeFamily.new(name) end
+function BiomeFamily.reg(name) end
 
 --- Searching for BiomeFamily in db
 --- @param name string The name of the object
@@ -2050,6 +2098,46 @@ function SolidAccessor.cast(object) end
 
 --- 
 --- 
+--- @class SolidInputAccessor : SolidAccessor
+SolidInputAccessor = {}
+
+--- Creates a new SolidInputAccessor instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return SolidInputAccessor
+function SolidInputAccessor.new(parent, name) end
+
+--- Return SolidInputAccessor class object
+--- @return Class
+function SolidInputAccessor.get_class() end
+
+--- Trying to cast Object into SolidInputAccessor
+--- @param object Object to cast
+--- @return SolidInputAccessor
+function SolidInputAccessor.cast(object) end
+
+--- 
+--- 
+--- @class SolidOutputAccessor : SolidAccessor
+SolidOutputAccessor = {}
+
+--- Creates a new SolidOutputAccessor instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return SolidOutputAccessor
+function SolidOutputAccessor.new(parent, name) end
+
+--- Return SolidOutputAccessor class object
+--- @return Class
+function SolidOutputAccessor.get_class() end
+
+--- Trying to cast Object into SolidOutputAccessor
+--- @param object Object to cast
+--- @return SolidOutputAccessor
+function SolidOutputAccessor.cast(object) end
+
+--- 
+--- 
 --- @class SourceData : Instance
 --- @field position Vec2i source position in block coordinates
 --- @field item StaticItem item to mine
@@ -2092,10 +2180,10 @@ function SourceData.cast(object) end
 --- @field lua table undocumented
 StaticBlock = {}
 
---- Creates a new StaticBlock static object
+--- Register a new StaticBlock static object
 --- @param name string The name of the object
 --- @return StaticBlock
-function StaticBlock.new(name) end
+function StaticBlock.reg(name) end
 
 --- Searching for StaticBlock in db
 --- @param name string The name of the object
@@ -2116,10 +2204,10 @@ function StaticBlock.cast(object) end
 --- @class StaticCover : StaticObject
 StaticCover = {}
 
---- Creates a new StaticCover static object
+--- Register a new StaticCover static object
 --- @param name string The name of the object
 --- @return StaticCover
-function StaticCover.new(name) end
+function StaticCover.reg(name) end
 
 --- Searching for StaticCover in db
 --- @param name string The name of the object
@@ -2148,15 +2236,16 @@ function StaticCover.cast(object) end
 --- @field custom_data bool Is item instance contains CustomData
 --- @field logic Class Class for item while in hand
 --- @field lua table undocumented
+--- @field tags string undocumented
 --- @field category string In-game database category
 --- @field label Loc undocumented
 --- @field description_parts Loc[] undocumented
 StaticItem = {}
 
---- Creates a new StaticItem static object
+--- Register a new StaticItem static object
 --- @param name string The name of the object
 --- @return StaticItem
-function StaticItem.new(name) end
+function StaticItem.reg(name) end
 
 --- Searching for StaticItem in db
 --- @param name string The name of the object
@@ -2178,10 +2267,10 @@ function StaticItem.cast(object) end
 --- @field item StaticItem undocumented
 StaticObject = {}
 
---- Creates a new StaticObject static object
+--- Register a new StaticObject static object
 --- @param name string The name of the object
 --- @return StaticObject
-function StaticObject.new(name) end
+function StaticObject.reg(name) end
 
 --- Searching for StaticObject in db
 --- @param name string The name of the object
@@ -2215,10 +2304,10 @@ function StaticObject.cast(object) end
 --- @field break_chance integer Break chance in percents
 StaticProp = {}
 
---- Creates a new StaticProp static object
+--- Register a new StaticProp static object
 --- @param name string The name of the object
 --- @return StaticProp
-function StaticProp.new(name) end
+function StaticProp.reg(name) end
 
 --- Searching for StaticProp in db
 --- @param name string The name of the object
@@ -2240,10 +2329,10 @@ function StaticProp.cast(object) end
 --- @field data PropListData[] undocumented
 StaticPropList = {}
 
---- Creates a new StaticPropList static object
+--- Register a new StaticPropList static object
 --- @param name string The name of the object
 --- @return StaticPropList
-function StaticPropList.new(name) end
+function StaticPropList.reg(name) end
 
 --- Searching for StaticPropList in db
 --- @param name string The name of the object
@@ -2264,10 +2353,10 @@ function StaticPropList.cast(object) end
 --- @class StaticResearch : Prototype
 StaticResearch = {}
 
---- Creates a new StaticResearch static object
+--- Register a new StaticResearch static object
 --- @param name string The name of the object
 --- @return StaticResearch
-function StaticResearch.new(name) end
+function StaticResearch.reg(name) end
 
 --- Searching for StaticResearch in db
 --- @param name string The name of the object
@@ -2288,10 +2377,10 @@ function StaticResearch.cast(object) end
 --- @class StaticResearchBonusInventory : StaticResearch
 StaticResearchBonusInventory = {}
 
---- Creates a new StaticResearchBonusInventory static object
+--- Register a new StaticResearchBonusInventory static object
 --- @param name string The name of the object
 --- @return StaticResearchBonusInventory
-function StaticResearchBonusInventory.new(name) end
+function StaticResearchBonusInventory.reg(name) end
 
 --- Searching for StaticResearchBonusInventory in db
 --- @param name string The name of the object
@@ -2312,10 +2401,10 @@ function StaticResearchBonusInventory.cast(object) end
 --- @class StaticResearchDecorationUnlock : StaticResearch
 StaticResearchDecorationUnlock = {}
 
---- Creates a new StaticResearchDecorationUnlock static object
+--- Register a new StaticResearchDecorationUnlock static object
 --- @param name string The name of the object
 --- @return StaticResearchDecorationUnlock
-function StaticResearchDecorationUnlock.new(name) end
+function StaticResearchDecorationUnlock.reg(name) end
 
 --- Searching for StaticResearchDecorationUnlock in db
 --- @param name string The name of the object
@@ -2336,10 +2425,10 @@ function StaticResearchDecorationUnlock.cast(object) end
 --- @class StaticResearchEfficiency : StaticResearch
 StaticResearchEfficiency = {}
 
---- Creates a new StaticResearchEfficiency static object
+--- Register a new StaticResearchEfficiency static object
 --- @param name string The name of the object
 --- @return StaticResearchEfficiency
-function StaticResearchEfficiency.new(name) end
+function StaticResearchEfficiency.reg(name) end
 
 --- Searching for StaticResearchEfficiency in db
 --- @param name string The name of the object
@@ -2360,10 +2449,10 @@ function StaticResearchEfficiency.cast(object) end
 --- @class StaticResearchModifier : StaticResearch
 StaticResearchModifier = {}
 
---- Creates a new StaticResearchModifier static object
+--- Register a new StaticResearchModifier static object
 --- @param name string The name of the object
 --- @return StaticResearchModifier
-function StaticResearchModifier.new(name) end
+function StaticResearchModifier.reg(name) end
 
 --- Searching for StaticResearchModifier in db
 --- @param name string The name of the object
@@ -2384,10 +2473,10 @@ function StaticResearchModifier.cast(object) end
 --- @class StaticResearchRecipe : StaticResearch
 StaticResearchRecipe = {}
 
---- Creates a new StaticResearchRecipe static object
+--- Register a new StaticResearchRecipe static object
 --- @param name string The name of the object
 --- @return StaticResearchRecipe
-function StaticResearchRecipe.new(name) end
+function StaticResearchRecipe.reg(name) end
 
 --- Searching for StaticResearchRecipe in db
 --- @param name string The name of the object
@@ -2408,10 +2497,10 @@ function StaticResearchRecipe.cast(object) end
 --- @class StaticResearchToolUnlock : StaticResearch
 StaticResearchToolUnlock = {}
 
---- Creates a new StaticResearchToolUnlock static object
+--- Register a new StaticResearchToolUnlock static object
 --- @param name string The name of the object
 --- @return StaticResearchToolUnlock
-function StaticResearchToolUnlock.new(name) end
+function StaticResearchToolUnlock.reg(name) end
 
 --- Searching for StaticResearchToolUnlock in db
 --- @param name string The name of the object
@@ -2434,10 +2523,10 @@ function StaticResearchToolUnlock.cast(object) end
 --- @field size Vec2i undocumented
 StaticStructure = {}
 
---- Creates a new StaticStructure static object
+--- Register a new StaticStructure static object
 --- @param name string The name of the object
 --- @return StaticStructure
-function StaticStructure.new(name) end
+function StaticStructure.reg(name) end
 
 --- Searching for StaticStructure in db
 --- @param name string The name of the object
@@ -2458,10 +2547,10 @@ function StaticStructure.cast(object) end
 --- @class StaticTip : Prototype
 StaticTip = {}
 
---- Creates a new StaticTip static object
+--- Register a new StaticTip static object
 --- @param name string The name of the object
 --- @return StaticTip
-function StaticTip.new(name) end
+function StaticTip.reg(name) end
 
 --- Searching for StaticTip in db
 --- @param name string The name of the object
@@ -2506,10 +2595,10 @@ function StorageBlockLogic.cast(object) end
 --- @class WorldGenerator : Prototype
 WorldGenerator = {}
 
---- Creates a new WorldGenerator static object
+--- Register a new WorldGenerator static object
 --- @param name string The name of the object
 --- @return WorldGenerator
-function WorldGenerator.new(name) end
+function WorldGenerator.reg(name) end
 
 --- Searching for WorldGenerator in db
 --- @param name string The name of the object

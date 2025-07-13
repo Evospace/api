@@ -26,7 +26,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   public:
   UBiomeWorldGenerator();
 
-  virtual void Generate(FColumnSectorsData &data, const Vec3i &pos) const override;
+  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos) const override;
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biom) const override;
 
   virtual void SetSeed(int32 seed) override;

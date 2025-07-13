@@ -23,7 +23,6 @@ class UStaticCover;
 class UGraphStorage;
 class UGameSessionData;
 class UStaticIndexedItemInstancedStaticMeshComponent;
-class UBatchBlockLogicManager;
 class AWorldFeaturesManager;
 namespace evo {
 class LegacyLuaState;
@@ -59,6 +58,12 @@ class ADimension : public AActor {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ADimension, AActor>("Dimension") //@class Dimension : Actor
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
+      //direct:
+      //---Spawn a block with full identity at the given position
+      //---@param bpos Vec3i Block position
+      //---@param staticObject StaticBlock Block type to spawn
+      //---@return BlockLogic The spawned block logic instance
+      //function Dimension:spawn_block_identity(bpos, staticObject) end
       .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
       .addProperty("settings", &ADimension::DimSettings) //@field GameSessionData
@@ -155,8 +160,8 @@ class ADimension : public AActor {
   UPROPERTY(EditAnywhere)
   AWorldFeaturesManager *FeatureManager;
 
-  UPROPERTY(EditAnywhere)
-  UBatchBlockLogicManager *BatchManager;
+  //UPROPERTY(EditAnywhere)
+  //UBatchBlockLogicManager *BatchManager;
 
   UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
   TSubclassOf<ASector> mSectorClass;
@@ -253,7 +258,7 @@ class ADimension : public AActor {
 
   private:
   std::unique_ptr<TThreadWorker<SectorCompilerData>> mSectorCompilerWorker;
-  std::unique_ptr<TThreadWorker<FColumnSectorsData>> mSectorSaverWorker;
+  std::unique_ptr<TThreadWorker<FColumnLoaderData>> mSectorSaverWorker;
 
   UPROPERTY(VisibleAnywhere)
   TMap<FVector3i, AColumn *> mColumns;
@@ -278,7 +283,7 @@ class ADimension : public AActor {
   bool TickBlocks(float DeltaTime);
 
   bool IsColumnActive(const AColumn &column) const;
-  void SpawnColumn(Vec3i spos, AColumn *tall, FColumnSectorsData &data);
+  void SpawnColumn(Vec3i spos, AColumn *tall, FColumnLoaderData &data);
 
   bool IsColumnActive1(const AColumn &column) const;
   bool IsColumnRemove(const AColumn &column) const;

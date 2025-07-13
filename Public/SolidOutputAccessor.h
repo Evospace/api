@@ -5,7 +5,6 @@
 
 #include "SolidOutputAccessor.generated.h"
 
-
 UCLASS()
 class EVOSPACE_API USolidOutputAccessor : public USolidAccessor {
   GENERATED_BODY()
@@ -16,7 +15,8 @@ class EVOSPACE_API USolidOutputAccessor : public USolidAccessor {
       .deriveClass<Self, USolidAccessor>("SolidOutputAccessor") //@class SolidOutputAccessor : SolidAccessor
       .endClass();
   }
-public:
+
+  public:
   USolidOutputAccessor();
 };
 

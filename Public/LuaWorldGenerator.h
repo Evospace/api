@@ -15,7 +15,7 @@ class ULuaWorldGenerator : public UWorldGenerator {
   UPROPERTY()
   UHeightGenerator *mHeight;
 
-  virtual void Generate(FColumnSectorsData &data, const Vec3i &pos) const override;
+  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos) const override;
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale = 1.f, int32 height_width = 16, bool no_biom = false) const override;
 
   public:
