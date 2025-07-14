@@ -66,6 +66,7 @@ class ADimension : public AActor {
       //function Dimension:spawn_block_identity(bpos, staticObject) end
       .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
+      .addFunction("clear_props", &ADimension::LuaCleanProps)
       .addProperty("settings", &ADimension::DimSettings) //@field GameSessionData
       .endClass();
   }
@@ -100,6 +101,7 @@ class ADimension : public AActor {
 
   void LoadDimentionFolder();
   void LuaSetBlockCell(const Vec3i &bpos, const UStaticBlock *cl);
+  void LuaCleanProps(const Vec3i &bpos);
 
   UBlockLogic *LuaSpawnBlockLogicDefault(const Vec3i &bpos, const UStaticBlock *cl);
   UBlockLogic *LuaSpawnBlockLogic(const Vec3i &bpos, const FQuat &block_q, const UStaticBlock *cl);

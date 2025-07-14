@@ -229,23 +229,21 @@ void Drop(const UStaticProp *prop, UInventory *inv) {
 }
 } // namespace
 
-void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool doDrop /*= true*/) {
+void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) {
   const auto out_inventory = NewObject<UAutosizeInventory>();
 
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
-    auto bpos = _bpos + offset; // + Vec3i(1, 1, -1);
+    auto bpos = _bpos + offset;
 
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
-      if (doDrop) {
-        auto props = owner->SectorPropComponent->Get(bpos);
-        for (const auto it : props) {
-          Drop(it, out_inventory);
-        }
+      auto props = owner->SectorPropComponent->Get(bpos);
+      for (const auto it : props) {
+        Drop(it, out_inventory);
       }
 
-      sector->GetInstancingComponent()->DestroySmallInBlock(bpos);
+      sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
     }
   }
 
@@ -259,6 +257,18 @@ void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool doDrop /*= true*
     if (ensure(dropped)) {
       UInventoryLibrary::TryMoveFromAny(dropped->GetInventory(), out_inventory);
       dropped->FinishSpawning(mpcTransform);
+    }
+  }
+}
+
+void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool only_small) {
+  for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
+    auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
+    auto bpos = _bpos + offset;
+
+    IndexType s_index = -1;
+    if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
+      sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
     }
   }
 }
