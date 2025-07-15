@@ -195,6 +195,7 @@ class ADimension : public AActor {
   void TeleportProcess();
   void LoadingProcess();
 
+  float mPlayerTeleportDelay = 1.0;
   bool mPlayerTeleported = false;
   bool mPlayerTeleportedBest = false;
   bool mFirstLoading = true;

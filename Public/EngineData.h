@@ -38,7 +38,6 @@ class EVOSPACE_API UEngineData : public UInstance {
   }
 
   public:
-  
   UPROPERTY(EditAnywhere)
   float PropsMul = 1.0;
 
@@ -98,9 +97,9 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   float Dpi = 1.0;
-    
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  class UMapWidgetData * MapWidgetData;
+  class UMapWidgetData *MapWidgetData;
 
   void ApplyData() const;
 

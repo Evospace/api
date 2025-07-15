@@ -109,8 +109,8 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   void SetWorldGenerator(UWorldGenerator *gen);
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  UMapWidgetData * MapWidgetData;
-  
+  UMapWidgetData *MapWidgetData;
+
   private:
   UPROPERTY()
   TArray<UWorldGenerator *> mWorldGenerators;

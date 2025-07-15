@@ -7,7 +7,7 @@
 UCLASS(BlueprintType)
 class UMapWidgetData : public UObject, public ISerializableJson {
   GENERATED_BODY()
-public:
+  public:
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool OreLayer = true;
 

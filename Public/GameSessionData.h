@@ -10,7 +10,6 @@
 #include "UObject/Object.h"
 #include "GameSessionData.generated.h"
 
-
 class USetting;
 class UValueStorage;
 
@@ -60,8 +59,6 @@ class EVOSPACE_API UGameSessionData : public UInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UValueStorage *ValueStorage;
-
-  
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Version;
