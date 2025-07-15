@@ -13,6 +13,8 @@ class EVOSPACE_API UEngineData : public UInstance {
       .deriveClass<UEngineData, UInstance>("EngineData") //@class EngineData : Instance
       .addProperty("props_mul", &UEngineData::PropsMul) //@field number
       .addProperty("dpi", &UEngineData::Dpi) //@field number
+      .addProperty("mouse_sensitivity_x", &UEngineData::MouseSensitivityX) //@field number
+      .addProperty("mouse_sensitivity_y", &UEngineData::MouseSensitivityY) //@field number
       .addProperty("props_quality", &UEngineData::PropsQuality) //@field number
       .addProperty("reflection_preset", &UEngineData::ReflectionPreset) //@field integer
       .addProperty("transparency_preset", &UEngineData::TransparencyPreset) //@field integer
@@ -36,6 +38,7 @@ class EVOSPACE_API UEngineData : public UInstance {
   }
 
   public:
+  
   UPROPERTY(EditAnywhere)
   float PropsMul = 1.0;
 
@@ -78,6 +81,12 @@ class EVOSPACE_API UEngineData : public UInstance {
   UPROPERTY(EditAnywhere)
   float Fog = 1;
 
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  float MouseSensitivityX = 1;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  float MouseSensitivityY = 1;
+
   UPROPERTY(EditAnywhere)
   int32 ResolutionX = 1920;
 
@@ -89,6 +98,9 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   float Dpi = 1.0;
+    
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  class UMapWidgetData * MapWidgetData;
 
   void ApplyData() const;
 

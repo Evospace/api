@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "MapWidgetData.h"
 #include "Public/WorldGenerator.h"
 #include "SteamGameInstance.h"
 #include "Modding/LegacyLuaState.h"
@@ -107,6 +108,9 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   void SetWorldGenerator(UWorldGenerator *gen);
 
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  UMapWidgetData * MapWidgetData;
+  
   private:
   UPROPERTY()
   TArray<UWorldGenerator *> mWorldGenerators;
