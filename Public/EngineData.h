@@ -15,6 +15,8 @@ class EVOSPACE_API UEngineData : public UInstance {
       .addProperty("dpi", &UEngineData::Dpi) //@field number
       .addProperty("mouse_sensitivity_x", &UEngineData::MouseSensitivityX) //@field number
       .addProperty("mouse_sensitivity_y", &UEngineData::MouseSensitivityY) //@field number
+      .addProperty("mouse_inversion_x", &UEngineData::MouseInversionX) //@field boolean
+      .addProperty("mouse_inversion_y", &UEngineData::MouseInversionY) //@field boolean
       .addProperty("props_quality", &UEngineData::PropsQuality) //@field number
       .addProperty("reflection_preset", &UEngineData::ReflectionPreset) //@field integer
       .addProperty("transparency_preset", &UEngineData::TransparencyPreset) //@field integer
@@ -85,6 +87,12 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   float MouseSensitivityY = 1;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool MouseInversionX = false;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool MouseInversionY = false;
 
   UPROPERTY(EditAnywhere)
   int32 ResolutionX = 1920;

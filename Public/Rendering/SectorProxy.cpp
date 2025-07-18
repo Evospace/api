@@ -49,13 +49,6 @@ void USectorProxy::GetSectorDataCold(FSectorData &data) {
   data = SectorColdData;
 }
 
-void USectorProxy::Destroy() {
-  if (IsValid(sector)) {
-    sector->Destroy();
-    sector = nullptr;
-  }
-}
-
 void USectorProxy::SetDirty(IndexType index) {
   auto pos = cs::IndexToCell(index, gSectorSize);
 

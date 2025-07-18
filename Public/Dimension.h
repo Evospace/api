@@ -165,9 +165,6 @@ class ADimension : public AActor {
   //UPROPERTY(EditAnywhere)
   //UBatchBlockLogicManager *BatchManager;
 
-  UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-  TSubclassOf<ASector> mSectorClass;
-
   protected:
   // Core Tick
 

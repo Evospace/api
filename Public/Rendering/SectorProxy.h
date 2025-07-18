@@ -30,8 +30,6 @@ class USectorProxy : public UObject {
   // Invisible sector can't be changed so data remains the same
   void GetSectorDataCold(FSectorData &data);
 
-  void Destroy();
-
   bool GetDirty() const { return Dirty; }
   void SetDirty(bool value) { Dirty = value; }
 
@@ -81,9 +79,6 @@ class USectorProxy : public UObject {
   AjacentSectors ajacentSectors;
 
   TArray<FStaticBlockInfo> StaticBlocks;
-
-  UPROPERTY()
-  ASector *sector = nullptr;
 
   UPROPERTY()
   bool IsSectionGroupCreated = false;
