@@ -41,8 +41,9 @@ void USectorProxy::GetSectorDataHot(FSectorData &data) {
   data.mStaticBlocks = StaticBlocks;
 
   // Костыль, нужно переехать на хранение в колонне
-  if (PivotPos.Z == 0)
+  if (PivotPos.Z == 0 && ensure(owner && owner->SectorPropComponent)) {
     owner->SectorPropComponent->GetAll(data.mAttaches);
+  }
 }
 
 void USectorProxy::GetSectorDataCold(FSectorData &data) {
@@ -65,7 +66,9 @@ void USectorProxy::SetDirty(IndexType index) {
       sector->SetDirty(true);
   }
 
-  owner->SaveDirty = true;
+  if (ensure(owner)) {
+    owner->SaveDirty = true;
+  }
 }
 
 void USectorProxy::SetStaticBlock(IndexType index, const UStaticBlock *value) {
