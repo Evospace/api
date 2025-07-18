@@ -26,7 +26,7 @@ void UEngineData::ApplyData() const {
     auto resolution = FIntPoint(ResolutionX, ResolutionY);
     auto current_res = UserSettings->GetScreenResolution();
     auto current_fsm = UserSettings->GetFullscreenMode();
-    
+
     if (Windowed == EWindowMode::WindowedFullscreen) {
       // Получаем текущее разрешение основного монитора
       FDisplayMetrics DisplayMetrics;
