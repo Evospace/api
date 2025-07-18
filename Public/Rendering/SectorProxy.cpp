@@ -244,6 +244,9 @@ void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) 
   if (!out_inventory->IsEmpty()) {
     auto mpc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
+    if(!ensure(mpc))
+      return;
+
     const auto mpcTransform = mpc->GetCharacter()->GetTransform();
 
     const auto dropped = GetWorld()->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), mpcTransform, owner);
