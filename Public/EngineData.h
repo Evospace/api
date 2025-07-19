@@ -98,9 +98,6 @@ class EVOSPACE_API UEngineData : public UInstance {
   bool MouseInversionY = false;
 
   UPROPERTY(EditAnywhere)
-  bool UnconfirmedResolution = false;
-
-  UPROPERTY(EditAnywhere)
   int32 ResolutionX = 1920;
 
   UPROPERTY(EditAnywhere)
@@ -108,6 +105,11 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   int32 Windowed;
+
+  // Для ручного отката настроек
+  int32 OldResolutionX = 1920;
+  int32 OldResolutionY = 1080;
+  int32 OldWindowed = 0;
 
   UPROPERTY(EditAnywhere)
   float Dpi = 1.0;

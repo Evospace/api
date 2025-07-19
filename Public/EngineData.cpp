@@ -9,13 +9,44 @@
 #include "Evospace/WorldEntities/WorldFeaturesManager.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Qr/Setting.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Widgets/SWindow.h"
 
-
-class USettingsConfirmationWidget;bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
+class USettingsConfirmationWidget;
+bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
   return Point.X >= Rect.Left && Point.X < Rect.Right && Point.Y >= Rect.Top && Point.Y < Rect.Bottom;
 }
 
+// Устанавливает размер окна в физических пикселях (без учета DPI)
+static void SetLogicalWindowSize(int32 Width, int32 Height) {
+    TSharedPtr<SWindow> Window = FSlateApplication::Get().GetActiveTopLevelWindow();
+    if (Window.IsValid()) {
+        Window->Resize(FVector2D(Width, Height));
+    }
+}
+
 void UEngineData::ShowConfirmationDialog() {
+
+  UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
+  if (ensure(UserSettings)) {
+    // Сохраняем старые значения для ручного отката
+    OldResolutionX = UserSettings->GetScreenResolution().X;
+    OldResolutionY = UserSettings->GetScreenResolution().Y;
+    OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
+
+    int32 targetX = ResolutionX;
+    int32 targetY = ResolutionY;
+    // Больше не делим на DPI
+    UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
+    UserSettings->SetScreenResolution({ targetX, targetY });
+    UserSettings->ApplyResolutionSettings(false); // Применяем изменения сразу
+    // Принудительно меняем размер окна
+    if (Windowed == EWindowMode::Windowed) {
+      SetLogicalWindowSize(ResolutionX, ResolutionY);
+    }
+  }
+
   auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
   auto widget = CreateWidget<USettingsConfirmationWidget>(pc, LoadObject<UClass>(nullptr, TEXT("/Game/Gui/SettingsConfirmationDialog.SettingsConfirmationDialog_C")), TEXT("SettingsConfirmationDialog"));
   widget->ed = this;
@@ -28,13 +59,36 @@ void UEngineData::ConfirmSettings() {
     UserSettings->ConfirmVideoMode();
     UserSettings->SaveSettings();
   }
+  ApplyData();
 }
 
 void UEngineData::CancelSettings() {
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
-    UserSettings->RevertVideoMode();
+    int32 targetX = OldResolutionX;
+    int32 targetY = OldResolutionY;
+    // Больше не делим на DPI
+    UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(OldWindowed));
+    UserSettings->SetScreenResolution({ targetX, targetY });
+    UserSettings->ApplyResolutionSettings(false);
     UserSettings->SaveSettings();
+    // Принудительно меняем размер окна
+    if (OldWindowed == EWindowMode::Windowed) {
+      SetLogicalWindowSize(OldResolutionX, OldResolutionY);
+    }
+
+    if (auto set = QrFind<USetting>("Fullscreen")) {
+      std::vector opts = {"Fullscreen", "WindowedFullscreen", "Windowed", "Windowed"};
+      set->StringValue = opts[UserSettings->GetFullscreenMode()];
+    }
+    if (auto set = QrFind<USetting>("Resolution")) {
+      auto res =  UserSettings->GetScreenResolution();
+      FStringFormatOrderedArguments args;
+      args.Add(res.X);
+      args.Add(res.Y);
+      set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
+    }
+    USetting::UpdateSettingsWidgets();
   }
 }
 
@@ -51,33 +105,8 @@ void UEngineData::ApplyData() const {
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (UserSettings) {
-
-    UserSettings->ValidateSettings();
-
-    EWindowMode::Type fsm;
-    FIntPoint resolution;
-
-    if (UnconfirmedResolution) {
-      resolution = FIntPoint(ResolutionX, ResolutionY);
-      fsm = static_cast<EWindowMode::Type>(Windowed);
-    } else {
-      fsm = UserSettings->GetLastConfirmedFullscreenMode();
-      resolution = UserSettings->GetLastConfirmedScreenResolution();
-    }
-
-    auto current_res = UserSettings->GetScreenResolution();
-    auto current_fsm = UserSettings->GetFullscreenMode();
-
-    UGameViewportClient *Viewport = GEngine->GameViewport;
-    if (Viewport) {
-      FString Cmd = FString::Printf(TEXT("r.SetRes %dx%d%s"),
-                                    resolution.X,
-                                    resolution.Y,
-                                    (fsm == EWindowMode::Fullscreen           ? TEXT("f")
-                                     : fsm == EWindowMode::WindowedFullscreen ? TEXT("wf")
-                                                                              : TEXT("w")));
-      Viewport->ConsoleCommand(*Cmd);
-    }
+    UserSettings->ApplySettings(false);
+    UserSettings->SaveSettings();
   }
 
   ADimension *dim = nullptr;
