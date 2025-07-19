@@ -2,12 +2,41 @@
 #include "Dimension.h"
 #include "EngineUtils.h"
 #include "Evospace/JsonHelper.h"
+#include "Evospace/Gui/SettingsConfirmationWidget.h"
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/World/SectorArea.h"
 #include "Public/MainGameInstance.h"
 #include "Evospace/WorldEntities/WorldFeaturesManager.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
+
+
+class USettingsConfirmationWidget;bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
+  return Point.X >= Rect.Left && Point.X < Rect.Right && Point.Y >= Rect.Top && Point.Y < Rect.Bottom;
+}
+
+void UEngineData::ShowConfirmationDialog() {
+  auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+  auto widget = CreateWidget<USettingsConfirmationWidget>(pc, LoadObject<UClass>(nullptr, TEXT("/Game/Gui/SettingsConfirmationDialog.SettingsConfirmationDialog_C")), TEXT("SettingsConfirmationDialog"));
+  widget->ed = this;
+  widget->AddToViewport(10000);
+}
+
+void UEngineData::ConfirmSettings() {
+  UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
+  if (ensure(UserSettings)) {
+    UserSettings->ConfirmVideoMode();
+    UserSettings->SaveSettings();
+  }
+}
+
+void UEngineData::CancelSettings() {
+  UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
+  if (ensure(UserSettings)) {
+    UserSettings->RevertVideoMode();
+    UserSettings->SaveSettings();
+  }
+}
 
 void UEngineData::ApplyData() const {
   if (Fps == 0) {
@@ -22,26 +51,32 @@ void UEngineData::ApplyData() const {
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (UserSettings) {
-    auto confirmed = UserSettings->GetLastConfirmedScreenResolution();
-    auto resolution = FIntPoint(ResolutionX, ResolutionY);
+
+    UserSettings->ValidateSettings();
+
+    EWindowMode::Type fsm;
+    FIntPoint resolution;
+
+    if (UnconfirmedResolution) {
+      resolution = FIntPoint(ResolutionX, ResolutionY);
+      fsm = static_cast<EWindowMode::Type>(Windowed);
+    } else {
+      fsm = UserSettings->GetLastConfirmedFullscreenMode();
+      resolution = UserSettings->GetLastConfirmedScreenResolution();
+    }
+
     auto current_res = UserSettings->GetScreenResolution();
     auto current_fsm = UserSettings->GetFullscreenMode();
 
-    if (Windowed == EWindowMode::WindowedFullscreen) {
-      // Получаем текущее разрешение основного монитора
-      FDisplayMetrics DisplayMetrics;
-      FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
-      FIntPoint DesktopResolution(DisplayMetrics.PrimaryDisplayWidth, DisplayMetrics.PrimaryDisplayHeight);
-      resolution = DesktopResolution;
-      UserSettings->SetScreenResolution(resolution);
-
-      UserSettings->ApplySettings(false);
-      UserSettings->SaveSettings();
-    } else if (current_fsm != static_cast<EWindowMode::Type>(Windowed) || current_res != resolution) {
-      UserSettings->SetScreenResolution(resolution);
-      UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
-      UserSettings->ApplySettings(false);
-      UserSettings->SaveSettings();
+    UGameViewportClient *Viewport = GEngine->GameViewport;
+    if (Viewport) {
+      FString Cmd = FString::Printf(TEXT("r.SetRes %dx%d%s"),
+                                    resolution.X,
+                                    resolution.Y,
+                                    (fsm == EWindowMode::Fullscreen           ? TEXT("f")
+                                     : fsm == EWindowMode::WindowedFullscreen ? TEXT("wf")
+                                                                              : TEXT("w")));
+      Viewport->ConsoleCommand(*Cmd);
     }
   }
 

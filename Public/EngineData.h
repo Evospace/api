@@ -36,6 +36,9 @@ class EVOSPACE_API UEngineData : public UInstance {
       //direct:
       //function EngineData:apply() end
       .addFunction("apply", &UEngineData::ApplyData)
+      //direct:
+      //function EngineData:show_confirmation() end
+      .addFunction("show_confirmation", &UEngineData::ShowConfirmationDialog)
       .endClass();
   }
 
@@ -95,6 +98,9 @@ class EVOSPACE_API UEngineData : public UInstance {
   bool MouseInversionY = false;
 
   UPROPERTY(EditAnywhere)
+  bool UnconfirmedResolution = false;
+
+  UPROPERTY(EditAnywhere)
   int32 ResolutionX = 1920;
 
   UPROPERTY(EditAnywhere)
@@ -108,6 +114,11 @@ class EVOSPACE_API UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   class UMapWidgetData *MapWidgetData;
+
+  void ShowConfirmationDialog();
+
+  void ConfirmSettings();
+  void CancelSettings();
 
   void ApplyData() const;
 
