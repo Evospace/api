@@ -58,7 +58,7 @@ void UEngineData::ShowConfirmationDialog() {
     OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
 
     FixResolution();
-    
+
     UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
     UserSettings->SetScreenResolution({ ResolutionX, ResolutionY });
     UserSettings->ApplyResolutionSettings(false);
