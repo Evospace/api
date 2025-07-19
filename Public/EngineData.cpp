@@ -18,14 +18,6 @@ bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
   return Point.X >= Rect.Left && Point.X < Rect.Right && Point.Y >= Rect.Top && Point.Y < Rect.Bottom;
 }
 
-// Устанавливает размер окна в физических пикселях (без учета DPI)
-static void SetLogicalWindowSize(int32 Width, int32 Height) {
-    TSharedPtr<SWindow> Window = FSlateApplication::Get().GetActiveTopLevelWindow();
-    if (Window.IsValid()) {
-        Window->Resize(FVector2D(Width, Height));
-    }
-}
-
 void UEngineData::ShowConfirmationDialog() {
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
@@ -41,10 +33,6 @@ void UEngineData::ShowConfirmationDialog() {
     UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
     UserSettings->SetScreenResolution({ targetX, targetY });
     UserSettings->ApplyResolutionSettings(false); // Применяем изменения сразу
-    // Принудительно меняем размер окна
-    if (Windowed == EWindowMode::Windowed) {
-      SetLogicalWindowSize(ResolutionX, ResolutionY);
-    }
   }
 
   auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -57,7 +45,6 @@ void UEngineData::ConfirmSettings() {
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
     UserSettings->ConfirmVideoMode();
-    UserSettings->SaveSettings();
   }
   ApplyData();
 }
@@ -65,31 +52,20 @@ void UEngineData::ConfirmSettings() {
 void UEngineData::CancelSettings() {
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
-    int32 targetX = OldResolutionX;
-    int32 targetY = OldResolutionY;
-    // Больше не делим на DPI
-    UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(OldWindowed));
-    UserSettings->SetScreenResolution({ targetX, targetY });
-    UserSettings->ApplyResolutionSettings(false);
-    UserSettings->SaveSettings();
-    // Принудительно меняем размер окна
-    if (OldWindowed == EWindowMode::Windowed) {
-      SetLogicalWindowSize(OldResolutionX, OldResolutionY);
-    }
-
-    if (auto set = QrFind<USetting>("Fullscreen")) {
-      std::vector opts = {"Fullscreen", "WindowedFullscreen", "Windowed", "Windowed"};
-      set->StringValue = opts[UserSettings->GetFullscreenMode()];
-    }
-    if (auto set = QrFind<USetting>("Resolution")) {
-      auto res =  UserSettings->GetScreenResolution();
-      FStringFormatOrderedArguments args;
-      args.Add(res.X);
-      args.Add(res.Y);
-      set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
-    }
-    USetting::UpdateSettingsWidgets();
+    UserSettings->RevertVideoMode();
   }
+  if (auto set = QrFind<USetting>("Fullscreen")) {
+    std::vector opts = {"Fullscreen", "WindowedFullscreen", "Windowed", "Windowed"};
+    set->StringValue = opts[OldWindowed];
+  }
+  if (auto set = QrFind<USetting>("Resolution")) {
+    FStringFormatOrderedArguments args;
+    args.Add(OldResolutionY);
+    args.Add(OldResolutionY);
+    set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
+  }
+  USetting::UpdateSettingsWidgets();
+  ApplyData();
 }
 
 void UEngineData::ApplyData() const {
