@@ -22,17 +22,20 @@ void UEngineData::ShowConfirmationDialog() {
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
-    // Сохраняем старые значения для ручного отката
     OldResolutionX = UserSettings->GetScreenResolution().X;
     OldResolutionY = UserSettings->GetScreenResolution().Y;
     OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
 
-    int32 targetX = ResolutionX;
-    int32 targetY = ResolutionY;
-    // Больше не делим на DPI
+    if (Windowed == EWindowMode::WindowedFullscreen) {
+      FDisplayMetrics DisplayMetrics;
+      FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
+      ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
+      ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
+    }
+
     UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
-    UserSettings->SetScreenResolution({ targetX, targetY });
-    UserSettings->ApplyResolutionSettings(false); // Применяем изменения сразу
+    UserSettings->SetScreenResolution({ ResolutionX, ResolutionY });
+    UserSettings->ApplyResolutionSettings(false);
   }
 
   auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -55,7 +58,7 @@ void UEngineData::CancelSettings() {
     UserSettings->RevertVideoMode();
   }
   if (auto set = QrFind<USetting>("Fullscreen")) {
-    std::vector opts = {"Fullscreen", "WindowedFullscreen", "Windowed", "Windowed"};
+    std::vector opts = { "Fullscreen", "WindowedFullscreen", "Windowed", "Windowed" };
     set->StringValue = opts[OldWindowed];
   }
   if (auto set = QrFind<USetting>("Resolution")) {
