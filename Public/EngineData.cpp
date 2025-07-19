@@ -63,7 +63,7 @@ void UEngineData::CancelSettings() {
   }
   if (auto set = QrFind<USetting>("Resolution")) {
     FStringFormatOrderedArguments args;
-    args.Add(OldResolutionY);
+    args.Add(OldResolutionX);
     args.Add(OldResolutionY);
     set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
   }
