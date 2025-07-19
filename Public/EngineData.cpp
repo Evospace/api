@@ -18,7 +18,38 @@ bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
   return Point.X >= Rect.Left && Point.X < Rect.Right && Point.Y >= Rect.Top && Point.Y < Rect.Bottom;
 }
 
+void UEngineData::FixResolution() {
+  if (Windowed == EWindowMode::WindowedFullscreen) {
+    FDisplayMetrics DisplayMetrics;
+    FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
+    ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
+    ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
+  }
+
+  if (Windowed == EWindowMode::Fullscreen) {
+    uint32 x = ResolutionX;
+    uint32 y = ResolutionY;
+    RHIGetSupportedResolution(x, y);
+    ResolutionX = x;
+    ResolutionY = y;
+  }
+
+  if (Windowed == EWindowMode::Windowed) {
+    FDisplayMetrics DisplayMetrics;
+    FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
+    if (ResolutionX > DisplayMetrics.PrimaryDisplayWidth) {
+      ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
+    }
+    if (ResolutionY > DisplayMetrics.PrimaryDisplayHeight) {
+      ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
+    }
+  }
+}
+
 void UEngineData::ShowConfirmationDialog() {
+
+  if (!UMainGameInstance::Singleton->mContentLoaded)
+    return;
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
@@ -26,13 +57,8 @@ void UEngineData::ShowConfirmationDialog() {
     OldResolutionY = UserSettings->GetScreenResolution().Y;
     OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
 
-    if (Windowed == EWindowMode::WindowedFullscreen) {
-      FDisplayMetrics DisplayMetrics;
-      FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
-      ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
-      ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
-    }
-
+    FixResolution();
+    
     UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
     UserSettings->SetScreenResolution({ ResolutionX, ResolutionY });
     UserSettings->ApplyResolutionSettings(false);
@@ -67,6 +93,7 @@ void UEngineData::CancelSettings() {
     args.Add(OldResolutionY);
     set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
   }
+  FixResolution();
   USetting::UpdateSettingsWidgets();
   ApplyData();
 }

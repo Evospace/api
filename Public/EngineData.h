@@ -117,7 +117,7 @@ class EVOSPACE_API UEngineData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   class UMapWidgetData *MapWidgetData;
 
-  void ShowConfirmationDialog();
+  void FixResolution();void ShowConfirmationDialog();
 
   void ConfirmSettings();
   void CancelSettings();
