@@ -5,15 +5,10 @@
 
 #include "ConveyorInventorySideAccessor.generated.h"
 
-class UConveyorBlockLogic;
+
+class IConveyorInterface;class UConveyorBlockLogic;
 class UInventoryAccess;
 class UItemInstancingComponent;
-
-class ConveyorInterface {
-  public:
-  virtual ~ConveyorInterface() = default;
-  virtual void SetPushedSide(const Vec3i &side, RItemInstancingHandle &&item) = 0;
-};
 
 UCLASS()
 class EVOSPACE_API UConveyorInventorySideAccessor : public USolidInputAccessor {
@@ -34,8 +29,10 @@ class EVOSPACE_API UConveyorInventorySideAccessor : public USolidInputAccessor {
 
   virtual bool PushWithData(UInventoryAccess *from, int32 max_count, RItemInstancingHandle &&item) override;
 
-  void SetConveyor(ConveyorInterface *conveyour);
+  void SetConveyor(TScriptInterface<IConveyorInterface> conveyour);
 
   private:
-  ConveyorInterface *mConveyour;
+
+  UPROPERTY()
+  TScriptInterface<IConveyorInterface> mConveyour;
 };

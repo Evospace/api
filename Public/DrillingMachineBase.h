@@ -48,6 +48,9 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintPure, Category = "Drilling|Energy")
   float CurrentUsage() const;
 
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
+  virtual float GetMiningProgress() const;
+
   int32 Production = 1;
 
   UFUNCTION(BlueprintCallable, Category = "Drilling|Inventory")
@@ -95,6 +98,13 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   virtual void Drill() PURE_VIRTUAL(UDrillingMachineBase::Drill, );
   bool IsEnergyAvailable() const { return RemainingEnergy > 0; }
   bool HasStorageSpace() const;
+
+  protected:
+    static float CalcMiningProgress(int32 RemainingEnergy, float maxEnergy)
+    {
+        if (maxEnergy <= 0.0f) return 0.0f;
+        return 1.0f - FMath::Clamp(RemainingEnergy / maxEnergy, 0.0f, 1.0f);
+    }
 
   private:
   static constexpr float basic_duration_tick = 20;

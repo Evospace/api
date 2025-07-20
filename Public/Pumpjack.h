@@ -27,6 +27,10 @@ class EVOSPACE_API UPumpjack : public UDrillingMachineBase {
   public:
   std::tuple<URegionLayer *, FVector2i> GetLayer() const;
 
+  int32 GetTimePerRecipe() const;
+
+  virtual float GetMiningProgress()const override;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
   URegionLayer *Layer = nullptr;
 
@@ -34,6 +38,12 @@ class EVOSPACE_API UPumpjack : public UDrillingMachineBase {
   FVector2i Subregion;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+  int32 LastSpeed = 100;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+  int32 CurrentRecipeTime = 0;
 
   protected:
   virtual void Drill() override;
