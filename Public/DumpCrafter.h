@@ -3,6 +3,13 @@
 #include "AbstractCrafter.h"
 #include "DumpCrafter.generated.h"
 
+struct FDestroyerProcess {
+  bool Active = false;
+  int32 PendingAmount = 0;
+  const URecipe* PendingRecipe = nullptr;
+  bool IsRecipe = false;
+};
+
 UCLASS(BlueprintType)
 class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
   GENERATED_BODY()
@@ -41,5 +48,10 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  float GetProgress() const;
+  
+  FDestroyerProcess DestroyerProcess;
+  
   int32 AnimationTicks = 0;
 };
