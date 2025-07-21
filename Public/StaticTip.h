@@ -19,7 +19,7 @@ class UStaticTip : public UPrototype {
   FLoc mLabel;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  FLoc mDescription;
+  TArray<FLoc> mDescription;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   UAutosizeInventory *mContextInventory;
@@ -37,12 +37,13 @@ class UStaticTip : public UPrototype {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
+  using Self = UStaticTip;
   PROTOTYPE_CODEGEN(StaticTip, StaticTip)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticTip, UPrototype>("StaticTip") //@class StaticTip : Prototype
       .addProperty("label", &UStaticTip::mLabel)
-      .addProperty("description", &UStaticTip::mDescription)
+      .addProperty("description_parts", QR_ARRAY_GET_SET(mDescription))
       .addProperty("image", &UStaticTip::mImagePath)
       .addFunction("add_context", &UStaticTip::AddContext)
       .addFunction("clear_context", &UStaticTip::ClearContext)
