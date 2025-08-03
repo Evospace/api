@@ -6,12 +6,12 @@
 struct FDestroyerProcess {
   bool Active = false;
   int32 PendingAmount = 0;
-  const URecipe* PendingRecipe = nullptr;
+  const URecipe *PendingRecipe = nullptr;
   bool IsRecipe = false;
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
+class UDumpCrafterBlockLogic : public UAbstractCrafter {
   GENERATED_BODY()
 
   protected:
@@ -50,8 +50,8 @@ class EVOSPACE_API UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   float GetProgress() const;
-  
+
   FDestroyerProcess DestroyerProcess;
-  
+
   int32 AnimationTicks = 0;
 };

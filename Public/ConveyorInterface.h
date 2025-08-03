@@ -3,8 +3,8 @@
 #include "Qr/CoordinameMinimal.h"
 #include "ConveyorInterface.generated.h"
 
-
-class ULogicContext;class UInventoryAccess;
+class ULogicContext;
+class UInventoryAccess;
 struct RItemInstancingHandle;
 
 UINTERFACE(BlueprintType)

@@ -5,8 +5,8 @@
 
 #include "ConveyorInventorySideAccessor.generated.h"
 
-
-class IConveyorInterface;class UConveyorBlockLogic;
+class IConveyorInterface;
+class UConveyorBlockLogic;
 class UInventoryAccess;
 class UItemInstancingComponent;
 
@@ -32,7 +32,6 @@ class EVOSPACE_API UConveyorInventorySideAccessor : public USolidInputAccessor {
   void SetConveyor(TScriptInterface<IConveyorInterface> conveyour);
 
   private:
-
   UPROPERTY()
   TScriptInterface<IConveyorInterface> mConveyour;
 };

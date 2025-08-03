@@ -100,11 +100,10 @@ class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
   bool HasStorageSpace() const;
 
   protected:
-    static float CalcMiningProgress(int32 RemainingEnergy, float maxEnergy)
-    {
-        if (maxEnergy <= 0.0f) return 0.0f;
-        return 1.0f - FMath::Clamp(RemainingEnergy / maxEnergy, 0.0f, 1.0f);
-    }
+  static float CalcMiningProgress(int32 RemainingEnergy, float maxEnergy) {
+    if (maxEnergy <= 0.0f) return 0.0f;
+    return 1.0f - FMath::Clamp(RemainingEnergy / maxEnergy, 0.0f, 1.0f);
+  }
 
   private:
   static constexpr float basic_duration_tick = 20;

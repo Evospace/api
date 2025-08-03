@@ -29,7 +29,7 @@ class EVOSPACE_API UPumpjack : public UDrillingMachineBase {
 
   int32 GetTimePerRecipe() const;
 
-  virtual float GetMiningProgress()const override;
+  virtual float GetMiningProgress() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
   URegionLayer *Layer = nullptr;
