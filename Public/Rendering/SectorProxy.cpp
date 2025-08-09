@@ -182,6 +182,7 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
     auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
     if (mesh) {
       mesh->Reset();
+      IsSectionGroupCreated = false;
     }
     callback();
     return true;

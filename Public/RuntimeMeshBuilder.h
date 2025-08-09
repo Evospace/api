@@ -4,7 +4,7 @@
 #include "Evospace/World/Tesselator.h"
 
 struct RuntimeMeshBuilder {
-  using MeshType = RealtimeMesh::TRealtimeMeshBuilderLocal<uint16, FPackedNormal, FVector2DHalf, 1>;
+  using MeshType = RealtimeMesh::TRealtimeMeshBuilderLocal<uint32, FPackedNormal, FVector2DHalf, 1>;
 
   private:
   static int32 BuildSection(MeshType &StaticProvider, const UTesselator::Data &data, int32 section_index, int32 lod_index, int32 precount) {
