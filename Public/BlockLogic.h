@@ -6,6 +6,7 @@
 #include "Evospace/Common.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
+#include "Public/LogicProgram.h"
 #include "Evospace/Misc/CoverWrapper.h"
 
 #include "BlockLogic.generated.h"

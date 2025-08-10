@@ -1,6 +1,7 @@
 #pragma once
 #include "Qr/Prototype.h"
 #include "Evospace/Common.h"
+#include "Evospace/Shared/Qr/CommonConverter.h"
 #include "StaticTip.generated.h"
 
 class UAutosizeInventory;
