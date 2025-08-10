@@ -29,6 +29,7 @@ class UInventoryAccess;
 class UStaticBlock;
 class UAccessor;
 class AColumn;
+class ULogicContext;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UBlockLogic : public UInstance {
@@ -199,6 +200,12 @@ class EVOSPACE_API UBlockLogic : public UInstance {
 
   // No code
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
+
+  // Logic network I/O hooks
+  // Fills ctx->Output with signals produced by this block (default: no-op)
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
+  // Applies incoming signals from ctx->Input to this block (default: no-op)
+  virtual void ApplyLogicInput(const class ULogicContext *ctx);
 
   //    .
   virtual int32 DropItems(UInventoryAccess *inventory);
