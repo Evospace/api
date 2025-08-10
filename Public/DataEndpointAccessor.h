@@ -6,8 +6,8 @@
 UCLASS()
 class EVOSPACE_API UDataEndpointAccessor : public UResourceAccessor {
   GENERATED_BODY()
-public:
+  public:
   UDataEndpointAccessor() {
     Channel = UResourceAccessor::Data();
   }
-}; 
+};
