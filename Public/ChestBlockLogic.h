@@ -28,6 +28,9 @@ class EVOSPACE_API UChestBlockLogic : public UStorageBlockLogic {
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
 
+  // Expose chest contents to logic network via interface blocks
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+
   UFUNCTION(BlueprintCallable)
   virtual void SetLimit(int32 _l);
 
