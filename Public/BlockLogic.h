@@ -7,6 +7,7 @@
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
 #include "Public/LogicProgram.h"
+#include "Public/LogicContext.h"
 #include "Evospace/Misc/CoverWrapper.h"
 
 #include "BlockLogic.generated.h"
@@ -201,12 +202,6 @@ class UBlockLogic : public UInstance {
 
   // No code
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
-
-  // Logic network I/O hooks
-  // Fills ctx->Output with signals produced by this block (default: no-op)
-  virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
-  // Applies incoming signals from ctx->Input to this block (default: no-op)
-  virtual void ApplyLogicInput(const class ULogicContext *ctx);
 
   //    .
   virtual int32 DropItems(UInventoryAccess *inventory);

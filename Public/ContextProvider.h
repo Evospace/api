@@ -19,7 +19,7 @@ class ILogicContextProvider {
 
   public:
   UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-  ULogicContext *GetContext();
+  ULogicContext *GetContext() const;
 
-  virtual ULogicContext *GetContext_Implementation() = 0;
+  virtual ULogicContext *GetContext_Implementation() const = 0;
 };

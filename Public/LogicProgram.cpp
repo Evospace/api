@@ -1,10 +1,11 @@
 #include "Evospace/Shared/Public/LogicProgram.h"
-
+#include "Evospace/Shared/Public/LogicInterface.h"
 #include "Evospace/Shared/Public/Condition.h"
+#include "Evospace/Shared/Public/LogicContext.h"
 #include "Evospace/Shared/Public/BlockLogic.h"
 #include "Evospace/JsonHelper.h"
 
-void ULogicProgram::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicProgram::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (!Ctx)
     return;
   for (auto *Node : Nodes) {
@@ -19,11 +20,11 @@ bool ULogicProgram::DeserializeJson(TSharedPtr<FJsonObject> json) {
 
 bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TrySerialize(json, TEXT("Nodes"), Nodes);
-  return true;  
+  return true;
 }
 
 // Constant
-void ULogicNode_Constant::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_Constant::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   for (const auto &kv : Values) {
     Ctx->Output->Add(kv.Key, kv.Value);
   }
@@ -54,7 +55,7 @@ bool ULogicNode_Constant::SerializeJson(TSharedPtr<FJsonObject> json) {
 }
 
 // Arithmetic (minimal: Add/Sub over Output map)
-void ULogicNode_Arithmetic::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_Arithmetic::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   const bool bSub = (Operation == FName("Sub"));
   for (auto &Pair : Ctx->Output->Map) {
     int64 &v = Pair.Value;
@@ -65,7 +66,7 @@ void ULogicNode_Arithmetic::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
 }
 
 // Decider placeholder
-void ULogicNode_Decider::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   // For MVP rely on existing UCondition in ULogicCircuitBlockLogic Tick
 }
 
@@ -80,7 +81,7 @@ bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-void ULogicNode_Latch::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface>Owner, ULogicContext *Ctx) {
   // Set/Reset by special signals (e.g., Signal_Set, Signal_Reset)
   const UStaticItem *SigSet = FindObject<UStaticItem>(ANY_PACKAGE, TEXT("Signal_Set"));
   const UStaticItem *SigReset = FindObject<UStaticItem>(ANY_PACKAGE, TEXT("Signal_Reset"));
@@ -95,21 +96,21 @@ void ULogicNode_Latch::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
 }
 
 // Read/Write Network placeholder
-void ULogicNode_ReadNetwork::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_ReadNetwork::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   // Already aggregated into Ctx->Input by network layer
 }
 
-void ULogicNode_WriteNetwork::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_WriteNetwork::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   // Network layer reads Ctx->Output and distributes
 }
 
 // Read/Control Machine placeholders
-void ULogicNode_ReadMachine::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_ReadMachine::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (Owner)
     Owner->PopulateLogicOutput(Ctx);
 }
 
-void ULogicNode_ControlMachine::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
+void ULogicNode_ControlMachine::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (Owner)
     Owner->ApplyLogicInput(Ctx);
 }

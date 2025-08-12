@@ -8,7 +8,7 @@
 #include "SingleSlotInventory.generated.h"
 
 UCLASS()
-class EVOSPACE_API USingleSlotInventory : public UBaseInventory {
+class USingleSlotInventory : public UBaseInventory {
   GENERATED_BODY()
   using Self = USingleSlotInventory;
   EVO_CODEGEN_INSTANCE(SingleSlotInventory)

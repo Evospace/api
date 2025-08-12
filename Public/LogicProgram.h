@@ -4,10 +4,8 @@
 //#include "UObject/Object.h"
 #include "CoreMinimal.h"
 #include "Qr/SerializableJson.h"
-
 #include <Dom/JsonObject.h>
 #include <Templates/SharedPointer.h>
-
 #include "LogicProgram.generated.h"
 
 class UBlockLogic;
@@ -22,7 +20,7 @@ class ULogicNode : public UObject, public ISerializableJson {
   public:
   // Executes this node against the provided context
   UFUNCTION(BlueprintCallable)
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) {}
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {}
 
   // Default serialization does nothing; specialized nodes override when needed
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override { return true; }
@@ -36,9 +34,9 @@ class ULogicNode_Constant : public ULogicNode {
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TMap<const UStaticItem*, int64> Values;
+  TMap<const UStaticItem *, int64> Values;
 
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
@@ -52,7 +50,7 @@ class ULogicNode_Arithmetic : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName Operation; // e.g., "Add", "Sub"
 
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 // Decider node: placeholder; relies on condition system elsewhere
@@ -61,7 +59,7 @@ class ULogicNode_Decider : public ULogicNode {
   GENERATED_BODY()
 
   public:
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 // Latch node: stores boolean state, exposes as signal
@@ -73,7 +71,7 @@ class ULogicNode_Latch : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool State = false;
 
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
@@ -84,7 +82,7 @@ class ULogicNode_ReadNetwork : public ULogicNode {
   GENERATED_BODY()
 
   public:
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 UCLASS(BlueprintType)
@@ -92,7 +90,7 @@ class ULogicNode_WriteNetwork : public ULogicNode {
   GENERATED_BODY()
 
   public:
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 UCLASS(BlueprintType)
@@ -100,7 +98,7 @@ class ULogicNode_ReadMachine : public ULogicNode {
   GENERATED_BODY()
 
   public:
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 UCLASS(BlueprintType)
@@ -108,7 +106,7 @@ class ULogicNode_ControlMachine : public ULogicNode {
   GENERATED_BODY()
 
   public:
-  virtual void Execute(UBlockLogic* Owner, ULogicContext* Ctx) override;
+  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 // Program: collection of nodes executed in order
@@ -118,13 +116,11 @@ class ULogicProgram : public UObject, public ISerializableJson {
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<ULogicNode*> Nodes;
+  TArray<ULogicNode *> Nodes;
 
   UFUNCTION(BlueprintCallable)
-  void Execute(UBlockLogic* Owner, ULogicContext* Ctx);
+  void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx);
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
-
-

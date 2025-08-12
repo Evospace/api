@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Evospace/CoordinateSystem.h"
 #include "Public/StorageBlockLogic.h"
-
+#include "LogicInterface.h"
 #include "ChestBlockLogic.generated.h"
 
 class USolidAccessor;
@@ -11,7 +11,7 @@ class UCoreAccessor;
 class UInventory;
 
 UCLASS()
-class EVOSPACE_API UChestBlockLogic : public UStorageBlockLogic {
+class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
   GENERATED_BODY()
   using Self = UChestBlockLogic;
   EVO_CODEGEN_INSTANCE(ChestBlockLogic)
@@ -28,8 +28,9 @@ class EVOSPACE_API UChestBlockLogic : public UStorageBlockLogic {
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
 
-  // Expose chest contents to logic network via interface blocks
+  virtual TArray<FLogicExport> GetExport_Implementation() override;
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+  virtual void ApplyLogicInput(const class ULogicContext *ctx);
 
   UFUNCTION(BlueprintCallable)
   virtual void SetLimit(int32 _l);

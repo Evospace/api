@@ -1,5 +1,7 @@
 #include "Condition.h"
-
+#include "Evospace/Shared/Public/LogicContext.h"
+#include "Evospace/Shared/Public/ItemMap.h"
+#include "Public/StaticItem.h"
 #include "Evospace/JsonHelper.h"
 #include "Evospace/PerformanceStat.h"
 
@@ -57,11 +59,6 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
   switch (Mode) {
   case EConditionMode::Expr: {
     float actual = ctx->Input->Get(VarA);
-    float value = ConstValue;
-    if (!ConstB) {
-      value = ctx->Input->Get(VarB);
-    }
-
     float value = ConstValue;
     if (!ConstB) {
       value = ctx->Input->Get(VarB);
@@ -128,7 +125,7 @@ void UCondition::RemoveOperand(UCondition *op) {
 }
 
 TSubclassOf<UConditionWidget> UCondition::GetWidgetClass() const {
-  return LoadObject<UClass>(nullptr, TEXT("/Game/Gui/LogicCircuit/ConditionBlock.ConditionBlock_C"));
+  return LoadObject<UClass>(nullptr, TEXT("/Game/Gui/Logic/ConditionBlock.ConditionBlock_C"));
 }
 
 FString UCondition::GetLabel() const {
@@ -150,8 +147,23 @@ FString UCondition::GetLabel() const {
   }
 }
 
+void UCondition::Reset() {
+  VarA = nullptr;
+  VarB = nullptr;
+  ConstB = true;
+  Operator = ECompareOp::Less;
+  ConstValue = 0;
+  Mode = EConditionMode::Expr;
+  Operands.Reset();
+  OutputSignal = nullptr;
+  OutputValueTrue = 1;
+  OutputValueFalse = 0;
+}
+
 bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
   int32 value = 0;
+
+  Reset();
 
   json_helper::TryFind(json, "A", VarA);
   json_helper::TryFind(json, "B", VarB);
@@ -164,6 +176,11 @@ bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
     Mode = static_cast<EConditionMode>(value);
   }
   json_helper::TryDeserialize(json, "Arg", Operands);
+
+  // Output wiring
+  json_helper::TryFind(json, "OutSig", OutputSignal);
+  json_helper::TryGet(json, "OutT", OutputValueTrue);
+  json_helper::TryGet(json, "OutF", OutputValueFalse);
   return true;
 }
 
@@ -187,7 +204,12 @@ bool UCondition::SerializeJson(TSharedPtr<FJsonObject> json) {
   }
   json_helper::TrySerialize(json, "Arg", Operands);
 
+  if (OutputSignal)
+    json_helper::TrySet(json, "OutSig", OutputSignal);
+  if (OutputValueTrue != 1)
+    json_helper::TrySet(json, "OutT", OutputValueTrue);
+  if (OutputValueFalse != 0)
+    json_helper::TrySet(json, "OutF", OutputValueFalse);
+
   return true;
 }
-
-

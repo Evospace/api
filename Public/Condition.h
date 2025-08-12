@@ -1,23 +1,12 @@
 #pragma once
-#include "ItemMap.h"
+#include "CoreMinimal.h"
 #include "Qr/SerializableJson.h"
 #include "Condition.generated.h"
 
 class UInventoryAccess;
 class UConditionWidget;
-
-UCLASS(BlueprintType)
-class ULogicContext : public UObject {
-  GENERATED_BODY()
-  public:
-  ULogicContext();
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UItemMap *Input;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UItemMap *Output;
-};
+class ULogicContext;
+class UStaticItem;
 
 UENUM(BlueprintType)
 enum class ECompareOp : uint8 {
@@ -80,6 +69,19 @@ class UCondition : public UObject, public ISerializableJson {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 ConstValue = 0;
+
+  void Reset();
+
+  // Output configuration: if set, condition will drive this signal each tick
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  const UStaticItem *OutputSignal = nullptr;
+
+  // Value to write when condition is true/false (defaults: 1/0)
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 OutputValueTrue = 1;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 OutputValueFalse = 0;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual FString GetLabel() const;
