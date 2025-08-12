@@ -177,7 +177,6 @@ bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
   }
   json_helper::TryDeserialize(json, "Arg", Operands);
 
-  // Output wiring
   json_helper::TryFind(json, "OutSig", OutputSignal);
   json_helper::TryGet(json, "OutT", OutputValueTrue);
   json_helper::TryGet(json, "OutF", OutputValueFalse);
