@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Qr/Prototype.h"
 #include "UObject/Object.h"
+#include "Qr/Loc.h"
 #include "StaticModifier.generated.h"
 
 UCLASS(BlueprintType)

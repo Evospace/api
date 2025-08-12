@@ -4,6 +4,7 @@
 #include "Condition.generated.h"
 
 class UInventoryAccess;
+class UConditionWidget;
 
 UCLASS(BlueprintType)
 class ULogicContext : public UObject {

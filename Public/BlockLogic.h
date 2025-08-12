@@ -33,7 +33,7 @@ class AColumn;
 class ULogicContext;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UBlockLogic : public UInstance {
+class UBlockLogic : public UInstance {
   GENERATED_BODY()
   using Self = UBlockLogic;
   EVO_CODEGEN_INSTANCE(BlockLogic)
