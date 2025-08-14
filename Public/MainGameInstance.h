@@ -29,6 +29,7 @@ class UUserWidget;
 class UStaticBlock;
 class UStaticItem;
 class UAssetOwner;
+class UMapObjectManager;
 
 UENUM(BlueprintType)
 enum class EJoyImageFormats : uint8 {
@@ -298,6 +299,9 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UMapgenData *MapgenData;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UMapObjectManager *MapObjectManager;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FLinearColor IndexToColor(int32 index);

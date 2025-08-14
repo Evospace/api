@@ -17,6 +17,11 @@ struct FSubregionData final {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 ExtractedCount = 0;
 
+  // Accumulated fertility regeneration bonus provided by gameplay (e.g., fertilizer blocks).
+  // This value is consumed and reset during periodic region regeneration updates.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 RegenBoost = 0;
+
   static constexpr int Subdivision = 4;
   static constexpr FVector2i SubdivisionSize = { Subdivision, Subdivision };
 
@@ -60,6 +65,10 @@ class EVOSPACE_API URegionLayer : public UInstance {
   float GetVisualPercent(const FVector2i &pos) const;
 
   static int32 CalculateRegen(const FSubregionData &sub);
+
+  // Consumes and resets the accumulated regeneration boost for the subregion.
+  // Returns the boost amount to add on top of base regeneration this cycle.
+  static int32 ConsumeRegenBoost(FSubregionData &sub);
 
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetRegen(const FVector2i &pos) const;

@@ -73,6 +73,7 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
 
     case ECompareOp::Greater:
       if (actual > value) return 1.f;
+      if (actual == value) return 0.f;
       return value == 0.f ? 0.f : FMath::Clamp(actual / value, 0.f, 1.f);
 
     case ECompareOp::Equal: {

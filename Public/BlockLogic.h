@@ -46,6 +46,7 @@ class UBlockLogic : public UInstance {
       //--- @param accessor Accessor Accessor instance to register
       //function BlockLogic:reg(accessor) end
       .addFunction("reg", &UBlockLogic::RegisterAccessor)
+      .addProperty("map_register", &UBlockLogic::bRegisterOnMap)
       .addProperty("static_block", &UBlockLogic::mStaticBlock) //@field StaticBlock comment
       .addFunction("find_accessor", &UBlockLogic::GetAccessor)
       .endClass();
@@ -266,6 +267,9 @@ class UBlockLogic : public UInstance {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   const UStaticItem *NetworkSignal = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool bRegisterOnMap = false;
 
   RCoverWrapper Cover;
 

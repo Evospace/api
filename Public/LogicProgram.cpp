@@ -17,11 +17,11 @@ void ULogicProgram::Execute(TScriptInterface<ILogicInterface> Owner, ULogicConte
 }
 
 bool ULogicProgram::DeserializeJson(TSharedPtr<FJsonObject> json) {
-  return json_helper::TryDeserialize(json, TEXT("Nodes"), Nodes);
+  return json_helper::TryDeserializePolymorphic(json, TEXT("Nodes"), Nodes);
 }
 
 bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) {
-  json_helper::TrySerialize(json, TEXT("Nodes"), Nodes);
+  json_helper::TrySerializePolymorphic(json, TEXT("Nodes"), Nodes);
   return true;
 }
 
