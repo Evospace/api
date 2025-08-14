@@ -155,9 +155,6 @@ void UCondition::Reset() {
   ConstValue = 0;
   Mode = EConditionMode::Expr;
   Operands.Reset();
-  OutputSignal = nullptr;
-  OutputValueTrue = 1;
-  OutputValueFalse = 0;
 }
 
 bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
@@ -176,10 +173,6 @@ bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
     Mode = static_cast<EConditionMode>(value);
   }
   json_helper::TryDeserialize(json, "Arg", Operands);
-
-  json_helper::TryFind(json, "OutSig", OutputSignal);
-  json_helper::TryGet(json, "OutT", OutputValueTrue);
-  json_helper::TryGet(json, "OutF", OutputValueFalse);
   return true;
 }
 
@@ -202,13 +195,6 @@ bool UCondition::SerializeJson(TSharedPtr<FJsonObject> json) {
     json_helper::TrySet(json, "M", value);
   }
   json_helper::TrySerialize(json, "Arg", Operands);
-
-  if (OutputSignal)
-    json_helper::TrySet(json, "OutSig", OutputSignal);
-  if (OutputValueTrue != 1)
-    json_helper::TrySet(json, "OutT", OutputValueTrue);
-  if (OutputValueFalse != 0)
-    json_helper::TrySet(json, "OutF", OutputValueFalse);
 
   return true;
 }

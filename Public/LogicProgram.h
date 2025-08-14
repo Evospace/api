@@ -11,6 +11,20 @@
 class UBlockLogic;
 class ULogicContext;
 class UStaticItem;
+class UCondition;
+
+UENUM(BlueprintType)
+enum class EDeciderOutputMode : uint8 {
+  Constant,
+  CopyA
+};
+
+UENUM(BlueprintType)
+enum class EDeciderFalseBehavior : uint8 {
+  DoNothing,
+  WriteZero,
+  CopyA
+};
 
 // Base node for logic graph
 UCLASS(BlueprintType)
@@ -21,6 +35,9 @@ class ULogicNode : public UObject, public ISerializableJson {
   // Executes this node against the provided context
   UFUNCTION(BlueprintCallable)
   virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {}
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  virtual TSubclassOf<ULogicNodeWidget> GetWidgetClass() const;
 
   // Default serialization does nothing; specialized nodes override when needed
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override { return true; }
@@ -50,7 +67,27 @@ class ULogicNode_Arithmetic : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName Operation; // e.g., "Add", "Sub"
 
+  // Source operand A: read value from Input by this signal
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *SourceSignal = nullptr;
+
+  // Operand B: either const or signal
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool UseConstB = true;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 ConstB = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *SignalB = nullptr;
+
+  // Destination: if not set, writes back into SourceSignal
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *OutputSignal = nullptr;
+
   virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
 
 // Decider node: placeholder; relies on condition system elsewhere
@@ -59,7 +96,27 @@ class ULogicNode_Decider : public ULogicNode {
   GENERATED_BODY()
 
   public:
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UCondition *Condition = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *OutputSignal = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  EDeciderOutputMode OutputMode = EDeciderOutputMode::Constant;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 OutputValueTrue = 1;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  EDeciderFalseBehavior FalseBehavior = EDeciderFalseBehavior::DoNothing;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 OutputValueFalse = 0;
+
   virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
 
 // Latch node: stores boolean state, exposes as signal
@@ -120,6 +177,9 @@ class ULogicProgram : public UObject, public ISerializableJson {
 
   UFUNCTION(BlueprintCallable)
   void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  virtual TSubclassOf<ULogicProgramWidget> GetWidgetClass() const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;

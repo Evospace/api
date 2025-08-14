@@ -2,7 +2,9 @@
 #include "Evospace/Shared/Public/LogicInterface.h"
 #include "Evospace/Shared/Public/Condition.h"
 #include "Evospace/Shared/Public/LogicContext.h"
+#include "Evospace/Shared/Public/ItemMap.h"
 #include "Evospace/Shared/Public/BlockLogic.h"
+#include "Evospace/Shared/Qr/QrFind.h"
 #include "Evospace/JsonHelper.h"
 
 void ULogicProgram::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
@@ -36,7 +38,7 @@ bool ULogicNode_Constant::DeserializeJson(TSharedPtr<FJsonObject> json) {
   if (json_helper::TryGet(json, TEXT("Values"), Raw)) {
     Values.Empty();
     for (const auto &kv : Raw) {
-      if (auto *item = FindObject<UStaticItem>(ANY_PACKAGE, *kv.Key)) {
+      if (auto *item = QrFind<UStaticItem>(*kv.Key)) {
         Values.Add(item, kv.Value);
       }
     }
@@ -54,20 +56,138 @@ bool ULogicNode_Constant::SerializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-// Arithmetic (minimal: Add/Sub over Output map)
+// Arithmetic
 void ULogicNode_Arithmetic::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
-  const bool bSub = (Operation == FName("Sub"));
-  for (auto &Pair : Ctx->Output->Map) {
-    int64 &v = Pair.Value;
-    if (bSub)
-      v = -v; // simplistic placeholder
-    // Add: no-op; combine will happen when maps merge in following nodes
+  if (!Ctx || !Ctx->Output)
+    return;
+
+  if (!SourceSignal)
+    return;
+
+  auto apply = [&](int64 a, int64 b) -> int64 {
+    if (Operation == TEXT("Add")) return a + b;
+    if (Operation == TEXT("Sub")) return a - b;
+    if (Operation == TEXT("Mul")) return a * b;
+    if (Operation == TEXT("Div")) return b == 0 ? 0 : a / b;
+    if (Operation == TEXT("Mod")) return b == 0 ? 0 : a % b;
+    return a;
+  };
+
+  const int64 a = Ctx->Input ? Ctx->Input->Get(SourceSignal) : 0;
+  const int64 b = UseConstB ? ConstB : (Ctx->Input ? Ctx->Input->Get(SignalB) : 0);
+  const int64 res = apply(a, b);
+
+  UStaticItem *dst = OutputSignal ? OutputSignal : SourceSignal;
+  Ctx->Output->Set(dst, res);
+}
+
+// Decider
+void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+  if (!Ctx || !Ctx->Output || !Condition || !OutputSignal)
+    return;
+
+  const bool bPassed = Condition->Evaluate(Ctx) != 0;
+
+  auto writeCopyA = [&]() {
+    const int64 val = (Condition->VarA ? Ctx->Input->Get(Condition->VarA) : 0);
+    Ctx->Output->Set(OutputSignal, val);
+  };
+
+  if (bPassed) {
+    switch (OutputMode) {
+    case EDeciderOutputMode::Constant:
+      Ctx->Output->Set(OutputSignal, OutputValueTrue);
+      break;
+    case EDeciderOutputMode::CopyA:
+      writeCopyA();
+      break;
+    default:
+      break;
+    }
+  } else {
+    switch (FalseBehavior) {
+    case EDeciderFalseBehavior::DoNothing:
+      break;
+    case EDeciderFalseBehavior::WriteZero:
+      Ctx->Output->Set(OutputSignal, OutputValueFalse);
+      break;
+    case EDeciderFalseBehavior::CopyA:
+      writeCopyA();
+      break;
+    default:
+      break;
+    }
   }
 }
 
-// Decider placeholder
-void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
-  // For MVP rely on existing UCondition in ULogicCircuitBlockLogic Tick
+bool ULogicNode_Decider::DeserializeJson(TSharedPtr<FJsonObject> json) {
+  if (!Condition) {
+    Condition = NewObject<UCondition>(this, UCondition::StaticClass());
+  }
+  json_helper::TryDeserialize(json, TEXT("Cond"), Condition);
+  json_helper::TryFind(json, TEXT("OutSig"), OutputSignal);
+
+  int32 modeInt = static_cast<int32>(OutputMode);
+  if (json_helper::TryGet(json, TEXT("Mode"), modeInt))
+    OutputMode = static_cast<EDeciderOutputMode>(modeInt);
+
+  json_helper::TryGet(json, TEXT("OutT"), OutputValueTrue);
+
+  int32 fbInt = static_cast<int32>(FalseBehavior);
+  if (json_helper::TryGet(json, TEXT("False"), fbInt))
+    FalseBehavior = static_cast<EDeciderFalseBehavior>(fbInt);
+
+  json_helper::TryGet(json, TEXT("OutF"), OutputValueFalse);
+  return true;
+}
+
+bool ULogicNode_Decider::SerializeJson(TSharedPtr<FJsonObject> json) {
+  json_helper::TrySerialize(json, TEXT("Cond"), Condition);
+  if (OutputSignal)
+    json_helper::TrySet(json, TEXT("OutSig"), OutputSignal);
+
+  if (OutputMode != EDeciderOutputMode::Constant) {
+    int32 modeInt = static_cast<int32>(OutputMode);
+    json_helper::TrySet(json, TEXT("Mode"), modeInt);
+  }
+
+  if (OutputValueTrue != 1)
+    json_helper::TrySet(json, TEXT("OutT"), OutputValueTrue);
+
+  if (FalseBehavior != EDeciderFalseBehavior::DoNothing) {
+    int32 fbInt = static_cast<int32>(FalseBehavior);
+    json_helper::TrySet(json, TEXT("False"), fbInt);
+  }
+
+  if (OutputValueFalse != 0)
+    json_helper::TrySet(json, TEXT("OutF"), OutputValueFalse);
+  return true;
+}
+
+bool ULogicNode_Arithmetic::DeserializeJson(TSharedPtr<FJsonObject> json) {
+  json_helper::TryGet(json, TEXT("Op"), Operation);
+  json_helper::TryFind(json, TEXT("A"), SourceSignal);
+  json_helper::TryGet(json, TEXT("UseConstB"), UseConstB);
+  json_helper::TryGet(json, TEXT("ConstB"), ConstB);
+  json_helper::TryFind(json, TEXT("SigB"), SignalB);
+  json_helper::TryFind(json, TEXT("OutSig"), OutputSignal);
+  return true;
+}
+
+bool ULogicNode_Arithmetic::SerializeJson(TSharedPtr<FJsonObject> json) {
+  if (!Operation.IsNone())
+    json_helper::TrySet(json, TEXT("Op"), Operation);
+  if (SourceSignal)
+    json_helper::TrySet(json, TEXT("A"), SourceSignal);
+  if (UseConstB == false)
+    json_helper::TrySet(json, TEXT("UseConstB"), UseConstB);
+  if (ConstB != 0)
+    json_helper::TrySet(json, TEXT("ConstB"), ConstB);
+  if (SignalB)
+    json_helper::TrySet(json, TEXT("SigB"), SignalB);
+  if (OutputSignal)
+    json_helper::TrySet(json, TEXT("OutSig"), OutputSignal);
+  return true;
 }
 
 // Latch
@@ -113,4 +233,12 @@ void ULogicNode_ReadMachine::Execute(TScriptInterface<ILogicInterface> Owner, UL
 void ULogicNode_ControlMachine::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (Owner)
     Owner->ApplyLogicInput(Ctx);
+}
+
+TSubclassOf<ULogicProgramWidget> ULogicProgram::GetWidgetClass() const {
+  return LoadObject<UClass>(nullptr, TEXT("/Game/Gui/Logic/LogicProgramWidgetBP.LogicProgramWidgetBP_C"));
+}
+
+TSubclassOf<ULogicNodeWidget> ULogicNode::GetWidgetClass() const {
+  return LoadObject<UClass>(nullptr, TEXT("/Game/Gui/Logic/LogicNodeWidgetBP.LogicNodeWidgetBP_C"));
 }

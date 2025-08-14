@@ -56,10 +56,10 @@ class UCondition : public UObject, public ISerializableJson {
   EConditionMode Mode = EConditionMode::Expr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  const UStaticItem *VarA = nullptr;
+  UStaticItem *VarA = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  const UStaticItem *VarB = nullptr;
+  UStaticItem *VarB = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool ConstB = true;
@@ -71,17 +71,6 @@ class UCondition : public UObject, public ISerializableJson {
   int64 ConstValue = 0;
 
   void Reset();
-
-  // Output configuration: if set, condition will drive this signal each tick
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  const UStaticItem *OutputSignal = nullptr;
-
-  // Value to write when condition is true/false (defaults: 1/0)
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 OutputValueTrue = 1;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 OutputValueFalse = 0;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual FString GetLabel() const;
