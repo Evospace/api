@@ -28,7 +28,7 @@ enum class EDeciderFalseBehavior : uint8 {
 
 // Base node for logic graph
 UCLASS(BlueprintType)
-class ULogicNode : public UObject, public ISerializableJson {
+class EVOSPACE_API ULogicNode : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
   public:
@@ -46,7 +46,7 @@ class ULogicNode : public UObject, public ISerializableJson {
 
 // Constant node: writes fixed values to Output
 UCLASS(BlueprintType)
-class ULogicNode_Constant : public ULogicNode {
+class EVOSPACE_API ULogicNode_Constant : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -60,7 +60,7 @@ class ULogicNode_Constant : public ULogicNode {
 
 // Arithmetic node: applies simple arithmetic to Output
 UCLASS(BlueprintType)
-class ULogicNode_Arithmetic : public ULogicNode {
+class EVOSPACE_API ULogicNode_Arithmetic : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -92,7 +92,7 @@ class ULogicNode_Arithmetic : public ULogicNode {
 
 // Decider node: placeholder; relies on condition system elsewhere
 UCLASS(BlueprintType)
-class ULogicNode_Decider : public ULogicNode {
+class EVOSPACE_API ULogicNode_Decider : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -121,7 +121,7 @@ class ULogicNode_Decider : public ULogicNode {
 
 // Latch node: stores boolean state, exposes as signal
 UCLASS(BlueprintType)
-class ULogicNode_Latch : public ULogicNode {
+class EVOSPACE_API ULogicNode_Latch : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -135,7 +135,7 @@ class ULogicNode_Latch : public ULogicNode {
 
 // IO nodes: placeholders to integrate with network/machines
 UCLASS(BlueprintType)
-class ULogicNode_ReadNetwork : public ULogicNode {
+class EVOSPACE_API ULogicNode_ReadNetwork : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -143,7 +143,7 @@ class ULogicNode_ReadNetwork : public ULogicNode {
 };
 
 UCLASS(BlueprintType)
-class ULogicNode_WriteNetwork : public ULogicNode {
+class EVOSPACE_API ULogicNode_WriteNetwork : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -151,7 +151,7 @@ class ULogicNode_WriteNetwork : public ULogicNode {
 };
 
 UCLASS(BlueprintType)
-class ULogicNode_ReadMachine : public ULogicNode {
+class EVOSPACE_API ULogicNode_ReadMachine : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -159,7 +159,7 @@ class ULogicNode_ReadMachine : public ULogicNode {
 };
 
 UCLASS(BlueprintType)
-class ULogicNode_ControlMachine : public ULogicNode {
+class EVOSPACE_API ULogicNode_ControlMachine : public ULogicNode {
   GENERATED_BODY()
 
   public:
@@ -168,7 +168,7 @@ class ULogicNode_ControlMachine : public ULogicNode {
 
 // Program: collection of nodes executed in order
 UCLASS(BlueprintType)
-class ULogicProgram : public UObject, public ISerializableJson {
+class EVOSPACE_API ULogicProgram : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
   public:

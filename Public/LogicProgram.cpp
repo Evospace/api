@@ -3,6 +3,7 @@
 #include "Evospace/Shared/Public/Condition.h"
 #include "Evospace/Shared/Public/LogicContext.h"
 #include "Evospace/Shared/Public/ItemMap.h"
+#include "Evospace/Shared/Public/StaticItem.h"
 #include "Evospace/Shared/Public/BlockLogic.h"
 #include "Evospace/Shared/Qr/QrFind.h"
 #include "Evospace/JsonHelper.h"
@@ -203,14 +204,14 @@ bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) {
 
 void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface>Owner, ULogicContext *Ctx) {
   // Set/Reset by special signals (e.g., Signal_Set, Signal_Reset)
-  const UStaticItem *SigSet = FindObject<UStaticItem>(ANY_PACKAGE, TEXT("Signal_Set"));
-  const UStaticItem *SigReset = FindObject<UStaticItem>(ANY_PACKAGE, TEXT("Signal_Reset"));
+  const UStaticItem *SigSet = QrFind<UStaticItem>("Signal_Set");
+  const UStaticItem *SigReset = QrFind<UStaticItem>("Signal_Reset");
   if (SigSet && Ctx->Input->Has(SigSet))
     State = true;
   if (SigReset && Ctx->Input->Has(SigReset))
     State = false;
   // Expose state as Signal_Latch
-  const UStaticItem *SigLatch = FindObject<UStaticItem>(ANY_PACKAGE, TEXT("Signal_Latch"));
+  const UStaticItem *SigLatch = QrFind<UStaticItem>("Signal_Latch");
   if (SigLatch)
     Ctx->Output->Set(SigLatch, State ? 1 : 0);
 }
