@@ -11,7 +11,7 @@
 void ULogicProgram::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (!Ctx)
     return;
-  for (auto *Node : Nodes) {
+  for (auto Node : Nodes) {
     if (Node)
       Node->Execute(Owner, Ctx);
   }
