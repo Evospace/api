@@ -347,9 +347,21 @@ class EVOSPACE_API UHeatConductorBlockLogic : public UConductorBlockLogic {
   virtual void UpdateSides(UAccessor *except) override;
 
   int64 GetCharge() const override;
+};
 
-  protected:
-  virtual void BlockBeginPlay() override;
+UCLASS()
+class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
+  GENERATED_BODY()
+  public:
+  UDataConductorBlockLogic();
+
+  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
+
+  virtual bool IsDataNetwork() const override { return true; }
+
+  virtual int32 GetChannel() const override { return 6000; }
+
+  void UpdateSides(UAccessor *except) override;
 };
 
 UCLASS()
