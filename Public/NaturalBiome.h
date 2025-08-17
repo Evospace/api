@@ -14,4 +14,5 @@ enum class ENaturalBiome : uint8 {
   TropicalForest = 7, // (8, 250, 54)
   Sea = 8, // (35, 48, 224)
   Volcano = 9, // (255, 0, 0)
+  FertileForest = 10, // top-level fertile forest biome
 };

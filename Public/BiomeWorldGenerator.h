@@ -15,6 +15,8 @@
 
 #include "BiomeWorldGenerator.generated.h"
 
+// Removed sub-biome export; no lookup struct needed.
+
 struct FNoiseArray;
 class UStaticBlock;
 class UGlobalBiomeFamily;
@@ -47,6 +49,8 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   UStaticBlock *UnderworldBlock;
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, caves, caves2;
+
+  // Removed sub-biome export; no lookup API
 
   public:
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)
