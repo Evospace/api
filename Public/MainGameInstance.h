@@ -116,7 +116,7 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UPROPERTY()
   TArray<UWorldGenerator *> mWorldGenerators;
 
-  UPROPERTY()
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   UWorldGenerator *mWorldGenerator;
 
   public:
