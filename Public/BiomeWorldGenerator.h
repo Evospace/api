@@ -50,8 +50,6 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
 
-  // Removed sub-biome export; no lookup API
-
   public:
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
