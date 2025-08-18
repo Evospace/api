@@ -33,8 +33,6 @@ class UGlobalBiomeFamily : public UBiomeFamily {
   FColumnMaps mColumnMaps;
   std::unique_ptr<FastNoiseSIMD> mNoisePlanetSphere;
   std::unique_ptr<FastNoiseSIMD> mNoisePlanetSphereSmall;
-  std::unique_ptr<FastNoiseSIMD> mNoisePlanetWetness;
-  std::unique_ptr<FastNoiseSIMD> mNoisePlanetTemperature;
 
   virtual void SetSeed(int32 seed) override;
 };
