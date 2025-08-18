@@ -48,7 +48,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   UPROPERTY()
   UStaticBlock *UnderworldBlock;
 
-  std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell, caves, caves2;
+  std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
 
   // Removed sub-biome export; no lookup API
 
