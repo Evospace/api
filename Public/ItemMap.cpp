@@ -1,6 +1,8 @@
 #include "ItemMap.h"
 
+#include "Public/InventoryAccess.h"
 #include "Qr/Ensure.h"
+#include "Public/BaseInventory.h"
 
 int64 UItemMap::Get(const UStaticItem *Item) const {
   if (const int64 *Val = Map.Find(Item)) {
@@ -37,6 +39,23 @@ void UItemMap::FromInventory(const UInventoryReader *reader) {
     if (data.mItem != nullptr && data.mValue != 0) {
       Add(data.mItem, data.mValue);
     }
+  }
+}
+
+void UItemMap::FromInventoryOptimized(const UInventoryAccess *reader, int64& LastInventoryVersion) {
+  if (!expect_once(reader, "ItemMap::FromInventoryOptimized with nullptr InventoryReader"))
+    return;
+
+  auto CurrentVersion = reader->GetVersion();
+  
+  if (CurrentVersion != LastInventoryVersion) {
+    Clear();
+    for (const auto &data : reader->GetSlots()) {
+      if (data.mItem != nullptr && data.mValue != 0) {
+        Add(data.mItem, data.mValue);
+      }
+    }
+    LastInventoryVersion = CurrentVersion;
   }
 }
 void UItemMap::Subtract(const UStaticItem *Item, int64 Delta) {

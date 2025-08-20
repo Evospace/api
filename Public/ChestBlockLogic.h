@@ -10,6 +10,7 @@
 class USolidAccessor;
 class UCoreAccessor;
 class UInventory;
+class UItemMap;
 
 UCLASS()
 class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
@@ -51,6 +52,12 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
   // Logic I/O configuration: which signals to export/import and control rules
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   ULogicSignal *Signal = nullptr;
+
+  mutable int64 LastKnownInventoryVersion = 0;
+
+  // Cached snapshot of exported signals to avoid rebuilding every tick
+  UPROPERTY()
+  UItemMap *CachedOutput = nullptr;
 
   protected:
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

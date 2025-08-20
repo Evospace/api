@@ -69,11 +69,20 @@ class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   TArray<UInventoryAccess *> &GetList();
 
+  virtual int64 GetVersion() const override { return Version; }
+  
+  virtual void IncrementVersion() override { ++Version; }
+  
+  virtual void ResetVersion() override { Version = 0; }
+
   private:
   UPROPERTY(EditAnywhere)
   TArray<UInventoryAccess *> mList;
 
   std::optional<std::pair<int32, int32>> ListIndex(int32 index) const;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  int64 Version = 0;
 
   public:
   int32 InventoryCount();

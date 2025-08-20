@@ -21,12 +21,9 @@ class EVOSPACE_API UAutoCrafter : public USelectCrafter {
   GENERATED_BODY()
 
   protected:
-  UAutoCrafter();
-
   virtual void Tick() override;
 
-  UPROPERTY()
-  class UNonSerializedAutosizeInventory *mLastInventory;
+  mutable int64 LastKnownInventoryVersion = 0;
 
   public:
   virtual bool IsUniversalCrafter() const override;

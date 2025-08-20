@@ -45,6 +45,12 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   UFUNCTION(BlueprintCallable)
   virtual void SetWidgetClass(TSubclassOf<UInventoryWidgetBase> widget_class);
 
+  virtual int64 GetVersion() const override { return Version; }
+  
+  virtual void IncrementVersion() override { ++Version; }
+  
+  virtual void ResetVersion() override { Version = 0; }
+
   void SetFilter(UInventoryFilter *filter);
 
   virtual UInventoryFilter *GetFilter() const override;
@@ -72,6 +78,11 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 Capacity = INDEX_NONE;
+
+  // Performance optimization: Version counter for change detection
+  // Increments whenever inventory contents change
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  int64 Version = 0;
 
   protected:
   bool CheckFilter(const FItemData &data);
