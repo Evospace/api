@@ -158,7 +158,13 @@
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-Region">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="core.html#lua-Instance" title="Instance"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Instance</span></code></a><a class="headerlink" href="#lua-Region" title="Link to this definition">¶</a><br /></dt>
-<dd><dl class="lua method">
+<dd><dl class="lua data">
+<dt class="sig sig-object lua" id="lua-Region.pos">
+<span class="sig-name descname"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Vec2i</span></code><a class="headerlink" href="#lua-Region.pos" title="Link to this definition">¶</a><br /></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua method">
 <dt class="sig sig-object lua" id="lua-Region.add_structure">
 <span class="sig-name descname"><span class="pre">add_structure</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-Region" title="Region"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Region</span></code></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-MapStructure" title="MapStructure"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">MapStructure</span></code></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-Region.add_structure" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Add structure to this Region</p>
@@ -645,6 +651,23 @@
 <dt class="sig sig-object lua" id="lua-Dimension.settings">
 <span class="sig-name descname"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="engine.html#lua-GameSessionData" title="GameSessionData"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">GameSessionData</span></code></a><a class="headerlink" href="#lua-Dimension.settings" title="Link to this definition">¶</a><br /></dt>
 <dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua" id="lua-Dimension.spawn_block_identity">
+<span class="sig-name descname"><span class="pre">spawn_block_identity</span></span><span class="p"><span class="pre">(</span></span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-Dimension" title="Dimension"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Dimension</span></code></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">bpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Vec3i</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">staticObject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocks.html#lua-StaticBlock" title="StaticBlock"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticBlock</span></code></a><br /><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">The</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocks.html#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-Dimension.spawn_block_identity" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Spawn a block with full identity at the given position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bpos</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Vec3i</span></code>) – Block position</p></li>
+<li><p><strong>staticObject</strong> (<a class="reference internal" href="blocks.html#lua-StaticBlock" title="StaticBlock"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">StaticBlock</span></code></a>) – Block type to spawn</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>The</strong> (<a class="reference internal" href="blocks.html#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">BlockLogic</span></code></a>) – spawned block logic instance</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
