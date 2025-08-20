@@ -574,6 +574,7 @@ function BiomeFamily.cast(object) end
 --- 
 --- @class ChestBlockLogic : StorageBlockLogic
 --- @field capacity integer Chest slot count
+--- @field signal LogicSignal undocumented
 ChestBlockLogic = {}
 
 --- Creates a new ChestBlockLogic instance
@@ -767,6 +768,12 @@ function DB.cast(object) end
 --- @field settings GameSessionData undocumented
 Dimension = {}
 
+---Spawn a block with full identity at the given position
+---@param bpos Vec3i Block position
+---@param staticObject StaticBlock Block type to spawn
+---@return BlockLogic The spawned block logic instance
+function Dimension:spawn_block_identity(bpos, staticObject) end
+
 --- 
 --- 
 --- @class DrillingMachineBase : BlockLogic
@@ -826,6 +833,10 @@ function DrillingRig.cast(object) end
 --- @class EngineData : Instance
 --- @field props_mul number undocumented
 --- @field dpi number undocumented
+--- @field mouse_sensitivity_x number undocumented
+--- @field mouse_sensitivity_y number undocumented
+--- @field mouse_inversion_x boolean undocumented
+--- @field mouse_inversion_y boolean undocumented
 --- @field props_quality number undocumented
 --- @field reflection_preset integer undocumented
 --- @field transparency_preset integer undocumented
@@ -845,6 +856,8 @@ function DrillingRig.cast(object) end
 EngineData = {}
 
 function EngineData:apply() end
+
+function EngineData:show_confirmation() end
 
 --- Creates a new EngineData instance
 --- @param parent Object Object of parent
@@ -1316,6 +1329,1815 @@ function BiomeFamily.cast(object) end
 
 --- 
 --- 
+--- @class LogicExportOption : Prototype
+--- @field signal StaticItem Signal
+--- @field enabled bool Enabled
+--- @field label FLoc Label
+--- @field tooltip FLoc Tooltip
+LogicExportOption = {}
+
+--- Register a new LogicExportOption static object
+--- @param name string The name of the object
+--- @return LogicExportOption
+function LogicExportOption.reg(name) end
+
+--- Searching for LogicExportOption in db
+--- @param name string The name of the object
+--- @return LogicExportOption
+function LogicExportOption.find(name) end
+
+--- Return LogicExportOption class object
+--- @return Class
+function LogicExportOption.get_class() end
+
+--- Trying to cast Object into LogicExportOption
+--- @param object Object to cast
+--- @return LogicExportOption
+function LogicExportOption.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode : LogicNode
+LogicNode = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_Arithmetic : LogicNode
+LogicNode_Arithmetic = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_ControlMachine : LogicNode
+LogicNode_ControlMachine = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_Decider : LogicNode
+LogicNode_Decider = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_Latch : LogicNode
+LogicNode_Latch = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_ReadMachine : LogicNode
+LogicNode_ReadMachine = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_ReadNetwork : LogicNode
+LogicNode_ReadNetwork = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicNode_WriteNetwork : LogicNode
+LogicNode_WriteNetwork = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicProgram : LogicNode
+LogicProgram = {}
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode
+function LogicNode.new(parent, name) end
+
+--- Creates a new LogicNode instance
+--- @return LogicNode
+function LogicNode.new_simple() end
+
+--- Return LogicNode class object
+--- @return Class
+function LogicNode.get_class() end
+
+--- Trying to cast Object into LogicNode
+--- @param object Object to cast
+--- @return LogicNode
+function LogicNode.cast(object) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new(parent, name) end
+
+--- Creates a new LogicNode_Arithmetic instance
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.new_simple() end
+
+--- Return LogicNode_Arithmetic class object
+--- @return Class
+function LogicNode_Arithmetic.get_class() end
+
+--- Trying to cast Object into LogicNode_Arithmetic
+--- @param object Object to cast
+--- @return LogicNode_Arithmetic
+function LogicNode_Arithmetic.cast(object) end
+
+--- Creates a new LogicNode_Decider instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new(parent, name) end
+
+--- Creates a new LogicNode_Decider instance
+--- @return LogicNode_Decider
+function LogicNode_Decider.new_simple() end
+
+--- Return LogicNode_Decider class object
+--- @return Class
+function LogicNode_Decider.get_class() end
+
+--- Trying to cast Object into LogicNode_Decider
+--- @param object Object to cast
+--- @return LogicNode_Decider
+function LogicNode_Decider.cast(object) end
+
+--- Creates a new LogicNode_Latch instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new(parent, name) end
+
+--- Creates a new LogicNode_Latch instance
+--- @return LogicNode_Latch
+function LogicNode_Latch.new_simple() end
+
+--- Return LogicNode_Latch class object
+--- @return Class
+function LogicNode_Latch.get_class() end
+
+--- Trying to cast Object into LogicNode_Latch
+--- @param object Object to cast
+--- @return LogicNode_Latch
+function LogicNode_Latch.cast(object) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_ReadNetwork instance
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.new_simple() end
+
+--- Return LogicNode_ReadNetwork class object
+--- @return Class
+function LogicNode_ReadNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadNetwork
+--- @param object Object to cast
+--- @return LogicNode_ReadNetwork
+function LogicNode_ReadNetwork.cast(object) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new(parent, name) end
+
+--- Creates a new LogicNode_WriteNetwork instance
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.new_simple() end
+
+--- Return LogicNode_WriteNetwork class object
+--- @return Class
+function LogicNode_WriteNetwork.get_class() end
+
+--- Trying to cast Object into LogicNode_WriteNetwork
+--- @param object Object to cast
+--- @return LogicNode_WriteNetwork
+function LogicNode_WriteNetwork.cast(object) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ReadMachine instance
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.new_simple() end
+
+--- Return LogicNode_ReadMachine class object
+--- @return Class
+function LogicNode_ReadMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ReadMachine
+--- @param object Object to cast
+--- @return LogicNode_ReadMachine
+function LogicNode_ReadMachine.cast(object) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new(parent, name) end
+
+--- Creates a new LogicNode_ControlMachine instance
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.new_simple() end
+
+--- Return LogicNode_ControlMachine class object
+--- @return Class
+function LogicNode_ControlMachine.get_class() end
+
+--- Trying to cast Object into LogicNode_ControlMachine
+--- @param object Object to cast
+--- @return LogicNode_ControlMachine
+function LogicNode_ControlMachine.cast(object) end
+
+--- Creates a new LogicProgram instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicProgram
+function LogicProgram.new(parent, name) end
+
+--- Creates a new LogicProgram instance
+--- @return LogicProgram
+function LogicProgram.new_simple() end
+
+--- Return LogicProgram class object
+--- @return Class
+function LogicProgram.get_class() end
+
+--- Trying to cast Object into LogicProgram
+--- @param object Object to cast
+--- @return LogicProgram
+function LogicProgram.cast(object) end
+
+--- 
+--- 
+--- @class LogicSignal : Instance
+--- @field export LogicExportOption[] undocumented
+--- @field import LogicExportOption[] undocumented
+LogicSignal = {}
+
+--- Creates a new LogicSignal instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return LogicSignal
+function LogicSignal.new(parent, name) end
+
+--- Creates a new LogicSignal instance
+--- @return LogicSignal
+function LogicSignal.new_simple() end
+
+--- Return LogicSignal class object
+--- @return Class
+function LogicSignal.get_class() end
+
+--- Trying to cast Object into LogicSignal
+--- @param object Object to cast
+--- @return LogicSignal
+function LogicSignal.cast(object) end
+
+--- 
+--- 
 --- @class MapStructure : Object
 --- @field offset Vec2i undocumented
 --- @field structure StaticStructure undocumented
@@ -1685,6 +3507,7 @@ function RecipeInventory.cast(object) end
 --- 
 --- 
 --- @class Region : Instance
+--- @field pos Vec2i undocumented
 Region = {}
 
 ---Add structure to this Region
@@ -1843,7 +3666,6 @@ function ResourceInventory.cast(object) end
 --- 
 --- 
 --- @class SelectCrafter : AbstractCrafter
---- @field ignore_extra_slots bool undocumented
 SelectCrafter = {}
 
 --- Creates a new SelectCrafter instance
@@ -1873,6 +3695,9 @@ function SelectCrafter.cast(object) end
 --- @field label string undocumented
 --- @field type string undocumented
 --- @field category string undocumented
+--- @field bool_value boolean undocumented
+--- @field bool_default_value boolean undocumented
+--- @field string_value string undocumented
 --- @field string_value string undocumented
 --- @field string_options string[] undocumented
 --- @field int_value integer undocumented

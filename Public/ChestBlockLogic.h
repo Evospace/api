@@ -4,6 +4,7 @@
 #include "Evospace/CoordinateSystem.h"
 #include "Public/StorageBlockLogic.h"
 #include "LogicInterface.h"
+#include "Public/LogicSignal.h"
 #include "ChestBlockLogic.generated.h"
 
 class USolidAccessor;
@@ -19,6 +20,7 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStorageBlockLogic>("ChestBlockLogic") //@class ChestBlockLogic : StorageBlockLogic
       .addProperty("capacity", &Self::Capacity) //@field integer Chest slot count
+      .addProperty("signal", &Self::Signal) //@field LogicSignal
       .endClass();
   }
 
@@ -30,7 +32,8 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
 
   virtual TArray<FLogicExport> GetExport_Implementation() override;
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
-  virtual void ApplyLogicInput(const class ULogicContext *ctx);
+
+  virtual void ApplyLogicInput(const class ULogicContext *ctx) override {}
 
   UFUNCTION(BlueprintCallable)
   virtual void SetLimit(int32 _l);
@@ -44,6 +47,10 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int Capacity = 20;
+
+  // Logic I/O configuration: which signals to export/import and control rules
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  ULogicSignal *Signal = nullptr;
 
   protected:
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
