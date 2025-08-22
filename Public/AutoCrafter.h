@@ -2,7 +2,7 @@
 #pragma once
 #include "Public/SelectCrafter.h"
 #include "CoreMinimal.h"
-#include "Evospace/Blocks/ItemHopperInterface.h"
+ 
 
 #include "AutoCrafter.generated.h"
 
