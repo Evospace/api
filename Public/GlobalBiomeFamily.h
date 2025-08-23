@@ -1,5 +1,6 @@
 #pragma once
-#include "MiscGeneratorClasses.h"
+#include "BiomeFamily.h"
+#include "Evospace/World/BlockCell.h"
 #include "GlobalBiomeFamily.generated.h"
 
 struct FNoiseArray;
@@ -10,7 +11,7 @@ class UGlobalBiomeFamily : public UBiomeFamily {
   PROTOTYPE_CODEGEN(GlobalBiomeFamily, Biome)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UGlobalBiomeFamily, UBiomeFamily>("GlobalBiomeFamily")
+      .deriveClass<UGlobalBiomeFamily, UBiomeFamily>("GlobalBiomeFamily") //@class GlobalBiomeFamily : BiomeFamily
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {
@@ -23,7 +24,6 @@ class UGlobalBiomeFamily : public UBiomeFamily {
   virtual IndexType GetBiome(const Vec2i &pos) const override;
 
   virtual float GetHeight(const FVector2D &pos) const override;
-  virtual float GetGrad(const FVector2D &pos) const override;
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biom) const;
 
   void GetColumnMapsCell(class UTextureReader *reader, const FNoiseArray &set_w, const FNoiseArray &set_h, const FNoiseArray &set_h2, const FNoiseArray &set_t, int i, float &out_h, float &out_b) const;

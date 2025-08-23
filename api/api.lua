@@ -17,6 +17,9 @@ Instance = {}
 --- @field down Vec3i = (0, 0, -1)
 --- @field front Vec3i = (1, 0, 0)
 --- @field back Vec3i = (-1, 0, 0)
+--- @field x integer
+--- @field y integer
+--- @field z integer
 Vec3i = {}
 
 --- Float vector 3
@@ -30,6 +33,9 @@ Vec3i = {}
 --- @field down Vec3 = (0, 0, -1)
 --- @field front Vec3 = (1, 0, 0)
 --- @field back Vec3 = (-1, 0, 0)
+--- @field x number
+--- @field y number
+--- @field z number
 Vec3 = {}
 
 --- @param x integer 
@@ -43,6 +49,8 @@ function Vec3i.new(x, y, z) end
 --- @class Vec2i
 --- @field zero Vec2i
 --- @field one Vec2i
+--- @field x integer
+--- @field y integer
 Vec2i = {}
 
 --- @param x integer 
@@ -163,10 +171,46 @@ StaticMesh = {}
 --- @return StaticMesh
 function StaticMesh.load(path) end
 
-
 --- @param path string path to the object
 --- @return SoundClass
 function SoundClass.load(path) end
+
+---
+---
+--- @class Dimension
+dim = {}
+
+---@meta
+-- Lua bindings for coordinate system conversion (via LuaBridge).
+-- Provides utility functions for converting between block, sector, and world coordinates.
+
+---@class cs
+cs = {}
+
+---Convert a block position to a sector position.
+---@param bpos Vec3i # Block position (integer vector).
+---@return Vec3i     # Sector position.
+function cs.bp2sp(bpos) end
+
+---Convert a world position to a block position.
+---@param world FVector # World position (floating-point vector).
+---@return Vec3i        # Block position (integer vector).
+function cs.w2bp(world) end
+
+---Convert a block position to a world position.
+---@param bpos Vec3i # Block position (integer vector).
+---@return FVector   # World position (floating-point vector).
+function cs.bp2w(bpos) end
+
+---Convert a world position to a sector position.
+---@param world FVector # World position (floating-point vector).
+---@return Vec3i        # Sector position.
+function cs.w2sp(world) end
+
+---Global sector size.
+---@type Vec3i
+cs.sector_size = Vec3i.new(16, 16, 16)
+
 
 -- end of common --
 
@@ -308,82 +352,6 @@ function BaseInventory.cast(object) end
 --- @class Biome : Prototype
 Biome = {}
 
---- Register a new LayeringGenerator static object
---- @param name string The name of the object
---- @return LayeringGenerator
-function LayeringGenerator.reg(name) end
-
---- Searching for LayeringGenerator in db
---- @param name string The name of the object
---- @return LayeringGenerator
-function LayeringGenerator.find(name) end
-
---- Return LayeringGenerator class object
---- @return Class
-function LayeringGenerator.get_class() end
-
---- Trying to cast Object into LayeringGenerator
---- @param object Object to cast
---- @return LayeringGenerator
-function LayeringGenerator.cast(object) end
-
---- Register a new SimpleLayeringGenerator static object
---- @param name string The name of the object
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.reg(name) end
-
---- Searching for SimpleLayeringGenerator in db
---- @param name string The name of the object
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.find(name) end
-
---- Return SimpleLayeringGenerator class object
---- @return Class
-function SimpleLayeringGenerator.get_class() end
-
---- Trying to cast Object into SimpleLayeringGenerator
---- @param object Object to cast
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.cast(object) end
-
---- Register a new ChancedLayeringGenerator static object
---- @param name string The name of the object
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.reg(name) end
-
---- Searching for ChancedLayeringGenerator in db
---- @param name string The name of the object
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.find(name) end
-
---- Return ChancedLayeringGenerator class object
---- @return Class
-function ChancedLayeringGenerator.get_class() end
-
---- Trying to cast Object into ChancedLayeringGenerator
---- @param object Object to cast
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.cast(object) end
-
---- Register a new PropsGenerator static object
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.reg(name) end
-
---- Searching for PropsGenerator in db
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.find(name) end
-
---- Return PropsGenerator class object
---- @return Class
-function PropsGenerator.get_class() end
-
---- Trying to cast Object into PropsGenerator
---- @param object Object to cast
---- @return PropsGenerator
-function PropsGenerator.cast(object) end
-
 --- Register a new Biome static object
 --- @param name string The name of the object
 --- @return Biome
@@ -403,6 +371,11 @@ function Biome.get_class() end
 --- @return Biome
 function Biome.cast(object) end
 
+--- 
+--- 
+--- @class BiomeFamily : Biome
+BiomeFamily = {}
+
 --- Register a new BiomeFamily static object
 --- @param name string The name of the object
 --- @return BiomeFamily
@@ -421,6 +394,31 @@ function BiomeFamily.get_class() end
 --- @param object Object to cast
 --- @return BiomeFamily
 function BiomeFamily.cast(object) end
+
+--- 
+--- 
+--- @class BiomeWorldGenerator : WorldGenerator
+--- @field global_biome GlobalBiomeFamily undocumented
+BiomeWorldGenerator = {}
+
+--- Register a new BiomeWorldGenerator static object
+--- @param name string The name of the object
+--- @return BiomeWorldGenerator
+function BiomeWorldGenerator.reg(name) end
+
+--- Searching for BiomeWorldGenerator in db
+--- @param name string The name of the object
+--- @return BiomeWorldGenerator
+function BiomeWorldGenerator.find(name) end
+
+--- Return BiomeWorldGenerator class object
+--- @return Class
+function BiomeWorldGenerator.get_class() end
+
+--- Trying to cast Object into BiomeWorldGenerator
+--- @param object Object to cast
+--- @return BiomeWorldGenerator
+function BiomeWorldGenerator.cast(object) end
 
 --- 
 --- 
@@ -512,63 +510,6 @@ function ChancedLayeringGenerator.get_class() end
 --- @param object Object to cast
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
-
---- Register a new PropsGenerator static object
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.reg(name) end
-
---- Searching for PropsGenerator in db
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.find(name) end
-
---- Return PropsGenerator class object
---- @return Class
-function PropsGenerator.get_class() end
-
---- Trying to cast Object into PropsGenerator
---- @param object Object to cast
---- @return PropsGenerator
-function PropsGenerator.cast(object) end
-
---- Register a new Biome static object
---- @param name string The name of the object
---- @return Biome
-function Biome.reg(name) end
-
---- Searching for Biome in db
---- @param name string The name of the object
---- @return Biome
-function Biome.find(name) end
-
---- Return Biome class object
---- @return Class
-function Biome.get_class() end
-
---- Trying to cast Object into Biome
---- @param object Object to cast
---- @return Biome
-function Biome.cast(object) end
-
---- Register a new BiomeFamily static object
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.reg(name) end
-
---- Searching for BiomeFamily in db
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.find(name) end
-
---- Return BiomeFamily class object
---- @return Class
-function BiomeFamily.get_class() end
-
---- Trying to cast Object into BiomeFamily
---- @param object Object to cast
---- @return BiomeFamily
-function BiomeFamily.cast(object) end
 
 --- 
 --- 
@@ -768,11 +709,27 @@ function DB.cast(object) end
 --- @field settings GameSessionData undocumented
 Dimension = {}
 
+---Spawn a block at the given position
+---@param bpos Vec3i Block position
+---@param quat Quat Rotation
+---@param staticBlock StaticBlock Block type to spawn
+---@return BlockLogic The spawned block logic instance
+function Dimension:spawn_block(bpos, quat, staticBlock) end
+
 ---Spawn a block with full identity at the given position
 ---@param bpos Vec3i Block position
----@param staticObject StaticBlock Block type to spawn
+---@param staticBlock StaticBlock Block type to spawn with identity rotation
 ---@return BlockLogic The spawned block logic instance
-function Dimension:spawn_block_identity(bpos, staticObject) end
+function Dimension:spawn_block_identity(bpos, staticBlock) end
+
+---Set a block cell at the given position
+---@param bpos Vec3i Block position
+---@param cl StaticBlock|nil Block type to set
+function Dimension:set_cell(bpos, cl) end
+
+---Clear all props at the given position
+---@param bpos Vec3i Block position
+function Dimension:clear_props(bpos) end
 
 --- 
 --- 
@@ -974,6 +931,58 @@ function GameSessionData.get_class() end
 --- @param object Object to cast
 --- @return GameSessionData
 function GameSessionData.cast(object) end
+
+--- 
+--- 
+--- @class GlobalBiomeFamily : BiomeFamily
+GlobalBiomeFamily = {}
+
+--- Register a new GlobalBiomeFamily static object
+--- @param name string The name of the object
+--- @return GlobalBiomeFamily
+function GlobalBiomeFamily.reg(name) end
+
+--- Searching for GlobalBiomeFamily in db
+--- @param name string The name of the object
+--- @return GlobalBiomeFamily
+function GlobalBiomeFamily.find(name) end
+
+--- Return GlobalBiomeFamily class object
+--- @return Class
+function GlobalBiomeFamily.get_class() end
+
+--- Trying to cast Object into GlobalBiomeFamily
+--- @param object Object to cast
+--- @return GlobalBiomeFamily
+function GlobalBiomeFamily.cast(object) end
+
+--- 
+--- 
+--- @class HeightGenerator : Prototype
+HeightGenerator = {}
+
+---Add a noise generator to the height generator
+---@param noise NoiseGenerator Noise generator to add
+function HeightGenerator:add_noise(noise) end
+
+--- Register a new HeightGenerator static object
+--- @param name string The name of the object
+--- @return HeightGenerator
+function HeightGenerator.reg(name) end
+
+--- Searching for HeightGenerator in db
+--- @param name string The name of the object
+--- @return HeightGenerator
+function HeightGenerator.find(name) end
+
+--- Return HeightGenerator class object
+--- @return Class
+function HeightGenerator.get_class() end
+
+--- Trying to cast Object into HeightGenerator
+--- @param object Object to cast
+--- @return HeightGenerator
+function HeightGenerator.cast(object) end
 
 --- 
 --- 
@@ -1269,63 +1278,6 @@ function ChancedLayeringGenerator.get_class() end
 --- @param object Object to cast
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
-
---- Register a new PropsGenerator static object
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.reg(name) end
-
---- Searching for PropsGenerator in db
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.find(name) end
-
---- Return PropsGenerator class object
---- @return Class
-function PropsGenerator.get_class() end
-
---- Trying to cast Object into PropsGenerator
---- @param object Object to cast
---- @return PropsGenerator
-function PropsGenerator.cast(object) end
-
---- Register a new Biome static object
---- @param name string The name of the object
---- @return Biome
-function Biome.reg(name) end
-
---- Searching for Biome in db
---- @param name string The name of the object
---- @return Biome
-function Biome.find(name) end
-
---- Return Biome class object
---- @return Class
-function Biome.get_class() end
-
---- Trying to cast Object into Biome
---- @param object Object to cast
---- @return Biome
-function Biome.cast(object) end
-
---- Register a new BiomeFamily static object
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.reg(name) end
-
---- Searching for BiomeFamily in db
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.find(name) end
-
---- Return BiomeFamily class object
---- @return Class
-function BiomeFamily.get_class() end
-
---- Trying to cast Object into BiomeFamily
---- @param object Object to cast
---- @return BiomeFamily
-function BiomeFamily.cast(object) end
 
 --- 
 --- 
@@ -3171,6 +3123,66 @@ function MapgenData.get_class() end
 --- @return MapgenData
 function MapgenData.cast(object) end
 
+--- 
+--- 
+--- @class NoiseGenerator : Prototype
+--- @field min number undocumented
+--- @field max number undocumented
+NoiseGenerator = {}
+
+---Set the seed for noise generation
+---@param seed integer Seed value
+function NoiseGenerator:set_seed(seed) end
+
+---Get the noise value at the given position
+---@param x number X coordinate
+---@param y number Y coordinate
+---@param z number Z coordinate
+function NoiseGenerator:get_noise(x, y, z) end
+
+---Set the noise type
+---@param noise_type string Noise type
+function NoiseGenerator:set_noise_type(noise_type) end
+
+---Set the frequency for noise generation
+---@param frequency number Frequency value
+function NoiseGenerator:set_frequency(frequency) end
+
+---Set the fractal octaves for noise generation
+---@param octaves integer Octaves value
+function NoiseGenerator:set_fractal_octaves(octaves) end
+
+---Set the fractal gain for noise generation
+---@param gain number Gain value
+function NoiseGenerator:set_fractal_gain(gain) end
+
+---Set the fractal lacunarity for noise generation
+---@param lacunarity number Lacunarity value
+function NoiseGenerator:set_fractal_lacunarity(lacunarity) end
+
+---Set the fractal type for noise generation
+---@param fractal_type string Fractal type
+function NoiseGenerator:set_fractal_type(fractal_type) end
+
+--- Register a new NoiseGenerator static object
+--- @param name string The name of the object
+--- @return NoiseGenerator
+function NoiseGenerator.reg(name) end
+
+--- Searching for NoiseGenerator in db
+--- @param name string The name of the object
+--- @return NoiseGenerator
+function NoiseGenerator.find(name) end
+
+--- Return NoiseGenerator class object
+--- @return Class
+function NoiseGenerator.get_class() end
+
+--- Trying to cast Object into NoiseGenerator
+--- @param object Object to cast
+--- @return NoiseGenerator
+function NoiseGenerator.cast(object) end
+
 --- Structure that stores several StaticProp records (prop variations) with shared spawn chance
 --- 
 --- @class PropListData : Struct
@@ -3185,63 +3197,6 @@ function PropListData.new() end
 --- 
 --- @class PropsGenerator : Prototype
 PropsGenerator = {}
-
---- Register a new LayeringGenerator static object
---- @param name string The name of the object
---- @return LayeringGenerator
-function LayeringGenerator.reg(name) end
-
---- Searching for LayeringGenerator in db
---- @param name string The name of the object
---- @return LayeringGenerator
-function LayeringGenerator.find(name) end
-
---- Return LayeringGenerator class object
---- @return Class
-function LayeringGenerator.get_class() end
-
---- Trying to cast Object into LayeringGenerator
---- @param object Object to cast
---- @return LayeringGenerator
-function LayeringGenerator.cast(object) end
-
---- Register a new SimpleLayeringGenerator static object
---- @param name string The name of the object
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.reg(name) end
-
---- Searching for SimpleLayeringGenerator in db
---- @param name string The name of the object
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.find(name) end
-
---- Return SimpleLayeringGenerator class object
---- @return Class
-function SimpleLayeringGenerator.get_class() end
-
---- Trying to cast Object into SimpleLayeringGenerator
---- @param object Object to cast
---- @return SimpleLayeringGenerator
-function SimpleLayeringGenerator.cast(object) end
-
---- Register a new ChancedLayeringGenerator static object
---- @param name string The name of the object
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.reg(name) end
-
---- Searching for ChancedLayeringGenerator in db
---- @param name string The name of the object
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.find(name) end
-
---- Return ChancedLayeringGenerator class object
---- @return Class
-function ChancedLayeringGenerator.get_class() end
-
---- Trying to cast Object into ChancedLayeringGenerator
---- @param object Object to cast
---- @return ChancedLayeringGenerator
-function ChancedLayeringGenerator.cast(object) end
 
 --- Register a new PropsGenerator static object
 --- @param name string The name of the object
@@ -3261,44 +3216,6 @@ function PropsGenerator.get_class() end
 --- @param object Object to cast
 --- @return PropsGenerator
 function PropsGenerator.cast(object) end
-
---- Register a new Biome static object
---- @param name string The name of the object
---- @return Biome
-function Biome.reg(name) end
-
---- Searching for Biome in db
---- @param name string The name of the object
---- @return Biome
-function Biome.find(name) end
-
---- Return Biome class object
---- @return Class
-function Biome.get_class() end
-
---- Trying to cast Object into Biome
---- @param object Object to cast
---- @return Biome
-function Biome.cast(object) end
-
---- Register a new BiomeFamily static object
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.reg(name) end
-
---- Searching for BiomeFamily in db
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.find(name) end
-
---- Return BiomeFamily class object
---- @return Class
-function BiomeFamily.get_class() end
-
---- Trying to cast Object into BiomeFamily
---- @param object Object to cast
---- @return BiomeFamily
-function BiomeFamily.cast(object) end
 
 --- Database record
 --- 
@@ -3815,63 +3732,6 @@ function ChancedLayeringGenerator.get_class() end
 --- @param object Object to cast
 --- @return ChancedLayeringGenerator
 function ChancedLayeringGenerator.cast(object) end
-
---- Register a new PropsGenerator static object
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.reg(name) end
-
---- Searching for PropsGenerator in db
---- @param name string The name of the object
---- @return PropsGenerator
-function PropsGenerator.find(name) end
-
---- Return PropsGenerator class object
---- @return Class
-function PropsGenerator.get_class() end
-
---- Trying to cast Object into PropsGenerator
---- @param object Object to cast
---- @return PropsGenerator
-function PropsGenerator.cast(object) end
-
---- Register a new Biome static object
---- @param name string The name of the object
---- @return Biome
-function Biome.reg(name) end
-
---- Searching for Biome in db
---- @param name string The name of the object
---- @return Biome
-function Biome.find(name) end
-
---- Return Biome class object
---- @return Class
-function Biome.get_class() end
-
---- Trying to cast Object into Biome
---- @param object Object to cast
---- @return Biome
-function Biome.cast(object) end
-
---- Register a new BiomeFamily static object
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.reg(name) end
-
---- Searching for BiomeFamily in db
---- @param name string The name of the object
---- @return BiomeFamily
-function BiomeFamily.find(name) end
-
---- Return BiomeFamily class object
---- @return Class
-function BiomeFamily.get_class() end
-
---- Trying to cast Object into BiomeFamily
---- @param object Object to cast
---- @return BiomeFamily
-function BiomeFamily.cast(object) end
 
 --- 
 --- 

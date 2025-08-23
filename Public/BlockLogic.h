@@ -1,6 +1,8 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/HitResult.h"
 #include "Qr/Prototype.h"
 #include "Evospace/BreakResult.h"
 #include "Evospace/Common.h"

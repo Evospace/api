@@ -24,6 +24,7 @@ class EVOSPACE_API UWorldGenerator : public UPrototype {
   UFUNCTION(BlueprintCallable)
   virtual void Initialize();
 
+  //TODO: remove
   UFUNCTION(BlueprintCallable)
   virtual void LoadBiomeFamily();
 

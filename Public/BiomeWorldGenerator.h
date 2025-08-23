@@ -64,14 +64,14 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FVector2i &sbpos, const Vec2i &orePos, TArray<float> &HeightCache, int w, int d) const;
 
-  virtual void LoadBiomeFamily() override;
+  virtual void LoadBiomeFamily() override {}
 
   std::vector<UStaticBlock *> ores_map;
 
-  UPROPERTY()
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UGlobalBiomeFamily *mGlobalBiome;
 
-  UPROPERTY()
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UStaticBlock *UnderworldBlock;
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
@@ -83,13 +83,27 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiomeWorldGenerator, UWorldGenerator>("WorldGeneratorBiome")
+      .deriveClass<UBiomeWorldGenerator, UWorldGenerator>("BiomeWorldGenerator") //@class BiomeWorldGenerator : WorldGenerator
+      .addProperty("global_biome", &UBiomeWorldGenerator::mGlobalBiome) //@field GlobalBiomeFamily
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {
     return UWorldGenerator::StaticClass();
   }
 };
+
+/**
+ *
+ */
+ UCLASS(BlueprintType)
+ class UWorldGeneratorLegacy : public UBiomeWorldGenerator {
+   GENERATED_BODY()
+ 
+   public:
+   UWorldGeneratorLegacy();
+   virtual void LoadBiomeFamily() override;
+ };
+ 
 
 /**
  *

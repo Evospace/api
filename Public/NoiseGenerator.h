@@ -124,17 +124,51 @@ class UNoiseGenerator : public UPrototype {
   PROTOTYPE_CODEGEN(NoiseGenerator, NoiseGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UNoiseGenerator, UPrototype>("NoiseGenerator")
+      .deriveClass<UNoiseGenerator, UPrototype>("NoiseGenerator") //@class NoiseGenerator : Prototype
+      //direct:
+      //---Set the seed for noise generation
+      //---@param seed integer Seed value
+      //function NoiseGenerator:set_seed(seed) end
       .addFunction("set_seed", &UNoiseGenerator::set_seed)
+      //direct:
+      //---Get the noise value at the given position
+      //---@param x number X coordinate
+      //---@param y number Y coordinate
+      //---@param z number Z coordinate
+      //function NoiseGenerator:get_noise(x, y, z) end
       .addFunction("get_noise", &UNoiseGenerator::get_noise)
+      //direct:
+      //---Set the noise type
+      //---@param noise_type string Noise type
+      //function NoiseGenerator:set_noise_type(noise_type) end
       .addFunction("set_noise_type", &UNoiseGenerator::set_noise_type)
+      //direct:
+      //---Set the frequency for noise generation
+      //---@param frequency number Frequency value
+      //function NoiseGenerator:set_frequency(frequency) end
       .addFunction("set_frequency", &UNoiseGenerator::set_frequency)
+      //direct:
+      //---Set the fractal octaves for noise generation
+      //---@param octaves integer Octaves value
+      //function NoiseGenerator:set_fractal_octaves(octaves) end
       .addFunction("set_fractal_octaves", &UNoiseGenerator::set_fractal_octaves)
+      //direct:
+      //---Set the fractal gain for noise generation
+      //---@param gain number Gain value
+      //function NoiseGenerator:set_fractal_gain(gain) end
       .addFunction("set_fractal_gain", &UNoiseGenerator::set_fractal_gain)
+      //direct:
+      //---Set the fractal lacunarity for noise generation
+      //---@param lacunarity number Lacunarity value
+      //function NoiseGenerator:set_fractal_lacunarity(lacunarity) end
       .addFunction("set_fractal_lacunarity", &UNoiseGenerator::set_fractal_lacunarity)
+      //direct:
+      //---Set the fractal type for noise generation
+      //---@param fractal_type string Fractal type
+      //function NoiseGenerator:set_fractal_type(fractal_type) end
       .addFunction("set_fractal_type", &UNoiseGenerator::set_fractal_type)
-      .addProperty("min", &UNoiseGenerator::min)
-      .addProperty("max", &UNoiseGenerator::max)
+      .addProperty("min", &UNoiseGenerator::min) //@field number
+      .addProperty("max", &UNoiseGenerator::max) //@field number
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {

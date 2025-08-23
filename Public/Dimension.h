@@ -57,15 +57,31 @@ class ADimension : public AActor {
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ADimension, AActor>("Dimension") //@class Dimension : Actor
+      //direct:
+      //---Spawn a block at the given position
+      //---@param bpos Vec3i Block position
+      //---@param quat Quat Rotation
+      //---@param staticBlock StaticBlock Block type to spawn
+      //---@return BlockLogic The spawned block logic instance
+      //function Dimension:spawn_block(bpos, quat, staticBlock) end
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
       //direct:
       //---Spawn a block with full identity at the given position
       //---@param bpos Vec3i Block position
-      //---@param staticObject StaticBlock Block type to spawn
+      //---@param staticBlock StaticBlock Block type to spawn with identity rotation
       //---@return BlockLogic The spawned block logic instance
-      //function Dimension:spawn_block_identity(bpos, staticObject) end
+      //function Dimension:spawn_block_identity(bpos, staticBlock) end
       .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
+      //direct:
+      //---Set a block cell at the given position
+      //---@param bpos Vec3i Block position
+      //---@param cl StaticBlock|nil Block type to set
+      //function Dimension:set_cell(bpos, cl) end
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
+      //direct:
+      //---Clear all props at the given position
+      //---@param bpos Vec3i Block position
+      //function Dimension:clear_props(bpos) end
       .addFunction("clear_props", &ADimension::LuaCleanProps)
       .addProperty("settings", &ADimension::DimSettings) //@field GameSessionData
       .endClass();

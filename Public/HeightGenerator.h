@@ -21,7 +21,11 @@ class EVOSPACE_API UHeightGenerator : public UPrototype {
   PROTOTYPE_CODEGEN(HeightGenerator, HeightGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UHeightGenerator, UPrototype>("HeightGenerator")
+      .deriveClass<UHeightGenerator, UPrototype>("HeightGenerator") //@class HeightGenerator : Prototype
+      //direct:
+      //---Add a noise generator to the height generator
+      //---@param noise NoiseGenerator Noise generator to add
+      //function HeightGenerator:add_noise(noise) end
       .addFunction("add_noise", [](UHeightGenerator *self, UNoiseGenerator *noise) {
         if (!noise) {
           LOG(ERROR_LL) << "Trying to add nullptr noise generator to " << self->GetName();

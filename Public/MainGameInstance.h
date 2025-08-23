@@ -30,6 +30,7 @@ class UStaticBlock;
 class UStaticItem;
 class UAssetOwner;
 class UMapObjectManager;
+class UStaticMesh;
 
 UENUM(BlueprintType)
 enum class EJoyImageFormats : uint8 {

@@ -17,6 +17,9 @@ Instance = {}
 --- @field down Vec3i = (0, 0, -1)
 --- @field front Vec3i = (1, 0, 0)
 --- @field back Vec3i = (-1, 0, 0)
+--- @field x integer
+--- @field y integer
+--- @field z integer
 Vec3i = {}
 
 --- Float vector 3
@@ -30,6 +33,9 @@ Vec3i = {}
 --- @field down Vec3 = (0, 0, -1)
 --- @field front Vec3 = (1, 0, 0)
 --- @field back Vec3 = (-1, 0, 0)
+--- @field x number
+--- @field y number
+--- @field z number
 Vec3 = {}
 
 --- @param x integer 
@@ -43,6 +49,8 @@ function Vec3i.new(x, y, z) end
 --- @class Vec2i
 --- @field zero Vec2i
 --- @field one Vec2i
+--- @field x integer
+--- @field y integer
 Vec2i = {}
 
 --- @param x integer 
@@ -163,7 +171,42 @@ StaticMesh = {}
 --- @return StaticMesh
 function StaticMesh.load(path) end
 
-
 --- @param path string path to the object
 --- @return SoundClass
 function SoundClass.load(path) end
+
+---
+---
+--- @class Dimension
+dim = {}
+
+---@meta
+-- Lua bindings for coordinate system conversion (via LuaBridge).
+-- Provides utility functions for converting between block, sector, and world coordinates.
+
+---@class cs
+cs = {}
+
+---Convert a block position to a sector position.
+---@param bpos Vec3i # Block position (integer vector).
+---@return Vec3i     # Sector position.
+function cs.bp2sp(bpos) end
+
+---Convert a world position to a block position.
+---@param world FVector # World position (floating-point vector).
+---@return Vec3i        # Block position (integer vector).
+function cs.w2bp(world) end
+
+---Convert a block position to a world position.
+---@param bpos Vec3i # Block position (integer vector).
+---@return FVector   # World position (floating-point vector).
+function cs.bp2w(bpos) end
+
+---Convert a world position to a sector position.
+---@param world FVector # World position (floating-point vector).
+---@return Vec3i        # Sector position.
+function cs.w2sp(world) end
+
+---Global sector size.
+---@type Vec3i
+cs.sector_size = Vec3i.new(16, 16, 16)

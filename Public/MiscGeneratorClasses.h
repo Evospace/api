@@ -4,11 +4,14 @@
 #include "CoreMinimal.h"
 #include "FastNoiseSIMD.h"
 #include "PropList.h"
-#include "array"
-#include "functional"
-#include "map"
-#include "memory"
-#include "vector"
+#include "Qr/Prototype.h"
+#include "Evospace/Shared/Public/Biome.h"
+
+#include <array>
+#include <functional>
+#include <map>
+#include <memory>
+#include <vector>
 
 #include "MiscGeneratorClasses.generated.h"
 #define SetMacro()                                                            \
@@ -22,29 +25,7 @@ class UStaticProp;
 class UStaticPropList;
 class ULayeringGenerator;
 class UBiome;
-
-struct LayeringNode {
-  LayeringNode(UStaticBlock *_block)
-    : block(_block) {}
-
-  LayeringNode() {}
-
-  UStaticBlock *block = nullptr;
-};
-
-struct Layering {
-  std::map<unsigned short, LayeringNode, std::greater<unsigned short>> layers;
-
-  UStaticBlock *at(int depth) {
-    const auto &l_node = layers.lower_bound(depth);
-
-    if (ensure(l_node != layers.end())) {
-      return std::get<1>(*l_node).block;
-    }
-
-    return nullptr;
-  }
-};
+class UHeightGenerator;
 
 enum class StructureSize {
   s32x32,
@@ -93,7 +74,7 @@ constexpr Vec2i baked_size{ gFlatSectorSize * 2.f + 4.f }; // sub block + bicubi
 constexpr Vec2i baked_smooth_size{ (gFlatSectorSize + SmoothKernelRadius) * 2.f }; // sub block + smooth
 
 UCLASS()
-class ULayeringGenerator : public UPrototype {
+class EVOSPACE_API ULayeringGenerator : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(LayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
@@ -106,19 +87,16 @@ class ULayeringGenerator : public UPrototype {
   }
 
   public:
-  virtual Layering GetLayering(const Vec2i &pos) const;
+  virtual FLayering GetLayering(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void SetSeed(int32 seed);
-
-  UPROPERTY()
-  UBiome *mBiome;
 
   protected:
   TArray<UStaticBlock *> mBlocks;
 };
 
 UCLASS()
-class USimpleLayeringGenerator : public ULayeringGenerator {
+class EVOSPACE_API USimpleLayeringGenerator : public ULayeringGenerator {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(SimpleLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
@@ -131,7 +109,7 @@ class USimpleLayeringGenerator : public ULayeringGenerator {
   }
 
   public:
-  virtual Layering GetLayering(const Vec2i &pos) const override;
+  virtual FLayering GetLayering(const Vec2i &pos) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   protected:
@@ -140,7 +118,7 @@ class USimpleLayeringGenerator : public ULayeringGenerator {
 };
 
 UCLASS()
-class UChancedLayeringGenerator : public USimpleLayeringGenerator {
+class EVOSPACE_API UChancedLayeringGenerator : public USimpleLayeringGenerator {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(ChancedLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
@@ -153,111 +131,11 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   }
 
   public:
-  virtual Layering GetLayering(const Vec2i &pos) const override;
+  virtual FLayering GetLayering(const Vec2i &pos) const override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   protected:
   TArray<UStaticBlock *> mLayerChanceBlock;
   TArray<float> mChances;
-};
-
-UCLASS()
-class UPropsGenerator : public UPrototype {
-  GENERATED_BODY()
-  PROTOTYPE_CODEGEN(PropsGenerator, PropsGenerator)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UPropsGenerator, UPrototype>("SimpleLayeringGenerator") //@class PropsGenerator : Prototype
-      .endClass();
-  }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
-
-  public:
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &start_point) const;
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  UPROPERTY()
-  UBiome *mBiome = nullptr;
-
-  virtual void SetSeed(int32 seed);
-
-  UPROPERTY()
-  UStaticPropList *proplist = nullptr;
-};
-
-UCLASS()
-class UBiome : public UPrototype {
-  GENERATED_BODY()
-  PROTOTYPE_CODEGEN(Biome, Biome)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiome, UPrototype>("Biome") //@class Biome : Prototype
-      .endClass();
-  }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
-
-  public:
-  virtual Layering GetLayering(const Vec2i &pos) const;
-  virtual float GetHeight(const FVector2D &pos) const;
-  virtual float GetGrad(const FVector2D &pos) const;
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
-  virtual float GetWeight(const FVector2D &pos) const;
-  virtual IndexType GetBiome(const Vec2i &pos) const;
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual void SetSeed(int32 seed);
-
-  UPROPERTY()
-  ULayeringGenerator *layering = nullptr;
-
-  UPROPERTY()
-  UPropsGenerator *props = nullptr;
-};
-
-UCLASS()
-class UBiomeFamily : public UBiome {
-  GENERATED_BODY()
-  PROTOTYPE_CODEGEN(BiomeFamily, Biome)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiomeFamily, UBiome>("BiomeFamily")
-      .addProperty("sub_biomes", &UBiomeFamily::mSubBiomes)
-      .addProperty("sub_frequency", &UBiomeFamily::mSubFrequency)
-      .endClass();
-  }
-  virtual UClass *GetSuperProto() const override {
-    return UBiome::StaticClass();
-  }
-
-  public:
-  UBiomeFamily();
-
-  // Only baked
-  virtual Layering GetLayering(const Vec2i &pos) const override;
-
-  virtual float GetHeight(const FVector2D &pos) const override;
-
-  virtual float GetGrad(const FVector2D &pos) const override;
-
-  // Only baked
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;
-
-  // Only baked
-  virtual IndexType GetBiome(const Vec2i &pos) const override;
-
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  virtual void SetSeed(int32 seed) override;
-
-  std::vector<UBiome *> mSubBiomes;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  float mSubFrequency = 0.016f;
-
-  protected:
-  std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
 };
