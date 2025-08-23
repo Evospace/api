@@ -18,7 +18,7 @@
 // Removed sub-biome export; no lookup struct needed.
 
 USTRUCT(BlueprintType)
-struct FCaveNoiseSettings {
+struct FCarveNoiseSettings {
   GENERATED_BODY()
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
@@ -41,6 +41,28 @@ struct FCaveNoiseSettings {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   int32 FractalOctaves = 3;
+  
+  // Canyon parameters
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  bool bCanyonEnable = false;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonFrequency = 0.0015f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  int32 CanyonFractalOctaves = 5;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonThreshold = 0.7f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonScale = 4.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonCarveStrength = 1.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonMaxDepthBlocks = 48.0f;
 };
 
 struct FNoiseArray;
@@ -77,7 +99,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  FCaveNoiseSettings CaveSettings;
+  FCarveNoiseSettings CarveSettings;
 
   public:
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)

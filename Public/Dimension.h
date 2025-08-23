@@ -14,6 +14,7 @@
 #include <Containers/CircularBuffer.h>
 #include <Engine/EngineTypes.h>
 #include <Math/Vector.h>
+#include <Containers/Ticker.h>
 
 #include <memory>
 
@@ -21,7 +22,6 @@
 
 class UStaticCover;
 class UGraphStorage;
-class UGameSessionData;
 class UStaticIndexedItemInstancedStaticMeshComponent;
 class AWorldFeaturesManager;
 namespace evo {
@@ -42,6 +42,7 @@ class USectorCompiler;
 class APlayerController;
 class UDimensionLoadWidget;
 class URegionMap;
+class UGameSessionData;
 
 USTRUCT()
 struct EVOSPACE_API FStatictics {
@@ -83,7 +84,6 @@ class ADimension : public AActor {
       //---@param bpos Vec3i Block position
       //function Dimension:clear_props(bpos) end
       .addFunction("clear_props", &ADimension::LuaCleanProps)
-      .addProperty("settings", &ADimension::DimSettings) //@field GameSessionData
       .endClass();
   }
 
@@ -133,7 +133,11 @@ class ADimension : public AActor {
 
   UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject, const FQuat &rot);
 
+  UFUNCTION(BlueprintCallable)
   virtual void BeginPlay() override;
+
+  UPROPERTY(VisibleAnywhere)
+  UGameSessionData *GameSessionData;
 
   void LoadDimJson();
 
@@ -162,9 +166,6 @@ class ADimension : public AActor {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UGraphStorage *ResourceGraph;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UGameSessionData *DimSettings;
 
   UPROPERTY(VisibleAnywhere)
   UDimensionPropComponent *DimensionPropComponent;

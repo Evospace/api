@@ -31,6 +31,7 @@ class UStaticItem;
 class UAssetOwner;
 class UMapObjectManager;
 class UStaticMesh;
+class UGameSessionData;
 
 UENUM(BlueprintType)
 enum class EJoyImageFormats : uint8 {
@@ -121,17 +122,14 @@ class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
   UWorldGenerator *mWorldGenerator;
 
   public:
-  UFUNCTION(BlueprintCallable)
-  void SetCreativeAllowed(bool allowed);
-
-  UFUNCTION(BlueprintCallable)
-  bool GetCreativeAllowed();
-
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   bool mAllResearchesFinished = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+  UGameSessionData *GameSessionData;
 
   //TODO: what is it?
   UFUNCTION(BlueprintCallable, BlueprintPure)

@@ -30,6 +30,9 @@ class EVOSPACE_API UGameSessionData : public UInstance {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  bool GetCreativeAllowed() const;
+
   UFUNCTION(BlueprintCallable)
   FString GetModsCombined() const;
 
