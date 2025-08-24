@@ -64,10 +64,10 @@ class EVOSPACE_API UStaticBlock : public UStaticObject {
   UClass *mSelectorClass = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  FVector mColorSide = FVector(1);
+  FLinearColor mColorSide = FLinearColor::White;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  FVector mColorTop = FVector(1);
+  FLinearColor mColorTop = FLinearColor::White;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<FVector3i> Positions;
