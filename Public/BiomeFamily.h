@@ -47,4 +47,11 @@ class EVOSPACE_API UBiomeFamily : public UBiome {
 
   protected:
   std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
+  std::unique_ptr<FastNoiseSIMD> mWarpNoise;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float WarpFrequency = 0.05f;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  int32 WarpOctaves = 4;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float WarpAmplitude = 6.0f;
 };
