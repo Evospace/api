@@ -16,7 +16,6 @@
 #include "BiomeWorldGenerator.generated.h"
 
 // Removed sub-biome export; no lookup struct needed.
-
 USTRUCT(BlueprintType)
 struct FCarveNoiseSettings {
   GENERATED_BODY()
@@ -44,13 +43,19 @@ struct FCarveNoiseSettings {
   
   // Canyon parameters
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  bool bCanyonEnable = false;
+  bool bCanyonEnable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  float CanyonFrequency = 0.0015f;
+  float CanyonFrequency = 0.02f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  int32 CanyonFractalOctaves = 5;
+  float CanyonPerturbFrequency = 2.f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonPerturbAmp = 0.002f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  int32 CanyonFractalOctaves = 3;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
   float CanyonThreshold = 0.7f;
@@ -59,10 +64,22 @@ struct FCarveNoiseSettings {
   float CanyonScale = 4.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  float CanyonCarveStrength = 1.0f;
+  float CanyonCarveStrength = 4.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  float CanyonMaxDepthBlocks = 48.0f;
+  float CanyonMaxDepthBlocks = 10.0f;
+
+  // Canyon mask controls (2D simplex): disable canyons on ~80% of the map softly
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonMaskFrequency = 0.016f;
+
+  // Fraction of area where canyons are enabled (0..1). 0.2 => 80% disabled
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonMaskCoverage = 0.35f;
+
+  // Soft transition half-width in [0..1] space for mask gating
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
+  float CanyonMaskSoftness = 0.05f;
 };
 
 struct FNoiseArray;
@@ -97,6 +114,9 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   UStaticBlock *UnderworldBlock;
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
+  // Canyon noises stored on the generator instance
+  std::unique_ptr<FastNoiseSIMD> canyon_mask2d;  // Simplex fractal mask in XY
+  std::unique_ptr<FastNoiseSIMD> canyon_cell3d;  // Cellular distance field in 3D
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   FCarveNoiseSettings CarveSettings;
