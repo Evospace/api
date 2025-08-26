@@ -84,6 +84,13 @@ class ADimension : public AActor {
       //---@param bpos Vec3i Block position
       //function Dimension:clear_props(bpos) end
       .addFunction("clear_props", &ADimension::LuaCleanProps)
+      //direct:
+      //---Sample terrain height at XY in world-cell coordinates
+      //---@param x number X coordinate (world cells)
+      //---@param y number Y coordinate (world cells)
+      //---@return number Height in cells
+      //.function Dimension:sample_height(x, y) end
+      .addFunction("sample_height", &ADimension::LuaSampleHeight)
       .endClass();
   }
 
@@ -118,6 +125,9 @@ class ADimension : public AActor {
   void LoadDimentionFolder();
   void LuaSetBlockCell(const Vec3i &bpos, const UStaticBlock *cl);
   void LuaCleanProps(const Vec3i &bpos);
+
+  // Lua: dim:sample_height(x, y)
+  float LuaSampleHeight(float x, float y) const;
 
   UBlockLogic *LuaSpawnBlockLogicDefault(const Vec3i &bpos, const UStaticBlock *cl);
   UBlockLogic *LuaSpawnBlockLogic(const Vec3i &bpos, const FQuat &block_q, const UStaticBlock *cl);
