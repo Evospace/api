@@ -21,6 +21,9 @@ class UMapWidgetData : public UObject, public ISerializableJson {
   bool OreNames = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  bool MapObjects = false;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool OreDescription = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -41,6 +44,7 @@ inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TrySet(json, "OreDescription", OreDescription);
   json_helper::TrySet(json, "PercentText", PercentText);
   json_helper::TrySet(json, "SpawnPoint", SpawnPoint);
+  json_helper::TrySet(json, "MapObjects", MapObjects);
   return true;
 }
 
@@ -52,5 +56,6 @@ inline bool UMapWidgetData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "OreDescription", OreDescription);
   json_helper::TryGet(json, "PercentText", PercentText);
   json_helper::TryGet(json, "SpawnPoint", SpawnPoint);
+  json_helper::TryGet(json, "MapObjects", MapObjects);
   return true;
 }

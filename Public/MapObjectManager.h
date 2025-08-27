@@ -12,6 +12,7 @@
  */
 class UStaticItem;
 class UBlockLogic;
+class UEvoRegion;
 
 UCLASS(BlueprintType)
 class EVOSPACE_API UMapObjectManager : public UObject {
@@ -30,10 +31,16 @@ class EVOSPACE_API UMapObjectManager : public UObject {
   const TMap<const UStaticItem *, TArray<UBlockLogic*>> &GetBuckets() const { return ItemToBlocks; }
   const TArray<UBlockLogic*> *GetForItem(const UStaticItem *Item) const { return ItemToBlocks.Find(Item); }
 
+  // Minimap overlay update API
+  UFUNCTION(BlueprintCallable)
+  void ReportBuilt(UBlockLogic *Block);
+
   private:
 
   // Not a UPROPERTY: nested containers of weak pointers are not reflected/serialized and we don't need GC tracking here
   TMap<const UStaticItem *, TArray<UBlockLogic *>> ItemToBlocks;
+
+  static void MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color);
 };
 
 

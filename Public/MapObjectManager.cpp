@@ -1,6 +1,9 @@
 #include "MapObjectManager.h"
 #include "Public/BlockLogic.h"
 #include "Public/StaticItem.h"
+#include "Public/MainGameInstance.h"
+#include "Public/RegionMap.h"
+#include "Public/EvoRegion.h"
 
 void UMapObjectManager::Register(UBlockLogic *Block, const UStaticItem *Item) {
   if (!Block || !Item) return;
@@ -29,6 +32,43 @@ void UMapObjectManager::UnregisterAll(UBlockLogic *Block) {
       It.RemoveCurrent();
     }
   }
+}
+
+
+void UMapObjectManager::ReportBuilt(UBlockLogic *Block) {
+  if (!Block) return;
+  const auto gi = UMainGameInstance::Singleton;
+  if (!gi || !gi->mRegionMap) return;
+
+  const FVector3i wb = Block->GetWorldPosition();
+  const FVector2i grid = URegionMap::WorldBlockToGrid(wb);
+  UEvoRegion *region = gi->mRegionMap->FindRegion(grid);
+  if (!region) return;
+
+  if (!region->TextureOverlay) {
+    LOG(WARN_LL) << "MapObjectManager::ReportBuilt No overlay texture";
+    return;
+  }
+
+  const int32 pixelX = wb.X - grid.X * URegionMap::gridSize;
+  const int32 pixelY = wb.Y - grid.Y * URegionMap::gridSize;
+  MarkOverlayPixel(region, pixelX, pixelY, FColor(170, 170, 170, 255));
+}
+
+void UMapObjectManager::MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color) {
+  if (!Region || !Region->TextureOverlay) return;
+
+  UTexture2D *tex = Region->TextureOverlay;
+  FTexture2DMipMap &Mip = tex->GetPlatformData()->Mips[0];
+  const int32 Width = tex->GetSizeX();
+  const int32 Height = tex->GetSizeY();
+  if (X < 0 || Y < 0 || X >= Width || Y >= Height) return;
+
+  void *Data = Mip.BulkData.Lock(LOCK_READ_WRITE);
+  FColor *Pixels = static_cast<FColor *>(Data);
+  Pixels[Y * Width + X] = Color;
+  Mip.BulkData.Unlock();
+  tex->UpdateResource();
 }
 
 

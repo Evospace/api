@@ -48,6 +48,9 @@ class EVOSPACE_API UEvoRegion : public UInstance {
   UTexture2D *TextureHeight;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UTexture2D *TextureOverlay;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<FMapStructure> MapStructures;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -65,6 +68,7 @@ class EVOSPACE_API UEvoRegion : public UInstance {
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UTexture2D *CreateAtlasTexture(int32 Width, int32 Height);
+  UTexture2D *CreateOverlayTexture(int32 Width, int32 Height);
 
   void AddStructure(const FMapStructure &mapStructure);
   void AddSource(USourceData *sourceData);
