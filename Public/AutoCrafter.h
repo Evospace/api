@@ -2,6 +2,7 @@
 #pragma once
 #include "Public/SelectCrafter.h"
 #include "CoreMinimal.h"
+#include "Public/SwitchInterface.h"
 
 #include "AutoCrafter.generated.h"
 
