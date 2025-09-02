@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "BlockState.h"
 #include "Qr/Prototype.h"
- 
+#include "Public/SwitchInterface.h"
 #include "Public/TieredBlockLogic.h"
 
 #include "AbstractCrafter.generated.h"
@@ -16,7 +16,7 @@ class UAutosizeInventory;
 class UInventoryContainer;
 
 UCLASS(Blueprintable, BlueprintType)
-class EVOSPACE_API UAbstractCrafter : public UBlockLogic {
+class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   using Self = UAbstractCrafter;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(AbstractCrafter);
@@ -105,7 +105,9 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic {
 
   UFUNCTION(BlueprintCallable)
   virtual bool IsUniversalCrafter() const;
-  
+
+  virtual void SetSwitch_Implementation(bool val) override;
+  virtual bool GetSwitch_Implementation() const override;
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 

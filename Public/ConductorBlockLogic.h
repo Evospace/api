@@ -4,8 +4,7 @@
 #include "Evospace/Blocks/BlockWidget.h"
 #include "CoreMinimal.h"
 #include "StorageBlockLogic.h"
- 
-#include "Evospace/Blocks/SidesArray.h"
+#include "Public/SwitchInterface.h"
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Public/EvoRingBuffer.h"
 
@@ -409,7 +408,7 @@ class EVOSPACE_API UKineticConductorBlockLogic : public UConductorBlockLogic {
 /// Switches
 
 UCLASS()
-class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic {
+class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
   GENERATED_BODY()
 
   public:
@@ -441,7 +440,10 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic {
   virtual void UpdateSides(UAccessor *except = nullptr) override;
 
   virtual bool IsBlockTicks() const override;
-  
+
+  void SetSwitch_Implementation(bool val) override;
+
+  bool GetSwitch_Implementation() const override;
   virtual TArray<ConnectionInfo> GetConnectionInfo() const override;
 };
 
