@@ -1,4 +1,5 @@
 #pragma once
+#include "Qr/Loc.h"
 #include "Qr/Prototype.h"
 #include "Evospace/Common.h"
 #include "Evospace/Shared/Qr/CommonConverter.h"
