@@ -63,6 +63,9 @@ class USectorProxy : public UObject {
   virtual void ClearBlockProps(const FVector3i &bpos, bool only_small);
   virtual void ClearBlockPropsDrop(const FVector3i &bpos, bool only_small);
 
+  // New: clear near actor decorations by distance
+  virtual void ClearNearActors(const FVector3i &bpos, float radius);
+
   AColumn *GetColumn() const { return owner; }
 
   UPROPERTY(VisibleAnywhere)

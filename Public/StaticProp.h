@@ -9,6 +9,7 @@
 class USectorProxy;
 class ASector;
 class UStaticMesh;
+class AActor;
 
 UCLASS()
 class EVOSPACE_API UStaticProp : public UStaticObject {
@@ -94,6 +95,10 @@ class EVOSPACE_API UStaticProp : public UStaticObject {
 
   UPROPERTY(VisibleAnywhere)
   bool NoCollision = false;
+
+  // If set, this prop can be spawned as an actor decoration instead of instanced mesh
+  UPROPERTY(EditAnywhere)
+  UClass *ActorClass;
 
   std::optional<luabridge::LuaRef> onSpawn;
 };

@@ -11,29 +11,29 @@ class UStaticBlock;
 
 USTRUCT()
 struct FLayeringNode {
-    GENERATED_BODY()
+  GENERATED_BODY()
 
-    FLayeringNode(UStaticBlock *_block)
-        : block(_block) {}
+  FLayeringNode(UStaticBlock *_block)
+    : block(_block) {}
 
-    FLayeringNode() {}
+  FLayeringNode() {}
 
-    UStaticBlock *block = nullptr;
+  UStaticBlock *block = nullptr;
 };
 
 USTRUCT()
 struct FLayering {
-    GENERATED_BODY()
+  GENERATED_BODY()
 
-    std::map<unsigned short, FLayeringNode, std::greater<unsigned short>> layers;
+  std::map<unsigned short, FLayeringNode, std::greater<unsigned short>> layers;
 
-    UStaticBlock *at(int depth) {
-        const auto &l_node = layers.lower_bound(depth);
+  UStaticBlock *at(int depth) {
+    const auto &l_node = layers.lower_bound(depth);
 
-        if (ensure(l_node != layers.end())) {
-        return std::get<1>(*l_node).block;
-        }
-
-        return nullptr;
+    if (ensure(l_node != layers.end())) {
+      return std::get<1>(*l_node).block;
     }
+
+    return nullptr;
+  }
 };

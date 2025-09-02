@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "BlockState.h"
 #include "Qr/Prototype.h"
- 
+
 #include "Public/TieredBlockLogic.h"
 
 #include "AbstractCrafter.generated.h"
@@ -105,7 +105,6 @@ class EVOSPACE_API UAbstractCrafter : public UBlockLogic {
 
   UFUNCTION(BlueprintCallable)
   virtual bool IsUniversalCrafter() const;
-  
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 

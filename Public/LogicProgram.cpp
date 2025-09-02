@@ -202,7 +202,7 @@ bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface>Owner, ULogicContext *Ctx) {
+void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   // Set/Reset by special signals (e.g., Signal_Set, Signal_Reset)
   const UStaticItem *SigSet = QrFind<UStaticItem>("Signal_Set");
   const UStaticItem *SigReset = QrFind<UStaticItem>("Signal_Reset");

@@ -46,9 +46,9 @@ class EVOSPACE_API UBaseInventory : public UInventoryAccess {
   virtual void SetWidgetClass(TSubclassOf<UInventoryWidgetBase> widget_class);
 
   virtual int64 GetVersion() const override { return Version; }
-  
+
   virtual void IncrementVersion() override { ++Version; }
-  
+
   virtual void ResetVersion() override { Version = 0; }
 
   void SetFilter(UInventoryFilter *filter);

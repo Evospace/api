@@ -27,9 +27,9 @@ class UItemMap : public UObject {
 
   UFUNCTION(BlueprintCallable)
   void FromInventory(const UInventoryReader *reader);
-  
+
   // Performance optimization: FromInventory with version checking
-  void FromInventoryOptimized(const UInventoryAccess *reader, int64& LastInventoryVersion);
+  void FromInventoryOptimized(const UInventoryAccess *reader, int64 &LastInventoryVersion);
 
   UFUNCTION(BlueprintCallable)
   void Subtract(const UStaticItem *Item, int64 Delta);

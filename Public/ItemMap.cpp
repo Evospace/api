@@ -42,12 +42,12 @@ void UItemMap::FromInventory(const UInventoryReader *reader) {
   }
 }
 
-void UItemMap::FromInventoryOptimized(const UInventoryAccess *reader, int64& LastInventoryVersion) {
+void UItemMap::FromInventoryOptimized(const UInventoryAccess *reader, int64 &LastInventoryVersion) {
   if (!expect_once(reader, "ItemMap::FromInventoryOptimized with nullptr InventoryReader"))
     return;
 
   auto CurrentVersion = reader->GetVersion();
-  
+
   if (CurrentVersion != LastInventoryVersion) {
     Clear();
     for (const auto &data : reader->GetSlots()) {

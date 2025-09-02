@@ -14,7 +14,7 @@ UCLASS(BlueprintType)
 class EVOSPACE_API ULogicExportOption : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(LogicExportOption, LogicExportOption)
-  virtual UClass* GetSuperProto() const override { return StaticClass(); }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
   virtual void lua_reg(lua_State *L) const override {
     using Self = ULogicExportOption;
     luabridge::getGlobalNamespace(L)
@@ -29,7 +29,7 @@ class EVOSPACE_API ULogicExportOption : public UPrototype {
   public:
   // Which signal to export
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticItem* Signal = nullptr;
+  UStaticItem *Signal = nullptr;
 
   // Default checkbox state in GUI (can be used as initial value)
   UPROPERTY(EditAnywhere, BlueprintReadWrite)

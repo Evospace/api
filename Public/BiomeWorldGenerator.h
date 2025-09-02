@@ -40,7 +40,7 @@ struct FCarveNoiseSettings {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   int32 FractalOctaves = 3;
-  
+
   // Canyon parameters
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
   bool bCanyonEnable = true;
@@ -115,8 +115,8 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   std::unique_ptr<FastNoiseSIMD> ore_vein, ore_cell;
   // Canyon noises stored on the generator instance
-  std::unique_ptr<FastNoiseSIMD> canyon_mask2d;  // Simplex fractal mask in XY
-  std::unique_ptr<FastNoiseSIMD> canyon_cell3d;  // Cellular distance field in 3D
+  std::unique_ptr<FastNoiseSIMD> canyon_mask2d; // Simplex fractal mask in XY
+  std::unique_ptr<FastNoiseSIMD> canyon_cell3d; // Cellular distance field in 3D
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   FCarveNoiseSettings CarveSettings;
@@ -137,15 +137,14 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 /**
  *
  */
- UCLASS(BlueprintType)
- class UWorldGeneratorLegacy : public UBiomeWorldGenerator {
-   GENERATED_BODY()
- 
-   public:
-   UWorldGeneratorLegacy();
-   virtual void LoadBiomeFamily() override;
- };
- 
+UCLASS(BlueprintType)
+class UWorldGeneratorLegacy : public UBiomeWorldGenerator {
+  GENERATED_BODY()
+
+  public:
+  UWorldGeneratorLegacy();
+  virtual void LoadBiomeFamily() override;
+};
 
 /**
  *

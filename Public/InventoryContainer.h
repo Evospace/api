@@ -70,9 +70,9 @@ class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
   TArray<UInventoryAccess *> &GetList();
 
   virtual int64 GetVersion() const override { return Version; }
-  
+
   virtual void IncrementVersion() override { ++Version; }
-  
+
   virtual void ResetVersion() override { Version = 0; }
 
   private:

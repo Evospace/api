@@ -4,7 +4,7 @@
 #include "Evospace/Blocks/BlockWidget.h"
 #include "CoreMinimal.h"
 #include "StorageBlockLogic.h"
- 
+
 #include "Evospace/Blocks/SidesArray.h"
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Public/EvoRingBuffer.h"
@@ -441,7 +441,7 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic {
   virtual void UpdateSides(UAccessor *except = nullptr) override;
 
   virtual bool IsBlockTicks() const override;
-  
+
   virtual TArray<ConnectionInfo> GetConnectionInfo() const override;
 };
 

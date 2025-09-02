@@ -34,7 +34,6 @@ void UMapObjectManager::UnregisterAll(UBlockLogic *Block) {
   }
 }
 
-
 void UMapObjectManager::ReportBuilt(UBlockLogic *Block) {
   if (!Block) return;
   const auto gi = UMainGameInstance::Singleton;
@@ -70,5 +69,3 @@ void UMapObjectManager::MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, c
   Mip.BulkData.Unlock();
   tex->UpdateResource();
 }
-
-

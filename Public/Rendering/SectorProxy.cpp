@@ -7,6 +7,7 @@
 #include "Evospace/Item/InventoryLibrary.h"
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Props/SectorPropComponent.h"
+#include "Evospace/World/Column.h"
 #include "Evospace/World/Sector.h"
 #include "Evospace/World/SectorCompiler.h"
 #include "GameFramework/Character.h"
@@ -14,6 +15,7 @@
 #include "Public/AutosizeInventory.h"
 #include "Public/Dimension.h"
 #include "Public/RuntimeMeshBuilder.h"
+#include <GameFramework/Actor.h>
 
 #include "Public/StaticBlock.h"
 #include "Public/StaticProp.h"
@@ -163,6 +165,22 @@ void USectorProxy::LoadSector(const AColumn &c) {
       it.Key->Create(this, static_cast<FTransform>(tr), bpos);
       it.Key->OnSpawn(cs::WtoWB(tr.GetLocation()));
     }
+  // Spawn lightweight actor decorations (not saved, not per-cell stored)
+  if (owner) {
+    UWorld *world = owner->GetWorld();
+    if (world) {
+      for (const auto &it : SectorColdData.mActorAttaches) {
+        for (const auto &tr : it.Value) {
+          UClass *cls = it.Key->ActorClass ? it.Key->ActorClass : AActor::StaticClass();
+          AActor *actor = world->SpawnActor<AActor>(cls, static_cast<FTransform>(tr));
+          if (actor) {
+            actor->AttachToActor(owner, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
+            owner->ActorDecorations.Add(actor);
+          }
+        }
+      }
+    }
+  }
 
   SetDirty(true);
 }
@@ -217,6 +235,8 @@ USectorPropComponent *USectorProxy::GetInstancingComponent() const {
   return owner->SectorPropComponent;
 }
 
+// No-op accessor removed to avoid hard dependency
+
 namespace {
 void Drop(const UStaticProp *prop, UInventory *inv) {
   auto &minable = prop->mMinable;
@@ -270,5 +290,26 @@ void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool only_small) {
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
       sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
     }
+  }
+}
+
+void USectorProxy::ClearNearActors(const FVector3i &_bpos, float radius) {
+  if (!owner)
+    return;
+  const FVector worldPos = cs::WBtoWd(_bpos) + FVector(gCubeSize * 0.5f);
+  const float r2 = radius * radius;
+  int32 i = 0;
+  while (i < owner->ActorDecorations.Num()) {
+    AActor *a = owner->ActorDecorations[i];
+    if (!a) {
+      owner->ActorDecorations.RemoveAtSwap(i);
+      continue;
+    }
+    if (FVector::DistSquared(a->GetActorLocation(), worldPos) <= r2) {
+      a->Destroy();
+      owner->ActorDecorations.RemoveAtSwap(i);
+      continue;
+    }
+    ++i;
   }
 }
