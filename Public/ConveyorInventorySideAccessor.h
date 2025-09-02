@@ -11,7 +11,7 @@ class UInventoryAccess;
 class UItemInstancingComponent;
 
 UCLASS()
-class EVOSPACE_API UConveyorInventorySideAccessor : public USolidInputAccessor {
+class UConveyorInventorySideAccessor : public USolidInputAccessor {
   GENERATED_BODY()
   using Self = UConveyorInventorySideAccessor;
   EVO_CODEGEN_ACCESSOR(ConveyorInventorySideAccessor)

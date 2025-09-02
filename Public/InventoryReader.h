@@ -11,7 +11,7 @@ class UBaseInventoryWidget;
 class UStaticItem;
 
 UCLASS(Abstract, BlueprintType)
-class EVOSPACE_API UInventoryReader : public UInstance {
+class UInventoryReader : public UInstance {
   GENERATED_BODY()
   using Self = UInventoryReader;
   EVO_CODEGEN_INSTANCE(InventoryReader)

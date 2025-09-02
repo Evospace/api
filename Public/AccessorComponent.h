@@ -15,7 +15,7 @@ class UStaticCover;
 class UBlockLogic;
 
 UCLASS()
-class EVOSPACE_API UAccessor : public UInstance {
+class UAccessor : public UInstance {
   using Self = UAccessor;
   GENERATED_BODY()
   EVO_CODEGEN_ACCESSOR(Accessor)

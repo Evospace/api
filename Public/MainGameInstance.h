@@ -53,7 +53,7 @@ struct FScreenResolution {
 };
 
 UCLASS()
-class EVOSPACE_API UCustomDPI : public UDPICustomScalingRule {
+class UCustomDPI : public UDPICustomScalingRule {
   GENERATED_BODY()
 
   public:
@@ -61,7 +61,7 @@ class EVOSPACE_API UCustomDPI : public UDPICustomScalingRule {
 };
 
 UCLASS()
-class EVOSPACE_API UMainGameInstance : public USteamGameInstance {
+class UMainGameInstance : public USteamGameInstance {
   GENERATED_BODY()
   void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)

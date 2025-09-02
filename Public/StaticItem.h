@@ -27,7 +27,7 @@ enum class EStaticItemType : uint8 {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticItem : public UPrototype, public ISearchable {
+class UStaticItem : public UPrototype, public ISearchable {
   using Self = UStaticItem;
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(StaticItem, StaticItem)

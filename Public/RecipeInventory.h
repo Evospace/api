@@ -15,7 +15,7 @@
 class URecipe;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URecipeInventory : public UAutosizeInventory {
+class URecipeInventory : public UAutosizeInventory {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(RecipeInventory)
   virtual void lua_reg(lua_State *L) const override {

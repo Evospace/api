@@ -6,7 +6,7 @@
 #include "ResourceInventory.generated.h"
 
 UCLASS()
-class EVOSPACE_API UResourceInventory : public USingleSlotInventory {
+class UResourceInventory : public USingleSlotInventory {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(ResourceInventory)
   virtual void lua_reg(lua_State *L) const override {

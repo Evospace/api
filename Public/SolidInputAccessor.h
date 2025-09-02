@@ -6,7 +6,7 @@
 #include "SolidInputAccessor.generated.h"
 
 UCLASS()
-class EVOSPACE_API USolidInputAccessor : public USolidAccessor {
+class USolidInputAccessor : public USolidAccessor {
   GENERATED_BODY()
   using Self = USolidInputAccessor;
   EVO_CODEGEN_ACCESSOR(SolidInputAccessor)

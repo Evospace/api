@@ -17,7 +17,7 @@ class UInventoryReader;
 // };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URecipeDictionary : public UPrototype, public ISearchable {
+class URecipeDictionary : public UPrototype, public ISearchable {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(RecipeDictionary, RecipeDictionary)
   virtual void lua_reg(lua_State *L) const override {

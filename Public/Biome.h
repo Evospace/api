@@ -12,7 +12,7 @@ class UStaticProp;
 class UPropsGenerator;
 
 UCLASS()
-class EVOSPACE_API UBiome : public UPrototype {
+class UBiome : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(Biome, Biome)
   virtual void lua_reg(lua_State *L) const override {

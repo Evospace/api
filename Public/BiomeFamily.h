@@ -6,7 +6,7 @@
 #include "BiomeFamily.generated.h"
 
 UCLASS()
-class EVOSPACE_API UBiomeFamily : public UBiome {
+class UBiomeFamily : public UBiome {
   using Self = UBiomeFamily;
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(BiomeFamily, Biome)

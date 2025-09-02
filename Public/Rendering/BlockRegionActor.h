@@ -18,7 +18,7 @@
 // class UChunkObject;
 //
 // UCLASS()
-// class EVOSPACE_API ABlockRegionActor : public AActor
+// class ABlockRegionActor : public AActor
 // {
 // 	GENERATED_BODY()
 //

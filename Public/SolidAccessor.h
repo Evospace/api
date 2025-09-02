@@ -3,7 +3,7 @@
 #include "SolidAccessor.generated.h"
 
 UCLASS()
-class EVOSPACE_API USolidAccessor : public UBaseInventoryAccessor {
+class USolidAccessor : public UBaseInventoryAccessor {
   GENERATED_BODY()
   using Self = USolidAccessor;
   EVO_CODEGEN_ACCESSOR(SolidAccessor)

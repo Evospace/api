@@ -5,7 +5,7 @@
 #include "EngineData.generated.h"
 
 UCLASS()
-class EVOSPACE_API UEngineData : public UInstance {
+class UEngineData : public UInstance {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(EngineData)
   virtual void lua_reg(lua_State *L) const override {

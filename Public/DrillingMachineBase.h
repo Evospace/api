@@ -15,7 +15,7 @@ class USolidOutputAccessor;
  * Handles resource extraction, energy consumption, and inventory management.
  */
 UCLASS(Abstract)
-class EVOSPACE_API UDrillingMachineBase : public UBlockLogic {
+class UDrillingMachineBase : public UBlockLogic {
   GENERATED_BODY()
   using Self = UDrillingMachineBase;
   EVO_CODEGEN_INSTANCE(DrillingMachineBase)

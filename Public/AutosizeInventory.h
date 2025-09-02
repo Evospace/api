@@ -3,7 +3,7 @@
 #include "AutosizeInventory.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UAutosizeInventory : public UInventory {
+class UAutosizeInventory : public UInventory {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(AutosizeInventory)
   virtual void lua_reg(lua_State *L) const override {
@@ -17,6 +17,6 @@ class EVOSPACE_API UAutosizeInventory : public UInventory {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UNonSerializedAutosizeInventory : public UAutosizeInventory {
+class UNonSerializedAutosizeInventory : public UAutosizeInventory {
   GENERATED_BODY()
 };

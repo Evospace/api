@@ -3,7 +3,7 @@
 #include "StaticResearchEfficiency.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticResearchEfficiency : public UStaticResearch {
+class UStaticResearchEfficiency : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchEfficiency;
   PROTOTYPE_CODEGEN(StaticResearchEfficiency, StaticResearch)

@@ -14,7 +14,7 @@ class URecipeInventory;
 class UStaticResearchRecipe;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URecipe : public UPrototype, public ISearchable {
+class URecipe : public UPrototype, public ISearchable {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(Recipe, Recipe)
   virtual void lua_reg(lua_State *L) const override {

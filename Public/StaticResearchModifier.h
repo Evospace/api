@@ -3,7 +3,7 @@
 #include "StaticResearchModifier.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticResearchModifier : public UStaticResearch {
+class UStaticResearchModifier : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchModifier;
   PROTOTYPE_CODEGEN(StaticResearchModifier, StaticResearch)

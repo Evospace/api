@@ -9,7 +9,7 @@ class URegionLayer;
 * Specialized drilling machine that extracts oil from oil deposits.
  */
 UCLASS()
-class EVOSPACE_API UPumpjack : public UDrillingMachineBase {
+class UPumpjack : public UDrillingMachineBase {
   GENERATED_BODY()
 
   public:

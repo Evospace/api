@@ -74,7 +74,7 @@ constexpr Vec2i baked_size{ gFlatSectorSize * 2.f + 4.f }; // sub block + bicubi
 constexpr Vec2i baked_smooth_size{ (gFlatSectorSize + SmoothKernelRadius) * 2.f }; // sub block + smooth
 
 UCLASS()
-class EVOSPACE_API ULayeringGenerator : public UPrototype {
+class ULayeringGenerator : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(LayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
@@ -96,7 +96,7 @@ class EVOSPACE_API ULayeringGenerator : public UPrototype {
 };
 
 UCLASS()
-class EVOSPACE_API USimpleLayeringGenerator : public ULayeringGenerator {
+class USimpleLayeringGenerator : public ULayeringGenerator {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(SimpleLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
@@ -118,7 +118,7 @@ class EVOSPACE_API USimpleLayeringGenerator : public ULayeringGenerator {
 };
 
 UCLASS()
-class EVOSPACE_API UChancedLayeringGenerator : public USimpleLayeringGenerator {
+class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(ChancedLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {

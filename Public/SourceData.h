@@ -7,7 +7,7 @@ class ADimension;
 class UStaticItem;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API USourceData : public UInstance {
+class USourceData : public UInstance {
   using Self = USourceData;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(SourceData)

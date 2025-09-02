@@ -5,7 +5,7 @@
 
 #include "InventoryContainer.generated.h"
 UCLASS()
-class EVOSPACE_API UInventoryContainer : public UInventoryAccess {
+class UInventoryContainer : public UInventoryAccess {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(InventoryContainer)
   virtual void lua_reg(lua_State *L) const override {

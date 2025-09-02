@@ -9,7 +9,7 @@ class UStaticPropList;
 class UStaticProp;
 
 UCLASS()
-class EVOSPACE_API UPropsGenerator : public UPrototype {
+class UPropsGenerator : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(PropsGenerator, PropsGenerator)
   virtual void lua_reg(lua_State *L) const override {

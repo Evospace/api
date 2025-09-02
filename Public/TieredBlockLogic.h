@@ -11,7 +11,7 @@ UCLASS(BlueprintType)
 /**
  * 
  */
-class EVOSPACE_API UTieredBlockHelper : public UBlockLogic {
+class UTieredBlockHelper : public UBlockLogic {
   using Self = UTieredBlockHelper;
   GENERATED_BODY()
 
@@ -26,7 +26,7 @@ class EVOSPACE_API UTieredBlockHelper : public UBlockLogic {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UFilteringBlockLogic : public UBlockLogic {
+class UFilteringBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:

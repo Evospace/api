@@ -15,7 +15,7 @@ class UBlockLogic;
 class UEvoRegion;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UMapObjectManager : public UObject {
+class UMapObjectManager : public UObject {
   GENERATED_BODY()
 
   public:

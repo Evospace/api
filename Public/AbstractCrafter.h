@@ -16,7 +16,7 @@ class UAutosizeInventory;
 class UInventoryContainer;
 
 UCLASS(Blueprintable, BlueprintType)
-class EVOSPACE_API UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
+class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   using Self = UAbstractCrafter;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(AbstractCrafter);

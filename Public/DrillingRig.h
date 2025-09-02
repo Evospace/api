@@ -13,7 +13,7 @@ class USourceData;
  * Drilling machine that extracts ore resources from the ground.
  */
 UCLASS()
-class EVOSPACE_API UDrillingRig : public UDrillingMachineBase {
+class UDrillingRig : public UDrillingMachineBase {
   GENERATED_BODY()
   using Self = UDrillingRig;
   EVO_CODEGEN_INSTANCE(DrillingRig)

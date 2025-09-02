@@ -49,6 +49,6 @@ class USingleSlotInventory : public UBaseInventory {
 };
 
 UCLASS()
-class EVOSPACE_API UNonSerializedSingleSlotInventory : public USingleSlotInventory {
+class UNonSerializedSingleSlotInventory : public USingleSlotInventory {
   GENERATED_BODY()
 };

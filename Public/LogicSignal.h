@@ -9,7 +9,7 @@
 #include "LogicSignal.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API ULogicSignal : public UInstance {
+class ULogicSignal : public UInstance {
   GENERATED_BODY()
   using Self = ULogicSignal;
   EVO_CODEGEN_INSTANCE(LogicSignal);

@@ -12,7 +12,7 @@ class UStaticMesh;
 class AActor;
 
 UCLASS()
-class EVOSPACE_API UStaticProp : public UStaticObject {
+class UStaticProp : public UStaticObject {
   using Self = UStaticProp;
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(StaticProp, StaticProp)

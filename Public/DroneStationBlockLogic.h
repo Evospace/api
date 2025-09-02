@@ -10,7 +10,7 @@ class UCondition;
 class UInventory;
 class ADroneManagerActor;
 UCLASS()
-class EVOSPACE_API UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider {
+class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider {
   GENERATED_BODY()
 
   public:

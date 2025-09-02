@@ -7,7 +7,7 @@
 class UResourceComponent;
 
 UCLASS()
-class EVOSPACE_API UStorageBlockLogic : public UBlockLogic {
+class UStorageBlockLogic : public UBlockLogic {
   using Self = UStorageBlockLogic;
   EVO_CODEGEN_INSTANCE(StorageBlockLogic)
   virtual void lua_reg(lua_State *L) const override {

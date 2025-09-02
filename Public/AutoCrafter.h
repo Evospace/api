@@ -10,7 +10,7 @@ class UAutosizeInventory;
 class UInventory;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UAutoCrafter : public USelectCrafter {
+class UAutoCrafter : public USelectCrafter {
   using Self = UAutoCrafter;
   EVO_CODEGEN_INSTANCE(AutoCrafter)
   virtual void lua_reg(lua_State *L) const override {

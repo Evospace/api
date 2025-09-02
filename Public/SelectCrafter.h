@@ -16,7 +16,7 @@ class UInventoryContainer;
 class UCoreAccessor;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API USelectCrafter : public UAbstractCrafter {
+class USelectCrafter : public UAbstractCrafter {
   using Self = USelectCrafter;
   EVO_CODEGEN_INSTANCE(SelectCrafter)
   virtual void lua_reg(lua_State *L) const override {

@@ -72,7 +72,7 @@ struct FNetworkWidgetData {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UBlockNetwork : public UObject {
+class UBlockNetwork : public UObject {
   GENERATED_BODY()
 
   public:
@@ -199,7 +199,7 @@ class EVOSPACE_API UBlockNetwork : public UObject {
 /// Conductors
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
+class UConductorBlockLogic : public UStorageBlockLogic {
   using Self = UConductorBlockLogic;
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
@@ -319,7 +319,7 @@ class EVOSPACE_API UConductorBlockLogic : public UStorageBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UHeatConductorBlockLogic : public UConductorBlockLogic {
+class UHeatConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
   UHeatConductorBlockLogic();
@@ -350,7 +350,7 @@ class EVOSPACE_API UHeatConductorBlockLogic : public UConductorBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
+class UDataConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
   UDataConductorBlockLogic();
@@ -365,7 +365,7 @@ class EVOSPACE_API UDataConductorBlockLogic : public UConductorBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UPlasmaConductorBlockLogic : public UHeatConductorBlockLogic {
+class UPlasmaConductorBlockLogic : public UHeatConductorBlockLogic {
   GENERATED_BODY()
   public:
   UPlasmaConductorBlockLogic();
@@ -374,7 +374,7 @@ class EVOSPACE_API UPlasmaConductorBlockLogic : public UHeatConductorBlockLogic 
 };
 
 UCLASS()
-class EVOSPACE_API UKineticConductorBlockLogic : public UConductorBlockLogic {
+class UKineticConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
 
   public:
@@ -409,7 +409,7 @@ class EVOSPACE_API UKineticConductorBlockLogic : public UConductorBlockLogic {
 /// Switches
 
 UCLASS()
-class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
+class USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
   GENERATED_BODY()
 
   public:
@@ -449,7 +449,7 @@ class EVOSPACE_API USwitchBlockLogic : public UConductorBlockLogic, public ISwit
 };
 
 UCLASS()
-class EVOSPACE_API UElectricitySwitchBlockLogic : public USwitchBlockLogic {
+class UElectricitySwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
   virtual void SpawnBlockPostprocess() override;
@@ -458,7 +458,7 @@ class EVOSPACE_API UElectricitySwitchBlockLogic : public USwitchBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UFluidSwitchBlockLogic : public USwitchBlockLogic {
+class UFluidSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
   virtual void SpawnBlockPostprocess() override;
@@ -467,7 +467,7 @@ class EVOSPACE_API UFluidSwitchBlockLogic : public USwitchBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UHeatSwitchBlockLogic : public USwitchBlockLogic {
+class UHeatSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
   virtual void SpawnBlockPostprocess() override;
@@ -476,7 +476,7 @@ class EVOSPACE_API UHeatSwitchBlockLogic : public USwitchBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UKineticSwitchBlockLogic : public USwitchBlockLogic {
+class UKineticSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
   virtual void SpawnBlockPostprocess() override;
@@ -485,7 +485,7 @@ class EVOSPACE_API UKineticSwitchBlockLogic : public USwitchBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UDataSwitchBlockLogic : public USwitchBlockLogic {
+class UDataSwitchBlockLogic : public USwitchBlockLogic {
   GENERATED_BODY()
   public:
   virtual void SpawnBlockPostprocess() override;

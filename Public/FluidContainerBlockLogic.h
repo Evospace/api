@@ -3,7 +3,7 @@
 #include "FluidContainerBlockLogic.generated.h"
 
 UCLASS()
-class EVOSPACE_API UFluidContainerBlockLogic : public UConductorBlockLogic {
+class UFluidContainerBlockLogic : public UConductorBlockLogic {
   using Self = UFluidContainerBlockLogic;
   EVO_CODEGEN_INSTANCE(FluidContainerBlockLogic)
   virtual void lua_reg(lua_State *L) const override {

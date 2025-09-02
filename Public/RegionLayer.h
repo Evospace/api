@@ -30,7 +30,7 @@ struct FSubregionData final {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URegionLayer : public UInstance {
+class URegionLayer : public UInstance {
   using Self = URegionLayer;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(RegionLayer)

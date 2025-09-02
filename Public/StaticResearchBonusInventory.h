@@ -3,7 +3,7 @@
 #include "StaticResearchBonusInventory.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticResearchBonusInventory : public UStaticResearch {
+class UStaticResearchBonusInventory : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchBonusInventory;
   PROTOTYPE_CODEGEN(StaticResearchBonusInventory, StaticResearch)

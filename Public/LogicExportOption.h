@@ -11,7 +11,7 @@ class UStaticItem;
 
 // Prototype describing a single exportable signal option for GUI and logic filtering
 UCLASS(BlueprintType)
-class EVOSPACE_API ULogicExportOption : public UPrototype {
+class ULogicExportOption : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(LogicExportOption, LogicExportOption)
   virtual UClass *GetSuperProto() const override { return StaticClass(); }

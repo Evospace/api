@@ -3,7 +3,7 @@
 #include "StaticCover.generated.h"
 
 UCLASS()
-class EVOSPACE_API UStaticCover : public UStaticObject {
+class UStaticCover : public UStaticObject {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(StaticCover, StaticCover)
   virtual void lua_reg(lua_State *L) const override {

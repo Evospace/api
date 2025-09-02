@@ -33,7 +33,7 @@ UCLASS(Abstract)
 /**
  * 
  */
-class EVOSPACE_API UStaticObject : public UPrototype {
+class UStaticObject : public UPrototype {
   using Self = UStaticObject;
   PROTOTYPE_CODEGEN(StaticObject, StaticObject)
   virtual void lua_reg(lua_State *L) const override {

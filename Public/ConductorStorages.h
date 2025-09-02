@@ -11,7 +11,7 @@ class USingleSlotInventory;
 class UAccessor;
 
 UCLASS()
-class EVOSPACE_API UBatteryBoxBlockLogic : public UConductorBlockLogic {
+class UBatteryBoxBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
 
   public:
@@ -45,7 +45,7 @@ class EVOSPACE_API UBatteryBoxBlockLogic : public UConductorBlockLogic {
 };
 
 UCLASS()
-class EVOSPACE_API UBatteryContainerBlockLogic : public UConductorBlockLogic {
+class UBatteryContainerBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
   UBatteryContainerBlockLogic();

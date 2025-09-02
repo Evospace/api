@@ -8,7 +8,7 @@
 class UFPSCounterSubsystem;
 
 UCLASS(BlueprintType, Blueprintable)
-class EVOSPACE_API UPerformanceGraphWidget : public UUserWidget {
+class UPerformanceGraphWidget : public UUserWidget {
   GENERATED_BODY()
 
   protected:

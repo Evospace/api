@@ -291,7 +291,7 @@ class UBlockLogic : public UInstance {
 };
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UPartBlockLogic : public UBlockLogic {
+class UPartBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:

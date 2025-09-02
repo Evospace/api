@@ -11,7 +11,7 @@ class UNoiseGenerator;
  * 
  */
 UCLASS()
-class EVOSPACE_API UHeightGenerator : public UPrototype {
+class UHeightGenerator : public UPrototype {
   GENERATED_BODY()
 
   public:

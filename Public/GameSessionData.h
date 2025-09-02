@@ -14,7 +14,7 @@ class USetting;
 class UValueStorage;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UGameSessionData : public UInstance {
+class UGameSessionData : public UInstance {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(GameSessionData)
   virtual void lua_reg(lua_State *L) const override {

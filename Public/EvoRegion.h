@@ -7,7 +7,7 @@ class URegionLayer;
 class USourceData;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UEvoRegion : public UInstance {
+class UEvoRegion : public UInstance {
   using URegion = UEvoRegion;
   using Self = UEvoRegion;
   GENERATED_BODY()

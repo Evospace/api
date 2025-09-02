@@ -37,7 +37,7 @@ struct FDroneInstanceData {
 };
 
 UCLASS()
-class EVOSPACE_API ADroneManagerActor : public AActor {
+class ADroneManagerActor : public AActor {
   GENERATED_BODY()
 
   public:

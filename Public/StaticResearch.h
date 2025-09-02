@@ -11,7 +11,7 @@ class AMainPlayerController;
 class UInventory;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UOldResearch : public UObject, public ISerializableJson {
+class UOldResearch : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
   public:
@@ -32,7 +32,7 @@ enum class EResearchStatus : uint8 {
 };
 
 UCLASS(BlueprintType, Abstract)
-class EVOSPACE_API UStaticResearch : public UPrototype, public ISearchable {
+class UStaticResearch : public UPrototype, public ISearchable {
   GENERATED_BODY()
   using Self = UStaticResearch;
   PROTOTYPE_CODEGEN(StaticResearch, StaticResearch)

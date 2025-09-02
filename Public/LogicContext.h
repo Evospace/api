@@ -8,7 +8,7 @@ class UItemMap;
 class UStaticItem;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API ULogicContext : public UObject {
+class ULogicContext : public UObject {
   GENERATED_BODY()
 
   public:

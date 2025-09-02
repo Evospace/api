@@ -3,7 +3,7 @@
 #include "MapgenData.generated.h"
 
 UCLASS()
-class EVOSPACE_API UMapgenData : public UInstance {
+class UMapgenData : public UInstance {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(MapgenData)
   virtual void lua_reg(lua_State *L) const override {

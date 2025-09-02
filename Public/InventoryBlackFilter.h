@@ -2,7 +2,7 @@
 #include "InventoryFilter.h"
 #include "InventoryBlackFilter.generated.h"
 UCLASS(BlueprintType)
-class EVOSPACE_API UInventoryBlackFilter : public UInventoryFilter {
+class UInventoryBlackFilter : public UInventoryFilter {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(InventoryBlackFilter)
   virtual void lua_reg(lua_State *L) const override {

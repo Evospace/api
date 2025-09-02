@@ -21,7 +21,7 @@ class UStaticItem;
 class UTexture2D;
 
 UCLASS(BlueprintType)
-class EVOSPACE_API URegionMap : public UInstance {
+class URegionMap : public UInstance {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(RegionMap)
   virtual void lua_reg(lua_State *L) const override {

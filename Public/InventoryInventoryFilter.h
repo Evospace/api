@@ -2,7 +2,7 @@
 #include "InventoryFilter.h"
 #include "InventoryInventoryFilter.generated.h"
 UCLASS(BlueprintType)
-class EVOSPACE_API UInventoryInventoryFilter : public UInventoryFilter {
+class UInventoryInventoryFilter : public UInventoryFilter {
   using Self = UInventoryInventoryFilter;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(InventoryInventoryFilter)

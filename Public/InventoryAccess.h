@@ -8,7 +8,7 @@
 class UInventoryFilter;
 
 UCLASS(Abstract, BlueprintType)
-class EVOSPACE_API UInventoryAccess : public UInventoryReader {
+class UInventoryAccess : public UInventoryReader {
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(InventoryAccess)
   virtual void lua_reg(lua_State *L) const override {

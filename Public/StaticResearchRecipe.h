@@ -3,7 +3,7 @@
 #include "StaticResearchRecipe.generated.h"
 
 UCLASS(BlueprintType)
-class EVOSPACE_API UStaticResearchRecipe : public UStaticResearch {
+class UStaticResearchRecipe : public UStaticResearch {
   GENERATED_BODY()
   using Self = UStaticResearchRecipe;
   PROTOTYPE_CODEGEN(StaticResearchRecipe, StaticResearch)

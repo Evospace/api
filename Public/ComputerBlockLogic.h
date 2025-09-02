@@ -13,7 +13,7 @@ class UCoreAccessor;
 class UElectricInputAccessor;
 
 UCLASS()
-class EVOSPACE_API UComputerBlockLogic : public UBlockLogic {
+class UComputerBlockLogic : public UBlockLogic {
   GENERATED_BODY()
   using Self = UComputerBlockLogic;
   EVO_CODEGEN_INSTANCE(ComputerBlockLogic)

@@ -5,7 +5,7 @@ UCLASS(BlueprintType)
 /**
  * Map generation script object with size and bytecode
  */
-class EVOSPACE_API UStaticStructure : public UPrototype {
+class UStaticStructure : public UPrototype {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(StaticStructure, StaticStructure)
   virtual void lua_reg(lua_State *L) const override {
