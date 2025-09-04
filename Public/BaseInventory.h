@@ -47,10 +47,6 @@ class UBaseInventory : public UInventoryAccess {
 
   virtual int64 GetVersion() const override { return Version; }
 
-  virtual void IncrementVersion() override { ++Version; }
-
-  virtual void ResetVersion() override { Version = 0; }
-
   void SetFilter(UInventoryFilter *filter);
 
   virtual UInventoryFilter *GetFilter() const override;
@@ -81,7 +77,7 @@ class UBaseInventory : public UInventoryAccess {
 
   // Performance optimization: Version counter for change detection
   // Increments whenever inventory contents change
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   int64 Version = 0;
 
   protected:

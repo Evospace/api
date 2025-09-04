@@ -129,15 +129,8 @@ class UInventoryAccess : public UInventoryReader {
 
   virtual bool IsFrozen() { return false; }
 
-  // Performance optimization: Version management
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual int64 GetVersion() const { return 0; }
-
-  UFUNCTION(BlueprintCallable)
-  virtual void IncrementVersion() {}
-
-  UFUNCTION(BlueprintCallable)
-  virtual void ResetVersion() {}
 
   protected:
   UPROPERTY(EditAnywhere)

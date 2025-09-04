@@ -23,7 +23,7 @@ class UAutoCrafter : public USelectCrafter {
   protected:
   virtual void Tick() override;
 
-  mutable int64 LastKnownInventoryVersion = 0;
+  mutable int64 LastKnownInventoryVersion = INDEX_NONE;
 
   public:
   virtual bool IsUniversalCrafter() const override;

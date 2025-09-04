@@ -53,7 +53,7 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   ULogicSignal *Signal = nullptr;
 
-  mutable int64 LastKnownInventoryVersion = 0;
+  mutable int64 LastKnownInventoryVersion = INDEX_NONE;
 
   // Cached snapshot of exported signals to avoid rebuilding every tick
   UPROPERTY()
