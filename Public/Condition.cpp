@@ -36,21 +36,26 @@ int64 UCondition::Evaluate(const ULogicContext *ctx) const {
   }
   case EConditionMode::Or: {
     if (Operands.IsEmpty())
-      return 1;
+      return 0;
     for (const auto *cond : Operands)
       if (cond->Evaluate(ctx)) return 1;
     return 0;
   }
   case EConditionMode::And: {
+    if (Operands.IsEmpty())
+      return 0;
     for (const auto *cond : Operands)
       if (!cond->Evaluate(ctx)) return 0;
     return 1;
   }
-  case EConditionMode::Not:
-    return (Operands.Num() == 1 && Operands[0]) ? !Operands[0]->Evaluate(ctx) : 1;
+  case EConditionMode::Not: {
+    ensure(Operands.Num() == 1 && Operands[0]);
+    return !Operands[0]->Evaluate(ctx);
+  }
   case EConditionMode::Always:
-  default:
     return 1;
+  default:
+    return 0;
   }
 }
 
@@ -103,18 +108,22 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
   }
   case EConditionMode::Or: {
     if (Operands.IsEmpty())
-      return 1.0;
+      return 0.0;
     for (const auto *cond : Operands)
       if (cond->EvaluateGui(ctx) > 0.999) return 1.0;
     return 0.0;
   }
   case EConditionMode::And: {
+    if (Operands.IsEmpty())
+      return 0.0;
     for (const auto *cond : Operands)
       if (cond->EvaluateGui(ctx) < 0.999) return 0.0;
     return 1.0;
   }
-  case EConditionMode::Not:
-    return (Operands.Num() == 1 && Operands[0]) ? Operands[0]->EvaluateGui(ctx) <= 0.999 : 1.0;
+  case EConditionMode::Not: {
+    ensure(Operands.Num() == 1 && Operands[0]);
+    return Operands[0]->EvaluateGui(ctx) <= 0.999;
+  }
   case EConditionMode::Always:
   default:
     return 1.0;
