@@ -84,39 +84,59 @@ void ULogicNode_Arithmetic::Execute(TScriptInterface<ILogicInterface> Owner, ULo
 
 // Decider
 void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
-  if (!Ctx || !Ctx->Output || !Condition || !OutputSignal)
+  if (!Ctx || !Ctx->Output || !Condition)
     return;
 
-  const bool bPassed = Condition->Evaluate(Ctx) != 0;
+  if (Condition->Evaluate(Ctx) == 0)
+    return; // on false, write nothing
 
-  auto writeCopyA = [&]() {
-    const int64 val = (Condition->VarA ? Ctx->Input->Get(Condition->VarA) : 0);
-    Ctx->Output->Set(OutputSignal, val);
+  auto chooseFirstInputKey = [&]() -> const UStaticItem * {
+    if (!Ctx->Input) return nullptr;
+    for (const auto &kv : Ctx->Input->Map) {
+      return kv.Key;
+    }
+    return nullptr;
   };
 
-  if (bPassed) {
-    switch (OutputMode) {
-    case EDeciderOutputMode::Constant:
-      Ctx->Output->Set(OutputSignal, OutputValueTrue);
-      break;
-    case EDeciderOutputMode::CopyA:
-      writeCopyA();
-      break;
-    default:
-      break;
+  const int64 valueA = (Condition->VarA ? Ctx->Input->Get(Condition->VarA) : 0);
+
+  for (ULogicOutput *Def : Output) {
+    if (!Def) continue;
+    UStaticItem *Signal = Def->OutputSignal;
+    const bool bAnything = (Signal && Signal->GetFName() == FName("Anything"));
+    const bool bEverything = (Signal && Signal->GetFName() == FName("Everything"));
+
+    if (bEverything) {
+      if (!Ctx->Input) continue;
+      if (Def->OutputMode == ELogicOutputMode::CopyA) {
+        for (const auto &kv : Ctx->Input->Map) {
+          Ctx->Output->Set(kv.Key, valueA);
+        }
+      } else { // Constant
+        for (const auto &kv : Ctx->Input->Map) {
+          Ctx->Output->Set(kv.Key, Def->OutputValueTrue);
+        }
+      }
+      continue;
     }
-  } else {
-    switch (FalseBehavior) {
-    case EDeciderFalseBehavior::DoNothing:
-      break;
-    case EDeciderFalseBehavior::WriteZero:
-      Ctx->Output->Set(OutputSignal, OutputValueFalse);
-      break;
-    case EDeciderFalseBehavior::CopyA:
-      writeCopyA();
-      break;
-    default:
-      break;
+
+    if (bAnything) {
+      const UStaticItem *chosen = chooseFirstInputKey();
+      if (!chosen) continue;
+      if (Def->OutputMode == ELogicOutputMode::CopyA) {
+        const int64 val = Ctx->Input ? Ctx->Input->Get(chosen) : 0;
+        Ctx->Output->Set(chosen, val);
+      } else { // Constant
+        Ctx->Output->Set(chosen, Def->OutputValueTrue);
+      }
+      continue;
+    }
+
+    if (!Signal) continue;
+    if (Def->OutputMode == ELogicOutputMode::CopyA) {
+      Ctx->Output->Set(Signal, valueA);
+    } else { // Constant
+      Ctx->Output->Set(Signal, Def->OutputValueTrue);
     }
   }
 }
@@ -126,42 +146,13 @@ bool ULogicNode_Decider::DeserializeJson(TSharedPtr<FJsonObject> json) {
     Condition = NewObject<UCondition>(this, UCondition::StaticClass());
   }
   json_helper::TryDeserialize(json, TEXT("Cond"), Condition);
-  json_helper::TryFind(json, TEXT("OutSig"), OutputSignal);
-
-  int32 modeInt = static_cast<int32>(OutputMode);
-  if (json_helper::TryGet(json, TEXT("Mode"), modeInt))
-    OutputMode = static_cast<EDeciderOutputMode>(modeInt);
-
-  json_helper::TryGet(json, TEXT("OutT"), OutputValueTrue);
-
-  int32 fbInt = static_cast<int32>(FalseBehavior);
-  if (json_helper::TryGet(json, TEXT("False"), fbInt))
-    FalseBehavior = static_cast<EDeciderFalseBehavior>(fbInt);
-
-  json_helper::TryGet(json, TEXT("OutF"), OutputValueFalse);
+  json_helper::TryDeserialize(json, TEXT("Out"), Output);
   return true;
 }
 
 bool ULogicNode_Decider::SerializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TrySerialize(json, TEXT("Cond"), Condition);
-  if (OutputSignal)
-    json_helper::TrySet(json, TEXT("OutSig"), OutputSignal);
-
-  if (OutputMode != EDeciderOutputMode::Constant) {
-    int32 modeInt = static_cast<int32>(OutputMode);
-    json_helper::TrySet(json, TEXT("Mode"), modeInt);
-  }
-
-  if (OutputValueTrue != 1)
-    json_helper::TrySet(json, TEXT("OutT"), OutputValueTrue);
-
-  if (FalseBehavior != EDeciderFalseBehavior::DoNothing) {
-    int32 fbInt = static_cast<int32>(FalseBehavior);
-    json_helper::TrySet(json, TEXT("False"), fbInt);
-  }
-
-  if (OutputValueFalse != 0)
-    json_helper::TrySet(json, TEXT("OutF"), OutputValueFalse);
+  json_helper::TrySerialize(json, TEXT("Out"), Output);
   return true;
 }
 

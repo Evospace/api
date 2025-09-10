@@ -6,6 +6,7 @@
 #include "Qr/Prototype.h"
 #include "Qr/SerializableJson.h"
 #include <Dom/JsonObject.h>
+#include "Public/LogicOutput.h"
 #include <Templates/SharedPointer.h>
 #include "LogicProgram.generated.h"
 
@@ -15,19 +16,6 @@ class UStaticItem;
 class UCondition;
 class ULogicNodeWidget;
 class ULogicProgramWidget;
-
-UENUM(BlueprintType)
-enum class EDeciderOutputMode : uint8 {
-  Constant,
-  CopyA
-};
-
-UENUM(BlueprintType)
-enum class EDeciderFalseBehavior : uint8 {
-  DoNothing,
-  WriteZero,
-  CopyA
-};
 
 // Base node for logic graph
 UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
@@ -131,19 +119,7 @@ class ULogicNode_Decider : public ULogicNode {
   UCondition *Condition = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticItem *OutputSignal = nullptr;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  EDeciderOutputMode OutputMode = EDeciderOutputMode::Constant;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 OutputValueTrue = 1;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  EDeciderFalseBehavior FalseBehavior = EDeciderFalseBehavior::DoNothing;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 OutputValueFalse = 0;
+  TArray<ULogicOutput *> Output;
 
   virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
