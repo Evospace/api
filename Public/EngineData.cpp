@@ -126,6 +126,7 @@ void UEngineData::ApplyData() const {
   if (dim) {
     dim->DimensionPropComponent->SetRangeMultiplier(PropsMul);
     dim->DimensionPropComponent->SetLodMultiplier(PropsQuality);
+    dim->DimensionPropComponent->SetDetailShadowsEnabled(DetailShadows);
   }
 
   AWorldFeaturesManager *wfm = nullptr;

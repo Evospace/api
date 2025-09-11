@@ -21,6 +21,7 @@ class UEngineData : public UInstance {
       .addProperty("reflection_preset", &UEngineData::ReflectionPreset) //@field integer
       .addProperty("transparency_preset", &UEngineData::TransparencyPreset) //@field integer
       .addProperty("gi_preset", &UEngineData::GiPreset) //@field integer
+      .addProperty("detail_shadows", &UEngineData::DetailShadows) //@field boolean
       .addProperty("fps", &UEngineData::Fps) //@field integer
       .addProperty("res_x", &UEngineData::ResolutionX) //@field integer
       .addProperty("res_y", &UEngineData::ResolutionY) //@field integer
@@ -57,6 +58,9 @@ class UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   int32 GiPreset;
+
+  UPROPERTY(EditAnywhere)
+  bool DetailShadows = true;
 
   UPROPERTY(EditAnywhere)
   bool Performance;

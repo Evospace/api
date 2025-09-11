@@ -30,6 +30,7 @@ class UStaticProp : public UStaticObject {
       .addProperty("mesh", &Self::Mesh) //@field StaticMesh
       .addProperty("no_collision", &Self::NoCollision) //@field boolean
       .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
+      .addProperty("high_detail_shadow", &Self::HighDetailShadow) //@field boolean
       .addProperty("on_spawn", &Self::onSpawn) //@field function
       .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
       .endClass();
@@ -95,6 +96,10 @@ class UStaticProp : public UStaticObject {
 
   UPROPERTY(VisibleAnywhere)
   bool NoCollision = false;
+
+  // If true, this prop can cast high-detail shadows, which can be globally toggled
+  UPROPERTY(EditAnywhere)
+  bool HighDetailShadow = false;
 
   // If set, this prop can be spawned as an actor decoration instead of instanced mesh
   UPROPERTY(EditAnywhere)
