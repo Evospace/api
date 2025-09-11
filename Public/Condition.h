@@ -33,7 +33,7 @@ enum class EConditionMode : uint8 {
   _Count
 };
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, EditInlineNew)
 class UCondition : public UObject, public ISerializableJson {
   GENERATED_BODY()
   public:

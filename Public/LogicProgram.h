@@ -114,6 +114,8 @@ class ULogicNode_Decider : public ULogicNode {
       .endClass();
   }
 
+  ULogicNode_Decider();
+
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UCondition *Condition = nullptr;
@@ -124,6 +126,9 @@ class ULogicNode_Decider : public ULogicNode {
   virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+
+  UFUNCTION(BlueprintCallable)
+  void RemoveOutput(ULogicOutput *to_remove);
 };
 
 // Latch node: stores boolean state, exposes as signal

@@ -5,6 +5,7 @@
 #include "Evospace/Shared/Public/ItemMap.h"
 #include "Evospace/Shared/Public/StaticItem.h"
 #include "Evospace/Shared/Public/BlockLogic.h"
+#include "Evospace/Shared/Public/LogicOutput.h"
 #include "Evospace/Shared/Qr/QrFind.h"
 #include "Evospace/JsonHelper.h"
 
@@ -83,6 +84,10 @@ void ULogicNode_Arithmetic::Execute(TScriptInterface<ILogicInterface> Owner, ULo
 }
 
 // Decider
+ULogicNode_Decider::ULogicNode_Decider() {
+  Condition = NewObject<UCondition>(this, TEXT("Condition"));
+}
+
 void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
   if (!Ctx || !Ctx->Output || !Condition)
     return;
@@ -98,47 +103,14 @@ void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogic
     return nullptr;
   };
 
-  const int64 valueA = (Condition->VarA ? Ctx->Input->Get(Condition->VarA) : 0);
-
   for (ULogicOutput *Def : Output) {
     if (!Def) continue;
-    UStaticItem *Signal = Def->OutputSignal;
-    const bool bAnything = (Signal && Signal->GetFName() == FName("Anything"));
-    const bool bEverything = (Signal && Signal->GetFName() == FName("Everything"));
-
-    if (bEverything) {
-      if (!Ctx->Input) continue;
-      if (Def->OutputMode == ELogicOutputMode::CopyA) {
-        for (const auto &kv : Ctx->Input->Map) {
-          Ctx->Output->Set(kv.Key, valueA);
-        }
-      } else { // Constant
-        for (const auto &kv : Ctx->Input->Map) {
-          Ctx->Output->Set(kv.Key, Def->OutputValueTrue);
-        }
-      }
-      continue;
-    }
-
-    if (bAnything) {
-      const UStaticItem *chosen = chooseFirstInputKey();
-      if (!chosen) continue;
-      if (Def->OutputMode == ELogicOutputMode::CopyA) {
-        const int64 val = Ctx->Input ? Ctx->Input->Get(chosen) : 0;
-        Ctx->Output->Set(chosen, val);
-      } else { // Constant
-        Ctx->Output->Set(chosen, Def->OutputValueTrue);
-      }
-      continue;
-    }
-
-    if (!Signal) continue;
-    if (Def->OutputMode == ELogicOutputMode::CopyA) {
-      Ctx->Output->Set(Signal, valueA);
-    } else { // Constant
-      Ctx->Output->Set(Signal, Def->OutputValueTrue);
-    }
+    Def->Compute(Ctx);
   }
+}
+
+void ULogicNode_Decider::RemoveOutput(ULogicOutput *to_remove) {
+  Output.Remove(to_remove);
 }
 
 bool ULogicNode_Decider::DeserializeJson(TSharedPtr<FJsonObject> json) {
