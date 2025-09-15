@@ -36,73 +36,8 @@ bool ULogicSignal::SerializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicSignal::IsModified() const {
-  if (!ensure(ExportSignals.Num() == ExportEnabled.Num()))
-    return true;
-
-  for (int32 i = 0; i < ExportSignals.Num(); ++i) {
-    if (!ExportSignals[i]) continue;
-    if (ExportSignals[i]->bEnabled != ExportEnabled[i])
-      return true;
-  }
-  return false;
-}
-
 bool ULogicSignal::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, TEXT("Exp"), ExportEnabled);
   EnsureExportFlagsInitialized();
   return true;
-}
-
-// Performance optimization implementations
-
-int32 ULogicSignal::FInventoryCache::CalculateInventoryHash(const TArray<FItemData> &Slots) const {
-  int32 Hash = 0;
-  for (const FItemData &Slot : Slots) {
-    // Combine item pointer and value into hash
-    Hash = HashCombine(Hash, GetTypeHash(Slot.mItem));
-    Hash = HashCombine(Hash, GetTypeHash(Slot.mValue));
-  }
-  return Hash;
-}
-
-bool ULogicSignal::FInventoryCache::HasInventoryChanged(const TArray<FItemData> &Slots) const {
-  if (!bIsValid) return true;
-  return CalculateInventoryHash(Slots) != LastInventoryHash;
-}
-
-void ULogicSignal::FInventoryCache::UpdateCache(const TArray<FItemData> &Slots) {
-  CachedSlots = Slots;
-  LastInventoryHash = CalculateInventoryHash(Slots);
-  bIsValid = true;
-}
-
-void ULogicSignal::FInventoryCache::InvalidateCache() {
-  bIsValid = false;
-  CachedSlots.Empty();
-  LastInventoryHash = 0;
-}
-
-const TArray<FItemData> &ULogicSignal::GetCachedInventoryData(int32 ExportIndex, const TArray<FItemData> &CurrentSlots) const {
-  // Ensure cache array is properly sized
-  if (ExportCaches.Num() <= ExportIndex) {
-    ExportCaches.SetNum(ExportIndex + 1);
-  }
-
-  FInventoryCache &Cache = ExportCaches[ExportIndex];
-
-  // Check if we can use cached data
-  if (!Cache.HasInventoryChanged(CurrentSlots)) {
-    return Cache.CachedSlots;
-  }
-
-  // Update cache with new data
-  Cache.UpdateCache(CurrentSlots);
-  return Cache.CachedSlots;
-}
-
-void ULogicSignal::InvalidateAllCaches() {
-  for (FInventoryCache &Cache : ExportCaches) {
-    Cache.InvalidateCache();
-  }
 }

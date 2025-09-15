@@ -11,7 +11,7 @@ UCLASS(BlueprintType)
 /**
  * 
  */
-class UTieredBlockHelper : public UBlockLogic {
+class UTieredBlockHelper : public UObject {
   using Self = UTieredBlockHelper;
   GENERATED_BODY()
 

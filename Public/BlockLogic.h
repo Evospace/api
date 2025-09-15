@@ -34,6 +34,7 @@ class UStaticBlock;
 class UAccessor;
 class AColumn;
 class ULogicContext;
+class ULogicSignal;
 
 UCLASS(BlueprintType)
 class UBlockLogic : public UInstance {
@@ -236,9 +237,9 @@ class UBlockLogic : public UInstance {
 
   TArray<int32> AccessorInstances;
 
+  private:
   // Core
-  protected:
-  UPROPERTY(VisibleAnywhere)
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   UCoreAccessor *Core = nullptr;
   // Per-class core initializer; override to provide custom core accessor
   virtual UCoreAccessor *CoreInit();
@@ -247,12 +248,24 @@ class UBlockLogic : public UInstance {
   UFUNCTION(BlueprintCallable)
   virtual UCoreAccessor *GetCoreAccessor();
 
+  private:
   // Monitor
-  protected:
-  UPROPERTY(VisibleAnywhere)
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   UCoreAccessor *Monitor = nullptr;
   // Per-class monitor initializer; override to provide custom monitor accessor
   virtual UCoreAccessor *MonitorInit();
+
+  private:
+  // Logic I/O configuration: which signals to export/import and control rules
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  ULogicSignal *Signal = nullptr;
+
+  public:
+  UFUNCTION(BlueprintCallable)
+  virtual ULogicSignal *GetSignal() const;
+
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
+  virtual void ApplyLogicInput(const class ULogicContext *ctx);
 
   public:
   UFUNCTION(BlueprintCallable)

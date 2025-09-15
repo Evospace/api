@@ -1,5 +1,4 @@
 #include "Evospace/Shared/Public/LogicProgram.h"
-#include "Evospace/Shared/Public/LogicInterface.h"
 #include "Evospace/Shared/Public/Condition.h"
 #include "Evospace/Shared/Public/LogicContext.h"
 #include "Evospace/Shared/Public/ItemMap.h"
@@ -9,7 +8,7 @@
 #include "Evospace/Shared/Qr/QrFind.h"
 #include "Evospace/JsonHelper.h"
 
-void ULogicProgram::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicProgram::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   if (!Ctx)
     return;
   for (auto Node : Nodes) {
@@ -28,7 +27,7 @@ bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) {
 }
 
 // Constant
-void ULogicNode_Constant::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_Constant::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   for (const auto &kv : Values) {
     Ctx->Output->Add(kv.Key, kv.Value);
   }
@@ -59,7 +58,7 @@ bool ULogicNode_Constant::SerializeJson(TSharedPtr<FJsonObject> json) {
 }
 
 // Arithmetic
-void ULogicNode_Arithmetic::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_Arithmetic::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   if (!Ctx || !Ctx->Output)
     return;
 
@@ -88,7 +87,7 @@ ULogicNode_Decider::ULogicNode_Decider() {
   Condition = NewObject<UCondition>(this, TEXT("Condition"));
 }
 
-void ULogicNode_Decider::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_Decider::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   if (!Ctx || !Ctx->Output || !Condition)
     return;
 
@@ -165,7 +164,7 @@ bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_Latch::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   // Set/Reset by special signals (e.g., Signal_Set, Signal_Reset)
   const UStaticItem *SigSet = QrFind<UStaticItem>("Signal_Set");
   const UStaticItem *SigReset = QrFind<UStaticItem>("Signal_Reset");
@@ -179,22 +178,13 @@ void ULogicNode_Latch::Execute(TScriptInterface<ILogicInterface> Owner, ULogicCo
     Ctx->Output->Set(SigLatch, State ? 1 : 0);
 }
 
-// Read/Write Network placeholder
-void ULogicNode_ReadNetwork::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
-  // Already aggregated into Ctx->Input by network layer
-}
-
-void ULogicNode_WriteNetwork::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
-  // Network layer reads Ctx->Output and distributes
-}
-
 // Read/Control Machine placeholders
-void ULogicNode_ReadMachine::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_ReadMachine::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   if (Owner)
     Owner->PopulateLogicOutput(Ctx);
 }
 
-void ULogicNode_ControlMachine::Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {
+void ULogicNode_ControlMachine::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   if (Owner)
     Owner->ApplyLogicInput(Ctx);
 }

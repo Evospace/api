@@ -32,7 +32,7 @@ class ULogicNode : public UInstance {
   public:
   // Executes this node against the provided context
   UFUNCTION(BlueprintCallable)
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) {}
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) {}
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual TSubclassOf<ULogicNodeWidget> GetWidgetClass() const;
@@ -58,7 +58,7 @@ class ULogicNode_Constant : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TMap<const UStaticItem *, int64> Values;
 
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
@@ -97,7 +97,7 @@ class ULogicNode_Arithmetic : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UStaticItem *OutputSignal = nullptr;
 
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 };
@@ -123,7 +123,7 @@ class ULogicNode_Decider : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<ULogicOutput *> Output;
 
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 
@@ -147,40 +147,9 @@ class ULogicNode_Latch : public ULogicNode {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool State = false;
 
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
-};
-
-// IO nodes: placeholders to integrate with network/machines
-UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
-class ULogicNode_ReadNetwork : public ULogicNode {
-  GENERATED_BODY()
-  using Self = ULogicNode_ReadNetwork;
-  EVO_CODEGEN_INSTANCE(LogicNode_ReadNetwork);
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<ULogicNode_ReadNetwork, ULogicNode>("LogicNode_ReadNetwork") //@class LogicNode_ReadNetwork : LogicNode
-      .endClass();
-  }
-
-  public:
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
-};
-
-UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
-class ULogicNode_WriteNetwork : public ULogicNode {
-  GENERATED_BODY()
-  using Self = ULogicNode_WriteNetwork;
-  EVO_CODEGEN_INSTANCE(LogicNode_WriteNetwork);
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<ULogicNode_WriteNetwork, ULogicNode>("LogicNode_WriteNetwork") //@class LogicNode_WriteNetwork : LogicNode
-      .endClass();
-  }
-
-  public:
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
 };
 
 UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
@@ -195,7 +164,7 @@ class ULogicNode_ReadMachine : public ULogicNode {
   }
 
   public:
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
 };
 
 UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
@@ -210,7 +179,7 @@ class ULogicNode_ControlMachine : public ULogicNode {
   }
 
   public:
-  virtual void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx) override;
+  virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
 };
 
 // Program: collection of nodes executed in order
@@ -230,7 +199,7 @@ class ULogicProgram : public UInstance {
   TArray<TObjectPtr<ULogicNode>> Nodes;
 
   UFUNCTION(BlueprintCallable)
-  void Execute(TScriptInterface<ILogicInterface> Owner, ULogicContext *Ctx);
+  void Execute(UBlockLogic *Owner, ULogicContext *Ctx);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual TSubclassOf<ULogicProgramWidget> GetWidgetClass() const;

@@ -13,7 +13,7 @@ class UInventory;
 class UItemMap;
 
 UCLASS()
-class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
+class UChestBlockLogic : public UStorageBlockLogic {
   GENERATED_BODY()
   using Self = UChestBlockLogic;
   EVO_CODEGEN_INSTANCE(ChestBlockLogic)
@@ -32,7 +32,6 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
 
-  virtual TArray<FLogicExport> GetExport_Implementation() override;
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
 
   virtual void ApplyLogicInput(const class ULogicContext *ctx) override {}
@@ -49,10 +48,6 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int Capacity = 20;
-
-  // Logic I/O configuration: which signals to export/import and control rules
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  ULogicSignal *Signal = nullptr;
 
   mutable int64 LastKnownInventoryVersion = INDEX_NONE;
 
