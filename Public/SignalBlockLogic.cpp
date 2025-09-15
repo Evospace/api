@@ -1,9 +1,10 @@
 #include "SignalBlockLogic.h"
+#include "Public/LogicSignal.h"
 
-ULogicSignal *USignalBlockLogic::GetSignal() const {
+ULogicSignal *USignalBlockLogic::GetSignal() {
   if (Signal)
     return Signal;
-  if (ULogicSignal *init = NewObject<ULogicSignal>(this, ULogicSignal::StaticClass(), TEXT("Signal"))) {
+  if (ULogicSignal *init = NewObject<ULogicSignal>(this, TEXT("Signal"))) {
     Signal = init;
     return Signal;
   }

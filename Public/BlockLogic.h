@@ -41,6 +41,8 @@ class UBlockLogic : public UInstance {
   GENERATED_BODY()
   using Self = UBlockLogic;
   EVO_CODEGEN_INSTANCE(BlockLogic)
+
+  private:
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBlockLogic, UInstance>("BlockLogic") //@class BlockLogic : Instance
@@ -56,129 +58,76 @@ class UBlockLogic : public UInstance {
   }
 
   protected:
-  // events
-
   UBlockLogic();
 
   public:
-  //    ?
-  //   BlockBeginPlay
-  virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
-  virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
-
-  virtual void SideAccessorAdded(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
-  virtual void SideAccessorRemoved(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
-
-  virtual void SpawnedByItem(AItemLogic *item);
-  virtual EBreakResult RemovedByItem(AItemLogic *item);
-
-  virtual Vec3i GetRotationLocks() const;
-
-  virtual bool IsHandleRecipeSelection() const;
-  virtual void HandleRecipeSelection(UStaticItem *item);
-  void SetAccessorsInstances(bool show);
-
-  virtual void RotationPostprocess();
-
-  virtual void SetRenderable(AColumn *sector);
-  virtual void SetActor(ABlockActor *actor);
-
-  virtual void RemoveActorOrRenderable();
-
-  void DeferredPaintApply() const;
-
+  // Lifecycle
+  virtual void BlockBeginPlay();
+  virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
   virtual void BlockDestruction();
 
+  // Neighbor and accessor events
+  virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
+  virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
+  virtual void SideAccessorAdded(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
+  virtual void SideAccessorRemoved(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
+
+  // Item interactions
+  virtual void SpawnedByItem(AItemLogic *item);
+  virtual EBreakResult RemovedByItem(AItemLogic *item);
+
+  // Ticking
   virtual bool IsBlockTicks() const;
   virtual void Tick();
   virtual void TickAccessor();
 
-  UAccessor *GetAccessor(const std::string &name);
-
-  ADimension *GetDim() const { return mDimension; }
-
+  // Rotation and placement
+  virtual Vec3i GetRotationLocks() const;
+  virtual void RotationPostprocess();
+  virtual bool CheckPlaceble(ADimension *dim, FVector3i pos);
   virtual void CopyOnReplace(UBlockLogic *from);
 
-  virtual bool CheckPlaceble(ADimension *dim, FVector3i pos);
+  // Recipe selection
+  virtual bool IsHandleRecipeSelection() const;
+  virtual void HandleRecipeSelection(UStaticItem *item);
 
-  UFUNCTION(BlueprintCallable)
-  virtual void AwakeAnimation() const;
-
-  UFUNCTION(BlueprintCallable)
-  virtual void SleepAnimation() const;
-
-  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const;
-
-  virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
-
-  UFUNCTION(BlueprintCallable)
-  virtual FString SaveSettings(AMainPlayerController *mpc = nullptr);
-
-  UFUNCTION(BlueprintCallable)
-  virtual void LoadSettings(const FString &json, AMainPlayerController *mpc = nullptr);
-
-  UFUNCTION(BlueprintCallable)
-  void PaintBlock(UMaterialInterface *mat);
-
-  const Vec3i &GetBlockPos() const;
-
-  void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, ADimension *dim);
-
-  virtual UBlockLogic *GetPartRootBlock();
-
-  virtual UBlockLogic *GetWidgetRootBlock();
-
-  const FQuat &GetBlockQuat() const;
-  void SetBlockQuat(const FQuat &r);
-
+  // Actor and rendering
+  virtual void SetRenderable(AColumn *sector);
+  virtual void SetActor(ABlockActor *actor);
+  virtual void RemoveActorOrRenderable();
+  virtual ABlockActor *GetActor();
   void SetActorMobility(EComponentMobility::Type movable);
 
-  float DeltaTime = 0.05f;
-
-  UPROPERTY(VisibleAnywhere)
-  TMap<const UStaticCover *, UHierarchicalInstancedStaticMeshComponent *> mAccessorCover;
-
-  UFUNCTION(BlueprintCallable)
-  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const;
-
-  UFUNCTION(BlueprintCallable)
-  virtual TSubclassOf<UBlockWidget> GetHoverWidgetClass() const;
-
+  // Transform and position
+  const Vec3i &GetBlockPos() const;
+  const FQuat &GetBlockQuat() const;
+  void SetBlockQuat(const FQuat &r);
+  FTransform GetTransformLocation() const;
+  FTransform GetTransform() const;
+  FVector GetLocation() const;
   UFUNCTION(BlueprintCallable)
   FVector3i GetWorldPosition() const;
 
-  UFUNCTION(BlueprintCallable)
-  virtual EBlockWidgetType GetWidgetType() const;
-
-  // No any code
-  virtual void BlockBeginPlay();
-
-  // No any code
-  virtual void BlockEndPlay();
-
-  FTransform GetTransformLocation() const;
-
-  FTransform GetTransform() const;
-
-  FVector GetLocation() const;
-
+  // Initialization and ownership
+  void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, ADimension *dim);
   void SetOwner(void *param1);
 
+  // Accessors and helpers
+  void RegisterAccessor(UAccessor *c);
+  virtual TArray<UAccessor *> GetAccessors();
+  UAccessor *GetAccessor(const std::string &name);
   UAccessor *GetSideAccessor(UClass *type, Vec3i side, Vec3i pos);
-
   template <class Ty_>
   Ty_ *GetSideAccessor(FVector3i side, FVector3i pos) {
     return Cast<Ty_>(GetSideAccessor(Ty_::StaticClass(), side, pos));
   }
-
   template <typename Ty_>
   Ty_ *EvoDefaultAccessor(UObject *Outer, FName SubobjectFName) {
     auto v = CreateDefaultSubobject<Ty_>(Outer, SubobjectFName);
     RegisterAccessor(v);
     return v;
   }
-
   template <typename Ty_>
   Ty_ *EvoDefaultAccessor(FName SubobjectFName) {
     auto v = CreateDefaultSubobject<Ty_>(SubobjectFName);
@@ -186,90 +135,72 @@ class UBlockLogic : public UInstance {
     return v;
   }
 
-  public:
-  //=====================
-
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
-
-  virtual const UStaticBlock *GetStaticBlock() const;
-
-  // ************************************* //
-
+  // Widgets and UI
+  UFUNCTION(BlueprintCallable)
+  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const;
+  UFUNCTION(BlueprintCallable)
+  virtual TSubclassOf<UBlockWidget> GetHoverWidgetClass() const;
+  UFUNCTION(BlueprintCallable)
+  virtual EBlockWidgetType GetWidgetType() const;
   virtual void OpenWidget(class UHudWidget *widget);
 
+  // Actions
   UFUNCTION(BlueprintCallable)
   virtual bool HasAction() const { return false; }
-
   UFUNCTION(BlueprintCallable)
   void SimulateAction();
-
-  // No code
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
 
-  //    .
+  // Inventory
   virtual int32 DropItems(UInventoryAccess *inventory);
-
   void SpawnDropItems(APlayerController *pc);
 
-  void RegisterAccessor(UAccessor *c);
-
-  virtual TArray<UAccessor *> GetAccessors();
-
-  virtual ABlockActor *GetActor();
-
-  virtual bool IsPart() { return false; }
-
+  // Animation and visuals
   UFUNCTION(BlueprintCallable)
-  const UStaticItem *GetNetworkSignal() const;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  bool mRenderable = false;
-
-  UPROPERTY(VisibleAnywhere)
-  FVector3i mPos = {};
-
-  UPROPERTY(VisibleAnywhere)
-  FQuat mQuat = FQuat(EForceInit::ForceInitToZero);
-
-  UPROPERTY(VisibleAnywhere)
-  TArray<UAccessor *> Accessors;
-
-  TArray<int32> AccessorInstances;
-
-  private:
-  // Core
-  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-  UCoreAccessor *Core = nullptr;
-  // Per-class core initializer; override to provide custom core accessor
-  virtual UCoreAccessor *CoreInit();
-
-  public:
+  virtual void AwakeAnimation() const;
   UFUNCTION(BlueprintCallable)
-  virtual UCoreAccessor *GetCoreAccessor();
-
-  private:
-  // Monitor
-  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-  UCoreAccessor *Monitor = nullptr;
-  // Per-class monitor initializer; override to provide custom monitor accessor
-  virtual UCoreAccessor *MonitorInit();
-
-  private:
-  // Logic I/O configuration: which signals to export/import and control rules
-  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-  ULogicSignal *Signal = nullptr;
-
-  public:
+  virtual void SleepAnimation() const;
   UFUNCTION(BlueprintCallable)
-  virtual ULogicSignal *GetSignal() const;
+  void PaintBlock(UMaterialInterface *mat);
+  void DeferredPaintApply() const;
 
+  // Logic and signals
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
   virtual void ApplyLogicInput(const class ULogicContext *ctx);
-
-  public:
+  UFUNCTION(BlueprintCallable)
+  virtual ULogicSignal *GetSignal();
+  UFUNCTION(BlueprintCallable)
+  virtual UCoreAccessor *GetCoreAccessor();
   UFUNCTION(BlueprintCallable)
   virtual UCoreAccessor *GetMonitorAccessor();
+  UFUNCTION(BlueprintCallable)
+  const UStaticItem *GetNetworkSignal() const;
+  virtual const UStaticBlock *GetStaticBlock() const;
+
+  // Serialization
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const;
+  virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
+  UFUNCTION(BlueprintCallable)
+  virtual FString SaveSettings(AMainPlayerController *mpc = nullptr);
+  UFUNCTION(BlueprintCallable)
+  virtual void LoadSettings(const FString &json, AMainPlayerController *mpc = nullptr);
+
+  // Hierarchy helpers
+  virtual UBlockLogic *GetPartRootBlock();
+  virtual UBlockLogic *GetWidgetRootBlock();
+  virtual bool IsPart() { return false; }
+
+  // World/Dimension
+  ADimension *GetDim() const { return mDimension; }
+
+  // State controls
+  void SetAccessorsInstances(bool show);
+  void SetWorking(bool working);
+
+  // Variables (public)
+  float DeltaTime = 0.05f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UMaterialInterface *mPaintMaterial = nullptr;
@@ -286,21 +217,52 @@ class UBlockLogic : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool bRegisterOnMap = false;
 
-  RCoverWrapper Cover;
+  UPROPERTY(VisibleAnywhere)
+  TMap<const UStaticCover *, UHierarchicalInstancedStaticMeshComponent *> mAccessorCover;
 
-  private:
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  ADimension *mDimension = nullptr;
+  UPROPERTY(VisibleAnywhere)
+  FVector3i mPos = {};
 
-  public:
-  void SetWorking(bool working);
+  UPROPERTY(VisibleAnywhere)
+  FQuat mQuat = FQuat(EForceInit::ForceInitToZero);
+
+  UPROPERTY(VisibleAnywhere)
+  TArray<UAccessor *> Accessors;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   float LoadRatio;
 
-  private:
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  bool mRenderable = false;
+
+  RCoverWrapper Cover;
+
+  protected:
+  // Core
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  UCoreAccessor *Core = nullptr;
+  // Per-class core initializer; override to provide custom core accessor
+  virtual UCoreAccessor *CoreInit();
+
+  // Monitor
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  UCoreAccessor *Monitor = nullptr;
+  // Per-class monitor initializer; override to provide custom monitor accessor
+  virtual UCoreAccessor *MonitorInit();
+
+  // Logic I/O configuration: which signals to export/import and control rules
+  UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
+  ULogicSignal *Signal = nullptr;
+
+  // Dimension
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  ADimension *mDimension = nullptr;
+
+  // Internal state
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool Working;
+
+  TArray<int32> AccessorInstances;
 };
 
 UCLASS(BlueprintType)
@@ -308,28 +270,33 @@ class UPartBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:
+  // Serialization
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 
-  UPROPERTY()
-  UBlockLogic *mParentBlock;
-
+  // Widgets and UI
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-
   virtual void OpenWidget(class UHudWidget *widget) override;
 
+  // Hierarchy and accessors
   virtual UBlockLogic *GetPartRootBlock() override;
-
   virtual TArray<UAccessor *> GetAccessors() override;
 
+  // Core accessors
   virtual UCoreAccessor *GetCoreAccessor() override;
   virtual UCoreAccessor *GetMonitorAccessor() override;
 
+  // Part marker
   virtual bool IsPart() override { return true; }
 
+  // Actor overrides
   virtual ABlockActor *GetActor() override;
-
   virtual void SetActor(ABlockActor *actor);
 
+  // Actions
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
+
+  // Variables
+  UPROPERTY()
+  UBlockLogic *mParentBlock;
 };

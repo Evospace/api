@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Evospace/CoordinateSystem.h"
 #include "Public/StorageBlockLogic.h"
-#include "LogicInterface.h"
 #include "Public/LogicSignal.h"
 #include "ChestBlockLogic.generated.h"
 
@@ -20,8 +19,7 @@ class UChestBlockLogic : public UStorageBlockLogic {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStorageBlockLogic>("ChestBlockLogic") //@class ChestBlockLogic : StorageBlockLogic
-      .addProperty("capacity", &Self::Capacity) //@field integer Chest slot count
-      .addProperty("signal", &Self::Signal) //@field LogicSignal
+      .addProperty("capacity", &Self::Capacity) //@field integer Chest slot count@field LogicSignal
       .endClass();
   }
 

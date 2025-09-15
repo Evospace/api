@@ -10,5 +10,5 @@ class USignalBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:
-  virtual ULogicSignal *GetSignal() const override;
+  virtual ULogicSignal *GetSignal() override;
 };
