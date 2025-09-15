@@ -240,7 +240,8 @@ class UBlockLogic : public UInstance {
   protected:
   UPROPERTY(VisibleAnywhere)
   UCoreAccessor *Core = nullptr;
-  TFunction<UCoreAccessor *()> CoreInit;
+  // Per-class core initializer; override to provide custom core accessor
+  virtual UCoreAccessor *CoreInit();
 
   public:
   UFUNCTION(BlueprintCallable)
@@ -250,13 +251,12 @@ class UBlockLogic : public UInstance {
   protected:
   UPROPERTY(VisibleAnywhere)
   UCoreAccessor *Monitor = nullptr;
-  TFunction<UCoreAccessor *()> MonitorInit;
+  // Per-class monitor initializer; override to provide custom monitor accessor
+  virtual UCoreAccessor *MonitorInit();
 
   public:
   UFUNCTION(BlueprintCallable)
   virtual UCoreAccessor *GetMonitorAccessor();
-
-  //mutable int32 mFromLastWakeup = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UMaterialInterface *mPaintMaterial = nullptr;
@@ -309,9 +309,8 @@ class UPartBlockLogic : public UBlockLogic {
 
   virtual TArray<UAccessor *> GetAccessors() override;
 
-  virtual UCoreAccessor *GetCoreAccessor();
-
-  virtual UCoreAccessor *GetMonitorAccessor();
+  virtual UCoreAccessor *GetCoreAccessor() override;
+  virtual UCoreAccessor *GetMonitorAccessor() override;
 
   virtual bool IsPart() override { return true; }
 

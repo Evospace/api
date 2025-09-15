@@ -28,6 +28,7 @@ class USelectCrafter : public UAbstractCrafter {
 
   public:
   USelectCrafter();
+  virtual UCoreAccessor *CoreInit() override;
 
   virtual void SelectRecipeIndex(APlayerController *pc, int32 i) override;
 

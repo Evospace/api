@@ -16,7 +16,7 @@ class UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   protected:
   UDumpCrafterBlockLogic();
-
+  virtual UCoreAccessor *CoreInit() override;
   virtual void Tick() override;
 
   virtual void BlockBeginPlay() override;

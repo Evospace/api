@@ -16,7 +16,7 @@ class UFluidContainerBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
   UFluidContainerBlockLogic();
-
+  virtual UCoreAccessor *CoreInit() override;
   virtual bool IsResourceStorage() const override { return true; }
   virtual bool IsBatteryContainer() const override { return false; }
 

@@ -27,6 +27,7 @@ class UChestBlockLogic : public UStorageBlockLogic, public ILogicInterface {
 
   public:
   UChestBlockLogic();
+  virtual UCoreAccessor *CoreInit() override;
 
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;

@@ -15,7 +15,7 @@ class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider
 
   public:
   UDroneStationBlockLogic();
-
+  virtual UCoreAccessor *CoreInit() override;
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventory *InputInventory;
 

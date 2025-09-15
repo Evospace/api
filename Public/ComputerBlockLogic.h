@@ -27,7 +27,7 @@ class UComputerBlockLogic : public UBlockLogic {
 
   public:
   UComputerBlockLogic();
-
+  virtual UCoreAccessor *CoreInit() override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
 

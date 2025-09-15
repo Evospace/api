@@ -37,6 +37,7 @@ class UDrillingMachineBase : public UBlockLogic {
 
   public:
   UDrillingMachineBase();
+  virtual UCoreAccessor *CoreInit() override;
 
   // Blueprint interface
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
