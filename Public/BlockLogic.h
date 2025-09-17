@@ -70,8 +70,6 @@ class UBlockLogic : public UInstance {
   // Neighbor and accessor events
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
-  virtual void SideAccessorAdded(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
-  virtual void SideAccessorRemoved(UAccessor *accessor, const Vec3i &side, const Vec3i &pos);
 
   // Item interactions
   virtual void SpawnedByItem(AItemLogic *item);

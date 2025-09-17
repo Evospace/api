@@ -60,9 +60,6 @@ class UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool InfiniteOre;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UValueStorage *ValueStorage;
-
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Version;
 
