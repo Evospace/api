@@ -33,6 +33,9 @@ class UStaticProp : public UStaticObject {
       .addProperty("high_detail_shadow", &Self::HighDetailShadow) //@field boolean
       .addProperty("on_spawn", &Self::onSpawn) //@field function
       .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
+      .addProperty("break_effect", &Self::BreakEffect) //@field Class
+      .addProperty("damage_effect", &Self::DamageEffect) //@field Class
+      .addProperty("actor_class", &Self::ActorClass) //@field Class
       .endClass();
   }
   virtual UClass *GetSuperProto() const override {
@@ -87,6 +90,12 @@ class UStaticProp : public UStaticObject {
 
   UPROPERTY(EditAnywhere)
   int32 BreakChance = 100;
+
+  UPROPERTY(EditAnywhere)
+  UClass *BreakEffect = nullptr;
+
+  UPROPERTY(EditAnywhere)
+  UClass *DamageEffect = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   TArray<UMaterialInterface *> Materials;

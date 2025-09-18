@@ -44,5 +44,5 @@ class USourceData : public UInstance {
   static int32 CalculateExtractionSpeed(int64 extracted, int64 initial);
 
   UFUNCTION(BlueprintCallable)
-  FExtractionData ExtractOre(ADimension *dim);
+  FExtractionData ExtractOre(int64 count);
 };

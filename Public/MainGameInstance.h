@@ -31,7 +31,6 @@ class UStaticItem;
 class UAssetOwner;
 class UMapObjectManager;
 class UStaticMesh;
-class UGameSessionData;
 
 UENUM(BlueprintType)
 enum class EJoyImageFormats : uint8 {
@@ -128,8 +127,7 @@ class UMainGameInstance : public USteamGameInstance {
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   bool mAllResearchesFinished = false;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UGameSessionData *GameSessionData;
+  
 
   //TODO: what is it?
   UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -312,9 +310,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   static std::vector<std::string> GetAllSupportedResolutions();
 
-  UFUNCTION(BlueprintCallable)
-  bool IsContentLoaded() const;
-
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FVector2D ViewportSize();
 
@@ -349,6 +344,7 @@ class UMainGameInstance : public USteamGameInstance {
   protected:
   virtual void OnStart() override;
 
+  UFUNCTION(BlueprintCallable)
   void OnContentLoaded();
 
   bool LoadTick(float Delta);
@@ -358,7 +354,7 @@ class UMainGameInstance : public USteamGameInstance {
   FString mFilterString;
 
   public:
-  std::unique_ptr<ModLoadingContext> mlc;
+  // Legacy aliases to subsystem-owned objects. Will be removed after refactor.
 
   UObject *GetAssetOwner() const;
 
@@ -384,7 +380,6 @@ class UMainGameInstance : public USteamGameInstance {
   URegionMap *mRegionMap;
 
   bool mCreativeAllowed = true;
-  bool mContentLoaded = false;
   bool mSubscriptionState = false;
 
   TArray<UStaticItem *> mUnfilteredItems;

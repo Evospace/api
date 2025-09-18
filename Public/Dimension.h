@@ -146,9 +146,6 @@ class ADimension : public AActor {
   UFUNCTION(BlueprintCallable)
   virtual void BeginPlay() override;
 
-  UPROPERTY(VisibleAnywhere)
-  UGameSessionData *GameSessionData;
-
   void LoadDimJson();
 
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

@@ -34,7 +34,7 @@ class UStaticBlock;
 class UAccessor;
 class AColumn;
 class ULogicContext;
-class ULogicSignal;
+class ULogicSettings;
 
 UCLASS(BlueprintType)
 class UBlockLogic : public UInstance {
@@ -166,7 +166,7 @@ class UBlockLogic : public UInstance {
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
   virtual void ApplyLogicInput(const class ULogicContext *ctx);
   UFUNCTION(BlueprintCallable)
-  virtual ULogicSignal *GetSignal();
+  virtual ULogicSettings *GetLogicSettings();
   UFUNCTION(BlueprintCallable)
   virtual UCoreAccessor *GetCoreAccessor();
   UFUNCTION(BlueprintCallable)
@@ -250,7 +250,7 @@ class UBlockLogic : public UInstance {
 
   // Logic I/O configuration: which signals to export/import and control rules
   UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-  ULogicSignal *Signal = nullptr;
+  ULogicSettings *LogicSettings = nullptr;
 
   // Dimension
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

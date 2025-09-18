@@ -12,6 +12,7 @@
 #include "Qr/Setting.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Widgets/SWindow.h"
+#include "Qr/ModLoadingSubsystem.h"
 
 class USettingsConfirmationWidget;
 bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
@@ -47,8 +48,7 @@ void UEngineData::FixResolution() {
 }
 
 void UEngineData::ShowConfirmationDialog() {
-
-  if (!UMainGameInstance::Singleton->mContentLoaded)
+  if (GetWorld()->GetGameInstance()->GetSubsystem<UModLoadingSubsystem>()->IsContentLoaded())
     return;
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();

@@ -53,7 +53,7 @@ class URegionLayer : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   const UStaticItem *Item = nullptr;
 
-  FExtractionData ExtractItem(const ADimension *dim, const FVector2i &sr);
+  FExtractionData ExtractItem(const FVector2i &sr);
 
   UFUNCTION(BlueprintPure, BlueprintCallable)
   int32 CalculateExtractionSpeed(const FVector2i &sr) const;

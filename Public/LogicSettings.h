@@ -6,16 +6,16 @@
 #include "Qr/Loc.h"
 #include "Condition.h"
 #include "LogicExportOption.h"
-#include "LogicSignal.generated.h"
+#include "LogicSettings.generated.h"
 
 UCLASS(BlueprintType)
-class ULogicSignal : public UInstance {
+class ULogicSettings : public UInstance {
   GENERATED_BODY()
-  using Self = ULogicSignal;
-  EVO_CODEGEN_INSTANCE(LogicSignal);
+  using Self = ULogicSettings;
+  EVO_CODEGEN_INSTANCE(LogicSettings);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UInstance>("LogicSignal") //@class LogicSignal : Instance
+      .deriveClass<Self, UInstance>("LogicSettings") //@class LogicSettings : Instance
       .addProperty("export", QR_ARRAY_GET_SET(ExportSignals)) //@field LogicExportOption[]
       .endClass();
   }

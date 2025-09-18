@@ -1,14 +1,14 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Public/TieredBlockLogic.h"
-#include "Public/SignalBlockLogic.h"
+#include "Public/LogicSettingsBlockLogic.h"
 
 #include "StorageBlockLogic.generated.h"
 
 class UResourceComponent;
 
 UCLASS()
-class UStorageBlockLogic : public USignalBlockLogic {
+class UStorageBlockLogic : public ULogicSettingsBlockLogic {
   using Self = UStorageBlockLogic;
   EVO_CODEGEN_INSTANCE(StorageBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
