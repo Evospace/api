@@ -32,7 +32,7 @@ class UStaticProp : public UStaticObject {
       .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
       .addProperty("high_detail_shadow", &Self::HighDetailShadow) //@field boolean
       .addProperty("on_spawn", &Self::onSpawn) //@field function
-      .addProperty("break_chance", &Self::BreakChance) //@field integer Break chance in percents
+      .addProperty("hits_to_break", &Self::HitsToBreak) //@field integer Number of hits to break
       .addProperty("break_effect", &Self::BreakEffect) //@field Class
       .addProperty("damage_effect", &Self::DamageEffect) //@field Class
       .addProperty("actor_class", &Self::ActorClass) //@field Class
@@ -89,7 +89,7 @@ class UStaticProp : public UStaticObject {
   bool IsBig = false;
 
   UPROPERTY(EditAnywhere)
-  int32 BreakChance = 100;
+  int32 HitsToBreak = 1;
 
   UPROPERTY(EditAnywhere)
   UClass *BreakEffect = nullptr;

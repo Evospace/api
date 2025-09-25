@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Qr/CommonConverter.h"
 #include "Qr/Prototype.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "Qr/SerializableJson.h"
 #include "ThirdParty/lua/lua.h"
 #include "UObject/Object.h"
+#include "Qr/CommonConverter.h"
 #include "GameSessionData.generated.h"
 
 class USetting;
@@ -15,12 +17,23 @@ class UValueStorage;
 
 UCLASS(BlueprintType)
 class UGameSessionData : public UInstance {
+  using Self = UGameSessionData;
   GENERATED_BODY()
   EVO_CODEGEN_INSTANCE(GameSessionData)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UGameSessionData, UInstance>("GameSessionData") //@class GameSessionData : Instance
-      .addProperty("infinite_ore", &UGameSessionData::InfiniteOre) //@field boolean
+      .deriveClass<Self, UInstance>("GameSessionData") //@class GameSessionData : Instance
+      .addProperty("infinite_ore", &Self::InfiniteOre) //@field boolean
+      .addProperty("all_research_completed", &Self::AllResearchCompleted) //@field boolean
+      .addProperty("creative_mode", &Self::CreativeMode) //@field boolean
+      .addProperty("creative_allowed", &Self::CreativeAllowed) //@field boolean
+      .addProperty("infinite_ore", &Self::InfiniteOre) //@field boolean
+      .addProperty("total_game_time", &Self::TotalGameTime) //@field double
+      .addProperty("total_game_ticks", &Self::TotalGameTicks) //@field integer
+      .addProperty("seed", &Self::Seed) //@field string
+      .addProperty("generator", QR_STRING_GET_SET(GeneratorName)) //@field string
+      .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
+      .addProperty("version", &Self::Version) //@field string
       .endClass();
   }
 
@@ -36,8 +49,8 @@ class UGameSessionData : public UInstance {
   UFUNCTION(BlueprintCallable)
   FString GetModsCombined() const;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 AutosavePeriod = 600;
+  UFUNCTION(BlueprintCallable)
+  int64 GetSeed() const { return GetTypeHash(Seed); }
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   double TotalGameTime = 0.f;
@@ -52,13 +65,19 @@ class UGameSessionData : public UInstance {
   FString GeneratorName;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  bool CreativeMode;
+  FString SaveName;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  bool CreativeAllowed;
+  bool CreativeMode = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  bool InfiniteOre;
+  bool CreativeAllowed = false;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool InfiniteOre = false;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool AllResearchCompleted = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Version;

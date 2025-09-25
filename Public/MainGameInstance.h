@@ -81,21 +81,6 @@ class UMainGameInstance : public USteamGameInstance {
   static inline UMainGameInstance *Singleton = nullptr;
 
   UFUNCTION(BlueprintCallable)
-  void SetStringSeed(const FString &str);
-
-  UFUNCTION(BlueprintCallable)
-  FString GetStringSeed() const;
-
-  UFUNCTION(BlueprintCallable)
-  int32 GetSeed() const;
-
-  UFUNCTION(BlueprintCallable)
-  void SetSaveName(const FString &str);
-
-  UFUNCTION(BlueprintCallable)
-  FString GetSaveName() const;
-
-  UFUNCTION(BlueprintCallable)
   UInventoryAccess *GetNamedInventory(const FString &name);
 
   UFUNCTION(BlueprintCallable)
@@ -187,8 +172,7 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   void OnWindowFocusChanged(bool bIsFocused);
 
-  //TODO: fix
-  const UDbStorage *GetObjectLibrary() const;
+  UDbStorage *GetObjectLibrary();
 
   UFUNCTION(BlueprintCallable)
   void PostModLoad();
@@ -372,15 +356,8 @@ class UMainGameInstance : public USteamGameInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FDateTime mLastSave = {};
 
-  FString mStringSeed = "Default";
-  FString mSaveName = "Default";
-  int32 mSeed = 0;
-
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   URegionMap *mRegionMap;
-
-  bool mCreativeAllowed = true;
-  bool mSubscriptionState = false;
 
   TArray<UStaticItem *> mUnfilteredItems;
   TArray<UStaticBlock *> mUnfilteredBlocks;

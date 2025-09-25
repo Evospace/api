@@ -34,6 +34,7 @@ class UEngineData : public UInstance {
       .addProperty("fov", &UEngineData::Fov) //@field number
       .addProperty("fog", &UEngineData::Fog) //@field number
       .addProperty("window_mode", &UEngineData::Windowed) //@field integer
+      .addProperty("autosave_period", &UEngineData::AutosavePeriod) //@field integer
       //direct:
       //function EngineData:apply() end
       .addFunction("apply", &UEngineData::ApplyData)
@@ -88,6 +89,9 @@ class UEngineData : public UInstance {
 
   UPROPERTY(EditAnywhere)
   float Fog = 1;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 AutosavePeriod = 10;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   float MouseSensitivityX = 1;
