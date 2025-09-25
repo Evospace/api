@@ -65,7 +65,7 @@ class UGameSessionData : public UInstance {
   FString GeneratorName;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString SaveName;
+  FString SaveName = "Default";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool CreativeMode = false;

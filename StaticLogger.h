@@ -39,6 +39,7 @@ class FSimpleLogger {
     }
     LogEntries.PushLast(MoveTemp(LogEntry));
     ++perLevelCount[LogLevel];
+    ++LogVersion;
   }
 
   const TDeque<FString> &GetLogEntries() const {
@@ -50,6 +51,11 @@ class FSimpleLogger {
     perLevelCount.SetNumZeroed(ELogLevel_Count);
     LogEntries.Empty();
     ErrorEntries.Empty();
+    LogVersion++;
+  }
+
+  int32 GetLogVersion() const {
+    return LogVersion;
   }
 
   static FSimpleLogger static_logger;
@@ -88,6 +94,8 @@ class FSimpleLogger {
   TDeque<FString> LogEntries;
 
   TDeque<FString> ErrorEntries;
+
+  int32 LogVersion = 0;
 
   FString GetLogLevelString(ELogLevel LogLevel) const {
     switch (LogLevel) {
