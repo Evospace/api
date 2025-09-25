@@ -58,9 +58,6 @@ class UComputerBlockLogic : public UBlockLogic {
   UPROPERTY(BlueprintReadWrite)
   USingleSlotInventory *chip_inventory;
 
-  UPROPERTY()
-  const UStaticItem *CompItem = nullptr;
-
   UPROPERTY(BlueprintReadWrite)
   int32 BoostLeft = 0;
 

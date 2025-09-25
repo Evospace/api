@@ -47,8 +47,6 @@ class UStaticResearch : public UPrototype, public ISearchable {
   }
 
   public:
-  UStaticResearch();
-
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FLoc Label;
 
@@ -56,7 +54,7 @@ class UStaticResearch : public UPrototype, public ISearchable {
   TArray<FLoc> DescriptionParts = {};
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  UInventory *DataPoints;
+  int64 Complexity = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int mLevel = 0;

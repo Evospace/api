@@ -52,6 +52,9 @@ class UGameSessionData : public UInstance {
   UFUNCTION(BlueprintCallable)
   int64 GetSeed() const { return GetTypeHash(Seed); }
 
+  UFUNCTION(BlueprintCallable)
+  void Reset();
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   double TotalGameTime = 0.f;
 
@@ -59,7 +62,7 @@ class UGameSessionData : public UInstance {
   int64 TotalGameTicks = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString Seed;
+  FString Seed = "Default";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString GeneratorName;

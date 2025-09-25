@@ -329,7 +329,7 @@ class UMainGameInstance : public USteamGameInstance {
   virtual void OnStart() override;
 
   UFUNCTION(BlueprintCallable)
-  void OnContentLoaded();
+  void ModLoadingFinalStep();
 
   bool LoadTick(float Delta);
 
