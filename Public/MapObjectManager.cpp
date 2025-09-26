@@ -4,6 +4,8 @@
 #include "Public/MainGameInstance.h"
 #include "Public/RegionMap.h"
 #include "Public/EvoRegion.h"
+#include "Public/Dimension.h"
+#include "Public/SurfaceDefinition.h"
 
 void UMapObjectManager::Register(UBlockLogic *Block, const UStaticItem *Item) {
   if (!Block || !Item) return;
@@ -36,12 +38,11 @@ void UMapObjectManager::UnregisterAll(UBlockLogic *Block) {
 
 void UMapObjectManager::ReportBuilt(UBlockLogic *Block) {
   if (!Block) return;
-  const auto gi = UMainGameInstance::Singleton;
-  if (!gi || !gi->mRegionMap) return;
+  auto sd = Block->GetDim()->SurfaceDefinition;
 
   const FVector3i wb = Block->GetWorldPosition();
   const FVector2i grid = URegionMap::WorldBlockToGrid(wb);
-  UEvoRegion *region = gi->mRegionMap->FindRegion(grid);
+  UEvoRegion *region = sd->RegionMap->FindRegion(grid);
   if (!region) return;
 
   if (!region->TextureOverlay) {

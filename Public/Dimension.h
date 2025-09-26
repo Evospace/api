@@ -41,7 +41,7 @@ class UStaticIndexedHierarchicalInstancedStaticMeshComponent;
 class USectorCompiler;
 class APlayerController;
 class UDimensionLoadWidget;
-class URegionMap;
+class USurfaceDefinition;
 class UGameSessionData;
 
 USTRUCT()
@@ -144,10 +144,10 @@ class ADimension : public AActor {
   UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject, const FQuat &rot);
 
   UFUNCTION(BlueprintCallable)
-  virtual void BeginPlay() override;
+  void InitializeSurface(USurfaceDefinition *surfaceDefinition);
 
   void LoadDimJson();
-
+ 
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
   virtual void Tick(float DeltaTime) override;
@@ -156,6 +156,9 @@ class ADimension : public AActor {
   bool mBuildModeBoxes = false;
 
   bool mAccessorsPlanes = false;
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  USurfaceDefinition *SurfaceDefinition;
 
   UPROPERTY()
   TArray<UBlockLogic *> RenderBlocksDeferred;
@@ -168,6 +171,10 @@ class ADimension : public AActor {
 
   UFUNCTION(BlueprintCallable)
   void Unpause();
+
+  //TODO: move to surface definition
+  UFUNCTION(BlueprintCallable)
+  void RegionUpdate();
 
   UBlockNetwork *GetNewNetwork(int64 per_wire = 0);
 

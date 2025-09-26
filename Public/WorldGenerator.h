@@ -7,13 +7,14 @@
 #include "WorldGenerator.generated.h"
 
 class UStaticItem;
+class USurfaceDefinition;
 
 UCLASS(Abstract, BlueprintType)
 class UWorldGenerator : public UPrototype {
   GENERATED_BODY()
 
   public:
-  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos) const;
+  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos, USurfaceDefinition *surfaceDefinition) const;
 
   UFUNCTION(BlueprintCallable)
   virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biome) const;

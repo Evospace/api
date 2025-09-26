@@ -15,6 +15,31 @@
 class USetting;
 class UValueStorage;
 
+
+USTRUCT(BlueprintType)
+struct FVersionStruct {
+  GENERATED_BODY()
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Major = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Minor = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Patch = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Build = 0;
+  
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FString Hash = "";
+
+  std::strong_ordering operator <=>(const FVersionStruct &other) const {
+    return Major != other.Major ? Major <=> other.Major : Minor != other.Minor ? Minor <=> other.Minor : Patch != other.Patch ? Patch <=> other.Patch : Build <=> other.Build;
+  }
+};
+
 UCLASS(BlueprintType)
 class UGameSessionData : public UInstance {
   using Self = UGameSessionData;
@@ -31,9 +56,9 @@ class UGameSessionData : public UInstance {
       .addProperty("total_game_time", &Self::TotalGameTime) //@field double
       .addProperty("total_game_ticks", &Self::TotalGameTicks) //@field integer
       .addProperty("seed", &Self::Seed) //@field string
+      .addProperty("version", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*Self::VersionToString(self->Version)); }) //@field string
       .addProperty("generator", QR_STRING_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
-      .addProperty("version", &Self::Version) //@field string
       .endClass();
   }
 
@@ -42,9 +67,17 @@ class UGameSessionData : public UInstance {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  
+  UFUNCTION(BlueprintCallable)
+  void Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, const FString &generatorName);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetCreativeAllowed() const;
+
+  static TOptional<FVersionStruct> VersionFromString(const FString &ser);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString VersionToString(const FVersionStruct &version);
 
   UFUNCTION(BlueprintCallable)
   FString GetModsCombined() const;
@@ -65,7 +98,7 @@ class UGameSessionData : public UInstance {
   FString Seed = "Default";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString GeneratorName;
+  FString GeneratorName = "";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString SaveName = "Default";
@@ -83,10 +116,10 @@ class UGameSessionData : public UInstance {
   bool AllResearchCompleted = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString Version;
+  FVersionStruct Version = {};
 
   UPROPERTY(VisibleAnywhere)
-  TArray<FString> Mods;
+  TArray<FString> Mods = {};
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool Cloud = false;

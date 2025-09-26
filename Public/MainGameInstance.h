@@ -295,6 +295,7 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static float GetDPI();
 
+  //TODO: move to subsystem
   static void ResearchReset();
 
   UFUNCTION(BlueprintCallable)
@@ -302,8 +303,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UFUNCTION(BlueprintCallable)
   FString GetLastLoadingMessage() const;
-
-  void RegionUpdate() const;
 
   UPROPERTY(BlueprintReadWrite)
   bool mSteamworksIsReady = false;
@@ -350,9 +349,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FDateTime mLastSave = {};
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  URegionMap *mRegionMap;
 
   TArray<UStaticItem *> mUnfilteredItems;
   TArray<UStaticBlock *> mUnfilteredBlocks;

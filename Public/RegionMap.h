@@ -85,6 +85,7 @@ class URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
 
+  UFUNCTION(BlueprintCallable)
   void Initialize();
 
   UFUNCTION(BlueprintCallable)
