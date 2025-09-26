@@ -109,11 +109,6 @@ class UMainGameInstance : public USteamGameInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 
-  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-  bool mAllResearchesFinished = false;
-
-  
-
   //TODO: what is it?
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static float GetNextTime(float time, float delta);
