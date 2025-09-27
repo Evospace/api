@@ -57,7 +57,7 @@ class UGameSessionData : public UInstance {
       .addProperty("total_game_ticks", &Self::TotalGameTicks) //@field integer
       .addProperty("seed", &Self::Seed) //@field string
       .addProperty("version", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*Self::VersionToString(self->Version)); }) //@field string
-      .addProperty("generator", QR_STRING_GET_SET(GeneratorName)) //@field string
+      .addProperty("generator", QR_NAME_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
       .endClass();
   }
@@ -69,7 +69,7 @@ class UGameSessionData : public UInstance {
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   
   UFUNCTION(BlueprintCallable)
-  void Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, const FString &generatorName);
+  void Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetCreativeAllowed() const;
@@ -98,7 +98,7 @@ class UGameSessionData : public UInstance {
   FString Seed = "Default";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString GeneratorName = "";
+  FName GeneratorName = "";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString SaveName = "Default";

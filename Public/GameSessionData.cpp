@@ -47,7 +47,7 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
   return result;
 }
 
-void UGameSessionData::Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, const FString &generatorName) {
+void UGameSessionData::Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
   SaveName = saveName;
   Seed = seed;
   GeneratorName = generatorName;
@@ -61,6 +61,7 @@ void UGameSessionData::Initialize(const FString &saveName, bool CreativeMode, bo
 
   for (auto &surface : {"Temperate"}) {
     USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>();
+    surfaceDefinition->GeneratorName = generatorName;
     surfaceDefinition->Initialize();
     UStaticSaveHelpers::SaveSurfaceDefinition(saveName, surface, surfaceDefinition);
   }

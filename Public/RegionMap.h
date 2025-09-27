@@ -19,6 +19,7 @@ class UEvoRegion;
 class ADimension;
 class UStaticItem;
 class UTexture2D;
+class USurfaceDefinition;
 
 UCLASS(BlueprintType)
 class URegionMap : public UInstance {
@@ -86,12 +87,16 @@ class URegionMap : public UInstance {
   float GetGridSize() const { return gridSize; }
 
   UFUNCTION(BlueprintCallable)
-  void Initialize();
+  void Initialize(USurfaceDefinition *surfaceDefinition);
 
   UFUNCTION(BlueprintCallable)
   void Reset() {
     Regions.Empty();
   }
+
+
+  UPROPERTY()
+  TWeakObjectPtr<USurfaceDefinition> SurfaceDefinition = nullptr;
 
   UPROPERTY()
   USourceData *StoneSource;

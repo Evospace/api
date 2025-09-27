@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Qr/CommonConverter.h"
 #include "Qr/Prototype.h"
 #include "SurfaceDefinition.generated.h"
 
@@ -14,6 +15,7 @@ class USurfaceDefinition : public UInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("SurfaceDefinition") //@class SurfaceDefinition : Instance
       .addProperty("region_map", &Self::RegionMap) //@field URegionMap
+      .addProperty("generator_name", QR_NAME_GET_SET(GeneratorName)) //@field string
       .endClass();
   }
   GENERATED_BODY()
@@ -21,6 +23,9 @@ class USurfaceDefinition : public UInstance {
   public:
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   URegionMap *RegionMap;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  FName GeneratorName;
 
   UFUNCTION(BlueprintCallable)
   void Initialize();

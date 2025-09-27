@@ -87,13 +87,10 @@ class UMainGameInstance : public USteamGameInstance {
   static TArray<UStaticTip *> GetAllStaticTips();
 
   UFUNCTION(BlueprintCallable)
-  UWorldGenerator *GetWorldGenerator() const;
+  UWorldGenerator *FindWorldGenerator(FName name) const;
 
   UFUNCTION(BlueprintCallable)
   TArray<UWorldGenerator *> GetWorldGeneratorList();
-
-  UFUNCTION(BlueprintCallable)
-  void SetWorldGenerator(UWorldGenerator *gen);
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;

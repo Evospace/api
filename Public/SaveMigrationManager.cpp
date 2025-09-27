@@ -7,6 +7,8 @@
 #include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
 #include "HAL/FileManager.h"
+#include "Public/SurfaceDefinition.h"
+#include "Public/RegionMap.h"
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
   if (!GameInstance) {
@@ -46,7 +48,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
         return false;
       }
 
-      const FString playerSrc = saveRoot / TEXT("player.json");
+      const FString playerSrc = temperateDir / TEXT("player.json");
       const FString playerDst = saveRoot / TEXT("Player.json");
       if (PlatformFile.FileExists(*playerSrc)) {
         if (!PlatformFile.MoveFile(*playerDst, *playerSrc)) {
@@ -55,7 +57,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
         }
       }
 
-      const FString previewSrc = saveRoot / TEXT("Preview.jpg");
+      const FString previewSrc = temperateDir / TEXT("Preview.jpg");
       const FString previewDst = saveRoot / TEXT("Preview.jpg");
       if (PlatformFile.FileExists(*previewSrc)) {
         if (!PlatformFile.MoveFile(*previewDst, *previewSrc)) {
@@ -66,7 +68,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
       // Move Dimension.json into save root
       const FString dimJsonSrc = temperateDir / TEXT("Dimension.json");
-      const FString dimJsonDst = saveRoot / TEXT("Deposits.json");
+      const FString dimJsonDst = saveRoot / TEXT("GameSessionData.json");
       if (PlatformFile.FileExists(*dimJsonSrc)) {
         if (!PlatformFile.MoveFile(*dimJsonDst, *dimJsonSrc)) {
           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Dimension.json to save root for '" << saveName << "'";
@@ -74,51 +76,46 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
         }
       }
 
-      // Extract "GameSessionData" from Dimension.json and save to GameSessionData.json in save root
-      if (PlatformFile.FileExists(*dimJsonDst)) {
-        FString dimJsonContent;
-        if (FFileHelper::LoadFileToString(dimJsonContent, *dimJsonDst)) {
-          TSharedPtr<FJsonObject> dimJsonObject;
-          TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(dimJsonContent);
-          if (FJsonSerializer::Deserialize(reader, dimJsonObject) && dimJsonObject.IsValid()) {
-            TSharedPtr<FJsonObject> gameSessionDataObj = MakeShared<FJsonObject>();
-            for (const auto& Pair : dimJsonObject->Values) {
-              gameSessionDataObj->SetField(Pair.Key, Pair.Value);
-            }
-            FString gameSessionDataStr;
-            TSharedRef<TJsonWriter<>> writer = TJsonWriterFactory<>::Create(&gameSessionDataStr);
-            if (FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer)) {
-              const FString gameSessionDataPath = saveRoot / TEXT("GameSessionData.json");
-              if (!FFileHelper::SaveStringToFile(gameSessionDataStr, *gameSessionDataPath)) {
-                LOG(ERROR_LL) << "SaveMigrationManager: Failed to write GameSessionData.json for '" << saveName << "'";
-                return false;
-              }
-            } else {
-              LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize GameSessionData for '" << saveName << "'";
-              return false;
-            }
-
-            if (dimJsonObject.IsValid() && dimJsonObject->HasField(TEXT("GameSessionData"))) {
-                dimJsonObject->RemoveField(TEXT("GameSessionData"));
-                FString updatedDimJsonStr;
-                TSharedRef<TJsonWriter<>> updatedWriter = TJsonWriterFactory<>::Create(&updatedDimJsonStr);
-                if (FJsonSerializer::Serialize(dimJsonObject.ToSharedRef(), updatedWriter)) {
-                  if (!FFileHelper::SaveStringToFile(updatedDimJsonStr, *dimJsonDst)) {
-                    LOG(ERROR_LL) << "SaveMigrationManager: Failed to update Deposits.json after removing GameSessionData for '" << saveName << "'";
-                    return false;
-                  }
-                } else {
-                  LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize updated Deposits.json for '" << saveName << "'";
-                  return false;
-                }
-              }
-          } else {
-            LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse Deposits.json for '" << saveName << "'";
-            return false;
+      // Load GameSessionData.json
+      const FString gameSessionDataPath = saveRoot / TEXT("GameSessionData.json");
+      FString gameSessionDataStr;
+      if (FFileHelper::LoadFileToString(gameSessionDataStr, *gameSessionDataPath)) {
+        TSharedPtr<FJsonObject> gameSessionDataObj;
+        TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
+        if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
+          // Extract "Deposits" field if it exists
+          
+          FString generatorName;
+          TSharedPtr<FJsonObject> gameSessionDataFieldObj;
+          if (TSharedPtr<FJsonValue> gameSessionDataFieldValue = gameSessionDataObj->TryGetField(TEXT("GameSessionData"))) {
+            gameSessionDataFieldObj = gameSessionDataFieldValue->AsObject();
           }
-        } else {
-          LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Deposits.json for '" << saveName << "'";
-          return false;
+          if (!gameSessionDataFieldObj.IsValid() || !gameSessionDataFieldObj->TryGetStringField(TEXT("Generator"), generatorName)) {
+            LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from GameSessionData.GameSessionData for '" << saveName << "'";
+          }
+
+          if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
+            // Remove "Deposits" from the main object
+            gameSessionDataObj->RemoveField(TEXT("Deposits"));
+
+            // Write the rest of GameSessionData.json back (without Deposits)
+            FString updatedGameSessionDataStr;
+            TSharedRef<TJsonWriter<>> writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
+            FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
+            FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
+
+            // Write Deposits to a new JSON file (for now, just as a separate object)
+            TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
+            depositsObj->SetField(TEXT("Deposits"), depositsValue);
+
+            USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>();
+            surfaceDefinition->GeneratorName = *generatorName;
+            surfaceDefinition->Initialize();
+
+            surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
+
+            UStaticSaveHelpers::SaveSurfaceDefinition(saveName, TEXT("Temperate"), surfaceDefinition);
+          }
         }
       }
 

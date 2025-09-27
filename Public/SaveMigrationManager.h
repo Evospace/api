@@ -14,8 +14,8 @@ class USaveMigrationManager : public UObject {
 
   public:
   // Applies hardcoded migrators whose target version is less than the save's version
-  UFUNCTION()
-  void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
+  UFUNCTION(BlueprintCallable)
+  static void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
 };
 
 

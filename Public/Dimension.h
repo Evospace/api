@@ -129,6 +129,8 @@ class ADimension : public AActor {
   // Lua: dim:sample_height(x, y)
   float LuaSampleHeight(float x, float y) const;
 
+  virtual void BeginPlay() override;
+
   UBlockLogic *LuaSpawnBlockLogicDefault(const Vec3i &bpos, const UStaticBlock *cl);
   UBlockLogic *LuaSpawnBlockLogic(const Vec3i &bpos, const FQuat &block_q, const UStaticBlock *cl);
 
@@ -145,8 +147,6 @@ class ADimension : public AActor {
 
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition);
-
-  void LoadDimJson();
  
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
