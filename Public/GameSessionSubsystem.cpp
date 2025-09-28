@@ -4,6 +4,7 @@
 
 #include "Public/GameSessionData.h"
 #include "Public/MainGameInstance.h"
+#include "Qr/StaticSaveHelpers.h"
 #include <Engine/World.h>
 
 void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
@@ -12,4 +13,8 @@ void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   if (!Data) {
     Data = NewObject<UGameSessionData>(this, TEXT("GameSessionData"));
   }
+}
+
+void UGameSessionSubsystem::ReloadData(const FString &saveName) {
+  Data = UStaticSaveHelpers::LoadGameSessionData(saveName);
 }

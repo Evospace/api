@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
+#include "Editor.h"
 #include "MapWidgetData.h"
 #include "Public/WorldGenerator.h"
 #include "SteamGameInstance.h"
@@ -14,6 +15,7 @@
 
 #if WITH_EDITOR
 #include "Editor/EditorEngine.h"
+#include "Editor.h"
 #endif
 
 #include "MainGameInstance.generated.h"
@@ -96,11 +98,8 @@ class UMainGameInstance : public USteamGameInstance {
   UMapWidgetData *MapWidgetData;
 
   private:
-  UPROPERTY()
-  TArray<UWorldGenerator *> mWorldGenerators;
-
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UWorldGenerator *mWorldGenerator;
+  TArray<UWorldGenerator *> mWorldGenerators;
 
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

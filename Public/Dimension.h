@@ -34,7 +34,6 @@ class USectorSaver;
 class AMainPlayerController;
 class UItemInstancingComponent;
 class UBlockLogic;
-class UWorldGenerator;
 class UStaticProp;
 class UDimensionPropComponent;
 class UStaticIndexedHierarchicalInstancedStaticMeshComponent;

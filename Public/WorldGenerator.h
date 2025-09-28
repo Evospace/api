@@ -36,6 +36,8 @@ class UWorldGenerator : public UPrototype {
   FLoc mLabel;
 
   protected:
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   int32 mSeed = 0;
 
   public:
