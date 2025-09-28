@@ -93,6 +93,9 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   TArray<UWorldGenerator *> GetWorldGeneratorList();
 
+  UFUNCTION(BlueprintCallable)
+  void GameLoadingSequence(const FString &saveName);
+
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;
 

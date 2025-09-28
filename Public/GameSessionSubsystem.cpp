@@ -14,7 +14,3 @@ void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     Data = NewObject<UGameSessionData>(this, TEXT("GameSessionData"));
   }
 }
-
-void UGameSessionSubsystem::ReloadData(const FString &saveName) {
-  Data = UStaticSaveHelpers::LoadGameSessionData(saveName);
-}

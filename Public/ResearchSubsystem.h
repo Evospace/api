@@ -30,6 +30,8 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   // Apply effects for researches loaded from save
   void ApplyLoadedCompletedResearches();
 
+  void Reset();
+
   UFUNCTION(BlueprintCallable)
   UStaticResearch *GetActiveResearch() const { return ActiveResearch; }
 
@@ -119,6 +121,8 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
 
   private:
   void EnsureCachesComputed() const;
+
+  void CompleteResearch_Internal(UStaticResearch *Research);
 
   UPROPERTY(EditAnywhere)
   UStaticResearch *ActiveResearch = nullptr;

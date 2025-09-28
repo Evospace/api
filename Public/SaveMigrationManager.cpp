@@ -100,7 +100,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
             // Write the rest of GameSessionData.json back (without Deposits)
             FString updatedGameSessionDataStr;
-            TSharedRef<TJsonWriter<>> writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
+            const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
             FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
             FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
 

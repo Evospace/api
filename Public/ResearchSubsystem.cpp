@@ -170,13 +170,36 @@ void UResearchSubsystem::SetActiveResearch(UStaticResearch *Research) {
   }
 }
 
-void UResearchSubsystem::CompleteResearch(UStaticResearch *Research) {
-  if (!ensure(Research)) {
+void UResearchSubsystem::CompleteResearch_Internal(UStaticResearch *Research) {
+  if (!expect(Research, "UResearchSubsystem::CompleteResearch_Internal: Research is nullptr")) {
     return;
   }
 
   CompletedResearches.Add(Research);
   Research->Type = EResearchStatus::Complete;
+
+  for (auto r : GetAllResearches()) {
+    if (r->Type != EResearchStatus::Complete) {
+      if (r->RequiredResearch.Contains(Research)) {
+        if (HasAllRequired(r)) {
+          r->Type = EResearchStatus::Opened;
+        }
+      }
+    }
+  }
+
+  auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+  if (expect_once(controller, "UResearchSubsystem::CompleteResearch_Internal: controller is nullptr")) {
+    Research->ApplyToController(controller, 0);
+  }
+}
+
+void UResearchSubsystem::CompleteResearch(UStaticResearch *Research) {
+  if (!expect(Research, "UResearchSubsystem::CompleteResearch: Research is nullptr")) {
+    return;
+  }
+
+  CompleteResearch_Internal(Research);
 
   if (Research->GetName() == TEXT("Portal")) {
     if (auto ach = GetGameInstance()->GetSubsystem<UAchievementSubsystem>()) {
@@ -197,20 +220,7 @@ void UResearchSubsystem::CompleteResearch(UStaticResearch *Research) {
     }
   }
 
-  for (auto r : GetAllResearches()) {
-    if (r->Type != EResearchStatus::Complete) {
-      if (r->RequiredResearch.Contains(Research)) {
-        if (HasAllRequired(r)) {
-          r->Type = EResearchStatus::Opened;
-        }
-      }
-    }
-  }
-
   OnResearchFinished.Broadcast(Research);
-
-  auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-  Research->ApplyToController(controller, 0);
 
   if (ResearchQueue.Num() > 0) {
     ResearchQueue.RemoveAt(0);
@@ -332,6 +342,18 @@ void UResearchSubsystem::TickResearch(float DeltaSeconds) {
   }
 }
 
+void UResearchSubsystem::Reset() {
+  ActiveResearch = nullptr;
+  ActiveResearchLeft = 0;
+  ScienceLast = 0;
+  ScienceMedian = 0;
+  ScienceSampleTimer = 2;
+  ResearchQueue.Empty();
+  CompletedResearches.Empty();
+  OldResearches.Empty();
+  UnlockedItems.Empty();
+}
+
 void UResearchSubsystem::InitializeResearchTreeOnStart() {
   auto inst = Cast<UMainGameInstance>(GetGameInstance());
   if (!inst)
@@ -342,11 +364,11 @@ void UResearchSubsystem::InitializeResearchTreeOnStart() {
   if (!bAllResearchesFinishedFlag) {
     for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjects<UStaticResearch>()) {
       if (res->mCompleteByDefault)
-        CompleteResearch(res);
+        CompleteResearch_Internal(res);
     }
   } else {
     for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjects<UStaticResearch>()) {
-      CompleteResearch(res);
+      CompleteResearch_Internal(res);
     }
   }
 

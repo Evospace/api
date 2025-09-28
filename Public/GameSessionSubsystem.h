@@ -15,9 +15,6 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UGameSessionData *Data = nullptr;
 
-  UFUNCTION(BlueprintCallable)
-  void ReloadData(const FString &saveName);
-
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override {}
 };
