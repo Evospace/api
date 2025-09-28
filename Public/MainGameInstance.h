@@ -1,7 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Editor.h"
 #include "MapWidgetData.h"
 #include "Public/WorldGenerator.h"
 #include "SteamGameInstance.h"
