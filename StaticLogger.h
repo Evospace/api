@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Containers/Deque.h"
+#include "Public/EvoRingBuffer.h"
 #include "Qr/Vector.h"
 #include "Logging/StructuredLog.h"
 
@@ -37,19 +38,15 @@ class FSimpleLogger {
     if (LogLevel == ERROR_LL) {
       ErrorEntries.PushLast(Message);
     }
-    LogEntries.PushLast(MoveTemp(LogEntry));
+    LastLogEntry = MoveTemp(LogEntry);
     ++perLevelCount[LogLevel];
     ++LogVersion;
-  }
-
-  const TDeque<FString> &GetLogEntries() const {
-    return LogEntries;
   }
 
   void Clear() {
     perLevelCount.Empty();
     perLevelCount.SetNumZeroed(ELogLevel_Count);
-    LogEntries.Empty();
+    LastLogEntry = "";
     ErrorEntries.Empty();
     LogVersion++;
   }
@@ -69,11 +66,7 @@ class FSimpleLogger {
   }
 
   const FString &GetLastMessage() const {
-    static FString dummy = "";
-    if (LogEntries.IsEmpty()) {
-      return dummy;
-    }
-    return LogEntries.Last();
+    return LastLogEntry;
   }
 
   TArray<FString> GetErrors() const {
@@ -91,7 +84,7 @@ class FSimpleLogger {
   private:
   TArray<int32> perLevelCount;
 
-  TDeque<FString> LogEntries;
+  FString LastLogEntry;
 
   TDeque<FString> ErrorEntries;
 

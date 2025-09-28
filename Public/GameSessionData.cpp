@@ -26,16 +26,17 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
   TArray<FString> dashParts;
   ser.ParseIntoArray(dashParts, TEXT("-"), true);
 
-  if (expect(dashParts.Num() < 3, "FVersionStruct::VersionFromString: invalid version string")) {
+  if (!expect(dashParts.Num() >= 3, "FVersionStruct::VersionFromString: invalid version string ", ser)) {
     return {};
-  } else {
+  }
+  {
     TArray<FString> dotParts;
     dashParts[0].ParseIntoArray(dotParts, TEXT("."), true);
     parts.Append(dotParts);
     parts.Add(dashParts[1]);
     parts.Add(dashParts[2]);
   }
-  if (expect(parts.Num() != 5, "FVersionStruct::VersionFromString: invalid version string")) {
+  if (!expect(parts.Num() == 5, "FVersionStruct::VersionFromString: invalid version string ", ser)) {
     return {};
   }
   result.Major = FCString::Atoi(*parts[0]);
