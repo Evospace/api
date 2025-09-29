@@ -96,12 +96,6 @@ class UGameSessionData : public UInstance {
   int64 TotalGameTicks = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString Seed = "Default";
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FName GeneratorName = "";
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString SaveName = "Default";
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -124,4 +118,14 @@ class UGameSessionData : public UInstance {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool Cloud = false;
+
+  private:
+
+  friend class UGameSessionSubsystem;
+
+  UPROPERTY(VisibleAnywhere)
+  FString Seed = "Default";
+
+  UPROPERTY(EditAnywhere)
+  FName GeneratorName = "";
 };

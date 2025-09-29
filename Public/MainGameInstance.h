@@ -88,20 +88,12 @@ class UMainGameInstance : public USteamGameInstance {
   static TArray<UStaticTip *> GetAllStaticTips();
 
   UFUNCTION(BlueprintCallable)
-  UWorldGenerator *FindWorldGenerator(FName name) const;
-
-  UFUNCTION(BlueprintCallable)
-  TArray<UWorldGenerator *> GetWorldGeneratorList();
-
-  UFUNCTION(BlueprintCallable)
   void GameLoadingSequence(const FString &saveName);
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;
 
   private:
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  TArray<UWorldGenerator *> mWorldGenerators;
 
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
