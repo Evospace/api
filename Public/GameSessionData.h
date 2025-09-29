@@ -59,6 +59,7 @@ class UGameSessionData : public UInstance {
       .addProperty("version", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*Self::VersionToString(self->Version)); }) //@field string
       .addProperty("generator", QR_NAME_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
+      .addProperty("cloud", &Self::Cloud) //@field boolean
       .endClass();
   }
 
