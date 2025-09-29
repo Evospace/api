@@ -129,4 +129,6 @@ class URegionMap : public UInstance {
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  bool PrepareTextures();
 };
