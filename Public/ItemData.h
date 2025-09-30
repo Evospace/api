@@ -33,7 +33,7 @@ class UCustomItemData : public UObject, public ISerializableJson {
   const UStaticItem *Item;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };
 
 USTRUCT(BlueprintType)

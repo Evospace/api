@@ -128,7 +128,7 @@ bool ULogicOutput::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicOutput::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicOutput::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, TEXT("SigA"), SignalA);
   json_helper::TrySet(json, TEXT("Mode"), static_cast<int32>(Mode));
   json_helper::TrySet(json, TEXT("ConstA"), ConstA);

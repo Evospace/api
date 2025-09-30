@@ -21,7 +21,7 @@ bool ULogicProgram::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return json_helper::TryDeserializePolymorphic(json, TEXT("Nodes"), Nodes);
 }
 
-bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySerializePolymorphic(json, TEXT("Nodes"), Nodes);
   return true;
 }
@@ -47,7 +47,7 @@ bool ULogicNode_Constant::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicNode_Constant::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicNode_Constant::SerializeJson(TSharedPtr<FJsonObject> json) const {
   TMap<FString, int64> Raw;
   for (const auto &kv : Values) {
     if (kv.Key)
@@ -121,7 +121,7 @@ bool ULogicNode_Decider::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicNode_Decider::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicNode_Decider::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySerialize(json, TEXT("Cond"), Condition);
   json_helper::TrySerialize(json, TEXT("Out"), Output);
   return true;
@@ -137,7 +137,7 @@ bool ULogicNode_Arithmetic::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicNode_Arithmetic::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicNode_Arithmetic::SerializeJson(TSharedPtr<FJsonObject> json) const {
   if (!Operation.IsNone())
     json_helper::TrySet(json, TEXT("Op"), Operation);
   if (SourceSignal)
@@ -159,7 +159,7 @@ bool ULogicNode_Latch::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicNode_Latch::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, TEXT("State"), State);
   return true;
 }

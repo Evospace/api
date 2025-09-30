@@ -39,7 +39,7 @@ class ULogicNode : public UInstance {
 
   // Default serialization does nothing; specialized nodes override when needed
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override { return true; }
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override { return true; }
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override { return true; }
 };
 
 // Constant node: writes fixed values to Output
@@ -60,7 +60,7 @@ class ULogicNode_Constant : public ULogicNode {
 
   virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };
 
 // Arithmetic node: applies simple arithmetic to Output
@@ -99,7 +99,7 @@ class ULogicNode_Arithmetic : public ULogicNode {
 
   virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };
 
 // Decider node: placeholder; relies on condition system elsewhere
@@ -125,7 +125,7 @@ class ULogicNode_Decider : public ULogicNode {
 
   virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   UFUNCTION(BlueprintCallable)
   void RemoveOutput(ULogicOutput *to_remove);
@@ -149,7 +149,7 @@ class ULogicNode_Latch : public ULogicNode {
 
   virtual void Execute(UBlockLogic *Owner, ULogicContext *Ctx) override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };
 
 UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
@@ -205,5 +205,5 @@ class ULogicProgram : public UInstance {
   virtual TSubclassOf<ULogicProgramWidget> GetWidgetClass() const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };

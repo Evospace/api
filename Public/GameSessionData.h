@@ -67,7 +67,7 @@ class UGameSessionData : public UInstance {
   UGameSessionData();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   
   UFUNCTION(BlueprintCallable)
   void Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName);
@@ -85,6 +85,12 @@ class UGameSessionData : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   int64 GetSeed() const { return GetTypeHash(Seed); }
+
+  UFUNCTION(BlueprintCallable)
+  FString GetGeneratorName() const { return GeneratorName.ToString(); }
+
+  UFUNCTION(BlueprintCallable)
+  FString GetSeedString() const { return Seed; }
 
   UFUNCTION(BlueprintCallable)
   void Reset();

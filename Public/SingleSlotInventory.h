@@ -33,7 +33,7 @@ class USingleSlotInventory : public UBaseInventory {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   void SetFreeze(bool cond);
   virtual bool IsFrozen() override;

@@ -15,7 +15,7 @@ class UOldResearch : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
   public:
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   TArray<UStaticItem *> mItems;

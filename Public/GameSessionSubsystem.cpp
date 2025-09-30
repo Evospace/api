@@ -53,6 +53,10 @@ void UGameSessionSubsystem::SetData(UGameSessionData *dat) {
   OnDataUpdated.Broadcast(dat);
 }
 
+void UGameSessionSubsystem::SetCreativeAllowed(bool val) {
+  Data->CreativeAllowed = val;
+}
+
 void UGameSessionSubsystem::SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> & mods) {
   Data = dat;
   Data->SaveName = saveName;

@@ -1,13 +1,23 @@
 #include "Public/MapGeneratorSubsystem.h"
 #include "Public/GameSessionData.h"
 #include "Public/GameSessionSubsystem.h"
+#include "Qr/ModLoadingSubsystem.h"
+#include "Subsystems/SubsystemCollection.h"
 
 void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
 
+  Collection.InitializeDependency(UGameSessionSubsystem::StaticClass());
+  Collection.InitializeDependency(UModLoadingSubsystem::StaticClass());
+
   auto GameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>();
   if (ensure(GameSessionSubsystem)) {
-    GameSessionSubsystem->OnDataUpdated.AddUObject(this, &UMapGeneratorSubsystem::UpdateSeed_Internal);
+    GameSessionSubsystem->OnDataUpdated.AddDynamic(this, &UMapGeneratorSubsystem::UpdateSeed_Internal);
+  }
+
+  auto mls = GetGameInstance()->GetSubsystem<UModLoadingSubsystem>();
+  if (ensure(mls)) {
+    mls->ModLoadingFinalStep.AddDynamic(this, &UMapGeneratorSubsystem::InitializeWorldGenerators);
   }
 }
 
@@ -33,7 +43,8 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
     // }
   
     for (auto wg : WorldGenerators) {
-      wg->LoadBiomeFamily();
+        wg->Initialize();
+        wg->LoadBiomeFamily();
     }
 }
 

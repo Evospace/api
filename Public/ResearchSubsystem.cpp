@@ -359,7 +359,7 @@ void UResearchSubsystem::InitializeResearchTreeOnStart() {
   if (!inst)
     return;
 
-  auto bAllResearchesFinishedFlag = inst->GetSubsystem<UGameSessionSubsystem>()->Data->AllResearchCompleted;
+  auto bAllResearchesFinishedFlag = inst->GetSubsystem<UGameSessionSubsystem>()->GetData()->AllResearchCompleted;
 
   if (!bAllResearchesFinishedFlag) {
     for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjects<UStaticResearch>()) {

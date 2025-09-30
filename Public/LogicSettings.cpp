@@ -31,7 +31,7 @@ void ULogicSettings::SetExportEnabled(int32 Index, bool bEnabled) {
   ExportEnabled[Index] = bEnabled;
 }
 
-bool ULogicSettings::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool ULogicSettings::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, TEXT("Exp"), ExportEnabled);
   return true;
 }

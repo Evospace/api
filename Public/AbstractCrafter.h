@@ -47,7 +47,7 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   //
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   UFUNCTION(BlueprintCallable)
   virtual URecipeDictionary *GetRecipeDictionary() const;

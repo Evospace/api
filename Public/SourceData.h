@@ -37,7 +37,7 @@ class USourceData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FVector2i Position;
 
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UFUNCTION(BlueprintCallable)

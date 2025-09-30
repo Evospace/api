@@ -71,7 +71,7 @@ class UDrillingMachineBase : public UBlockLogic {
 
   virtual void BlockBeginPlay() override;
   virtual bool IsBlockTicks() const override { return true; }
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   protected:

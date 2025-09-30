@@ -79,6 +79,6 @@ class URegionLayer : public UInstance {
   UFUNCTION(BlueprintCallable)
   int64 GetInitialCapacity(const FVector2i &pos) const;
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };

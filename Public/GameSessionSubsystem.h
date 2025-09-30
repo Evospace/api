@@ -24,6 +24,7 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> & mods);
 
+  UFUNCTION(BlueprintCallable)
   void SetSeed(const FString &seed);
 
   UFUNCTION(BlueprintCallable)
@@ -31,6 +32,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UFUNCTION(BlueprintCallable)
   bool SetCreativeMode(bool val);
+
+  UFUNCTION(BlueprintCallable)
+  void SetCreativeAllowed(bool val);
 
   void SetGenerator(const FName &generator);
 

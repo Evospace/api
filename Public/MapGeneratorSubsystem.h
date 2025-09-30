@@ -29,5 +29,6 @@ class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   TArray<UWorldGenerator *> WorldGenerators;
 
+  UFUNCTION()
   void UpdateSeed_Internal(UGameSessionData *GameSessionData);
 };

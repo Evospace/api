@@ -92,7 +92,7 @@ bool UGameSessionData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "Seed", Seed);
   json_helper::TrySet(json, "Generator", GeneratorName);
   json_helper::TrySet(json, "TotalGameTime", TotalGameTime);

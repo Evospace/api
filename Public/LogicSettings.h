@@ -41,6 +41,6 @@ class ULogicSettings : public UInstance {
   void SetExportEnabled(int32 Index, bool bEnabled);
 
   // Serialization for saving per-block state
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };

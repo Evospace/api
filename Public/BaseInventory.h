@@ -33,7 +33,7 @@ class UBaseInventory : public UInventoryAccess {
   void RemoveAllSlots() override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   bool Equal(const UBaseInventory *other) const;
 

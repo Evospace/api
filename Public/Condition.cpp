@@ -186,7 +186,7 @@ bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
   return true;
 }
 
-bool UCondition::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool UCondition::SerializeJson(TSharedPtr<FJsonObject> json) const {
   if (VarA != nullptr)
     json_helper::TrySet(json, "A", VarA);
   if (VarB != nullptr)

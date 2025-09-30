@@ -64,7 +64,7 @@ class UEvoRegion : public UInstance {
 
   void Initialize(int32 gridSize);
 
-  bool SerializeJson(TSharedPtr<FJsonObject> json);
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UTexture2D *CreateAtlasTexture(int32 Width, int32 Height);

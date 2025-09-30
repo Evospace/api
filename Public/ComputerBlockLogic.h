@@ -29,7 +29,7 @@ class UComputerBlockLogic : public UBlockLogic {
   UComputerBlockLogic();
   virtual UCoreAccessor *CoreInit() override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UResourceInventory *energy_inventory;

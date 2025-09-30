@@ -2,7 +2,7 @@
 #include "Public/RegionMap.h"
 #include "Qr/JsonHelperCommon.h"
 
-bool USurfaceDefinition::SerializeJson(TSharedPtr<FJsonObject> json) {
+bool USurfaceDefinition::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "GeneratorName", GeneratorName);
   json_helper::TrySerialize(json, "RegionMap", RegionMap);
   return true;

@@ -177,7 +177,7 @@ class UBlockLogic : public UInstance {
 
   // Serialization
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr);
   UFUNCTION(BlueprintCallable)
@@ -270,7 +270,7 @@ class UPartBlockLogic : public UBlockLogic {
   public:
   // Serialization
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   // Widgets and UI
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;

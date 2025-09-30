@@ -127,7 +127,7 @@ class URegionMap : public UInstance {
   UEvoRegion *FindRegionAt(const FVector3i &position);
   UEvoRegion *GetRegionAt(const FVector3i &position);
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   bool PrepareTextures();

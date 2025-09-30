@@ -61,5 +61,5 @@ class ULogicOutput : public UObject, public ISerializableJson {
   void Compute(class ULogicContext *Ctx) const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };

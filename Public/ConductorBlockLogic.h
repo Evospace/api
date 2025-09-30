@@ -290,7 +290,7 @@ class UConductorBlockLogic : public UStorageBlockLogic {
   friend USwitchBlockLogic;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   virtual bool Connect(UConductorBlockLogic *block);
 
@@ -416,7 +416,7 @@ class USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
   virtual bool HasAction() const override { return true; }

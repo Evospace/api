@@ -76,5 +76,5 @@ class UCondition : public UObject, public ISerializableJson {
   virtual FString GetLabel() const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };

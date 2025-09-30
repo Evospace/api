@@ -32,11 +32,11 @@ class UMapWidgetData : public UObject, public ISerializableJson {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool SpawnPoint = true;
 
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };
 
-inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) {
+inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "OreLayer", OreLayer);
   json_helper::TrySet(json, "FertileLayer", FertileLayer);
   json_helper::TrySet(json, "OilLayer", OilLayer);
