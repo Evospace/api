@@ -22,6 +22,8 @@ void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 }
 
 void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionData) {
+    check(GameSessionData);
+    LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
     for (auto wg : WorldGenerators) {
         wg->SetSeed(GameSessionData->GetSeed());
     }

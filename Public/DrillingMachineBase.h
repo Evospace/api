@@ -32,6 +32,7 @@ class UDrillingMachineBase : public UBlockLogic {
       .addProperty("inventory", &Self::Inventory) //@field InventoryContainer
       .addProperty("energy", &Self::Energy) //@field ResourceInventory
       .addProperty("production", &Self::Production) //@field integer
+      .addProperty("storage_size", &Self::StorageSize) //@field integer
       .endClass();
   }
 

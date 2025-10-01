@@ -1,6 +1,7 @@
 #include "SurfaceDefinition.h"
 #include "Public/RegionMap.h"
 #include "Qr/JsonHelperCommon.h"
+#include "Qr/GameInstanceHelper.h"
 
 bool USurfaceDefinition::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "GeneratorName", GeneratorName);
@@ -15,6 +16,6 @@ bool USurfaceDefinition::DeserializeJson(TSharedPtr<FJsonObject> json) {
 }
 
 void USurfaceDefinition::Initialize() {
-  RegionMap = NewObject<URegionMap>();
+  RegionMap = NewObject<URegionMap>(this, TEXT("RegionMap"));
   RegionMap->Initialize(this);
 }

@@ -18,7 +18,7 @@ void ULogicProgram::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
 }
 
 bool ULogicProgram::DeserializeJson(TSharedPtr<FJsonObject> json) {
-  return json_helper::TryDeserializePolymorphic(json, TEXT("Nodes"), Nodes);
+  return json_helper::TryDeserializePolymorphic(json, TEXT("Nodes"), this, Nodes);
 }
 
 bool ULogicProgram::SerializeJson(TSharedPtr<FJsonObject> json) const {
@@ -117,7 +117,7 @@ bool ULogicNode_Decider::DeserializeJson(TSharedPtr<FJsonObject> json) {
     Condition = NewObject<UCondition>(this, UCondition::StaticClass());
   }
   json_helper::TryDeserialize(json, TEXT("Cond"), Condition);
-  json_helper::TryDeserialize(json, TEXT("Out"), Output);
+  json_helper::TryDeserialize(json, TEXT("Out"), this, Output);
   return true;
 }
 

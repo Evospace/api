@@ -285,9 +285,6 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static float GetDPI();
 
-  //TODO: move to subsystem
-  static void ResearchReset();
-
   UFUNCTION(BlueprintCallable)
   FString GetCurrentRHI();
 

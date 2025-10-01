@@ -69,8 +69,8 @@ class UGameSessionData : public UInstance {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   
-  UFUNCTION(BlueprintCallable)
-  void Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName);
+  UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
+  void Initialize(UObject * WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetCreativeAllowed() const;
@@ -87,51 +87,45 @@ class UGameSessionData : public UInstance {
   int64 GetSeed() const { return GetTypeHash(Seed); }
 
   UFUNCTION(BlueprintCallable)
-  FString GetGeneratorName() const { return GeneratorName.ToString(); }
-
-  UFUNCTION(BlueprintCallable)
-  FString GetSeedString() const { return Seed; }
-
-  UFUNCTION(BlueprintCallable)
   void Reset();
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   double TotalGameTime = 0.f;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int64 TotalGameTicks = 0;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FString SaveName = "Default";
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool CreativeMode = false;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool CreativeAllowed = false;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  bool InfiniteOre = false;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool AllResearchCompleted = false;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FVersionStruct Version = {};
 
-  UPROPERTY(VisibleAnywhere)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TArray<FString> Mods = {};
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool Cloud = false;
 
   private:
 
   friend class UGameSessionSubsystem;
 
-  UPROPERTY(VisibleAnywhere)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   FString Seed = "Default";
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   FName GeneratorName = "";
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  bool InfiniteOre = false;
 };

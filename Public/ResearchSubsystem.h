@@ -11,6 +11,7 @@ class UStaticItem;
 class UAutosizeInventory;
 class USingleSlotInventory;
 class AMainPlayerController;
+class UGameSessionData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FResearchQueueUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FResearchFinished, UStaticResearch *, Research);
@@ -23,12 +24,8 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
-  // Serialization hooks used by controller persistence
   bool DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json);
   bool SerializeToPlayerJson(TSharedPtr<FJsonObject> json) const;
-
-  // Apply effects for researches loaded from save
-  void ApplyLoadedCompletedResearches();
 
   void Reset();
 
@@ -106,8 +103,8 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   // Called regularly to update progress and auto-complete
   void TickResearch(float DeltaSeconds);
 
-  // Called after world/controller is ready to initialize research states
-  void InitializeResearchTreeOnStart();
+  UFUNCTION()
+  void InitializeResearchTreeOnStart(UGameSessionData * gameSessionData);
 
   // Event for UI
   UPROPERTY(BlueprintAssignable)

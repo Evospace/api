@@ -6,7 +6,7 @@
 #include "Qr/JsonHelperCommon.h"
 #include "Qr/Ensure.h"
 #include "Qr/StaticSaveHelpers.h"
-#include "Public/MainGameInstance.h"
+#include "Qr/GameInstanceHelper.h"
 
 UGameSessionData::UGameSessionData() {
 }
@@ -48,7 +48,9 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
   return result;
 }
 
-void UGameSessionData::Initialize(const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
+void UGameSessionData::Initialize(UObject * WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
+  check(WorldContextObject && WorldContextObject->GetWorld());
+
   SaveName = saveName;
   Seed = seed;
   GeneratorName = generatorName;
@@ -61,7 +63,8 @@ void UGameSessionData::Initialize(const FString &saveName, bool CreativeMode, bo
   UStaticSaveHelpers::SaveGameSessionData(saveName, this);
 
   for (auto &surface : {"Temperate"}) {
-    USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>();
+    auto &instance = UGameInstanceHelper::GetGameInstance(WorldContextObject);
+    USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(&instance);
     surfaceDefinition->GeneratorName = generatorName;
     surfaceDefinition->Initialize();
     UStaticSaveHelpers::SaveSurfaceDefinition(saveName, surface, surfaceDefinition);

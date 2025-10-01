@@ -182,7 +182,7 @@ bool UCondition::DeserializeJson(TSharedPtr<FJsonObject> json) {
   if (json_helper::TryGet(json, "M", value)) {
     Mode = static_cast<EConditionMode>(value);
   }
-  json_helper::TryDeserialize(json, "Arg", Operands);
+  json_helper::TryDeserialize(json, "Arg", this, Operands);
   return true;
 }
 

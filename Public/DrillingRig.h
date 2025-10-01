@@ -34,4 +34,5 @@ class UDrillingRig : public UDrillingMachineBase {
 
   protected:
   virtual void Drill() override;
+  virtual void BlockEndPlay() override;
 };

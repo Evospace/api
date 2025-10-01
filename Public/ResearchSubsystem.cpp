@@ -15,12 +15,17 @@
 #include "Qr/AchievementSubsystem.h"
 #include "Qr/Ensure.h"
 #include "Public/MainGameInstance.h"
-
+#include "Public/RecipeDictionary.h"
+#include "Public/StaticResearchRecipe.h"
+#include "UObject/UObjectIterator.h"
 #include <Engine/Engine.h>
 #include <EngineUtils.h>
 
 void UResearchSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
+  if (auto session = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
+    session->OnDataUpdated.AddDynamic(this, &UResearchSubsystem::InitializeResearchTreeOnStart);
+  }
 }
 
 void UResearchSubsystem::Deinitialize() {
@@ -46,6 +51,42 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
     }
   }
 
+  // Integrate previously separate ApplyLoadedCompletedResearches logic here
+  for (auto r : CompletedResearches) {
+    if (expect(r, "UResearchSubsystem::DeserializeFromPlayerJson: research is nullptr in CompletedResearches")) {
+      auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+      r->ApplyToController(controller, r->mLevel + 1);
+      r->Type = EResearchStatus::Complete;
+    }
+  }
+
+  // Recompute dependent statuses based on loaded completions
+  for (auto r : GetAllResearches()) {
+    if (r->Type == EResearchStatus::Complete)
+      continue;
+
+    bool anyMissingRequired = false;
+    bool anyInQueue = false;
+    for (auto req : r->RequiredResearch) {
+      if (!CompletedResearches.Contains(req)) {
+        if (ResearchQueue.Contains(req)) {
+          anyInQueue = true;
+        } else {
+          anyMissingRequired = true;
+          break;
+        }
+      }
+    }
+
+    if (anyMissingRequired) {
+      r->Type = EResearchStatus::Closed;
+    } else if (anyInQueue) {
+      r->Type = EResearchStatus::CanEnqueue;
+    } else if (HasAllRequired(r)) {
+      r->Type = EResearchStatus::Opened;
+    }
+  }
+
   OnResearchQueueUpdated.Broadcast();
   return true;
 }
@@ -63,16 +104,7 @@ bool UResearchSubsystem::SerializeToPlayerJson(TSharedPtr<FJsonObject> json) con
   return true;
 }
 
-void UResearchSubsystem::ApplyLoadedCompletedResearches() {
-  // Post-process loaded researches: apply effects and fix statuses
-  for (auto r : CompletedResearches) {
-    if (expect(r, "UResearchSubsystem::ApplyLoadedCompletedResearches: research is nullptr")) {
-      auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-      r->ApplyToController(controller, r->mLevel + 1);
-      r->Type = EResearchStatus::Complete;
-    }
-  }
-}
+// removed legacy ApplyLoadedCompletedResearches; logic moved to DeserializeFromPlayerJson
 
 void UResearchSubsystem::AddUnlockedItem(const UStaticItem *Item) {
   if (expect(Item, "UResearchSubsystem::AddUnlockedItem with nullptr Item")) {
@@ -354,35 +386,38 @@ void UResearchSubsystem::Reset() {
   UnlockedItems.Empty();
 }
 
-void UResearchSubsystem::InitializeResearchTreeOnStart() {
-  auto inst = Cast<UMainGameInstance>(GetGameInstance());
-  if (!inst)
-    return;
+void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData * gameSessionData) {
+  check(gameSessionData);
+  LOG(INFO_LL) << "UResearchSubsystem::InitializeResearchTreeOnStart";
+  auto bAllResearchesFinishedFlag = gameSessionData->AllResearchCompleted;
 
-  auto bAllResearchesFinishedFlag = inst->GetSubsystem<UGameSessionSubsystem>()->GetData()->AllResearchCompleted;
+  Reset();
+
+  for (auto research : GetAllResearches()) {
+    research->Type = EResearchStatus::Closed;
+    research->mLevel = 0;
+
+    if (auto item_r = Cast<UStaticResearchRecipe>(research))
+      for (auto lock : item_r->RecipeUnlocks) {
+        lock->mDefaultLocked = true;
+      }
+  }
+
+  for (TObjectIterator<URecipeDictionary> recipe_d; recipe_d; ++recipe_d) {
+    if (recipe_d->IsTemplate()) {
+      continue;
+    }
+    (*recipe_d)->ResetLocked();
+  }
 
   if (!bAllResearchesFinishedFlag) {
-    for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjects<UStaticResearch>()) {
+    for (auto res : GetAllResearches()) {
       if (res->mCompleteByDefault)
         CompleteResearch_Internal(res);
     }
   } else {
-    for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjects<UStaticResearch>()) {
+    for (auto res : GetAllResearches()) {
       CompleteResearch_Internal(res);
-    }
-  }
-
-  for (auto res : UMainGameInstance::Singleton->GetObjectLibrary()->GetObjectsMut<UStaticResearch>()) {
-    if (res->Type != EResearchStatus::Complete) {
-      for (auto req : res->RequiredResearch) {
-        if (!CompletedResearches.Contains(req) && !ResearchQueue.Contains(req)) {
-          res->Type = EResearchStatus::Closed;
-          break;
-        }
-        if (ResearchQueue.Contains(req)) {
-          res->Type = EResearchStatus::CanEnqueue;
-        }
-      }
     }
   }
 }

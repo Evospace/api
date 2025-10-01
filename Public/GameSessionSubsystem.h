@@ -34,8 +34,18 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   bool SetCreativeMode(bool val);
 
   UFUNCTION(BlueprintCallable)
+  void SetSaveName(const FString &saveName);
+
+  UFUNCTION(BlueprintCallable)
+  void SetInfiniteOre(bool val);
+
+  UFUNCTION(BlueprintCallable)
+  bool GetInfiniteOre() const;
+
+  UFUNCTION(BlueprintCallable)
   void SetCreativeAllowed(bool val);
 
+  UFUNCTION(BlueprintCallable)
   void SetGenerator(const FName &generator);
 
   UFUNCTION(BlueprintCallable)
@@ -46,6 +56,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UFUNCTION(BlueprintCallable)
   bool IsCreative() const;
+
+  UFUNCTION(BlueprintCallable)
+  void SetAllResearchCompleted(bool val);
 
   UPROPERTY(BlueprintAssignable)
   FDataUpdated OnDataUpdated;

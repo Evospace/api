@@ -16,8 +16,10 @@ class USourceData : public UInstance {
       .deriveClass<Self, UInstance>("SourceData") //@class SourceData : Instance
       .addProperty("position", &Self::Position) //@field Vec2i source position in block coordinates
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
-      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer initial source capacity
-      .addProperty("extracted_count", &Self::ExtractedCount) //@field integer count of items already extracted from the source
+      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer initial source capacity (ore quantity)
+      .addProperty("current_ore", &Self::CurrentOre) //@field integer current remaining ore quantity (clamped to 2% of initial)
+      .addProperty("active_miners", &Self::ActiveMiners) //@field integer number of miners currently extracting
+      .addProperty("infinite_ore", &Self::InfiniteOre) //@field boolean
       .endClass();
   }
 
@@ -26,7 +28,10 @@ class USourceData : public UInstance {
   int64 InitialCapacity = 10000;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 ExtractedCount = 0;
+  int64 CurrentOre = 100000;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int32 ActiveMiners = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   const UStaticItem *Item = nullptr;
@@ -37,12 +42,31 @@ class USourceData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FVector2i Position;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool InfiniteOre = false;
+
   bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
 
   UFUNCTION(BlueprintCallable)
-  static int32 CalculateExtractionSpeed(int64 extracted, int64 initial);
+  int32 GetExtractionSpeed() const;
+
+  UFUNCTION(BlueprintCallable)
+  int32 GetTotalYield() const;
+
+  UFUNCTION(BlueprintCallable)
+  bool IsInfiniteOre() const;
 
   UFUNCTION(BlueprintCallable)
   FExtractionData ExtractOre(int64 count);
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStart();
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStop();
+
+  private:  
+
+  mutable TOptional<bool> IsInfiniteCache = {};
 };
