@@ -15,6 +15,13 @@ void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     Data = NewObject<UGameSessionData>(this, TEXT("GameSessionData"));
   }
 }
+void UGameSessionSubsystem::RequestSave(const FString &saveName) {
+  OnSaveRequested.Broadcast(saveName);
+}
+
+void UGameSessionSubsystem::NotifySaveLoaded(const FString &saveName) {
+  OnSaveLoading.Broadcast(saveName);
+}
 
 bool UGameSessionSubsystem::SetCreativeMode(bool val) {
   check(Data);

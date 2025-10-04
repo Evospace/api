@@ -51,11 +51,6 @@ class UInventoryAccess : public UInventoryReader {
     return 0;
   };
 
-  //TODO: remove
-  virtual int64 _AddSilent(int32 index, const FItemData &other) {
-    return _Add(index, other);
-  };
-
   virtual int64 _AddWithLimit(const FItemData &other, bool arm = false) {
     checkNoEntry();
     return 0;

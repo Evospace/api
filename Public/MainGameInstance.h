@@ -99,10 +99,6 @@ class UMainGameInstance : public USteamGameInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 
-  //TODO: what is it?
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static float GetNextTime(float time, float delta);
-
   //TODO: check usage
   UFUNCTION(BlueprintCallable)
   static void SetDPI(float scale);

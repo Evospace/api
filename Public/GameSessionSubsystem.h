@@ -8,6 +8,8 @@
 #include "GameSessionSubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDataUpdated, UGameSessionData *, gameSessionData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveRequested, const FString &, SaveName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveLoading, const FString &, SaveName);
 
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
@@ -62,6 +64,18 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UPROPERTY(BlueprintAssignable)
   FDataUpdated OnDataUpdated;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSaveRequested OnSaveRequested;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSaveLoading OnSaveLoading;
+
+  UFUNCTION(BlueprintCallable)
+  void RequestSave(const FString &saveName);
+
+  UFUNCTION(BlueprintCallable)
+  void NotifySaveLoaded(const FString &saveName);
 
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override {}

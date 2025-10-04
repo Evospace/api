@@ -2,6 +2,8 @@
 #include "Public/GameSessionData.h"
 #include "Public/GameSessionSubsystem.h"
 #include "Qr/ModLoadingSubsystem.h"
+#include "Qr/JsonObjectLibrary.h"
+#include "Public/WorldGenerator.h"
 #include "Subsystems/SubsystemCollection.h"
 
 void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
@@ -37,12 +39,15 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
     WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
     WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));
   
-    //TODO: implement modded world generators
-    // TArray<UObject *> arr;
-    // GetObjectsWithOuter(mJsonObjectLibrary->GetOuter(UWorldGenerator::StaticClass()), arr);
-    // for (auto gen : arr) {
-    //   mWorldGenerators.Add(Cast<UWorldGenerator>(gen));
-    // }
+  // Add modded world generators registered in DB storage
+  if (UDbStorage::Singleton) {
+    const TArray<UWorldGenerator *> modGenerators = UDbStorage::Singleton->GetObjects<UWorldGenerator>();
+    for (auto *gen : modGenerators) {
+      if (ensure(gen)) {
+        WorldGenerators.Add(gen);
+      }
+    }
+  }
   
     for (auto wg : WorldGenerators) {
         wg->Initialize();
