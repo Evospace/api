@@ -384,6 +384,7 @@ void UResearchSubsystem::Reset() {
   CompletedResearches.Empty();
   OldResearches.Empty();
   UnlockedItems.Empty();
+  AllResearchesCache.Empty();
 }
 
 void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData * gameSessionData) {

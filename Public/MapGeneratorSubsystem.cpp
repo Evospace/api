@@ -5,19 +5,19 @@
 #include "Qr/JsonObjectLibrary.h"
 #include "Public/WorldGenerator.h"
 #include "Subsystems/SubsystemCollection.h"
+#include <Engine/Engine.h>
 
 void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
 
   Collection.InitializeDependency(UGameSessionSubsystem::StaticClass());
-  Collection.InitializeDependency(UModLoadingSubsystem::StaticClass());
 
   auto GameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>();
   if (ensure(GameSessionSubsystem)) {
     GameSessionSubsystem->OnDataUpdated.AddDynamic(this, &UMapGeneratorSubsystem::UpdateSeed_Internal);
   }
 
-  auto mls = GetGameInstance()->GetSubsystem<UModLoadingSubsystem>();
+  auto mls = GEngine->GetEngineSubsystem<UModLoadingSubsystem>();
   if (ensure(mls)) {
     mls->ModLoadingFinalStep.AddDynamic(this, &UMapGeneratorSubsystem::InitializeWorldGenerators);
   }

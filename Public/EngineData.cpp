@@ -48,7 +48,7 @@ void UEngineData::FixResolution() {
 }
 
 void UEngineData::ShowConfirmationDialog() {
-  if (!GetWorld()->GetGameInstance()->GetSubsystem<UModLoadingSubsystem>()->IsContentLoaded())
+  if (!GEngine->GetEngineSubsystem<UModLoadingSubsystem>()->IsContentLoaded())
     return;
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
