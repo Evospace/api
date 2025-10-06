@@ -40,7 +40,7 @@ class UPumpjack : public UDrillingMachineBase {
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-  int32 LastSpeed = 100;
+  int32 LastSpeed = 100; // speed is deprecated in logic, kept for UI compatibility
 
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   int32 CurrentRecipeTime = 0;

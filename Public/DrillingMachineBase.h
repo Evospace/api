@@ -22,11 +22,10 @@ class UDrillingMachineBase : public UBlockLogic {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UBlockLogic>("DrillingMachineBase") //@class DrillingMachineBase : BlockLogic
-      .addProperty("energy_per_one", &Self::EnergyPerOne) //@field integer
+      .addProperty("ticks_per_item", &Self::TicksPerItem) //@field integer
+      .addProperty("energy_per_tick", &Self::EnergyPerTick) //@field integer
       .addProperty("remaining_energy", &Self::RemainingEnergy) //@field integer
-      .addFunction("get_speed", &Self::GetSpeed) //@function number
-      .addFunction("get_consumption", &Self::GetConsumption) //@function number
-      .addFunction("get_storage_fullness", &Self::GetStorageFullness) //@function number
+      .addProperty("productivity", &Self::Productivity) //@field integer percent (e.g. 15 = +15%)
       .addFunction("has_storage_space", &Self::HasStorageSpace) //@function boolean
       .addFunction("is_energy_available", &Self::IsEnergyAvailable) //@function boolean
       .addProperty("inventory", &Self::Inventory) //@field InventoryContainer
@@ -40,10 +39,6 @@ class UDrillingMachineBase : public UBlockLogic {
   UDrillingMachineBase();
   virtual UCoreAccessor *CoreInit() override;
 
-  // Blueprint interface
-  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
-  float GetSpeed() const;
-
   UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintCosmetic, Category = "Drilling|Energy")
   float GetConsumption() const;
 
@@ -53,10 +48,11 @@ class UDrillingMachineBase : public UBlockLogic {
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
   virtual float GetMiningProgress() const;
 
-  int32 Production = 1;
+  // Bonus (productivity) progress in [0..1]
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
+  virtual float GetBonusMiningProgress() const;
 
-  UFUNCTION(BlueprintCallable, Category = "Drilling|Inventory")
-  float GetStorageFullness() const;
+  int32 Production = 1;
 
   UFUNCTION(BlueprintCallable)
   virtual TArray<UStaticItem *> GetExtractOption() const;
@@ -87,12 +83,25 @@ class UDrillingMachineBase : public UBlockLogic {
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
   int32 RemainingEnergy = 0;
 
+  // Exact energy consumption per tick
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
+  int32 EnergyPerTick = 60;
+
+  // Exact time to extract one item, in ticks
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "1"))
-  int32 EnergyPerOne = 600 * 8;
+  int32 TicksPerItem = 100;
 
   // Storage configuration
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Storage", meta = (ClampMin = "1"))
   int32 StorageSize = 100;
+
+  // Mining productivity percent (e.g., 15 means +15% output)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Stats", meta = (ClampMin = "0"))
+  int32 Productivity = 0;
+
+  // Accumulated productivity points for bonus progress
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Stats")
+  int32 CollectedProductivity = 0;
 
   // Utility functions
   virtual void ProcessEnergy();
@@ -100,6 +109,7 @@ class UDrillingMachineBase : public UBlockLogic {
   virtual void Drill() PURE_VIRTUAL(UDrillingMachineBase::Drill, );
   bool IsEnergyAvailable() const { return RemainingEnergy > 0; }
   bool HasStorageSpace() const;
+
 
   protected:
   static float CalcMiningProgress(int32 RemainingEnergy, float maxEnergy) {
@@ -110,4 +120,6 @@ class UDrillingMachineBase : public UBlockLogic {
   private:
   static constexpr float basic_duration_tick = 20;
   EvoRingBuffer<int32> SupportRing = EvoRingBuffer<int32>(60);
+  // Accumulated input energy to allow higher tiers to progress
+  int32 PendingEnergy = 0;
 };
