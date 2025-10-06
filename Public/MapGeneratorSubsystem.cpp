@@ -6,6 +6,8 @@
 #include "Public/WorldGenerator.h"
 #include "Subsystems/SubsystemCollection.h"
 #include <Engine/Engine.h>
+#include "FlatWorldGenerator.h"
+#include "BiomeWorldGenerator.h"
 
 void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
