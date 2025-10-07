@@ -556,13 +556,25 @@
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-SourceData.initial_capacity">
 <span class="sig-name descname"><span class="pre">initial_capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-SourceData.initial_capacity" title="Link to this definition">¶</a><br /></dt>
-<dd><p>initial source capacity</p>
+<dd><p>initial source capacity (ore quantity)</p>
 </dd></dl>
 
 <dl class="lua data">
-<dt class="sig sig-object lua" id="lua-SourceData.extracted_count">
-<span class="sig-name descname"><span class="pre">extracted_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-SourceData.extracted_count" title="Link to this definition">¶</a><br /></dt>
-<dd><p>count of items already extracted from the source</p>
+<dt class="sig sig-object lua" id="lua-SourceData.current_ore">
+<span class="sig-name descname"><span class="pre">current_ore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-SourceData.current_ore" title="Link to this definition">¶</a><br /></dt>
+<dd><p>current remaining ore quantity (clamped to 2% of initial)</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-SourceData.active_miners">
+<span class="sig-name descname"><span class="pre">active_miners</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-SourceData.active_miners" title="Link to this definition">¶</a><br /></dt>
+<dd><p>number of miners currently extracting</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-SourceData.infinite_ore">
+<span class="sig-name descname"><span class="pre">infinite_ore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">boolean</span></code><a class="headerlink" href="#lua-SourceData.infinite_ore" title="Link to this definition">¶</a><br /></dt>
+<dd><p>undocumented</p>
 </dd></dl>
 
 <dl class="lua staticmethod">
@@ -611,13 +623,7 @@
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-Dimension">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Dimension</span></span><a class="headerlink" href="#lua-Dimension" title="Link to this definition">¶</a><br /></dt>
-<dd><dl class="lua data">
-<dt class="sig sig-object lua" id="lua-Dimension.settings">
-<span class="sig-name descname"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="engine.html#lua-GameSessionData" title="GameSessionData"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">GameSessionData</span></code></a><a class="headerlink" href="#lua-Dimension.settings" title="Link to this definition">¶</a><br /></dt>
-<dd><p>undocumented</p>
-</dd></dl>
-
-<dl class="lua method">
+<dd><dl class="lua method">
 <dt class="sig sig-object lua" id="lua-Dimension.spawn_block">
 <span class="sig-name descname"><span class="pre">spawn_block</span></span><span class="p"><span class="pre">(</span></span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-Dimension" title="Dimension"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">Dimension</span></code></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">bpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">Vec3i</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">quat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">Quat</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><br /><span class="w">&#160;&#160;&#160; </span><span class="n"><span class="pre">staticBlock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocks.html#lua-StaticBlock" title="StaticBlock"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StaticBlock</span></code></a><br /><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">The</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocks.html#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-Dimension.spawn_block" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Spawn a block at the given position</p>
