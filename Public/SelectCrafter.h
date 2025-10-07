@@ -14,6 +14,7 @@ class USectorProxy;
 class AMainPlayerController;
 class UInventoryContainer;
 class UCoreAccessor;
+class UGameSessionData;
 
 UCLASS(BlueprintType)
 class USelectCrafter : public UAbstractCrafter {

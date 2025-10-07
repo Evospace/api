@@ -45,6 +45,12 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   bool GetInfiniteOre() const;
 
   UFUNCTION(BlueprintCallable)
+  int32 GetTickRate() const;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  float GetTickDelta() const;
+
+  UFUNCTION(BlueprintCallable)
   void SetCreativeAllowed(bool val);
 
   UFUNCTION(BlueprintCallable)
@@ -84,5 +90,3 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UPROPERTY(EditAnywhere)
   UGameSessionData *Data = nullptr;
 };
-
-

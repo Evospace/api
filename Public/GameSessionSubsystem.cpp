@@ -5,6 +5,7 @@
 #include "Public/GameSessionData.h"
 #include "Public/MainGameInstance.h"
 #include "Public/ResearchSubsystem.h"
+#include "Qr/GameInstanceHelper.h"
 #include "Qr/StaticSaveHelpers.h"
 #include <Engine/World.h>
 
@@ -90,6 +91,16 @@ void UGameSessionSubsystem::SetAllResearchCompleted(bool val) {
   check(Data);
   Data->AllResearchCompleted = val;
   OnDataUpdated.Broadcast(Data);
+}
+
+float UGameSessionSubsystem::GetTickDelta() const {
+  check(Data);
+  return Data->TickRate > 0 ? 1.f / static_cast<float>(Data->TickRate) : 0.f;
+}
+
+int32 UGameSessionSubsystem::GetTickRate() const {
+  check(Data);
+  return Data->TickRate;
 }
 
 int64 UGameSessionSubsystem::IncrementTicks() {

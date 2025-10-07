@@ -2,6 +2,7 @@
 #include "Dimension.h"
 #include "ExtractionData.h"
 #include "Qr/Prototype.h"
+#include "Public/LazyGameSessionData.h"
 #include "RegionLayer.generated.h"
 
 class UStaticItem;
@@ -15,7 +16,7 @@ struct FSubregionData final {
   int64 InitialCapacity = 10000;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 ExtractedCount = 0;
+  int64 CurrentValue = 100000;
 
   // Accumulated fertility regeneration bonus provided by gameplay (e.g., fertilizer blocks).
   // This value is consumed and reset during periodic region regeneration updates.
@@ -66,19 +67,18 @@ class URegionLayer : public UInstance {
 
   static int32 CalculateRegen(const FSubregionData &sub);
 
-  // Consumes and resets the accumulated regeneration boost for the subregion.
-  // Returns the boost amount to add on top of base regeneration this cycle.
-  static int32 ConsumeRegenBoost(FSubregionData &sub);
-
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetRegen(const FVector2i &pos) const;
 
   UFUNCTION(BlueprintCallable)
-  int64 GetExtractedCount(const FVector2i &pos) const;
+  int32 GetTotalYield(const FVector2i &sr) const;
 
   UFUNCTION(BlueprintCallable)
   int64 GetInitialCapacity(const FVector2i &pos) const;
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  private:
+  FLazyGameSession GameSessionCache;
 };

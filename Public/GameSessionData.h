@@ -116,6 +116,9 @@ class UGameSessionData : public UInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool Cloud = false;
 
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 TickRate = 20;
+
   private:
 
   friend class UGameSessionSubsystem;

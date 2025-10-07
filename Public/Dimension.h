@@ -10,7 +10,7 @@
 #include "Evospace/World/Column.h"
 #include "Evospace/World/SectorCompiler.h"
 #include "Public/StaticBlock.h"
-
+#include "Public/LazyGameSessionData.h"
 #include <Containers/CircularBuffer.h>
 #include <Engine/EngineTypes.h>
 #include <Math/Vector.h>
@@ -332,4 +332,8 @@ class ADimension : public AActor {
   void ReplaceSectorProxy(Vec3i spos, TScriptInterface<USectorProxy> old_proxy, TScriptInterface<USectorProxy> proxy, AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
+
+  private:
+  UPROPERTY(VisibleAnywhere)
+  FLazyGameSession GameSessionCache;
 };

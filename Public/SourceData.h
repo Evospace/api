@@ -1,6 +1,7 @@
 #pragma once
 #include "ExtractionData.h"
 #include "Qr/Prototype.h"
+#include "Public/LazyGameSessionData.h"
 #include "SourceData.generated.h"
 
 class ADimension;
@@ -55,9 +56,6 @@ class USourceData : public UInstance {
   int32 GetTotalYield() const;
 
   UFUNCTION(BlueprintCallable)
-  bool IsInfiniteOre() const;
-
-  UFUNCTION(BlueprintCallable)
   FExtractionData ExtractOre(int64 count);
 
   UFUNCTION(BlueprintCallable)
@@ -68,5 +66,5 @@ class USourceData : public UInstance {
 
   private:  
 
-  mutable TOptional<bool> IsInfiniteCache = {};
+  FLazyGameSession GameSessionCache;
 };

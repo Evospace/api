@@ -8,6 +8,7 @@
 #include "Public/SwitchInterface.h"
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Public/EvoRingBuffer.h"
+#include "Public/LazyGameSessionData.h"
 
 #include "ConductorBlockLogic.generated.h"
 
@@ -22,6 +23,7 @@ class USingleSlotInventory;
 class UBlockLogic;
 class UAccessor;
 class AItemLogic;
+class UGameSessionData;
 
 UCLASS(BlueprintType)
 class USubnetwork : public UObject {
@@ -151,8 +153,6 @@ class UBlockNetwork : public UObject {
   UFUNCTION()
   void EndTick();
 
-  static std::tuple<int64, int64> CalculateThermalLoss(int64 power_W, int64 voltage_V, int64 resistance_mOhm, int64 currentLimit_mA);
-
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UGraphStorage *mConsumptionStorage;
 
@@ -194,6 +194,9 @@ class UBlockNetwork : public UObject {
   mutable EvoRingBuffer<float> medianCharge = EvoRingBuffer<float>(20, 0);
   mutable EvoRingBuffer<float> medianRequest = EvoRingBuffer<float>(20, 0);
   mutable EvoRingBuffer<float> medianProduction = EvoRingBuffer<float>(20, 0);
+
+  UPROPERTY(VisibleAnywhere)
+  FLazyGameSession GameSessionCache;
 };
 
 /// Conductors
@@ -316,6 +319,10 @@ class UConductorBlockLogic : public UStorageBlockLogic {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 Subnetwork = 0;
+
+  private:
+  UPROPERTY(VisibleAnywhere)
+  FLazyGameSession GameSessionCache;
 };
 
 UCLASS()
