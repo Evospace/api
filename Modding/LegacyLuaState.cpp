@@ -13,7 +13,7 @@ void LegacyLuaState::SetCurrent(UBlockLogic *actor) {
   luabridge::getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", actor).endNamespace();
 }
 
-void LegacyLuaState::Init(IRegistrar *registrar) {
+void LegacyLuaState::Init(::IRegistrar *registrar) {
   LuaState::Init(registrar);
   luabridge::getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", nullptr).endNamespace();
 }

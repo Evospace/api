@@ -86,7 +86,6 @@ bool UGameSessionData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "InfiniteOre", InfiniteOre);
   json_helper::TryGet(json, "CreativeAllowed", CreativeAllowed);
   json_helper::TryGet(json, "Mods", Mods);
-  json_helper::TryGet(json, "TickRate", TickRate);
   FString ser;
   if (json_helper::TryGet(json, "Version", ser)) {
     auto result = UGameSessionData::VersionFromString(ser);
@@ -108,7 +107,6 @@ bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "InfiniteOre", InfiniteOre);
   json_helper::TrySet(json, "CreativeAllowed", CreativeAllowed);
   json_helper::TrySet(json, "Mods", Mods);
-  json_helper::TrySet(json, "TickRate", TickRate);
   json_helper::TrySet(json, "Version", UGameSessionData::VersionToString(Version));
   json_helper::TrySet(json, "Cloud", Cloud);
   json_helper::TrySet(json, "AllResearchCompleted", AllResearchCompleted);

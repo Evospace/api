@@ -26,6 +26,7 @@ UENUM()
 enum class EResearchStatus : uint8 {
   Opened,
   CanEnqueue,
+  Queued,
   Closed,
   Complete,
   Restricted

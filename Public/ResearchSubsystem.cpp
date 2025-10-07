@@ -87,6 +87,16 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
     }
   }
 
+  // Ensure researches that are in queue are marked as Queued (including active one)
+  for (auto q : ResearchQueue) {
+    if (q && q->Type != EResearchStatus::Complete) {
+      q->Type = EResearchStatus::Queued;
+    }
+  }
+  if (ActiveResearch && ActiveResearch->Type != EResearchStatus::Complete) {
+    ActiveResearch->Type = EResearchStatus::Queued;
+  }
+
   OnResearchQueueUpdated.Broadcast();
   return true;
 }
@@ -129,6 +139,16 @@ void UResearchSubsystem::DequeueResearch() {
         }
       }
     }
+    // Recompute status for the dequeued research itself if not completed
+    if (r && r->Type != EResearchStatus::Complete) {
+      if (HasAllRequired(r)) {
+        r->Type = EResearchStatus::Opened;
+      } else if (HasAllRequiredWithQueue(r)) {
+        r->Type = EResearchStatus::CanEnqueue;
+      } else {
+        r->Type = EResearchStatus::Closed;
+      }
+    }
     OnResearchQueueUpdated.Broadcast();
   }
 }
@@ -162,6 +182,10 @@ void UResearchSubsystem::EnqueueResearch(UStaticResearch *Research) {
     return;
   if (ensure(ResearchQueue.Find(Research) == INDEX_NONE)) {
     ResearchQueue.Push(Research);
+    // Mark newly enqueued research as Queued
+    if (Research->Type != EResearchStatus::Complete) {
+      Research->Type = EResearchStatus::Queued;
+    }
     if (ActiveResearch == nullptr) {
       SetActiveResearch(Research);
     }
@@ -195,6 +219,10 @@ void UResearchSubsystem::SetActiveResearch(UStaticResearch *Research) {
         OldResearches.Remove(Research->GetFName());
       } else {
         ActiveResearchLeft = Research->Complexity;
+      }
+      // Active research is always considered Queued
+      if (ActiveResearch->Type != EResearchStatus::Complete) {
+        ActiveResearch->Type = EResearchStatus::Queued;
       }
     }
     

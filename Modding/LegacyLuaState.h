@@ -13,7 +13,7 @@ class LegacyLuaState : public LuaState {
   void SetCurrent(AActor *actor);
   void SetCurrent(UBlockLogic *actor);
 
-  virtual void Init(IRegistrar *registrar) override;
+  virtual void Init(::IRegistrar *registrar) override;
 
   AActor *current_object;
 };

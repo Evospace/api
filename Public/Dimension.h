@@ -205,6 +205,9 @@ class ADimension : public AActor {
   EvoRingBuffer<float> TpsBuffer = EvoRingBuffer<float>(16, 0);
   EvoRingBuffer<float> CyclesBuffer = EvoRingBuffer<float>(16, 0);
 
+  // Integer accumulator in tick-micro units (deltaMicros * tickRate)
+  int64 TickAccumulatorMicros = 0;
+
   bool Paused = false;
 
   UPROPERTY(EditAnywhere)
