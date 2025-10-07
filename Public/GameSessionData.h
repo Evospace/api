@@ -98,10 +98,10 @@ class UGameSessionData : public UInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FString SaveName = "Default";
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool CreativeMode = false;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool CreativeAllowed = false;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

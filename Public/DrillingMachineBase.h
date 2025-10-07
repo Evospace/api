@@ -120,6 +120,4 @@ class UDrillingMachineBase : public UBlockLogic {
   private:
   static constexpr float basic_duration_tick = 20;
   EvoRingBuffer<int32> SupportRing = EvoRingBuffer<int32>(60);
-  // Accumulated input energy to allow higher tiers to progress
-  int32 PendingEnergy = 0;
 };
