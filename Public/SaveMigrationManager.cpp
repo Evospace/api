@@ -221,7 +221,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   });
 
   migrators.Add({
-    FVersionStruct{0, 20, 1, 35, TEXT("*")},
+    FVersionStruct{0, 20, 1, 36, TEXT("*")},
     // Update Temperate/SurfaceDefinition.json: for each region set FertileLayer/ OilLayer subregions CurrentValue = 10 * InitialCapacity
     [](const FString &saveName,UGameInstance *GameInstance) {
       const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
