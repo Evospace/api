@@ -9,12 +9,11 @@ class UStaticResearchEfficiency : public UStaticResearch {
   PROTOTYPE_CODEGEN(StaticResearchEfficiency, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStaticResearch>("StaticResearchEfficiency") //@class StaticResearchEfficiency : StaticResearch
+      .deriveClass<Self, UStaticResearch>(
+        "StaticResearchEfficiency") //@class StaticResearchEfficiency : StaticResearch
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UStaticResearch::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UStaticResearch::StaticClass(); }
 
   public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;

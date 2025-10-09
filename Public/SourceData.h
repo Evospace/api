@@ -17,8 +17,10 @@ class USourceData : public UInstance {
       .deriveClass<Self, UInstance>("SourceData") //@class SourceData : Instance
       .addProperty("position", &Self::Position) //@field Vec2i source position in block coordinates
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
-      .addProperty("initial_capacity", &Self::InitialCapacity) //@field integer initial source capacity (ore quantity)
-      .addProperty("current_ore", &Self::CurrentOre) //@field integer current remaining ore quantity (clamped to 2% of initial)
+      .addProperty("initial_capacity",
+                   &Self::InitialCapacity) //@field integer initial source capacity (ore quantity)
+      .addProperty("current_ore",
+                   &Self::CurrentOre) //@field integer current remaining ore quantity (clamped to 2% of initial)
       .addProperty("active_miners", &Self::ActiveMiners) //@field integer number of miners currently extracting
       .addProperty("infinite_ore", &Self::InfiniteOre) //@field boolean
       .endClass();
@@ -64,7 +66,6 @@ class USourceData : public UInstance {
   UFUNCTION(BlueprintCallable)
   void OnMinerStop();
 
-  private:  
-
+  private:
   FLazyGameSession GameSessionCache;
 };

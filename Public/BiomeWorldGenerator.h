@@ -94,15 +94,18 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   public:
   UBiomeWorldGenerator();
 
-  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos, USurfaceDefinition *surfaceDefinition) const override;
-  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biom) const override;
+  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos,
+                        USurfaceDefinition *surfaceDefinition) const override;
+  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width,
+                              bool no_biom) const override;
 
   virtual void SetSeed(int32 seed) override;
 
   protected:
   virtual void Initialize() override;
 
-  void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FVector2i &sbpos, const Vec2i &orePos, TArray<float> &HeightCache, int w, int d) const;
+  void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FVector2i &sbpos, const Vec2i &orePos,
+                 TArray<float> &HeightCache, int w, int d) const;
 
   virtual void LoadBiomeFamily() override {}
 
@@ -126,13 +129,12 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UBiomeWorldGenerator, UWorldGenerator>("BiomeWorldGenerator") //@class BiomeWorldGenerator : WorldGenerator
+      .deriveClass<UBiomeWorldGenerator, UWorldGenerator>(
+        "BiomeWorldGenerator") //@class BiomeWorldGenerator : WorldGenerator
       .addProperty("global_biome", &UBiomeWorldGenerator::mGlobalBiome) //@field GlobalBiomeFamily
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UWorldGenerator::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UWorldGenerator::StaticClass(); }
 };
 
 /**

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 
-//#include "UObject/Object.h"
+// #include "UObject/Object.h"
 #include "CoreMinimal.h"
 #include "Qr/Prototype.h"
 #include "Qr/SerializableJson.h"
@@ -71,7 +71,8 @@ class ULogicNode_Arithmetic : public ULogicNode {
   EVO_CODEGEN_INSTANCE(LogicNode_Arithmetic);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<ULogicNode_Arithmetic, UInstance>("LogicNode_Arithmetic") //@class LogicNode_Arithmetic : LogicNode
+      .deriveClass<ULogicNode_Arithmetic, UInstance>(
+        "LogicNode_Arithmetic") //@class LogicNode_Arithmetic : LogicNode
       .endClass();
   }
 
@@ -159,7 +160,8 @@ class ULogicNode_ReadMachine : public ULogicNode {
   EVO_CODEGEN_INSTANCE(LogicNode_ReadMachine);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<ULogicNode_ReadMachine, ULogicNode>("LogicNode_ReadMachine") //@class LogicNode_ReadMachine : LogicNode
+      .deriveClass<ULogicNode_ReadMachine, ULogicNode>(
+        "LogicNode_ReadMachine") //@class LogicNode_ReadMachine : LogicNode
       .endClass();
   }
 
@@ -174,7 +176,8 @@ class ULogicNode_ControlMachine : public ULogicNode {
   EVO_CODEGEN_INSTANCE(LogicNode_ControlMachine);
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<ULogicNode_ControlMachine, ULogicNode>("LogicNode_ControlMachine") //@class LogicNode_ControlMachine : LogicNode
+      .deriveClass<ULogicNode_ControlMachine, ULogicNode>(
+        "LogicNode_ControlMachine") //@class LogicNode_ControlMachine : LogicNode
       .endClass();
   }
 

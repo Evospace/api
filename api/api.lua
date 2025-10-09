@@ -461,7 +461,7 @@ BlockLogic = {}
 
 --- Register Accessor
 --- @param accessor Accessor Accessor instance to register
-function BlockLogic:reg(accessor) end
+ function BlockLogic:reg(accessor) end
 
 --- Creates a new BlockLogic instance
 --- @param parent Object Object of parent
@@ -606,7 +606,7 @@ ConductorBlockLogic = {}
 
 ---Add side wire
 ---@param acc ResourceAccessor
-function ConductorBlockLogic:add_wire(acc) end
+ function ConductorBlockLogic:add_wire(acc) end
 
 --- Creates a new ConductorBlockLogic instance
 --- @param parent Object Object of parent
@@ -634,22 +634,22 @@ Console = {}
 
 --- Executes engine console command
 --- @param command string
-function Console.run(command) end
+ function Console.run(command) end
 
 --- Get engine console variable
 --- @param variable string
 --- @return string
-function Console.get_string(variable) end
+ function Console.get_string(variable) end
 
 --- Get engine console variable
 --- @param variable string
 --- @return number
-function Console.get_float(variable) end
+ function Console.get_float(variable) end
 
 --- Get engine console variable
 --- @param variable string
 --- @return integer
-function Console.get_int(variable) end
+ function Console.get_int(variable) end
 
 --- Creates a new EngineConsole instance
 --- @param parent Object Object of parent
@@ -670,26 +670,6 @@ function EngineConsole.get_class() end
 --- @return EngineConsole
 function EngineConsole.cast(object) end
 
---- 
---- 
---- @class ConveyorInventorySideAccessor : SolidInputAccessor
-ConveyorInventorySideAccessor = {}
-
---- Creates a new ConveyorInventorySideAccessor instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return ConveyorInventorySideAccessor
-function ConveyorInventorySideAccessor.new(parent, name) end
-
---- Return ConveyorInventorySideAccessor class object
---- @return Class
-function ConveyorInventorySideAccessor.get_class() end
-
---- Trying to cast Object into ConveyorInventorySideAccessor
---- @param object Object to cast
---- @return ConveyorInventorySideAccessor
-function ConveyorInventorySideAccessor.cast(object) end
-
 --- Comment to class
 --- 
 --- @class DB : Instance
@@ -697,24 +677,25 @@ DB = {}
 
 ---Register Prototype in DB
 ---@param proto Prototype Prototype to register
-function DB:reg(proto) end
+ function DB:reg(proto) end
 
 ---Remove Prototype from DB
 ---@param proto Prototype Prototype to remove
 ---@return boolean was Prototype removed
-function DB:remove(proto) end
+ function DB:remove(proto) end
 
----Register object with class "class" and name "name" from table, filling all other properties from from table too
+---Register object with class "class" and name "name" from table, filling all other properties from from
+table too
 ---@param table table Object table
-function DB:from_table(table) end
+ function DB:from_table(table) end
 
 ---Register mod table
 ---@param table table Mod table
-function DB:mod(table) end
+ function DB:mod(table) end
 
 ---Return all registered objects
 ---@return Object[]
-function DB:objects() end
+ function DB:objects() end
 
 --- Creates a new DB instance
 --- @param parent Object Object of parent
@@ -745,22 +726,22 @@ Dimension = {}
 ---@param quat Quat Rotation
 ---@param staticBlock StaticBlock Block type to spawn
 ---@return BlockLogic The spawned block logic instance
-function Dimension:spawn_block(bpos, quat, staticBlock) end
+ function Dimension:spawn_block(bpos, quat, staticBlock) end
 
 ---Spawn a block with full identity at the given position
 ---@param bpos Vec3i Block position
 ---@param staticBlock StaticBlock Block type to spawn with identity rotation
 ---@return BlockLogic The spawned block logic instance
-function Dimension:spawn_block_identity(bpos, staticBlock) end
+ function Dimension:spawn_block_identity(bpos, staticBlock) end
 
 ---Set a block cell at the given position
 ---@param bpos Vec3i Block position
 ---@param cl StaticBlock|nil Block type to set
-function Dimension:set_cell(bpos, cl) end
+ function Dimension:set_cell(bpos, cl) end
 
 ---Clear all props at the given position
 ---@param bpos Vec3i Block position
-function Dimension:clear_props(bpos) end
+ function Dimension:clear_props(bpos) end
 
 ---Sample terrain height at XY in world-cell coordinates
 ---@param x number X coordinate (world cells)
@@ -882,26 +863,6 @@ function EngineData.cast(object) end
 --- @class EventSystem : Object
 EventSystem = {}
 
---- Get global instance of EventSystem
---- @return EventSystem
-function EventSystem.get_instance() end
-
---- Subscribe
---- @param event integer Event id
---- @param action function Triggering action
---- @return integer Subscription id
-function EventSystem:sub(event, action) end
-
---- Unsubscribe
---- @param event integer Event id
---- @param id integer Subscription id
-function EventSystem:unsub(event, id) end
-
---- Emmit
---- @param event integer Event id
---- @param table Context table
-function EventSystem:emmit(event, table) end
-
 --- 
 --- 
 --- @class ExtractionData : Object
@@ -911,7 +872,7 @@ ExtractionData = {}
 
 --- Create new instance of ExtractionData
 --- @return ExtractionData
-function ExtractionData.new() end
+ function ExtractionData.new() end
 
 --- 
 --- 
@@ -944,7 +905,6 @@ function FluidContainerBlockLogic.cast(object) end
 --- @class Game : Object
 --- @field engine_data EngineData undocumented
 --- @field mapgen_data MapgenData undocumented
---- @field localization string undocumented
 --- @field build_string string undocumented
 Game = {}
 
@@ -1015,7 +975,7 @@ HeightGenerator = {}
 
 ---Add a noise generator to the height generator
 ---@param noise NoiseGenerator Noise generator to add
-function HeightGenerator:add_noise(noise) end
+ function HeightGenerator:add_noise(noise) end
 
 --- Register a new HeightGenerator static object
 --- @param name string The name of the object
@@ -1070,13 +1030,13 @@ InventoryAccess = {}
 --- @param item StaticItem
 --- @param count integer
 --- @return integer Remainder
-function InventoryAccess:add(item, count) end
+ function InventoryAccess:add(item, count) end
 
 --- Remove item with count from InventoryAccess
 --- @param item StaticItem
 --- @param count integer
 --- @return integer Remainder
-function InventoryAccess:sub(item, count) end
+ function InventoryAccess:sub(item, count) end
 
 --- Creates a new InventoryAccess instance
 --- @param parent Object Object of parent
@@ -1128,10 +1088,10 @@ InventoryContainer = {}
 
 ---@field index integer
 ---@return InventoryAccess
-function InventoryContainer:get_access(index) end
+ function InventoryContainer:get_access(index) end
 
 ---@field inventory InventoryAccess
-function InventoryContainer:bind(inventory) end
+ function InventoryContainer:bind(inventory) end
 
 --- Creates a new InventoryContainer instance
 --- @param parent Object Object of parent
@@ -1212,12 +1172,12 @@ InventoryReader = {}
 --- Get ItemData with index from InventoryReader
 --- @param index integer
 --- @return ItemData
-function InventoryReader:get(index) end
+ function InventoryReader:get(index) end
 
 --- Looking for index of StaticItem in InventoryReader
 --- @param item StaticItem
 --- @return integer index of found item or -1
-function InventoryReader:find(item) end
+ function InventoryReader:find(item) end
 
 --- Creates a new InventoryReader instance
 --- @param parent Object Object of parent
@@ -2492,7 +2452,7 @@ MapStructure = {}
 
 --- Create new instance of MapStructure
 --- @return MapStructure
-function MapStructure.new() end
+ function MapStructure.new() end
 
 --- 
 --- 
@@ -2527,37 +2487,37 @@ NoiseGenerator = {}
 
 ---Set the seed for noise generation
 ---@param seed integer Seed value
-function NoiseGenerator:set_seed(seed) end
+ function NoiseGenerator:set_seed(seed) end
 
 ---Get the noise value at the given position
 ---@param x number X coordinate
 ---@param y number Y coordinate
 ---@param z number Z coordinate
-function NoiseGenerator:get_noise(x, y, z) end
+ function NoiseGenerator:get_noise(x, y, z) end
 
 ---Set the noise type
 ---@param noise_type string Noise type
-function NoiseGenerator:set_noise_type(noise_type) end
+ function NoiseGenerator:set_noise_type(noise_type) end
 
 ---Set the frequency for noise generation
 ---@param frequency number Frequency value
-function NoiseGenerator:set_frequency(frequency) end
+ function NoiseGenerator:set_frequency(frequency) end
 
 ---Set the fractal octaves for noise generation
 ---@param octaves integer Octaves value
-function NoiseGenerator:set_fractal_octaves(octaves) end
+ function NoiseGenerator:set_fractal_octaves(octaves) end
 
 ---Set the fractal gain for noise generation
 ---@param gain number Gain value
-function NoiseGenerator:set_fractal_gain(gain) end
+ function NoiseGenerator:set_fractal_gain(gain) end
 
 ---Set the fractal lacunarity for noise generation
 ---@param lacunarity number Lacunarity value
-function NoiseGenerator:set_fractal_lacunarity(lacunarity) end
+ function NoiseGenerator:set_fractal_lacunarity(lacunarity) end
 
 ---Set the fractal type for noise generation
 ---@param fractal_type string Fractal type
-function NoiseGenerator:set_fractal_type(fractal_type) end
+ function NoiseGenerator:set_fractal_type(fractal_type) end
 
 --- Register a new NoiseGenerator static object
 --- @param name string The name of the object
@@ -2586,7 +2546,7 @@ function NoiseGenerator.cast(object) end
 PropListData = {}
 
 --- @return PropListData
-function PropListData.new() end
+ function PropListData.new() end
 
 --- 
 --- 
@@ -2738,13 +2698,11 @@ function Pumpjack.cast(object) end
 --- 
 --- @class Recipe : Prototype
 --- @field ticks integer *Craft time* in engine ticks
---- @field default_locked boolean If **true**, the recipe starts hidden until research unlocks it.
+--- @field default_locked boolean If **true**, the recipe starts
 --- @field locked boolean Currently locked if **true**
 --- @field productivity integer Percentage bonus (e.g. `20` = +20 %)
---- @field input RecipeInventory Read/write container of required items
---- @field output RecipeInventory Read/write container of produced items
---- @field tier integer Recipe tier used for speed scaling: every tier **above** the machine tier halves speed; every tier **below** doubles it.
---- @field start_tier integer Machine-unlock tier (same for all its recipes); lets you compute the recipe’s level relative to that minimum.
+--- @field tier integer Recipe tier used for speed scaling: every tier **above** the
+--- @field start_tier integer Machine-unlock tier (same for all its recipes); lets you
 Recipe = {}
 
 --- Register a new Recipe static object
@@ -2824,11 +2782,11 @@ Region = {}
 
 ---Add structure to this Region
 ---@param structure MapStructure
-function Region:add_structure(structure) end
+ function Region:add_structure(structure) end
 
 ---Add source to this Region
 ---@param source SourceData
-function Region:add_source(source) end
+ function Region:add_source(source) end
 
 --- Creates a new Region instance
 --- @param parent Object Object of parent
@@ -2880,32 +2838,32 @@ function RegionLayer.cast(object) end
 RegionMap = {}
 
 ---Delete all regions
-function RegionMap:reset() end
+ function RegionMap:reset() end
 
 ---Get Region by its position
 ---@param spos Vec2i position in RegionMap grid
 ---@return Region
-function RegionMap:get_region(spos) end
+ function RegionMap:get_region(spos) end
 
 ---Looking for existing Region with given sector position
 ---@param spos Vec2i position in RegionMap grid
 ---@return Region
-function RegionMap:find_region(spos) end
+ function RegionMap:find_region(spos) end
 
 ---Looking for SourceData near given location in world blocks
 ---@param wbpos Vec3i position in Dimension grid
 ---@return SourceData
-function RegionMap:find_source(wbpos) end
+ function RegionMap:find_source(wbpos) end
 
 ---Is region exists
 ---@param pos Vec2i region position
 ---@return boolean
-function RegionMap:has_region(pos) end
+ function RegionMap:has_region(pos) end
 
 ---Convert Block World position to RegionMap grid cell that contains this position
 ---@param bpos Vec3i
 --- @return Vec2i RegionMap grid position
-function RegionMap.world_block_to_grid(bpos) end
+ function RegionMap.world_block_to_grid(bpos) end
 
 --- Creates a new RegionMap instance
 --- @param parent Object Object of parent
@@ -3135,7 +3093,7 @@ function ChancedLayeringGenerator.cast(object) end
 SingleSlotInventory = {}
 
 ---@field item StaticItem
-function SingleSlotInventory:set_simple_filter(item) end
+ function SingleSlotInventory:set_simple_filter(item) end
 
 --- Creates a new SingleSlotInventory instance
 --- @param parent Object Object of parent
@@ -3155,66 +3113,6 @@ function SingleSlotInventory.get_class() end
 --- @param object Object to cast
 --- @return SingleSlotInventory
 function SingleSlotInventory.cast(object) end
-
---- 
---- 
---- @class SolidAccessor : BaseInventoryAccessor
-SolidAccessor = {}
-
---- Creates a new SolidAccessor instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return SolidAccessor
-function SolidAccessor.new(parent, name) end
-
---- Return SolidAccessor class object
---- @return Class
-function SolidAccessor.get_class() end
-
---- Trying to cast Object into SolidAccessor
---- @param object Object to cast
---- @return SolidAccessor
-function SolidAccessor.cast(object) end
-
---- 
---- 
---- @class SolidInputAccessor : SolidAccessor
-SolidInputAccessor = {}
-
---- Creates a new SolidInputAccessor instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return SolidInputAccessor
-function SolidInputAccessor.new(parent, name) end
-
---- Return SolidInputAccessor class object
---- @return Class
-function SolidInputAccessor.get_class() end
-
---- Trying to cast Object into SolidInputAccessor
---- @param object Object to cast
---- @return SolidInputAccessor
-function SolidInputAccessor.cast(object) end
-
---- 
---- 
---- @class SolidOutputAccessor : SolidAccessor
-SolidOutputAccessor = {}
-
---- Creates a new SolidOutputAccessor instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return SolidOutputAccessor
-function SolidOutputAccessor.new(parent, name) end
-
---- Return SolidOutputAccessor class object
---- @return Class
-function SolidOutputAccessor.get_class() end
-
---- Trying to cast Object into SolidOutputAccessor
---- @param object Object to cast
---- @return SolidOutputAccessor
-function SolidOutputAccessor.cast(object) end
 
 --- 
 --- 

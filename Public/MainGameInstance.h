@@ -68,8 +68,10 @@ class UMainGameInstance : public USteamGameInstance {
       .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
       .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
       .addProperty("mapgen_data", &UMainGameInstance::MapgenData) //@field MapgenData
-      .addStaticFunction("get_supported_resolutions", &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
-      .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
+      .addStaticFunction("get_supported_resolutions",
+                         &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
+      .addProperty("localization", &UMainGameInstance::GetLocalization,
+                   &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
       .endClass();
     lua_reg_detail(L);
@@ -94,16 +96,15 @@ class UMainGameInstance : public USteamGameInstance {
   UMapWidgetData *MapWidgetData;
 
   private:
-
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 
-  //TODO: check usage
+  // TODO: check usage
   UFUNCTION(BlueprintCallable)
   static void SetDPI(float scale);
 
-  //TODO: check usage
+  // TODO: check usage
   static float DPIScale;
 
   template <typename _Ty>
@@ -135,12 +136,14 @@ class UMainGameInstance : public USteamGameInstance {
   static void ClipboardCopy(const FString &s);
 
   /** Get the coordinates of the center of the player's screen / viewport.
-   * Returns false if the operation could not occur */
+     * Returns false if the operation could not occur */
   UFUNCTION(BlueprintPure)
   static bool Viewport__GetCenterOfViewport(const APlayerController *ThePC, float &PosX, float &PosY);
 
-  UFUNCTION(BlueprintCallable, BlueprintCosmetic, Meta = (WorldContext = "WorldContextObject", DeterminesOutputType = "WidgetClass"))
-  static UUserWidget *GetFirstWidgetOfClass(UObject *WorldContextObject, TSubclassOf<UUserWidget> WidgetClass, bool TopLevelOnly);
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic,
+            Meta = (WorldContext = "WorldContextObject", DeterminesOutputType = "WidgetClass"))
+  static UUserWidget *GetFirstWidgetOfClass(UObject *WorldContextObject, TSubclassOf<UUserWidget> WidgetClass,
+                                            bool TopLevelOnly);
 
   /** Only hardware dependent, no smoothing */
   UFUNCTION(BlueprintCallable)
@@ -188,11 +191,13 @@ class UMainGameInstance : public USteamGameInstance {
   std::string GetBuildLuaString() const;
 
   UFUNCTION(BlueprintCallable)
-  static UTexture2D *Victory_LoadTexture2D_FromFile(const FString &FullFilePath, bool &IsValid, int32 &Width, int32 &Height);
+  static UTexture2D *Victory_LoadTexture2D_FromFile(const FString &FullFilePath, bool &IsValid, int32 &Width,
+                                                    int32 &Height);
 
   static UTexture2D *LoadTexture2DFromFile(const FString &FullFilePath);
 
-  static UTexture2D *Victory_LoadTexture2D_FromArray(const TArray<FColor> &RawFileData, bool &IsValid, int32 &Width, int32 &Height);
+  static UTexture2D *Victory_LoadTexture2D_FromArray(const TArray<FColor> &RawFileData, bool &IsValid, int32 &Width,
+                                                     int32 &Height);
 
   UFUNCTION(BlueprintCallable)
   static TArray<FAssetData> ListAllAssets();
@@ -203,7 +208,8 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   static void SetCameraFromOriginAndBoxExtent(AActor *Camera, const FVector &Origin, const FVector &BoxExtent);
 
-  static bool Victory_SavePixels(const FString &FullFilePath, int32 Width, int32 Height, const TArray<FColor> &ImagePixels, bool sRGB);
+  static bool Victory_SavePixels(const FString &FullFilePath, int32 Width, int32 Height,
+                                 const TArray<FColor> &ImagePixels, bool sRGB);
 
   UFUNCTION(BlueprintCallable)
   static int32 GreatestCommonDivisor(int32 a, int32 b);
@@ -227,7 +233,8 @@ class UMainGameInstance : public USteamGameInstance {
   static bool HasErrors();
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  static bool ContainsAllResearches(const TSet<UStaticResearchRecipe *> where, const TArray<UStaticResearchRecipe *> what);
+  static bool ContainsAllResearches(const TSet<UStaticResearchRecipe *> where,
+                                    const TArray<UStaticResearchRecipe *> what);
 
   UFUNCTION(BlueprintCallable)
   void SetFilterString(const FString &str);

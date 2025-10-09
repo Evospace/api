@@ -9,7 +9,7 @@ class UInventoryReader;
 
 UCLASS(BlueprintType)
 /**
- * 
+ *
  */
 class UTieredBlockHelper : public UObject {
   using Self = UTieredBlockHelper;

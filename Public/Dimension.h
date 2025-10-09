@@ -57,33 +57,33 @@ class ADimension : public AActor {
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .deriveClass<ADimension, AActor>("Dimension") //@class Dimension : Actor
-      //direct:
+      // direct:
       //---Spawn a block at the given position
       //---@param bpos Vec3i Block position
       //---@param quat Quat Rotation
       //---@param staticBlock StaticBlock Block type to spawn
       //---@return BlockLogic The spawned block logic instance
-      //function Dimension:spawn_block(bpos, quat, staticBlock) end
+      // function Dimension:spawn_block(bpos, quat, staticBlock) end
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
-      //direct:
+      // direct:
       //---Spawn a block with full identity at the given position
       //---@param bpos Vec3i Block position
       //---@param staticBlock StaticBlock Block type to spawn with identity rotation
       //---@return BlockLogic The spawned block logic instance
-      //function Dimension:spawn_block_identity(bpos, staticBlock) end
+      // function Dimension:spawn_block_identity(bpos, staticBlock) end
       .addFunction("spawn_block_identity", &ADimension::SpawnLogicFullIdentity)
-      //direct:
+      // direct:
       //---Set a block cell at the given position
       //---@param bpos Vec3i Block position
       //---@param cl StaticBlock|nil Block type to set
-      //function Dimension:set_cell(bpos, cl) end
+      // function Dimension:set_cell(bpos, cl) end
       .addFunction("set_cell", &ADimension::LuaSetBlockCell)
-      //direct:
+      // direct:
       //---Clear all props at the given position
       //---@param bpos Vec3i Block position
-      //function Dimension:clear_props(bpos) end
+      // function Dimension:clear_props(bpos) end
       .addFunction("clear_props", &ADimension::LuaCleanProps)
-      //direct:
+      // direct:
       //---Sample terrain height at XY in world-cell coordinates
       //---@param x number X coordinate (world cells)
       //---@param y number Y coordinate (world cells)
@@ -142,11 +142,12 @@ class ADimension : public AActor {
   UBlockLogic *SpawnLogicFullIdentity(const Vec3i &bpos, const UStaticBlock *staticObject);
   UBlockLogic *SpawnLogicFull(const Vec3i &bpos, const UStaticBlock *staticObject, const FQuat &rot);
 
-  UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject, const FQuat &rot);
+  UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject,
+                               const FQuat &rot);
 
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition);
- 
+
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
   virtual void Tick(float DeltaTime) override;
@@ -171,7 +172,7 @@ class ADimension : public AActor {
   UFUNCTION(BlueprintCallable)
   void Unpause();
 
-  //TODO: move to surface definition
+  // TODO: move to surface definition
   UFUNCTION(BlueprintCallable)
   void RegionUpdate();
 
@@ -192,8 +193,8 @@ class ADimension : public AActor {
   UPROPERTY(EditAnywhere)
   AWorldFeaturesManager *FeatureManager;
 
-  //UPROPERTY(EditAnywhere)
-  //UBatchBlockLogicManager *BatchManager;
+  // UPROPERTY(EditAnywhere)
+  // UBatchBlockLogicManager *BatchManager;
 
   protected:
   // Core Tick
@@ -271,17 +272,11 @@ class ADimension : public AActor {
       bAllowDuplicateKeys = false
     };
 
-    static FORCEINLINE KeyInitType GetSetKey(ElementInitType Element) {
-      return Element->pos;
-    }
+    static FORCEINLINE KeyInitType GetSetKey(ElementInitType Element) { return Element->pos; }
 
-    static FORCEINLINE bool Matches(KeyInitType A, KeyInitType B) {
-      return A == B;
-    }
+    static FORCEINLINE bool Matches(KeyInitType A, KeyInitType B) { return A == B; }
 
-    static FORCEINLINE uint32 GetKeyHash(KeyInitType Key) {
-      return GetTypeHash(Key);
-    }
+    static FORCEINLINE uint32 GetKeyHash(KeyInitType Key) { return GetTypeHash(Key); }
   };
 
   struct NearestColumn {
@@ -332,7 +327,8 @@ class ADimension : public AActor {
 
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);
-  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<USectorProxy> old_proxy, TScriptInterface<USectorProxy> proxy, AColumn *column);
+  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<USectorProxy> old_proxy, TScriptInterface<USectorProxy> proxy,
+                          AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
 

@@ -11,7 +11,7 @@
  * Pre-spawns a fixed number of actors on BeginPlay and cycles through them.
  * GetNext resets transform and returns an already spawned actor.
  */
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class EVOSPACE_API UActorPoolComponent : public UActorComponent {
   GENERATED_BODY()
 
@@ -36,7 +36,8 @@ class EVOSPACE_API UActorPoolComponent : public UActorComponent {
 
   /** Manually reset an actor's transform and optionally attach to parent. */
   UFUNCTION(BlueprintCallable, Category = "Actor Pool")
-  void ResetActor(AActor *Actor, const FTransform &WorldTransform, USceneComponent *AttachParent = nullptr, FName SocketName = NAME_None);
+  void ResetActor(AActor *Actor, const FTransform &WorldTransform, USceneComponent *AttachParent = nullptr,
+                  FName SocketName = NAME_None);
 
   protected:
   virtual void BeginPlay() override;
@@ -53,5 +54,3 @@ class EVOSPACE_API UActorPoolComponent : public UActorComponent {
 
   AActor *SpawnOne();
 };
-
-

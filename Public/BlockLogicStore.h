@@ -22,9 +22,7 @@ struct FBlockLogicStore {
     IndexMap.Empty();
   }
 
-  bool Contains(const FVector3i &Pos) const {
-    return IndexMap.Contains(Pos);
-  }
+  bool Contains(const FVector3i &Pos) const { return IndexMap.Contains(Pos); }
 
   UBlockLogic *Find(const FVector3i &Pos) const {
     if (const int32 *Index = IndexMap.Find(Pos)) {
@@ -94,7 +92,5 @@ struct FBlockLogicStore {
     }
   }
 
-  int32 Num() const {
-    return Blocks.Num();
-  }
+  int32 Num() const { return Blocks.Num(); }
 };

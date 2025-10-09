@@ -23,10 +23,10 @@ struct FMapStructure {
   static void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .beginClass<FMapStructure>("MapStructure") //@class MapStructure
-      //direct:
+      // direct:
       //--- Create new instance of MapStructure
       //--- @return MapStructure
-      //function MapStructure.new() end
+      // function MapStructure.new() end
       .addStaticFunction("new", [] { return FMapStructure(); })
       .addProperty("offset", &FMapStructure::Offset) //@field Vec2i
       .addProperty("structure", &FMapStructure::Structure) //@field StaticStructure

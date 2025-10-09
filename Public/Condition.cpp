@@ -5,10 +5,10 @@
 #include "Evospace/JsonHelper.h"
 #include "Evospace/PerformanceStat.h"
 
-//DECLARE_CYCLE_STAT_EXTERN(TEXT("Tick Condition"), STAT_TickCondition, STATGROUP_BLOCKLOGIC);
+// DECLARE_CYCLE_STAT_EXTERN(TEXT("Tick Condition"), STAT_TickCondition, STATGROUP_BLOCKLOGIC);
 
 int64 UCondition::Evaluate(const ULogicContext *ctx) const {
-  //SCOPE_CYCLE_COUNTER(STAT_TickCondition);
+  // SCOPE_CYCLE_COUNTER(STAT_TickCondition);
   switch (Mode) {
   case EConditionMode::Expr: {
     int64 actual = ctx->Input->Get(VarA);
@@ -38,14 +38,16 @@ int64 UCondition::Evaluate(const ULogicContext *ctx) const {
     if (Operands.IsEmpty())
       return 0;
     for (const auto *cond : Operands)
-      if (cond->Evaluate(ctx)) return 1;
+      if (cond->Evaluate(ctx))
+        return 1;
     return 0;
   }
   case EConditionMode::And: {
     if (Operands.IsEmpty())
       return 0;
     for (const auto *cond : Operands)
-      if (!cond->Evaluate(ctx)) return 0;
+      if (!cond->Evaluate(ctx))
+        return 0;
     return 1;
   }
   case EConditionMode::Not: {
@@ -60,7 +62,7 @@ int64 UCondition::Evaluate(const ULogicContext *ctx) const {
 }
 
 float UCondition::EvaluateGui(const ULogicContext *ctx) const {
-  //SCOPE_CYCLE_COUNTER(STAT_TickCondition);
+  // SCOPE_CYCLE_COUNTER(STAT_TickCondition);
   switch (Mode) {
   case EConditionMode::Expr: {
     float actual = ctx->Input->Get(VarA);
@@ -73,32 +75,39 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
 
     switch (Operator) {
     case ECompareOp::Less:
-      if (actual < value) return 1.f;
+      if (actual < value)
+        return 1.f;
       return value == 0.f ? 0.f : FMath::Clamp(1.f - (actual / value), 0.f, 1.f);
 
     case ECompareOp::Greater:
-      if (actual > value) return 1.f;
-      if (actual == value) return 0.f;
+      if (actual > value)
+        return 1.f;
+      if (actual == value)
+        return 0.f;
       return value == 0.f ? 0.f : FMath::Clamp(actual / value, 0.f, 1.f);
 
     case ECompareOp::Equal: {
       float eps = FMath::Max(1.f, FMath::Abs(value) * 0.01f);
-      if (FMath::Abs(delta) < eps * 0.25f) return 1.f;
+      if (FMath::Abs(delta) < eps * 0.25f)
+        return 1.f;
       return 1.f - FMath::Clamp(FMath::Abs(delta) / eps, 0.f, 1.f);
     }
 
     case ECompareOp::NotEqual: {
       float eps = FMath::Max(1.f, FMath::Abs(value) * 0.01f);
-      if (FMath::Abs(delta) > eps * 2.f) return 1.f;
+      if (FMath::Abs(delta) > eps * 2.f)
+        return 1.f;
       return FMath::Clamp(FMath::Abs(delta) / eps, 0.f, 1.f);
     }
 
     case ECompareOp::LessEqual:
-      if (actual <= value) return 1.f;
+      if (actual <= value)
+        return 1.f;
       return value == 0.f ? 0.f : FMath::Clamp(1.f - (actual / value), 0.f, 1.f);
 
     case ECompareOp::GreaterEqual:
-      if (actual >= value) return 1.f;
+      if (actual >= value)
+        return 1.f;
       return value == 0.f ? 0.f : FMath::Clamp(actual / value, 0.f, 1.f);
 
     default:
@@ -110,14 +119,16 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
     if (Operands.IsEmpty())
       return 0.0;
     for (const auto *cond : Operands)
-      if (cond->EvaluateGui(ctx) > 0.999) return 1.0;
+      if (cond->EvaluateGui(ctx) > 0.999)
+        return 1.0;
     return 0.0;
   }
   case EConditionMode::And: {
     if (Operands.IsEmpty())
       return 0.0;
     for (const auto *cond : Operands)
-      if (cond->EvaluateGui(ctx) < 0.999) return 0.0;
+      if (cond->EvaluateGui(ctx) < 0.999)
+        return 0.0;
     return 1.0;
   }
   case EConditionMode::Not: {

@@ -11,7 +11,8 @@ class UResourceInventory : public USingleSlotInventory {
   EVO_CODEGEN_INSTANCE(ResourceInventory)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UResourceInventory, USingleSlotInventory>("ResourceInventory") //@class ResourceInventory : SingleSlotInventory
+      .deriveClass<UResourceInventory, USingleSlotInventory>(
+        "ResourceInventory") //@class ResourceInventory : SingleSlotInventory
       .addProperty("item", &UResourceInventory::GetItem, &UResourceInventory::SetItem) //@field StaticItem
       .addProperty("drain", &UResourceInventory::mDrain) //@field integer
       .endClass();
@@ -28,25 +29,21 @@ class UResourceInventory : public USingleSlotInventory {
   UPROPERTY(VisibleAnywhere)
   FColor Color = FColor::White;
 
-  //TODO: why in single slot
+  // TODO: why in single slot
   void AddResource(int64 a) {
     Data[0].mValue += a;
     ++Version;
   }
 
-  //TODO: why in single slot
+  // TODO: why in single slot
   void RemoveResource(int64 a) {
     Data[0].mValue -= a;
     ++Version;
   }
 
-  int64 GetInput() const {
-    return Capacity != INDEX_NONE ? Capacity : 0;
-  }
+  int64 GetInput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
 
-  int64 GetOutput() const {
-    return Capacity != INDEX_NONE ? Capacity : 0;
-  }
+  int64 GetOutput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
 
   int64 GetFreeInput() const {
     const auto v = (Capacity != INDEX_NONE ? Capacity : 0) * 2 - _Get(0).mValue;

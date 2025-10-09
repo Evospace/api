@@ -79,18 +79,14 @@
 */
 #define LUA_LDIR "!\\lua\\"
 #define LUA_CDIR "!\\"
-#define LUA_PATH_DEFAULT                                         \
-  ".\\?.lua;" LUA_LDIR "?.lua;" LUA_LDIR "?\\init.lua;" LUA_CDIR \
-  "?.lua;" LUA_CDIR "?\\init.lua"
+#define LUA_PATH_DEFAULT ".\\?.lua;" LUA_LDIR "?.lua;" LUA_LDIR "?\\init.lua;" LUA_CDIR "?.lua;" LUA_CDIR "?\\init.lua"
 #define LUA_CPATH_DEFAULT ".\\?.dll;" LUA_CDIR "?.dll;" LUA_CDIR "loadall.dll"
 
 #else
 #define LUA_ROOT "/usr/local/"
 #define LUA_LDIR LUA_ROOT "share/lua/5.1/"
 #define LUA_CDIR LUA_ROOT "lib/lua/5.1/"
-#define LUA_PATH_DEFAULT                                       \
-  "./?.lua;" LUA_LDIR "?.lua;" LUA_LDIR "?/init.lua;" LUA_CDIR \
-  "?.lua;" LUA_CDIR "?/init.lua"
+#define LUA_PATH_DEFAULT "./?.lua;" LUA_LDIR "?.lua;" LUA_LDIR "?/init.lua;" LUA_CDIR "?.lua;" LUA_CDIR "?/init.lua"
 #define LUA_CPATH_DEFAULT "./?.so;" LUA_CDIR "?.so;" LUA_CDIR "loadall.so"
 #endif
 
@@ -167,8 +163,7 @@
 #define LUAI_FUNC static
 #define LUAI_DATA /* empty */
 
-#elif defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 302) && \
-  defined(__ELF__)
+#elif defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 302) && defined(__ELF__)
 #define LUAI_FUNC __attribute__((visibility("hidden"))) extern
 #define LUAI_DATA LUAI_FUNC
 
@@ -257,10 +252,8 @@
     add_history(lua_tostring(L, idx)); /* add it to history */
 #define lua_freeline(L, b) ((void)L, free(b))
 #else
-#define lua_readline(L, b, p)        \
-  ((void)L,                          \
-   fputs(p, stdout),                 \
-   fflush(stdout), /* show prompt */ \
+#define lua_readline(L, b, p)                                   \
+  ((void)L, fputs(p, stdout), fflush(stdout), /* show prompt */ \
    fgets(b, LUA_MAXINPUT, stdin) != NULL) /* get line */
 #define lua_saveline(L, idx) \
   {                          \
@@ -364,7 +357,9 @@
   }
 #else
 #define luai_apicheck(L, o) \
-  { (void)L; }
+  {                         \
+    (void)L;                \
+  }
 #endif
 
 /*
@@ -505,7 +500,7 @@
 #define luai_numsub(a, b) ((a) - (b))
 #define luai_nummul(a, b) ((a) * (b))
 #define luai_numdiv(a, b) ((a) / (b))
-#define luai_nummod(a, b) ((a)-floor((a) / (b)) * (b))
+#define luai_nummod(a, b) ((a) - floor((a) / (b)) * (b))
 #define luai_numpow(a, b) (pow(a, b))
 #define luai_numunm(a) (-(a))
 #define luai_numeq(a, b) ((a) == (b))
@@ -645,8 +640,10 @@ union luai_Cast {
 
 #else
 #define LUA_TMPNAMBUFSIZE L_tmpnam
-#define lua_tmpnam(b, e) \
-  { e = (tmpnam(b) == NULL); }
+#define lua_tmpnam(b, e)     \
+  {                          \
+    e = (tmpnam(b) == NULL); \
+  }
 #endif
 
 #endif
@@ -668,10 +665,7 @@ union luai_Cast {
 
 #else
 
-#define lua_popen(L, c, m)                          \
-  ((void)((void)c, m),                              \
-   luaL_error(L, LUA_QL("popen") " not supported"), \
-   (FILE *)0)
+#define lua_popen(L, c, m) ((void)((void)c, m), luaL_error(L, LUA_QL("popen") " not supported"), (FILE *)0)
 #define lua_pclose(L, file) ((void)((void)L, file), 0)
 
 #endif

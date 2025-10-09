@@ -66,11 +66,16 @@ void ULogicNode_Arithmetic::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
     return;
 
   auto apply = [&](int64 a, int64 b) -> int64 {
-    if (Operation == TEXT("Add")) return a + b;
-    if (Operation == TEXT("Sub")) return a - b;
-    if (Operation == TEXT("Mul")) return a * b;
-    if (Operation == TEXT("Div")) return b == 0 ? 0 : a / b;
-    if (Operation == TEXT("Mod")) return b == 0 ? 0 : a % b;
+    if (Operation == TEXT("Add"))
+      return a + b;
+    if (Operation == TEXT("Sub"))
+      return a - b;
+    if (Operation == TEXT("Mul"))
+      return a * b;
+    if (Operation == TEXT("Div"))
+      return b == 0 ? 0 : a / b;
+    if (Operation == TEXT("Mod"))
+      return b == 0 ? 0 : a % b;
     return a;
   };
 
@@ -95,7 +100,8 @@ void ULogicNode_Decider::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
     return; // on false, write nothing
 
   auto chooseFirstInputKey = [&]() -> const UStaticItem * {
-    if (!Ctx->Input) return nullptr;
+    if (!Ctx->Input)
+      return nullptr;
     for (const auto &kv : Ctx->Input->Map) {
       return kv.Key;
     }
@@ -103,7 +109,8 @@ void ULogicNode_Decider::Execute(UBlockLogic *Owner, ULogicContext *Ctx) {
   };
 
   for (ULogicOutput *Def : Output) {
-    if (!Def) continue;
+    if (!Def)
+      continue;
     Def->Compute(Ctx);
   }
 }

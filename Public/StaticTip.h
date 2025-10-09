@@ -10,7 +10,7 @@ class UDB;
 
 UCLASS(BlueprintType)
 /**
- * 
+ *
  */
 class UStaticTip : public UPrototype {
   GENERATED_BODY()
@@ -52,7 +52,5 @@ class UStaticTip : public UPrototype {
       .addProperty("context", &UStaticTip::mContextInventory)
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 };

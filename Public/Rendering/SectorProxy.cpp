@@ -126,7 +126,8 @@ void USectorProxy::LoadSector(const AColumn &c) {
           transform.SetRotation(logic->GetBlockQuat());
           if (staticBlock->NoActorRenderable) {
             owner->SetRenderable(logic->GetBlockPos(), true, logic);
-          } else if (ABlockActor *actor = logic->GetStaticBlock()->SpawnActorAndLuaDeferred(dim, logic, transform)) {
+          } else if (ABlockActor *actor =
+                       logic->GetStaticBlock()->SpawnActorAndLuaDeferred(dim, logic, transform)) {
             logic->DeferredPaintApply();
             actor->AttachToActor(owner, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
             owner->SetRenderable(logic->GetBlockPos(), actor, logic);
@@ -137,7 +138,8 @@ void USectorProxy::LoadSector(const AColumn &c) {
               auto subPos = bpos + RotateVector(logic->GetBlockQuat(), pos);
               auto type = dim->GetBlockLogic(subPos);
               int32 index;
-              if (auto sector = dim->FindBlockCell(subPos, index)) [[likely]] {
+              if (auto sector = dim->FindBlockCell(subPos, index)) [[likely]]
+              {
                 sector->SetStaticBlock(index, block);
               } else [[unlikely]] {
                 LOG(ERROR_LL) << "fixing part of block is failed at " << pos;
@@ -152,7 +154,8 @@ void USectorProxy::LoadSector(const AColumn &c) {
         }
       }
     } else [[unlikely]] {
-      LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName() << " clearing this cell";
+      LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName()
+                    << " clearing this cell";
       dim->SetBlockLogic(bpos, nullptr);
       SetStaticBlock(i, nullptr);
       SetBlockDensity(i, 0);
@@ -195,7 +198,8 @@ void USectorProxy::UnloadSector() {
   owner->RenderBlocks.Empty();
 }
 
-bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback) {
+bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
+                                         TFunction<void()> callback) {
   if (data.IsEmpty() && rmc) {
     auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
     if (mesh) {
@@ -264,7 +268,7 @@ void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) 
     }
   }
 
-  //TODO: Bad place for that
+  // TODO: Bad place for that
   if (!out_inventory->IsEmpty()) {
     auto mpc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
@@ -273,7 +277,8 @@ void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) 
 
     const auto mpcTransform = mpc->GetCharacter()->GetTransform();
 
-    const auto dropped = GetWorld()->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), mpcTransform, owner);
+    const auto dropped =
+      GetWorld()->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), mpcTransform, owner);
     if (ensure(dropped)) {
       UInventoryLibrary::TryMoveFromAny(dropped->GetInventory(), out_inventory);
       dropped->FinishSpawning(mpcTransform);

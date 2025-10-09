@@ -14,9 +14,8 @@
 #include <vector>
 
 #include "MiscGeneratorClasses.generated.h"
-#define SetMacro()                                                            \
-  start_point.X * 2 + 4, start_point.Y * 2 + 4, 1, gFlatSectorSize.X * 2 + 4, \
-    gFlatSectorSize.Y * 2 + 4, 1
+#define SetMacro() \
+  start_point.X * 2 + 4, start_point.Y * 2 + 4, 1, gFlatSectorSize.X * 2 + 4, gFlatSectorSize.Y * 2 + 4, 1
 
 using BlockInterval = std::pair<unsigned short, unsigned short>;
 
@@ -48,9 +47,7 @@ enum {
 constexpr Vec3i PrecomputedBiomesize =
   gTallSectorSize + Vec3i{ SmoothKernelRadius * 2, SmoothKernelRadius * 2, SmoothKernelRadius * 2 };
 constexpr Vec3i PrecomputedDensSize =
-  gTallSectorSize + Vec3i{ DensSmoothKernelRadius * 2,
-                           DensSmoothKernelRadius * 2,
-                           DensSmoothKernelRadius * 2 };
+  gTallSectorSize + Vec3i{ DensSmoothKernelRadius * 2, DensSmoothKernelRadius * 2, DensSmoothKernelRadius * 2 };
 
 template <typename Ty_>
 using SmoothBuffer = std::array<std::array<Ty_, PrecomputedBiomesize.Y>, PrecomputedBiomesize.X>;
@@ -82,9 +79,7 @@ class ULayeringGenerator : public UPrototype {
       .deriveClass<ULayeringGenerator, UPrototype>("LayeringGenerator") //@class LayeringGenerator : Prototype
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;
@@ -101,12 +96,11 @@ class USimpleLayeringGenerator : public ULayeringGenerator {
   PROTOTYPE_CODEGEN(SimpleLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<USimpleLayeringGenerator, ULayeringGenerator>("SimpleLayeringGenerator") //@class SimpleLayeringGenerator : LayeringGenerator
+      .deriveClass<USimpleLayeringGenerator, ULayeringGenerator>(
+        "SimpleLayeringGenerator") //@class SimpleLayeringGenerator : LayeringGenerator
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return ULayeringGenerator::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return ULayeringGenerator::StaticClass(); }
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const override;
@@ -123,12 +117,11 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   PROTOTYPE_CODEGEN(ChancedLayeringGenerator, LayeringGenerator)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UChancedLayeringGenerator, USimpleLayeringGenerator>("ChancedLayeringGenerator") //@class ChancedLayeringGenerator : SimpleLayeringGenerator
+      .deriveClass<UChancedLayeringGenerator, USimpleLayeringGenerator>(
+        "ChancedLayeringGenerator") //@class ChancedLayeringGenerator : SimpleLayeringGenerator
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return ULayeringGenerator::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return ULayeringGenerator::StaticClass(); }
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const override;

@@ -10,7 +10,8 @@ class UGlobalBiomeFamily3 : public UGlobalBiomeFamily {
   UGlobalBiomeFamily3();
 
   virtual IndexType GetBiome(const Vec2i &pos) const override;
-  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biom) const override;
+  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width,
+                              bool no_biom) const override;
   virtual float GetHeight(const FVector2D &pos) const override;
   virtual void SetSeed(int32 seed) override;
   std::unique_ptr<FastNoiseSIMD> river_noise;
@@ -22,7 +23,5 @@ class UGlobalBiomeFamily3 : public UGlobalBiomeFamily {
       .deriveClass<UGlobalBiomeFamily3, UGlobalBiomeFamily>("GlobalBiomeFamily3")
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UBiome::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UBiome::StaticClass(); }
 };

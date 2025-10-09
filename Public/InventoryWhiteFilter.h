@@ -10,7 +10,8 @@ class UInventoryWhiteFilter : public UInventoryFilter {
   EVO_CODEGEN_INSTANCE(InventoryWhiteFilter)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryWhiteFilter, UInstance>("InventoryWhiteFilter") //@class InventoryWhiteFilter : InventoryFilter
+      .deriveClass<UInventoryWhiteFilter, UInstance>(
+        "InventoryWhiteFilter") //@class InventoryWhiteFilter : InventoryFilter
       .endClass();
   }
 

@@ -12,28 +12,28 @@ class UEngineConsole : public UInstance {
     luabridge::getGlobalNamespace(L)
       //@comment Engine console
       .deriveClass<UEngineConsole, UInstance>("Console") //@class Console : Instance
-      //direct:
+      // direct:
       //--- Executes engine console command
       //--- @param command string
-      //function Console.run(command) end
+      // function Console.run(command) end
       .addStaticFunction("run", &Self::Run)
-      //direct:
+      // direct:
       //--- Get engine console variable
       //--- @param variable string
       //--- @return string
-      //function Console.get_string(variable) end
+      // function Console.get_string(variable) end
       .addStaticFunction("get_string", &Self::GetString)
-      //direct:
+      // direct:
       //--- Get engine console variable
       //--- @param variable string
       //--- @return number
-      //function Console.get_float(variable) end
+      // function Console.get_float(variable) end
       .addStaticFunction("get_float", &Self::GetFloat)
-      //direct:
+      // direct:
       //--- Get engine console variable
       //--- @param variable string
       //--- @return integer
-      //function Console.get_int(variable) end
+      // function Console.get_int(variable) end
       .addStaticFunction("get_int", &Self::GetInt)
       .endClass();
   }

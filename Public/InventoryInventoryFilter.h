@@ -8,7 +8,8 @@ class UInventoryInventoryFilter : public UInventoryFilter {
   EVO_CODEGEN_INSTANCE(InventoryInventoryFilter)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryInventoryFilter, UInstance>("InventoryInventoryFilter") //@class InventoryInventoryFilter : InventoryFilter
+      .deriveClass<UInventoryInventoryFilter, UInstance>(
+        "InventoryInventoryFilter") //@class InventoryInventoryFilter : InventoryFilter
       .addProperty("inventory", &Self::Inventory) //@field InventoryAccess (nil by default)
       .addProperty("is_filtering", &Self::IsFiltering) //@field boolean is filtering enabled (true by default)
       .addProperty("is_white", &Self::IsWhite) //@field boolean is white filtering enabled (true by default)

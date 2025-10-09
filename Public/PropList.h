@@ -24,9 +24,7 @@ class UStaticPropList : public UPrototype {
       .addProperty("data", QR_ARRAY_GET_SET(PropListDatas)) //@field PropListData[]
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   UPROPERTY()

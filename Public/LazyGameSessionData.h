@@ -9,7 +9,6 @@ struct FLazyGameSession {
   GENERATED_BODY()
 
   public:
-
   UGameSessionSubsystem *Get(const UObject *WorldContextObject) const;
 
   UPROPERTY(EditAnywhere)

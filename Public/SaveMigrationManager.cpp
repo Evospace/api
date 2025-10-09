@@ -33,300 +33,321 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   TArray<FMigrator> migrators;
   migrators.Reserve(8);
 
-  // Rename Dimension to Temperate, move Player.json and Preview.jpg to save root, rename Dimension.json to GameSessionData.json
-  migrators.Add({
-    FVersionStruct{0, 20, 1, 8, TEXT("*")},
-    [](const FString &saveName, UGameInstance *GameInstance) {
-      IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-      IFileManager& FileManager = IFileManager::Get();
+  // Rename Dimension to Temperate, move Player.json and Preview.jpg to save root, rename Dimension.json to
+  // GameSessionData.json
+  migrators.Add(
+    { FVersionStruct{ 0, 20, 1, 8, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+       IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+       IFileManager &FileManager = IFileManager::Get();
 
-      auto saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+       auto saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
 
-      const FString dimensionDir = saveRoot / TEXT("Dimension");
-      const FString temperateDir = saveRoot / TEXT("Temperate");
+       const FString dimensionDir = saveRoot / TEXT("Dimension");
+       const FString temperateDir = saveRoot / TEXT("Temperate");
 
-      if (!FileManager.Move(*temperateDir, *dimensionDir)) {
-        LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << saveName << "'";
-        return false;
-      }
+       if (!FileManager.Move(*temperateDir, *dimensionDir)) {
+         LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << saveName
+                       << "'";
+         return false;
+       }
 
-      const FString playerSrc = temperateDir / TEXT("player.json");
-      const FString playerDst = saveRoot / TEXT("Player.json");
-      if (PlatformFile.FileExists(*playerSrc)) {
-        if (!PlatformFile.MoveFile(*playerDst, *playerSrc)) {
-          LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Player.json to save root for '" << saveName << "'";
-          return false;
-        }
-      }
+       const FString playerSrc = temperateDir / TEXT("player.json");
+       const FString playerDst = saveRoot / TEXT("Player.json");
+       if (PlatformFile.FileExists(*playerSrc)) {
+         if (!PlatformFile.MoveFile(*playerDst, *playerSrc)) {
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Player.json to save root for '" << saveName
+                         << "'";
+           return false;
+         }
+       }
 
-      const FString previewSrc = temperateDir / TEXT("Preview.jpg");
-      const FString previewDst = saveRoot / TEXT("Preview.jpg");
-      if (PlatformFile.FileExists(*previewSrc)) {
-        if (!PlatformFile.MoveFile(*previewDst, *previewSrc)) {
-          LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Preview.jpg to save root for '" << saveName << "'";
-          return false;
-        }
-      }
+       const FString previewSrc = temperateDir / TEXT("Preview.jpg");
+       const FString previewDst = saveRoot / TEXT("Preview.jpg");
+       if (PlatformFile.FileExists(*previewSrc)) {
+         if (!PlatformFile.MoveFile(*previewDst, *previewSrc)) {
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Preview.jpg to save root for '" << saveName
+                         << "'";
+           return false;
+         }
+       }
 
-      // Move Dimension.json into save root
-      const FString dimJsonSrc = temperateDir / TEXT("Dimension.json");
-      const FString dimJsonDst = saveRoot / TEXT("GameSessionData.json");
-      if (PlatformFile.FileExists(*dimJsonSrc)) {
-        if (!PlatformFile.MoveFile(*dimJsonDst, *dimJsonSrc)) {
-          LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Dimension.json to save root for '" << saveName << "'";
-          return false;
-        }
-      }
+       // Move Dimension.json into save root
+       const FString dimJsonSrc = temperateDir / TEXT("Dimension.json");
+       const FString dimJsonDst = saveRoot / TEXT("GameSessionData.json");
+       if (PlatformFile.FileExists(*dimJsonSrc)) {
+         if (!PlatformFile.MoveFile(*dimJsonDst, *dimJsonSrc)) {
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Dimension.json to save root for '"
+                         << saveName << "'";
+           return false;
+         }
+       }
 
-      // Load GameSessionData.json
-      const FString gameSessionDataPath = saveRoot / TEXT("GameSessionData.json");
-      FString gameSessionDataStr;
-      if (FFileHelper::LoadFileToString(gameSessionDataStr, *gameSessionDataPath)) {
-        TSharedPtr<FJsonObject> gameSessionDataObj;
-        TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
-        if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
-          // Extract "Deposits" field if it exists
-          
-          FString generatorName;
-          TSharedPtr<FJsonObject> gameSessionDataFieldObj;
-          if (TSharedPtr<FJsonValue> gameSessionDataFieldValue = gameSessionDataObj->TryGetField(TEXT("GameSessionData"))) {
-            gameSessionDataFieldObj = gameSessionDataFieldValue->AsObject();
-          }
-          if (!gameSessionDataFieldObj.IsValid() || !gameSessionDataFieldObj->TryGetStringField(TEXT("Generator"), generatorName)) {
-            LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from GameSessionData.GameSessionData for '" << saveName << "'";
-          }
+       // Load GameSessionData.json
+       const FString gameSessionDataPath = saveRoot / TEXT("GameSessionData.json");
+       FString gameSessionDataStr;
+       if (FFileHelper::LoadFileToString(gameSessionDataStr, *gameSessionDataPath)) {
+         TSharedPtr<FJsonObject> gameSessionDataObj;
+         TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
+         if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
+           // Extract "Deposits" field if it exists
 
-          if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
-            // Remove "Deposits" from the main object
-            gameSessionDataObj->RemoveField(TEXT("Deposits"));
+           FString generatorName;
+           TSharedPtr<FJsonObject> gameSessionDataFieldObj;
+           if (TSharedPtr<FJsonValue> gameSessionDataFieldValue =
+                 gameSessionDataObj->TryGetField(TEXT("GameSessionData"))) {
+             gameSessionDataFieldObj = gameSessionDataFieldValue->AsObject();
+           }
+           if (!gameSessionDataFieldObj.IsValid() ||
+               !gameSessionDataFieldObj->TryGetStringField(TEXT("Generator"), generatorName)) {
+             LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from "
+                              "GameSessionData.GameSessionData for '"
+                           << saveName << "'";
+           }
 
-            // Write the rest of GameSessionData.json back (without Deposits)
-            FString updatedGameSessionDataStr;
-            const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
-            FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
-            FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
+           if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
+             // Remove "Deposits" from the main object
+             gameSessionDataObj->RemoveField(TEXT("Deposits"));
 
-            // Write Deposits to a new JSON file (for now, just as a separate object)
-            TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
-            depositsObj->SetField(TEXT("Deposits"), depositsValue);
+             // Write the rest of GameSessionData.json back (without Deposits)
+             FString updatedGameSessionDataStr;
+             const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
+             FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
+             FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
 
-            USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
-            surfaceDefinition->GeneratorName = *generatorName;
-            surfaceDefinition->Initialize();
+             // Write Deposits to a new JSON file (for now, just as a separate object)
+             TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
+             depositsObj->SetField(TEXT("Deposits"), depositsValue);
 
-            surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
+             USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
+             surfaceDefinition->GeneratorName = *generatorName;
+             surfaceDefinition->Initialize();
 
-            UStaticSaveHelpers::SaveSurfaceDefinition(saveName, TEXT("Temperate"), surfaceDefinition);
-          }
-        }
-      }
+             surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
 
-      return true;
-    }
-  });
+             UStaticSaveHelpers::SaveSurfaceDefinition(saveName, TEXT("Temperate"), surfaceDefinition);
+           }
+         }
+       }
 
-  // Update Temperate/SurfaceDefinition.json: set CurrentOre = 10 * InitialCapacity for every source, remove ExtractedCount for every source
-  migrators.Add({
-    FVersionStruct{0, 20, 1, 16, TEXT("*")},
-    [](const FString &saveName,UGameInstance *GameInstance) {
-      const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-      const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+       return true;
+     } });
 
-      FString jsonStr;
-      if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
-        return true; // Nothing to migrate
-      }
+  // Update Temperate/SurfaceDefinition.json: set CurrentOre = 10 * InitialCapacity for every source, remove
+  // ExtractedCount for every source
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 16, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+                   const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
-      TSharedPtr<FJsonObject> rootObj;
-      TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
-      if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
-        LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '" << saveName << "'";
-        return false;
-      }
+                   FString jsonStr;
+                   if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
+                     return true; // Nothing to migrate
+                   }
 
-      TSharedPtr<FJsonObject> surfaceObj;
-      if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
-        surfaceObj = surfaceVal->AsObject();
-      }
-      if (!surfaceObj.IsValid()) {
-        return true; // Unexpected structure; skip
-      }
+                   TSharedPtr<FJsonObject> rootObj;
+                   TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
+                   if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-      TSharedPtr<FJsonObject> regionMapObj;
-      if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
-        regionMapObj = regionMapVal->AsObject();
-      }
-      if (!regionMapObj.IsValid()) {
-        return true; // No regions to process
-      }
+                   TSharedPtr<FJsonObject> surfaceObj;
+                   if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
+                     surfaceObj = surfaceVal->AsObject();
+                   }
+                   if (!surfaceObj.IsValid()) {
+                     return true; // Unexpected structure; skip
+                   }
 
-      const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
-      if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
-        return true; // Nothing known
-      }
+                   TSharedPtr<FJsonObject> regionMapObj;
+                   if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
+                     regionMapObj = regionMapVal->AsObject();
+                   }
+                   if (!regionMapObj.IsValid()) {
+                     return true; // No regions to process
+                   }
 
-      // We'll clone to allow modification
-      TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
-      for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
-        if (!entryVal.IsValid()) continue;
-        TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
-        if (!entryObj.IsValid()) continue;
-        TSharedPtr<FJsonObject> valueObj;
-        if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
-          valueObj = valueVal->AsObject();
-        }
-        if (!valueObj.IsValid()) continue;
+                   const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
+                   if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
+                     return true; // Nothing known
+                   }
 
-        const TArray<TSharedPtr<FJsonValue>> *sourcesPtr = nullptr;
-        if (!valueObj->TryGetArrayField(TEXT("Sources"), sourcesPtr) || !sourcesPtr) continue;
-        TArray<TSharedPtr<FJsonValue>> sources = *sourcesPtr;
-        for (TSharedPtr<FJsonValue> &srcVal : sources) {
-          if (!srcVal.IsValid()) continue;
-          TSharedPtr<FJsonObject> srcObj = srcVal->AsObject();
-          if (!srcObj.IsValid()) continue;
+                   // We'll clone to allow modification
+                   TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
+                   for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
+                     if (!entryVal.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
+                     if (!entryObj.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> valueObj;
+                     if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
+                       valueObj = valueVal->AsObject();
+                     }
+                     if (!valueObj.IsValid())
+                       continue;
 
-          // Remove legacy field
-          srcObj->RemoveField(TEXT("ExtractedCount"));
+                     const TArray<TSharedPtr<FJsonValue>> *sourcesPtr = nullptr;
+                     if (!valueObj->TryGetArrayField(TEXT("Sources"), sourcesPtr) || !sourcesPtr)
+                       continue;
+                     TArray<TSharedPtr<FJsonValue>> sources = *sourcesPtr;
+                     for (TSharedPtr<FJsonValue> &srcVal : sources) {
+                       if (!srcVal.IsValid())
+                         continue;
+                       TSharedPtr<FJsonObject> srcObj = srcVal->AsObject();
+                       if (!srcObj.IsValid())
+                         continue;
 
-          // Read InitialCapacity
-          double initialCapacityD = 0.0;
-          int64 initialCapacityI = 0;
-          if (srcObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacityD)) {
-            initialCapacityI = static_cast<int64>(initialCapacityD);
-          }
-          // Set CurrentOre = 10 * InitialCapacity (only if InitialCapacity is present)
-          if (initialCapacityI > 0) {
-            const double currentOreD = static_cast<double>(initialCapacityI * 10);
-            srcObj->SetNumberField(TEXT("CurrentOre"), currentOreD);
-          }
-        }
-        // Write back possibly modified sources array
-        valueObj->SetArrayField(TEXT("Sources"), sources);
-      }
+                       // Remove legacy field
+                       srcObj->RemoveField(TEXT("ExtractedCount"));
 
-      // Write back possibly modified known array
-      regionMapObj->SetArrayField(TEXT("Known"), knownArray);
+                       // Read InitialCapacity
+                       double initialCapacityD = 0.0;
+                       int64 initialCapacityI = 0;
+                       if (srcObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacityD)) {
+                         initialCapacityI = static_cast<int64>(initialCapacityD);
+                       }
+                       // Set CurrentOre = 10 * InitialCapacity (only if InitialCapacity is present)
+                       if (initialCapacityI > 0) {
+                         const double currentOreD = static_cast<double>(initialCapacityI * 10);
+                         srcObj->SetNumberField(TEXT("CurrentOre"), currentOreD);
+                       }
+                     }
+                     // Write back possibly modified sources array
+                     valueObj->SetArrayField(TEXT("Sources"), sources);
+                   }
 
-      // Save updated JSON
-      FString outStr;
-      const auto writer = TJsonWriterFactory<>::Create(&outStr);
-      FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
-      if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
-        LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '" << saveName << "'";
-        return false;
-      }
+                   // Write back possibly modified known array
+                   regionMapObj->SetArrayField(TEXT("Known"), knownArray);
 
-      return true;
-    }
-  });
+                   // Save updated JSON
+                   FString outStr;
+                   const auto writer = TJsonWriterFactory<>::Create(&outStr);
+                   FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
+                   if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-  migrators.Add({
-    FVersionStruct{0, 20, 1, 36, TEXT("*")},
-    // Update Temperate/SurfaceDefinition.json: for each region set FertileLayer/ OilLayer subregions CurrentValue = 10 * InitialCapacity
-    [](const FString &saveName,UGameInstance *GameInstance) {
-      const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-      const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+                   return true;
+                 } });
 
-      FString jsonStr;
-      if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
-        return true; // Nothing to migrate
-      }
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 36, TEXT("*") },
+                  // Update Temperate/SurfaceDefinition.json: for each region set FertileLayer/ OilLayer subregions
+                  // CurrentValue = 10 * InitialCapacity
+                  [](const FString &saveName, UGameInstance *GameInstance) {
+                    const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+                    const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
-      TSharedPtr<FJsonObject> rootObj;
-      TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
-      if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
-        LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '" << saveName << "'";
-        return false;
-      }
+                    FString jsonStr;
+                    if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
+                      return true; // Nothing to migrate
+                    }
 
-      TSharedPtr<FJsonObject> surfaceObj;
-      if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
-        surfaceObj = surfaceVal->AsObject();
-      }
-      if (!surfaceObj.IsValid()) {
-        return true; // Unexpected structure; skip
-      }
+                    TSharedPtr<FJsonObject> rootObj;
+                    TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
+                    if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
+                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
+                                    << saveName << "'";
+                      return false;
+                    }
 
-      TSharedPtr<FJsonObject> regionMapObj;
-      if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
-        regionMapObj = regionMapVal->AsObject();
-      }
-      if (!regionMapObj.IsValid()) {
-        return true; // No regions to process
-      }
+                    TSharedPtr<FJsonObject> surfaceObj;
+                    if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
+                      surfaceObj = surfaceVal->AsObject();
+                    }
+                    if (!surfaceObj.IsValid()) {
+                      return true; // Unexpected structure; skip
+                    }
 
-      const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
-      if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
-        return true; // Nothing known
-      }
+                    TSharedPtr<FJsonObject> regionMapObj;
+                    if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
+                      regionMapObj = regionMapVal->AsObject();
+                    }
+                    if (!regionMapObj.IsValid()) {
+                      return true; // No regions to process
+                    }
 
-      auto updateLayer = [](TSharedPtr<FJsonObject> layerObj) {
-        if (!layerObj.IsValid()) return; 
-        const TArray<TSharedPtr<FJsonValue>> *subsPtr = nullptr;
-        if (!layerObj->TryGetArrayField(TEXT("InitialCapacity"), subsPtr) || !subsPtr) return; 
-        TArray<TSharedPtr<FJsonValue>> subs = *subsPtr;
-        for (TSharedPtr<FJsonValue> &subVal : subs) {
-          if (!subVal.IsValid()) continue;
-          TSharedPtr<FJsonObject> subObj = subVal->AsObject();
-          if (!subObj.IsValid()) continue;
-          double initialCapacityD = 0.0;
-          int64 initialCapacityI = 0;
-          if (subObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacityD)) {
-            initialCapacityI = static_cast<int64>(initialCapacityD);
-          }
-          if (initialCapacityI > 0) {
-            const double currentVal = static_cast<double>(initialCapacityI * 10);
-            subObj->SetNumberField(TEXT("CurrentValue"), currentVal);
-          }
-        }
-        layerObj->RemoveField(TEXT("InitialCapacity"));
-        layerObj->SetArrayField(TEXT("Data"), subs);
-      };
+                    const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
+                    if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
+                      return true; // Nothing known
+                    }
 
-      // Clone Known to allow modification
-      TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
-      for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
-        if (!entryVal.IsValid()) continue;
-        TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
-        if (!entryObj.IsValid()) continue;
-        TSharedPtr<FJsonObject> regionObj;
-        if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
-          regionObj = valueVal->AsObject();
-        }
-        if (!regionObj.IsValid()) continue;
+                    auto updateLayer = [](TSharedPtr<FJsonObject> layerObj) {
+                      if (!layerObj.IsValid())
+                        return;
+                      const TArray<TSharedPtr<FJsonValue>> *subsPtr = nullptr;
+                      if (!layerObj->TryGetArrayField(TEXT("InitialCapacity"), subsPtr) || !subsPtr)
+                        return;
+                      TArray<TSharedPtr<FJsonValue>> subs = *subsPtr;
+                      for (TSharedPtr<FJsonValue> &subVal : subs) {
+                        if (!subVal.IsValid())
+                          continue;
+                        TSharedPtr<FJsonObject> subObj = subVal->AsObject();
+                        if (!subObj.IsValid())
+                          continue;
+                        double initialCapacityD = 0.0;
+                        int64 initialCapacityI = 0;
+                        if (subObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacityD)) {
+                          initialCapacityI = static_cast<int64>(initialCapacityD);
+                        }
+                        if (initialCapacityI > 0) {
+                          const double currentVal = static_cast<double>(initialCapacityI * 10);
+                          subObj->SetNumberField(TEXT("CurrentValue"), currentVal);
+                        }
+                      }
+                      layerObj->RemoveField(TEXT("InitialCapacity"));
+                      layerObj->SetArrayField(TEXT("Data"), subs);
+                    };
 
-        // FertileLayer
-        if (TSharedPtr<FJsonValue> fertileVal = regionObj->TryGetField(TEXT("FertileLayer"))) {
-          updateLayer(fertileVal->AsObject());
-        }
-        // OilLayer
-        if (TSharedPtr<FJsonValue> oilVal = regionObj->TryGetField(TEXT("OilLayer"))) {
-          updateLayer(oilVal->AsObject());
-        }
-      }
+                    // Clone Known to allow modification
+                    TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
+                    for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
+                      if (!entryVal.IsValid())
+                        continue;
+                      TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
+                      if (!entryObj.IsValid())
+                        continue;
+                      TSharedPtr<FJsonObject> regionObj;
+                      if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
+                        regionObj = valueVal->AsObject();
+                      }
+                      if (!regionObj.IsValid())
+                        continue;
 
-      // Write back possibly modified known array
-      regionMapObj->SetArrayField(TEXT("Known"), knownArray);
+                      // FertileLayer
+                      if (TSharedPtr<FJsonValue> fertileVal = regionObj->TryGetField(TEXT("FertileLayer"))) {
+                        updateLayer(fertileVal->AsObject());
+                      }
+                      // OilLayer
+                      if (TSharedPtr<FJsonValue> oilVal = regionObj->TryGetField(TEXT("OilLayer"))) {
+                        updateLayer(oilVal->AsObject());
+                      }
+                    }
 
-      // Save updated JSON
-      FString outStr;
-      const auto writer = TJsonWriterFactory<>::Create(&outStr);
-      FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
-      if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
-        LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '" << saveName << "'";
-        return false;
-      }
+                    // Write back possibly modified known array
+                    regionMapObj->SetArrayField(TEXT("Known"), knownArray);
 
-      return true;
-    }
-  });
+                    // Save updated JSON
+                    FString outStr;
+                    const auto writer = TJsonWriterFactory<>::Create(&outStr);
+                    FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
+                    if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
+                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
+                                    << saveName << "'";
+                      return false;
+                    }
+
+                    return true;
+                  } });
 
   int applied = 0;
   for (const FMigrator &m : migrators) {
     if (m.Target > saveVersion) {
       const FString versionStr = UGameSessionData::VersionToString(m.Target);
       LOG(INFO_LL) << "SaveMigrationManager: Applying migrator for version " << versionStr;
-      if(!m.Action(saveName, GameInstance)) {
+      if (!m.Action(saveName, GameInstance)) {
         LOG(ERROR_LL) << "SaveMigrationManager: Failed to apply migrator for version " << versionStr;
         return;
       }
@@ -334,9 +355,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
     }
   }
 
-  if(applied > 0) {
-    LOG(INFO_LL) << "SaveMigrationManager: Applied " << applied << " migrators (save version " << UGameSessionData::VersionToString(saveVersion) << ")";
+  if (applied > 0) {
+    LOG(INFO_LL) << "SaveMigrationManager: Applied " << applied << " migrators (save version "
+                 << UGameSessionData::VersionToString(saveVersion) << ")";
   }
 }
-
-

@@ -6,7 +6,7 @@ def extract_class_details(file_content):
     class_pattern = r'//@class\s+(\w+)(?:\s*:\s*(\w+))?'
     comment_pattern = r'//@comment\s+((?:.*(?:\n\s*//.*)*)*)'
     properties_pattern = r'\.addProperty\(\s*"([^"]+)"\s*,\s*(.*?)\)\s*//@field\s*(.*)'
-    direct_section_pattern = r'//direct:\s*((?:\s*//.*\n)+)'
+    direct_section_pattern = r'// direct:\s*((?:\s*//.*\n)+)'
     accessor_pattern = r'(EVO_CODEGEN_ACCESSOR)\((\w+)\)'
     instance_pattern = r'(EVO_CODEGEN_INSTANCE)\((\w+)\)'
     instance_alias_pattern = r'(EVO_CODEGEN_INSTANCE_ALIAS)\(\s*(\w+)\s*,\s*(\w+)\s*\)'

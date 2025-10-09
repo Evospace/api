@@ -46,18 +46,13 @@ class UAccessor : public UInstance {
 
   UAccessor *GetOutsideAccessor() { return GetOutsideAccessor(GetClass()); }
 
-  const UAccessor *GetOutsideAccessor() const {
-    return GetOutsideAccessor(GetClass());
-  }
-
+  const UAccessor *GetOutsideAccessor() const { return GetOutsideAccessor(GetClass()); }
 
   UAccessor *GetOutsideNeighborSameTypeCached();
   void InvalidateNeighborCache();
 
   template <class T>
-  T *GetOutsideAccessor() {
-    return static_cast<T *>(GetOutsideAccessor(T::StaticClass()));
-  }
+  T *GetOutsideAccessor() { return static_cast<T *>(GetOutsideAccessor(T::StaticClass())); }
 
   template <class T>
   const T *GetOutsideAccessor() const {

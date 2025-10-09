@@ -5,29 +5,38 @@
 #include "Qr/JsonHelperCommon.h"
 
 namespace {
-    int64 ComputeExprOp(int64 a, int64 b, ELogicExprOp ExprOp) {
-        switch (ExprOp) {
-            case ELogicExprOp::Add: return a + b;
-            case ELogicExprOp::Subtract: return a - b;
-            case ELogicExprOp::Multiply: return a * b;
-            case ELogicExprOp::Divide: return b == 0 ? 0 : a / b;
-            case ELogicExprOp::Modulo: return b == 0 ? 0 : a % b;
-            case ELogicExprOp::Power: {
-            // Simple integer power implementation
-            if (b == 0) return 1;
-            if (b == 1) return a;
-            if (b < 0) return 0; // Negative powers not supported for integers
-        
-            int64 result = 1;
-            for (int64 i = 0; i < b; ++i) {
-                result *= a;
-            }
-            return result;
-            }
-            default: return a;
-        }
+int64 ComputeExprOp(int64 a, int64 b, ELogicExprOp ExprOp) {
+  switch (ExprOp) {
+  case ELogicExprOp::Add:
+    return a + b;
+  case ELogicExprOp::Subtract:
+    return a - b;
+  case ELogicExprOp::Multiply:
+    return a * b;
+  case ELogicExprOp::Divide:
+    return b == 0 ? 0 : a / b;
+  case ELogicExprOp::Modulo:
+    return b == 0 ? 0 : a % b;
+  case ELogicExprOp::Power: {
+    // Simple integer power implementation
+    if (b == 0)
+      return 1;
+    if (b == 1)
+      return a;
+    if (b < 0)
+      return 0; // Negative powers not supported for integers
+
+    int64 result = 1;
+    for (int64 i = 0; i < b; ++i) {
+      result *= a;
     }
+    return result;
+  }
+  default:
+    return a;
+  }
 }
+} // namespace
 
 void ULogicOutput::Compute(class ULogicContext *Ctx) const {
   if (!Ctx || !Ctx->Output)
@@ -38,7 +47,8 @@ void ULogicOutput::Compute(class ULogicContext *Ctx) const {
   const bool bEverything = (SignalA && SignalA->GetFName() == FName("Everything"));
 
   if (bEverything) {
-    if (!Ctx->Input) return;
+    if (!Ctx->Input)
+      return;
 
     if (Mode == ELogicOutputMode::CopyA) {
       // Copy all input signals to all output signals
@@ -63,7 +73,8 @@ void ULogicOutput::Compute(class ULogicContext *Ctx) const {
   }
 
   if (bAnything) {
-    if (!Ctx->Input) return;
+    if (!Ctx->Input)
+      return;
 
     // Choose first available input signal
     const UStaticItem *chosenSignal = nullptr;
@@ -73,7 +84,8 @@ void ULogicOutput::Compute(class ULogicContext *Ctx) const {
       chosenValue = kv.Value;
       break;
     }
-    if (!chosenSignal) return;
+    if (!chosenSignal)
+      return;
 
     if (Mode == ELogicOutputMode::CopyA) {
       Ctx->Output->Add(chosenSignal, chosenValue);
@@ -89,7 +101,8 @@ void ULogicOutput::Compute(class ULogicContext *Ctx) const {
   }
 
   // Handle regular signals
-  if (!SignalA) return;
+  if (!SignalA)
+    return;
 
   if (Mode == ELogicOutputMode::CopyA) {
     if (Ctx->Input) {

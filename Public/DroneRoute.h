@@ -48,9 +48,7 @@ struct FDroneRoute final {
     return TimeSinceLastSend >= CooldownSeconds;
   }
 
-  void MarkDispatched() {
-    TimeSinceLastSend = 0.0f;
-  }
+  void MarkDispatched() { TimeSinceLastSend = 0.0f; }
 
   bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);

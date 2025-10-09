@@ -15,15 +15,15 @@ class UEvoRegion : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("Region") //@class Region : Instance
-      //direct:
+      // direct:
       //---Add structure to this Region
       //---@param structure MapStructure
-      //function Region:add_structure(structure) end
+      // function Region:add_structure(structure) end
       .addFunction("add_structure", &Self::AddStructure)
-      //direct:
+      // direct:
       //---Add source to this Region
       //---@param source SourceData
-      //function Region:add_source(source) end
+      // function Region:add_source(source) end
       .addFunction("add_source", &Self::AddSource)
       .addProperty("pos", &Self::Position) //@field Vec2i
       .endClass();

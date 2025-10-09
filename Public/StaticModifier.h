@@ -25,7 +25,5 @@ class UStaticModifier : public UPrototype {
 
   PROTOTYPE_CODEGEN(StaticModifier, StaticModifier)
   virtual void lua_reg(lua_State *L) const override {}
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 };

@@ -56,7 +56,8 @@ class USectorProxy : public UObject {
 
   void UnloadSector();
 
-  virtual bool ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod, TFunction<void()> callback);
+  virtual bool ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
+                                     TFunction<void()> callback);
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 

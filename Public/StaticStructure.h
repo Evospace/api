@@ -15,9 +15,7 @@ class UStaticStructure : public UPrototype {
       .addProperty("size", &UStaticStructure::mSize) //@field Vec2i
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   std::optional<luabridge::LuaRef> Generate;

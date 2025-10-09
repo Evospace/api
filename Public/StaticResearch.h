@@ -43,9 +43,7 @@ class UStaticResearch : public UPrototype, public ISearchable {
       .deriveClass<Self, UPrototype>("StaticResearch") //@class StaticResearch : Prototype
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

@@ -139,7 +139,8 @@
 //   return true;
 // }
 //
-// int32 UChunkObject::GenerateSection(BuilderType &StaticProvider, const UTesselator::Data &data, int32 section_index, int32 lod_index, int32 precount) {
+// int32 UChunkObject::GenerateSection(BuilderType &StaticProvider, const UTesselator::Data &data, int32 section_index,
+// int32 lod_index, int32 precount) {
 //   auto &index_data = data[section_index];
 //
 //   for (int i = 0; i < data[section_index].Vertices.Num(); ++i) {
@@ -150,7 +151,8 @@
 //   }
 //
 //   for (int i = 0; i < index_data.Triangles.Num(); i += 3) {
-//     StaticProvider.AddTriangle(index_data.Triangles[i] + precount, index_data.Triangles[i + 1] + precount, index_data.Triangles[i + 2] + precount, section_index);
+//     StaticProvider.AddTriangle(index_data.Triangles[i] + precount, index_data.Triangles[i + 1] + precount,
+//     index_data.Triangles[i + 2] + precount, section_index);
 //   }
 //
 //   return data[section_index].Vertices.Num();
@@ -231,7 +233,8 @@
 //   //         transform.SetRotation(logic->GetBlockQuat());
 //   //         if (staticBlock->NoActorRenderable) {
 //   //           logic->SetRenderable(this);
-//   //         } else if (ABlockActor *actor = logic->GetStaticBlock()->SpawnActorAndLuaDeferred(GetDimension(), logic, transform)) {
+//   //         } else if (ABlockActor *actor = logic->GetStaticBlock()->SpawnActorAndLuaDeferred(GetDimension(), logic,
+//   transform)) {
 //   //           Actors.Add(cs::CellToIndex(logic->GetBlockPos() - mPivotPos, gSectorSize), ActorsPair(logic, actor));
 //   //           logic->SetActor(actor);
 //   //           actor->FinishSpawning(transform);
@@ -259,7 +262,8 @@
 //   //       }
 //   //     }
 //   //   } else [[unlikely]] {
-//   //     LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName() << " clearing this cell";
+//   //     LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName() << " clearing this
+//   cell";
 //   //     GetDimension()->SetBlockLogic(bpos, nullptr);
 //   //     SetStaticBlock(i, nullptr);
 //   //     SetBlockDesity(i, 0);

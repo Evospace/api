@@ -29,7 +29,7 @@ class USurfaceDefinition : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   void Initialize();
-  
+
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };

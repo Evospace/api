@@ -13,8 +13,7 @@ USTRUCT()
 struct FLayeringNode {
   GENERATED_BODY()
 
-  FLayeringNode(UStaticBlock *_block)
-    : block(_block) {}
+  FLayeringNode(UStaticBlock *_block) : block(_block) {}
 
   FLayeringNode() {}
 

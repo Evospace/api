@@ -16,9 +16,7 @@ static const FBlockStateMeta InvalidMeta{ "status_unknown", { 0.5f, 0.0f, 1.0f }
 
 FORCEINLINE const auto &GetMeta(EBlockState S) {
   const int32 Idx = static_cast<int32>(S);
-  return (Idx >= 0 && Idx < UE_ARRAY_COUNT(CrafterStateMap))
-           ? CrafterStateMap[Idx]
-           : InvalidMeta;
+  return (Idx >= 0 && Idx < UE_ARRAY_COUNT(CrafterStateMap)) ? CrafterStateMap[Idx] : InvalidMeta;
 }
 } // namespace
 

@@ -65,7 +65,8 @@ void UEngineData::ShowConfirmationDialog() {
   }
 
   auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-  auto widget = CreateWidget<USettingsConfirmationWidget>(pc, LoadObject<UClass>(nullptr, TEXT("/Game/Gui/SettingsConfirmationDialog.SettingsConfirmationDialog_C")), TEXT("SettingsConfirmationDialog"));
+  auto widget = CreateWidget<USettingsConfirmationWidget>(
+    pc, LoadObject<UClass>(nullptr, TEXT("/Game/Gui/SettingsConfirmationDialog.SettingsConfirmationDialog_C")), TEXT("SettingsConfirmationDialog"));
   widget->ed = this;
   widget->AddToViewport(10000);
 }

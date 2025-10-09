@@ -8,7 +8,8 @@ class UFluidContainerBlockLogic : public UConductorBlockLogic {
   EVO_CODEGEN_INSTANCE(FluidContainerBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UConductorBlockLogic>("FluidContainerBlockLogic") //@class FluidContainerBlockLogic : ConductorBlockLogic
+      .deriveClass<Self, UConductorBlockLogic>(
+        "FluidContainerBlockLogic") //@class FluidContainerBlockLogic : ConductorBlockLogic
       .addProperty("capacity", &Self::Capacity) //@field integer
       .addProperty("charge", &Self::GetCharge) //@field integer
       .endClass();

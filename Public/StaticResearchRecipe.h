@@ -12,9 +12,7 @@ class UStaticResearchRecipe : public UStaticResearch {
       .deriveClass<Self, UStaticResearch>("StaticResearchRecipe") //@class StaticResearchRecipe : StaticResearch
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UStaticResearch::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UStaticResearch::StaticClass(); }
 
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

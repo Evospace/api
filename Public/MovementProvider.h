@@ -12,7 +12,6 @@ class IMovementProvider {
   GENERATED_BODY()
 
   public:
-
   UFUNCTION(BlueprintCallable)
   virtual void EnableMovement() PURE_VIRTUAL(UMovementProvider::EnableMovement, );
 

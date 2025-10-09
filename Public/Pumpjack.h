@@ -6,7 +6,7 @@
 
 class URegionLayer;
 /**
-* Specialized drilling machine that extracts oil from oil deposits.
+ * Specialized drilling machine that extracts oil from oil deposits.
  */
 UCLASS()
 class UPumpjack : public UDrillingMachineBase {

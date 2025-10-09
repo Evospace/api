@@ -9,12 +9,11 @@ class UStaticResearchDecorationUnlock : public UStaticResearch {
   PROTOTYPE_CODEGEN(StaticResearchDecorationUnlock, StaticResearch)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStaticResearch>("StaticResearchDecorationUnlock") //@class StaticResearchDecorationUnlock : StaticResearch
+      .deriveClass<Self, UStaticResearch>(
+        "StaticResearchDecorationUnlock") //@class StaticResearchDecorationUnlock : StaticResearch
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UStaticResearch::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UStaticResearch::StaticClass(); }
 
   public:
   virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;

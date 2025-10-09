@@ -60,9 +60,8 @@ namespace detail {
   };
 
   template <class F, class... Args>
-  using is_invocable = typename std::integral_constant<
-    bool,
-    sizeof(is_invocable_test::test<F, Args...>(0)) == 1>::type;
+  using is_invocable =
+    typename std::integral_constant<bool, sizeof(is_invocable_test::test<F, Args...>(0)) == 1>::type;
 #else
 #error "fsmlite requires C++11 support."
 #endif
@@ -91,48 +90,37 @@ namespace detail {
   }
 
   // use any of F(), F(Arg1), F(Arg2), F(Arg1, Arg2)
-  template <
-    class F, class Arg1, class Arg2,
-    bool f1 = is_invocable<F>::value,
-    bool f2 = is_invocable<F, Arg1>::value,
-    bool f3 = is_invocable<F, Arg2>::value,
-    bool f4 = is_invocable<F, Arg1, Arg2>::value>
+  template <class F, class Arg1, class Arg2, bool f1 = is_invocable<F>::value,
+            bool f2 = is_invocable<F, Arg1>::value, bool f3 = is_invocable<F, Arg2>::value,
+            bool f4 = is_invocable<F, Arg1, Arg2>::value>
   struct binary_fn_helper;
 
   template <class F, class Arg1, class Arg2>
   struct binary_fn_helper<F, Arg1, Arg2, true, false, false, false> {
     using result_type = invoke_result_t<F>;
 
-    static result_type invoke(F &&f, Arg1 &&, Arg2 &&) {
-      return detail::invoke(f);
-    }
+    static result_type invoke(F &&f, Arg1 &&, Arg2 &&) { return detail::invoke(f); }
   };
 
   template <class F, class Arg1, class Arg2>
   struct binary_fn_helper<F, Arg1, Arg2, false, true, false, false> {
     using result_type = invoke_result_t<F, Arg1>;
 
-    static result_type invoke(F &&f, Arg1 &&a, Arg2 &&) {
-      return detail::invoke(f, a);
-    }
+    static result_type invoke(F &&f, Arg1 &&a, Arg2 &&) { return detail::invoke(f, a); }
   };
 
   template <class F, class Arg1, class Arg2>
   struct binary_fn_helper<F, Arg1, Arg2, false, false, true, false> {
     using result_type = invoke_result_t<F, Arg2>;
 
-    static result_type invoke(F &&f, Arg1 &&, Arg2 &&b) {
-      return detail::invoke(f, b);
-    }
+    static result_type invoke(F &&f, Arg1 &&, Arg2 &&b) { return detail::invoke(f, b); }
   };
 
   template <class F, class Arg1, class Arg2>
   struct binary_fn_helper<F, Arg1, Arg2, false, false, false, true> {
     using result_type = invoke_result_t<F, Arg1, Arg2>;
 
-    static result_type invoke(F &&f, Arg1 &&a, Arg2 &&b) {
-      return detail::invoke(f, a, b);
-    }
+    static result_type invoke(F &&f, Arg1 &&a, Arg2 &&b) { return detail::invoke(f, a, b); }
   };
 
   template <class F, class Arg1, class Arg2>
@@ -140,17 +128,15 @@ namespace detail {
 
   template <class F, class Arg1, class Arg2>
   invoke_as_binary_fn_result_t<F, Arg1, Arg2> invoke_as_binary_fn(F &&f, Arg1 &&a, Arg2 &&b) {
-    return binary_fn_helper<F, Arg1, Arg2>::invoke(
-      detail::forward<F>(f),
-      detail::forward<Arg1>(a),
-      detail::forward<Arg2>(b));
+    return binary_fn_helper<F, Arg1, Arg2>::invoke(detail::forward<F>(f), detail::forward<Arg1>(a), detail::forward<Arg2>(b));
   }
 
   // basic template metaprogramming stuff; note that we could
   // use std::tuple instead of list, but <tuple> may nor be
   // present on freestanding implementations
   template <class...>
-  struct list {};
+  struct list {
+  };
 
   template <class...>
   struct concat;
@@ -170,10 +156,9 @@ namespace detail {
 
   template <template <typename> class Predicate, class T, class... Types>
   struct filter<Predicate, T, Types...> {
-    using type = typename std::conditional<
-      Predicate<T>::value,
-      typename concat<T, typename filter<Predicate, Types...>::type>::type,
-      typename filter<Predicate, Types...>::type>::type;
+    using type = typename std::conditional<Predicate<T>::value,
+                                           typename concat<T, typename filter<Predicate, Types...>::type>::type,
+                                           typename filter<Predicate, Types...>::type>::type;
   };
 
   template <template <typename> class Predicate>
@@ -203,8 +188,7 @@ class fsm {
          *
          * @param init_state the FSM's initial state
          */
-  fsm(state_type init_state = state_type())
-    : m_state(init_state) {}
+  fsm(state_type init_state = state_type()) : m_state(init_state) {}
 
   /**
          * Process an event.
@@ -248,9 +232,7 @@ class fsm {
          * @return the FSM's new state
          */
   template <class Event>
-  state_type no_transition(const Event & /*event*/) {
-    return m_state;
-  }
+  state_type no_transition(const Event & /*event*/) { return m_state; }
 
   private:
   template <State start, class Event, State target>
@@ -268,17 +250,14 @@ protected:
     }
 
     // clang++-5.0: constexpr function's return type 'void' is not a literal type
-    static /*constexpr*/ void process_event(std::nullptr_t, Derived & /*self*/, const Event & /*event*/) {
-    }
+    static /*constexpr*/ void process_event(std::nullptr_t, Derived & /*self*/, const Event & /*event*/) {}
 
     template <class Guard>
     static bool check_guard(Guard &&guard, const Derived &self, const Event &event) {
       return detail::invoke_as_binary_fn(guard, self, event);
     }
 
-    static constexpr bool check_guard(std::nullptr_t, const Derived &, const Event &) {
-      return true;
-    }
+    static constexpr bool check_guard(std::nullptr_t, const Derived &, const Event &) { return true; }
   };
 
   protected:
@@ -309,14 +288,8 @@ protected:
          *
          * @tparam guard a static `Guard` instance
          */
-  template <
-    State start,
-    class Event,
-    State target,
-    class Action = std::nullptr_t,
-    Action action = nullptr,
-    class Guard = std::nullptr_t,
-    Guard guard = nullptr>
+  template <State start, class Event, State target, class Action = std::nullptr_t, Action action = nullptr,
+            class Guard = std::nullptr_t, Guard guard = nullptr>
   struct basic_row : public row_base<start, Event, target> {
     static void process_event(Derived &self, const Event &event) {
       row_base<start, Event, target>::process_event(action, self, event);
@@ -340,12 +313,8 @@ protected:
          *
          * @tparam guard a guard member function, or `nullptr`
          */
-  template <
-    State start,
-    class Event,
-    State target,
-    void (Derived::*action)(const Event &) = nullptr,
-    bool (Derived::*guard)(const Event &) const = nullptr>
+  template <State start, class Event, State target, void (Derived::*action)(const Event &) = nullptr,
+            bool (Derived::*guard)(const Event &) const = nullptr>
   struct mem_fn_row : public row_base<start, Event, target> {
     static void process_event(Derived &self, const Event &event) {
       if (action != nullptr) {
@@ -376,12 +345,7 @@ protected:
          *
          * @tparam guard a static guard function pointer, or `nullptr`
          */
-  template <
-    State start,
-    class Event,
-    State target,
-    auto action = nullptr,
-    auto guard = nullptr>
+  template <State start, class Event, State target, auto action = nullptr, auto guard = nullptr>
   struct row : public row_base<start, Event, target> {
     static void process_event(Derived &self, const Event &event) {
       row_base<start, Event, target>::process_event(action, self, event);
@@ -415,15 +379,14 @@ protected:
   template <class Event, class T, class... Types>
   struct handle_event<Event, detail::list<T, Types...>> {
     static State execute(Derived &self, const Event &event, State state) {
-      return state == T::start_value() && T::check_guard(self, event) ? T::process_event(self, event), T::target_value() : handle_event<Event, detail::list<Types...>>::execute(self, event, state);
+      return state == T::start_value() && T::check_guard(self, event) ? T::process_event(self, event),
+             T::target_value()                                        : handle_event<Event, detail::list<Types...>>::execute(self, event, state);
     }
   };
 
   template <class Event>
   struct handle_event<Event, detail::list<>> {
-    static State execute(Derived &self, const Event &event, State) {
-      return self.no_transition(event);
-    }
+    static State execute(Derived &self, const Event &event, State) { return self.no_transition(event); }
   };
 
   private:
@@ -433,16 +396,13 @@ protected:
 #if !defined(NDEBUG) && (!__GNUC__ || __EXCEPTIONS)
   class processing_lock {
 public:
-    processing_lock(fsm &m)
-      : processing(m.processing) {
+    processing_lock(fsm &m) : processing(m.processing) {
       if (processing) {
         throw std::logic_error("process_event called recursively");
       }
       processing = true;
     }
-    ~processing_lock() {
-      processing = false;
-    }
+    ~processing_lock() { processing = false; }
 
 private:
     bool &processing;

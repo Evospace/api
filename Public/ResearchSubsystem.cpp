@@ -225,7 +225,7 @@ void UResearchSubsystem::SetActiveResearch(UStaticResearch *Research) {
         ActiveResearch->Type = EResearchStatus::Queued;
       }
     }
-    
+
     OnResearchQueueUpdated.Broadcast();
   }
 }
@@ -301,7 +301,7 @@ float UResearchSubsystem::GetResearchProgress() const {
   if (!ActiveResearch)
     return 0.f;
 
-  auto complexity = FMath::Max(1, ActiveResearch->Complexity);  
+  auto complexity = FMath::Max(1, ActiveResearch->Complexity);
   return 1.f - ActiveResearchLeft / static_cast<float>(complexity);
 }
 
@@ -359,15 +359,16 @@ TArray<UStaticResearch *> &UResearchSubsystem::GetAllResearches() const {
 TArray<UStaticResearch *> UResearchSubsystem::GetAllResearchesSorted() const {
   auto res = GetAllResearches();
 
-  res.Sort([](const UStaticResearch &a, const UStaticResearch &b) {
-    if (a.Type != b.Type) {
-      return a.Type < b.Type;
-    }
-    if (a.MainResearch != b.MainResearch) {
-      return a.MainResearch > b.MainResearch;
-    }
-    return a.Complexity < b.Complexity;
-  });
+  res.Sort(
+    [](const UStaticResearch &a, const UStaticResearch &b) {
+      if (a.Type != b.Type) {
+        return a.Type < b.Type;
+      }
+      if (a.MainResearch != b.MainResearch) {
+        return a.MainResearch > b.MainResearch;
+      }
+      return a.Complexity < b.Complexity;
+    });
 
   return res;
 }
@@ -380,9 +381,7 @@ TArray<UStaticResearch *> UResearchSubsystem::GetAllResearchesSortedFiltered(con
   if (filter2.IsEmpty())
     return res;
 
-  res = res.FilterByPredicate([&filter2](const UStaticResearch *a) {
-    return a->SearchMetadata.Contains(filter2);
-  });
+  res = res.FilterByPredicate([&filter2](const UStaticResearch *a) { return a->SearchMetadata.Contains(filter2); });
 
   return res;
 }
@@ -415,7 +414,7 @@ void UResearchSubsystem::Reset() {
   AllResearchesCache.Empty();
 }
 
-void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData * gameSessionData) {
+void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData *gameSessionData) {
   check(gameSessionData);
   LOG(INFO_LL) << "UResearchSubsystem::InitializeResearchTreeOnStart";
   auto bAllResearchesFinishedFlag = gameSessionData->AllResearchCompleted;
@@ -450,5 +449,3 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData * gameSe
     }
   }
 }
-
-

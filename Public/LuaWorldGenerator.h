@@ -16,8 +16,10 @@ class ULuaWorldGenerator : public UWorldGenerator {
   UPROPERTY()
   UHeightGenerator *mHeight;
 
-  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos, USurfaceDefinition *surfaceDefinition) const override;
-  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale = 1.f, int32 height_width = 16, bool no_biom = false) const override;
+  virtual void Generate(FColumnLoaderData &data, const Vec3i &pos,
+                        USurfaceDefinition *surfaceDefinition) const override;
+  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale = 1.f, int32 height_width = 16,
+                              bool no_biom = false) const override;
 
   public:
   PROTOTYPE_CODEGEN(LuaWorldGenerator, WorldGenerator)
@@ -28,7 +30,5 @@ class ULuaWorldGenerator : public UWorldGenerator {
       .addProperty("height", &ULuaWorldGenerator::mHeight)
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UWorldGenerator::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UWorldGenerator::StaticClass(); }
 };

@@ -15,8 +15,7 @@ UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
-  public: 
-
+  public:
   UFUNCTION(BlueprintCallable)
   const UGameSessionData *GetData() const { return Data; }
 
@@ -24,7 +23,8 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   void SetData(UGameSessionData *dat);
 
   UFUNCTION(BlueprintCallable)
-  void SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> & mods);
+  void SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version,
+                  const TArray<FString> &mods);
 
   UFUNCTION(BlueprintCallable)
   void SetSeed(const FString &seed);

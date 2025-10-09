@@ -31,39 +31,40 @@ class URegionMap : public UInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<URegionMap, UInstance>("RegionMap") //@class RegionMap : Instance
       .addFunction("add_resource", &URegionMap::AddResource)
-      //direct:
+      // direct:
       //---Delete all regions
-      //function RegionMap:reset() end
+      // function RegionMap:reset() end
       .addFunction("reset", &URegionMap::Reset)
-      //direct:
+      // direct:
       //---Get Region by its position
       //---@param spos Vec2i position in RegionMap grid
       //---@return Region
-      //function RegionMap:get_region(spos) end
+      // function RegionMap:get_region(spos) end
       .addFunction("get_region", &URegionMap::GetRegion)
-      //direct:
+      // direct:
       //---Looking for existing Region with given sector position
       //---@param spos Vec2i position in RegionMap grid
       //---@return Region
-      //function RegionMap:find_region(spos) end
+      // function RegionMap:find_region(spos) end
       .addFunction("find_region", &URegionMap::FindRegion)
-      //direct:
+      // direct:
       //---Looking for SourceData near given location in world blocks
       //---@param wbpos Vec3i position in Dimension grid
       //---@return SourceData
-      //function RegionMap:find_source(wbpos) end
+      // function RegionMap:find_source(wbpos) end
       .addFunction("find_source", &URegionMap::FindSourceWrapper)
-      //direct:
+      // direct:
       //---Is region exists
       //---@param pos Vec2i region position
       //---@return boolean
-      //function RegionMap:has_region(pos) end
-      .addFunction("has_region", [](URegionMap &self, const FVector2i &pos) { return self.FindRegion(pos) != nullptr; })
-      //direct:
+      // function RegionMap:has_region(pos) end
+      .addFunction("has_region",
+                   [](URegionMap &self, const FVector2i &pos) { return self.FindRegion(pos) != nullptr; })
+      // direct:
       //---Convert Block World position to RegionMap grid cell that contains this position
       //---@param bpos Vec3i
       //--- @return Vec2i RegionMap grid position
-      //function RegionMap.world_block_to_grid(bpos) end
+      // function RegionMap.world_block_to_grid(bpos) end
       .addStaticFunction("world_block_to_grid", &URegionMap::WorldBlockToGrid)
       .endClass();
   }
@@ -90,10 +91,7 @@ class URegionMap : public UInstance {
   void Initialize(USurfaceDefinition *surfaceDefinition);
 
   UFUNCTION(BlueprintCallable)
-  void Reset() {
-    Regions.Empty();
-  }
-
+  void Reset() { Regions.Empty(); }
 
   UPROPERTY()
   TWeakObjectPtr<USurfaceDefinition> SurfaceDefinition = nullptr;

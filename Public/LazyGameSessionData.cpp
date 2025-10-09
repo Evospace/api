@@ -6,9 +6,9 @@
 #include <Engine/World.h>
 
 UGameSessionSubsystem *FLazyGameSession::Get(const UObject *WorldContextObject) const {
-    if (!gss) {
-        auto &gi = UGameInstanceHelper::GetGameInstance(WorldContextObject);
-        gss = gi.GetSubsystem<UGameSessionSubsystem>();
-    }
-    return gss;
+  if (!gss) {
+    auto &gi = UGameInstanceHelper::GetGameInstance(WorldContextObject);
+    gss = gi.GetSubsystem<UGameSessionSubsystem>();
+  }
+  return gss;
 }

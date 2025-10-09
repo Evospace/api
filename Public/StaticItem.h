@@ -50,9 +50,7 @@ class UStaticItem : public UPrototype, public ISearchable {
       .addProperty("description_parts", QR_ARRAY_GET_SET(DescriptionParts)) //@field Loc[]
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

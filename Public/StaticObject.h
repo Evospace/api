@@ -12,7 +12,7 @@ class AActor;
 
 USTRUCT(BlueprintType)
 /**
- * 
+ *
  */
 struct FStaticBlockMinable {
   GENERATED_BODY()
@@ -31,7 +31,7 @@ struct FStaticBlockMinable {
 
 UCLASS(Abstract)
 /**
- * 
+ *
  */
 class UStaticObject : public UPrototype {
   using Self = UStaticObject;
@@ -42,9 +42,7 @@ class UStaticObject : public UPrototype {
       .addProperty("item", &Self::mStaticItem) //@field StaticItem
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
   GENERATED_BODY()
 
   public:

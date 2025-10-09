@@ -14,7 +14,8 @@ void UFactoryVisualSubsystem::Tick(float DeltaTime) {
     collector -= 0.5;
 
     for (UEmitterBatchComponent *Batch : EmitterBatches) {
-      if (!Batch) continue;
+      if (!Batch)
+        continue;
 
       for (FEmitterInstance &instance : Batch->Instances) {
         const float loadRatio = instance.Block ? instance.Block->LoadRatio : 0.f;

@@ -29,7 +29,8 @@ bool ApplyOperator(float a, float b, TCHAR op, float &Result) {
     Result = a * b;
     return true;
   case '/':
-    if (b == 0.0f) return false;
+    if (b == 0.0f)
+      return false;
     Result = a / b;
     return true;
   case '^':

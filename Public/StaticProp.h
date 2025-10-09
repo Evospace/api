@@ -38,9 +38,7 @@ class UStaticProp : public UStaticObject {
       .addProperty("actor_class", &Self::ActorClass) //@field Class
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

@@ -11,9 +11,7 @@ class UStaticCover : public UStaticObject {
       .deriveClass<UStaticCover, UStaticObject>("StaticCover") //@class StaticCover : StaticObject
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;

@@ -17,9 +17,7 @@ class UBiomeFamily : public UBiome {
       .addProperty("sub_frequency", &UBiomeFamily::mSubFrequency) //@property float
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return UBiome::StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return UBiome::StaticClass(); }
 
   public:
   UBiomeFamily();

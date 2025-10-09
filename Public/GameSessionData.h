@@ -15,7 +15,6 @@
 class USetting;
 class UValueStorage;
 
-
 USTRUCT(BlueprintType)
 struct FVersionStruct {
   GENERATED_BODY()
@@ -31,12 +30,15 @@ struct FVersionStruct {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 Build = 0;
-  
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Hash = "";
 
-  std::strong_ordering operator <=>(const FVersionStruct &other) const {
-    return Major != other.Major ? Major <=> other.Major : Minor != other.Minor ? Minor <=> other.Minor : Patch != other.Patch ? Patch <=> other.Patch : Build <=> other.Build;
+  std::strong_ordering operator<=>(const FVersionStruct &other) const {
+    return Major != other.Major   ? Major <=> other.Major
+           : Minor != other.Minor ? Minor <=> other.Minor
+           : Patch != other.Patch ? Patch <=> other.Patch
+                                  : Build <=> other.Build;
   }
 };
 
@@ -68,9 +70,10 @@ class UGameSessionData : public UInstance {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
-  
-  UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
-  void Initialize(UObject * WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName);
+
+  UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
+  void Initialize(UObject *WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre,
+                  bool AllResearchCompleted, const FString &seed, FName generatorName);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetCreativeAllowed() const;
@@ -120,7 +123,6 @@ class UGameSessionData : public UInstance {
   int32 TickRate = 20;
 
   private:
-
   friend class UGameSessionSubsystem;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

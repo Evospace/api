@@ -14,11 +14,12 @@ class USingleSlotInventory : public UBaseInventory {
   EVO_CODEGEN_INSTANCE(SingleSlotInventory)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<USingleSlotInventory, UBaseInventory>("SingleSlotInventory") //@class SingleSlotInventory : BaseInventory
+      .deriveClass<USingleSlotInventory, UBaseInventory>(
+        "SingleSlotInventory") //@class SingleSlotInventory : BaseInventory
       .addProperty("capacity", &Self::Capacity) //@field integer
-      //direct:
+      // direct:
       //---@field item StaticItem
-      //function SingleSlotInventory:set_simple_filter(item) end
+      // function SingleSlotInventory:set_simple_filter(item) end
       .addFunction("set_simple_filter", &Self::SetSimpleFilter)
       .endClass();
   }

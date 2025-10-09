@@ -218,13 +218,13 @@ static void pushfuncname(lua_State *L, lua_Debug *ar) {
 #define LEVELS1 12 /* size of the first part of the stack */
 #define LEVELS2 10 /* size of the second part of the stack */
 
-void luaL_traceback(lua_State *L, lua_State *L1,
-                    const char *msg, int level) {
+void luaL_traceback(lua_State *L, lua_State *L1, const char *msg, int level) {
   lua_Debug ar;
   int top = lua_gettop(L);
   int numlevels = countlevels(L1);
   int mark = (numlevels > LEVELS1 + LEVELS2) ? LEVELS1 : 0;
-  if (msg) lua_pushfstring(L, "%s\n", msg);
+  if (msg)
+    lua_pushfstring(L, "%s\n", msg);
   lua_pushliteral(L, "stack traceback:");
   while (lua_getstack(L1, level++, &ar)) {
     if (level == mark) { /* too many levels? */
@@ -265,9 +265,8 @@ int luaL_fileresult(lua_State *L, int stat, const char *fname) {
   }
 }
 
-#if !defined(l_inspectstat) &&                              \
-  (defined(unix) || defined(__unix) || defined(__unix__) || \
-   defined(__TOS_AIX__) || defined(_SYSTYPE_BSD))
+#if !defined(l_inspectstat) && \
+  (defined(unix) || defined(__unix) || defined(__unix__) || defined(__TOS_AIX__) || defined(_SYSTYPE_BSD))
 /* some form of unix; check feature macros in unistd.h for details */
 #include <unistd.h>
 /* check posix version; the relevant include files and macros probably
@@ -369,11 +368,11 @@ typedef LUAI_INT32 LUA_INT32;
 #if defined(MS_ASMTRICK) || defined(LUA_MSASMTRICK) /* { */
 /* trick with Microsoft assembler for X86 */
 
-#define lua_number2unsigned(i, n)      \
-  {                                    \
-    __int64 l;                         \
-    __asm {__asm fld n   __asm fistp l} \
-    i = (unsigned int)l;               \
+#define lua_number2unsigned(i, n) \
+  {                               \
+    __int64 l;                    \
+    __asm {__asm fld n   __asm fistp l}  \
+    i = (unsigned int)l;          \
   }
 
 #elif defined(LUA_IEEE754TRICK) /* }{ */
@@ -386,8 +385,7 @@ union compat52_luai_Cast {
 };
 
 #if !defined(LUA_IEEEENDIAN) /* { */
-#define LUAI_EXTRAIEEE \
-  static const union compat52_luai_Cast ieeeendian = { -(33.0 + 6755399441055744.0) };
+#define LUAI_EXTRAIEEE static const union compat52_luai_Cast ieeeendian = { -(33.0 + 6755399441055744.0) };
 #define LUA_IEEEENDIANLOC (ieeeendian.l_p[1] == 33)
 #else
 #define LUA_IEEEENDIANLOC LUA_IEEEENDIAN
@@ -413,8 +411,7 @@ union compat52_luai_Cast {
 #if defined(LUA_NUMBER_DOUBLE) || defined(LUA_NUMBER_FLOAT)
 #include <math.h>
 #define SUPUNSIGNED ((lua_Number)(~(lua_Unsigned)0) + 1)
-#define lua_number2unsigned(i, n) \
-  ((i) = (lua_Unsigned)((n)-floor((n) / SUPUNSIGNED) * SUPUNSIGNED))
+#define lua_number2unsigned(i, n) ((i) = (lua_Unsigned)((n) - floor((n) / SUPUNSIGNED) * SUPUNSIGNED))
 #else
 #define lua_number2unsigned(i, n) ((i) = (lua_Unsigned)(n))
 #endif
@@ -423,14 +420,12 @@ union compat52_luai_Cast {
 #if !defined(lua_unsigned2number)
 /* on several machines, coercion from unsigned to double is slow,
    so it may be worth to avoid */
-#define lua_unsigned2number(u) \
-  (((u) <= (lua_Unsigned)INT_MAX) ? (lua_Number)(int)(u) : (lua_Number)(u))
+#define lua_unsigned2number(u) (((u) <= (lua_Unsigned)INT_MAX) ? (lua_Number)(int)(u) : (lua_Number)(u))
 #endif
 
 /********************************************************************/
 
-static void compat52_call_lua(lua_State *L, char const code[], size_t len,
-                              int nargs, int nret) {
+static void compat52_call_lua(lua_State *L, char const code[], size_t len, int nargs, int nret) {
   lua_rawgetp(L, LUA_REGISTRYINDEX, (void *)code);
   if (lua_type(L, -1) != LUA_TFUNCTION) {
     lua_pop(L, 1);
@@ -443,17 +438,15 @@ static void compat52_call_lua(lua_State *L, char const code[], size_t len,
   lua_call(L, nargs, nret);
 }
 
-static const char compat52_arith_code[] = {
-  "local op,a,b=...\n"
-  "if op==0 then return a+b\n"
-  "elseif op==1 then return a-b\n"
-  "elseif op==2 then return a*b\n"
-  "elseif op==3 then return a/b\n"
-  "elseif op==4 then return a%b\n"
-  "elseif op==5 then return a^b\n"
-  "elseif op==6 then return -a\n"
-  "end\n"
-};
+static const char compat52_arith_code[] = { "local op,a,b=...\n"
+                                            "if op==0 then return a+b\n"
+                                            "elseif op==1 then return a-b\n"
+                                            "elseif op==2 then return a*b\n"
+                                            "elseif op==3 then return a/b\n"
+                                            "elseif op==4 then return a%b\n"
+                                            "elseif op==5 then return a^b\n"
+                                            "elseif op==6 then return -a\n"
+                                            "end\n" };
 
 void lua_arith(lua_State *L, int op) {
   if (op < LUA_OPADD || op > LUA_OPUNM)
@@ -466,10 +459,8 @@ void lua_arith(lua_State *L, int op) {
   compat52_call_lua(L, compat52_arith_code, sizeof(compat52_arith_code) - 1, 3, 1);
 }
 
-static const char compat52_compare_code[] = {
-  "local a,b=...\n"
-  "return a<=b\n"
-};
+static const char compat52_compare_code[] = { "local a,b=...\n"
+                                              "return a<=b\n" };
 
 int lua_compare(lua_State *L, int idx1, int idx2, int op) {
   int result = 0;
@@ -578,8 +569,7 @@ const char *luaL_tolstring(lua_State *L, int idx, size_t *len) {
   return lua_tolstring(L, -1, len);
 }
 
-void luaL_requiref(lua_State *L, char const *modname,
-                   lua_CFunction openf, int glb) {
+void luaL_requiref(lua_State *L, char const *modname, lua_CFunction openf, int glb) {
   luaL_checkstack(L, 3, "not enough stack slots");
   lua_pushcfunction(L, openf);
   lua_pushstring(L, modname);
@@ -651,26 +641,26 @@ void luaL_pushresult(luaL_Buffer_52 *B) {
 #endif /* LUA_VERSION_NUM == 501 */
 
 /*********************************************************************
-* This file contains parts of Lua 5.2's source code:
-*
-* Copyright (C) 1994-2013 Lua.org, PUC-Rio.
-*
-* Permission is hereby granted, free of charge, to any person obtaining
-* a copy of this software and associated documentation files (the
-* "Software"), to deal in the Software without restriction, including
-* without limitation the rights to use, copy, modify, merge, publish,
-* distribute, sublicense, and/or sell copies of the Software, and to
-* permit persons to whom the Software is furnished to do so, subject to
-* the following conditions:
-*
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*********************************************************************/
+ * This file contains parts of Lua 5.2's source code:
+ *
+ * Copyright (C) 1994-2013 Lua.org, PUC-Rio.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *********************************************************************/

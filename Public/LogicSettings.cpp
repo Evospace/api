@@ -17,14 +17,17 @@ void ULogicSettings::EnsureExportFlagsInitialized() {
 }
 
 bool ULogicSettings::IsExportEnabled(int32 Index) const {
-  if (!ExportSignals.IsValidIndex(Index) || ExportSignals[Index] == nullptr) return false;
-  if (ExportEnabled.IsValidIndex(Index)) return ExportEnabled[Index];
+  if (!ExportSignals.IsValidIndex(Index) || ExportSignals[Index] == nullptr)
+    return false;
+  if (ExportEnabled.IsValidIndex(Index))
+    return ExportEnabled[Index];
   // fallback to option default if flags not initialized
   return ExportSignals[Index]->bEnabled;
 }
 
 void ULogicSettings::SetExportEnabled(int32 Index, bool bEnabled) {
-  if (!ExportSignals.IsValidIndex(Index)) return;
+  if (!ExportSignals.IsValidIndex(Index))
+    return;
   if (!ExportEnabled.IsValidIndex(Index)) {
     ExportEnabled.SetNum(ExportSignals.Num());
   }

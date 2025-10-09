@@ -19,7 +19,8 @@ void ADroneManagerActor::UpdateDrones(float DeltaTime) {
   for (int32 i = 0; i < Drones.Num(); ++i) {
     FDroneInstanceData &Drone = Drones[i];
 
-    if (Drone.State == EDroneState::Idle) continue;
+    if (Drone.State == EDroneState::Idle)
+      continue;
 
     FVector Direction = (Drone.TargetPosition.world() - Drone.Position).GetSafeNormal();
     Drone.Position += Direction * Drone.Speed * DeltaTime;
@@ -33,7 +34,8 @@ void ADroneManagerActor::UpdateDrones(float DeltaTime) {
     FRotator VisualRotation = Direction.Rotation();
 
     // Крен: поворачиваем немного вправо-влево от направления
-    float RollAmount = FMath::Sin(GetWorld()->TimeSeconds * 1.5f + Drone.InstanceRandom * 2.17f) * 7.f; // в градусах
+    float RollAmount =
+      FMath::Sin(GetWorld()->TimeSeconds * 1.5f + Drone.InstanceRandom * 2.17f) * 7.f; // в градусах
     FRotator RollTilt(0, 0, RollAmount);
     VisualRotation += RollTilt;
 
@@ -57,7 +59,8 @@ void ADroneManagerActor::UpdateDrones(float DeltaTime) {
 
 int32 ADroneManagerActor::LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlockLogic *To, UInventory *Payload) {
   static int indexCounter = 1;
-  if (!From || !To || !Payload) return INDEX_NONE;
+  if (!From || !To || !Payload)
+    return INDEX_NONE;
 
   FDroneInstanceData Drone;
   Drone.Source = From;
@@ -90,13 +93,9 @@ UDroneStationBlockLogic *ADroneManagerActor::FindStationByID(const FString &stri
 }
 
 FString ADroneManagerActor::GenerateStationID() const {
-  static const TArray<FString> FirstParts = {
-    TEXT("Iron"), TEXT("Copper"), TEXT("Silver"), TEXT("Quantum"), TEXT("Thorn"), TEXT("Crimson"), TEXT("Stone"), TEXT("Titan"), TEXT("Void"), TEXT("Amber")
-  };
+  static const TArray<FString> FirstParts = { TEXT("Iron"), TEXT("Copper"), TEXT("Silver"), TEXT("Quantum"), TEXT("Thorn"), TEXT("Crimson"), TEXT("Stone"), TEXT("Titan"), TEXT("Void"), TEXT("Amber") };
 
-  static const TArray<FString> SecondParts = {
-    TEXT("Nest"), TEXT("Field"), TEXT("Hollow"), TEXT("Spire"), TEXT("Forge"), TEXT("Core"), TEXT("Vault"), TEXT("Cradle"), TEXT("Throne"), TEXT("Outpost")
-  };
+  static const TArray<FString> SecondParts = { TEXT("Nest"), TEXT("Field"), TEXT("Hollow"), TEXT("Spire"), TEXT("Forge"), TEXT("Core"), TEXT("Vault"), TEXT("Cradle"), TEXT("Throne"), TEXT("Outpost") };
 
   FString BaseName;
   int32 Attempts = 0;

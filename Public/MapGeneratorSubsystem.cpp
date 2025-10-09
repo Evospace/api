@@ -26,21 +26,21 @@ void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 }
 
 void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionData) {
-    check(GameSessionData);
-    LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
-    for (auto wg : WorldGenerators) {
-        wg->SetSeed(GameSessionData->GetSeed());
-    }
+  check(GameSessionData);
+  LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
+  for (auto wg : WorldGenerators) {
+    wg->SetSeed(GameSessionData->GetSeed());
+  }
 }
 
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {
-    WorldGenerators.Empty();
+  WorldGenerators.Empty();
 
-    WorldGenerators.Add(NewObject<UWorldGeneratorPlains>(this, TEXT("WorldGeneratorPlains")));
-    WorldGenerators.Add(NewObject<UWorldGeneratorRivers>(this, TEXT("WorldGeneratorRivers")));
-    WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
-    WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));
-  
+  WorldGenerators.Add(NewObject<UWorldGeneratorPlains>(this, TEXT("WorldGeneratorPlains")));
+  WorldGenerators.Add(NewObject<UWorldGeneratorRivers>(this, TEXT("WorldGeneratorRivers")));
+  WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
+  WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));
+
   // Add modded world generators registered in DB storage
   if (UDbStorage::Singleton) {
     const TArray<UWorldGenerator *> modGenerators = UDbStorage::Singleton->GetObjects<UWorldGenerator>();
@@ -50,11 +50,11 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
       }
     }
   }
-  
-    for (auto wg : WorldGenerators) {
-        wg->Initialize();
-        wg->LoadBiomeFamily();
-    }
+
+  for (auto wg : WorldGenerators) {
+    wg->Initialize();
+    wg->LoadBiomeFamily();
+  }
 }
 
 void UMapGeneratorSubsystem::Deinitialize() {
@@ -62,16 +62,16 @@ void UMapGeneratorSubsystem::Deinitialize() {
 }
 
 TArray<UWorldGenerator *> UMapGeneratorSubsystem::GetWorldGeneratorList() {
-    return WorldGenerators;
+  return WorldGenerators;
+}
+
+UWorldGenerator *UMapGeneratorSubsystem::FindWorldGenerator(FName name) const {
+  for (auto gen : WorldGenerators) {
+    if (gen->GetName() == name) {
+      return gen;
+    }
   }
 
-  UWorldGenerator *UMapGeneratorSubsystem::FindWorldGenerator(FName name) const {
-    for (auto gen : WorldGenerators) {
-      if (gen->GetName() == name) {
-        return gen;
-      }
-    }
-  
-    LOG(ERROR_LL) << "UMainGameInstance::FindWorldGenerator World generator not found: " << name;
-    return nullptr;
-  }
+  LOG(ERROR_LL) << "UMainGameInstance::FindWorldGenerator World generator not found: " << name;
+  return nullptr;
+}

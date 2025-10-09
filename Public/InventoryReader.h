@@ -19,22 +19,19 @@ class UInventoryReader : public UInstance {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UInventoryReader, UInstance>("InventoryReader") //@class InventoryReader : Instance
       .addProperty("size", [](const UInventoryReader *self) { return self->_Num(); }) //@field integer Number of slots in this InventoryReader
-      //direct:
+      // direct:
       //--- Get ItemData with index from InventoryReader
       //--- @param index integer
       //--- @return ItemData
-      //function InventoryReader:get(index) end
-      .addFunction("get", [](const UInventoryReader *self, int32 index) {
-        return self->_SafeGet(index);
-      })
-      //direct:
+      // function InventoryReader:get(index) end
+      .addFunction("get", [](const UInventoryReader *self, int32 index) { return self->_SafeGet(index); })
+      // direct:
       //--- Looking for index of StaticItem in InventoryReader
       //--- @param item StaticItem
       //--- @return integer index of found item or -1
-      //function InventoryReader:find(item) end
-      .addFunction("find", [](const UInventoryReader *self, const UStaticItem *item) {
-        return self->_Find(item);
-      })
+      // function InventoryReader:find(item) end
+      .addFunction("find",
+                   [](const UInventoryReader *self, const UStaticItem *item) { return self->_Find(item); })
       .endClass();
   }
 
@@ -91,5 +88,5 @@ class UInventoryReader : public UInstance {
   }
 
   /*UFUNCTION(BlueprintCallable)
-    bool IsEmpty() const { return IsEmpty(); }*/
+      bool IsEmpty() const { return IsEmpty(); }*/
 };

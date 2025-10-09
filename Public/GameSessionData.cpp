@@ -8,8 +8,7 @@
 #include "Qr/StaticSaveHelpers.h"
 #include "Qr/GameInstanceHelper.h"
 
-UGameSessionData::UGameSessionData() {
-}
+UGameSessionData::UGameSessionData() {}
 
 bool UGameSessionData::GetCreativeAllowed() const {
 #ifdef EVOSPACE_DEMO
@@ -48,7 +47,8 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
   return result;
 }
 
-void UGameSessionData::Initialize(UObject * WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
+void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &saveName, bool CreativeMode,
+                                  bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
   check(WorldContextObject && WorldContextObject->GetWorld());
 
   SaveName = saveName;
@@ -57,14 +57,14 @@ void UGameSessionData::Initialize(UObject * WorldContextObject, const FString &s
   TotalGameTime = 0.f;
   TotalGameTicks = 0;
   CreativeAllowed = CreativeMode;
-  Version = UGameSessionData::VersionFromString(UMainGameInstance::GetBuildString()).Get( {});
+  Version = UGameSessionData::VersionFromString(UMainGameInstance::GetBuildString()).Get({});
   Mods = UMainGameInstance::Singleton->DB->GetMods();
 
   // TickDelta is computed from TickRate via getter
 
   UStaticSaveHelpers::SaveGameSessionData(saveName, this);
 
-  for (auto &surface : {"Temperate"}) {
+  for (auto &surface : { "Temperate" }) {
     auto &instance = UGameInstanceHelper::GetGameInstance(WorldContextObject);
     USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(&instance);
     surfaceDefinition->GeneratorName = generatorName;

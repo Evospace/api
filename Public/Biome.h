@@ -21,9 +21,7 @@ class UBiome : public UPrototype {
       .addProperty("height", &UBiome::height)
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;

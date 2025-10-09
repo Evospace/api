@@ -13,25 +13,22 @@ class UInventoryAccess : public UInventoryReader {
   EVO_CODEGEN_INSTANCE(InventoryAccess)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryAccess, UInventoryReader>("InventoryAccess") //@class InventoryAccess : InventoryReader
-      //direct:
+      .deriveClass<UInventoryAccess, UInventoryReader>(
+        "InventoryAccess") //@class InventoryAccess : InventoryReader
+      // direct:
       //--- Add item with count to InventoryAccess
       //--- @param item StaticItem
       //--- @param count integer
       //--- @return integer Remainder
-      //function InventoryAccess:add(item, count) end
-      .addFunction("add", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
-        return self->_Add({ item, count });
-      })
-      //direct:
+      // function InventoryAccess:add(item, count) end
+      .addFunction("add", [](UInventoryAccess *self, const UStaticItem *item, int64 count) { return self->_Add({ item, count }); })
+      // direct:
       //--- Remove item with count from InventoryAccess
       //--- @param item StaticItem
       //--- @param count integer
       //--- @return integer Remainder
-      //function InventoryAccess:sub(item, count) end
-      .addFunction("sub", [](UInventoryAccess *self, const UStaticItem *item, int64 count) {
-        return self->_Sub({ item, count });
-      })
+      // function InventoryAccess:sub(item, count) end
+      .addFunction("sub", [](UInventoryAccess *self, const UStaticItem *item, int64 count) { return self->_Sub({ item, count }); })
       .addProperty("zero_slots", &UInventoryAccess::mCanHaveZeroSlot) //@field boolean
       .endClass();
   }
@@ -42,9 +39,7 @@ class UInventoryAccess : public UInventoryReader {
     return 0;
   };
 
-  virtual int64 _AddSilent(const FItemData &other) {
-    return _Add(other);
-  };
+  virtual int64 _AddSilent(const FItemData &other) { return _Add(other); };
 
   virtual int64 _Add(int32 index, const FItemData &other) {
     checkNoEntry();
@@ -61,9 +56,7 @@ class UInventoryAccess : public UInventoryReader {
     return 0;
   };
 
-  virtual int64 _SubSilent(const FItemData &other) {
-    return _Sub(other);
-  };
+  virtual int64 _SubSilent(const FItemData &other) { return _Sub(other); };
 
   virtual bool _Set(int64 index, const FItemData &other) {
     checkNoEntry();
@@ -75,9 +68,7 @@ class UInventoryAccess : public UInventoryReader {
     return 0;
   };
 
-  virtual int64 _SubSilent(int32 index, const FItemData &other) {
-    return _Sub(index, other);
-  };
+  virtual int64 _SubSilent(int32 index, const FItemData &other) { return _Sub(index, other); };
 
   UFUNCTION(BlueprintCallable)
   virtual void SetLimit(int32 _l) { mLimit = _l; };
@@ -97,13 +88,9 @@ class UInventoryAccess : public UInventoryReader {
   UFUNCTION(BlueprintCallable)
   virtual int32 GetHighlight() const { return mHighlight; };
 
-  virtual bool GetCanHaveZeroSlot() {
-    return mCanHaveZeroSlot;
-  }
+  virtual bool GetCanHaveZeroSlot() { return mCanHaveZeroSlot; }
 
-  virtual void SetCanHaveZeroSlot(bool value) {
-    mCanHaveZeroSlot = value;
-  }
+  virtual void SetCanHaveZeroSlot(bool value) { mCanHaveZeroSlot = value; }
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool Draggable = true;
@@ -113,9 +100,7 @@ class UInventoryAccess : public UInventoryReader {
     return nullptr;
   }
 
-  virtual void TrySetFilter(int32 index, UInventoryFilter *filter) {
-    checkNoEntry();
-  }
+  virtual void TrySetFilter(int32 index, UInventoryFilter *filter) { checkNoEntry(); }
 
   UFUNCTION(BlueprintCallable)
   virtual void SortKeyAZ() {}

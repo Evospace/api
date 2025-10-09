@@ -8,13 +8,11 @@
 #include <string>
 
 #ifndef LOG_LEVEL
-#define LOG(level) \
-  FLogHelper(FSimpleLogger::static_logger, level)
+#define LOG(level) FLogHelper(FSimpleLogger::static_logger, level)
 #endif
 
 #ifndef LOG_NOTHING
-#define LOG_NOTHING(level) \
-  true ? (void)0 : cpplog::helpers::VoidStreamClass() & LOG(level)
+#define LOG_NOTHING(level) true ? (void)0 : cpplog::helpers::VoidStreamClass() & LOG(level)
 #endif
 
 enum ELogLevel {
@@ -51,23 +49,15 @@ class FSimpleLogger {
     LogVersion++;
   }
 
-  int32 GetLogVersion() const {
-    return LogVersion;
-  }
+  int32 GetLogVersion() const { return LogVersion; }
 
   static FSimpleLogger static_logger;
 
-  FSimpleLogger() {
-    Clear();
-  }
+  FSimpleLogger() { Clear(); }
 
-  bool HasErrors() const {
-    return perLevelCount[ERROR_LL] > 0;
-  }
+  bool HasErrors() const { return perLevelCount[ERROR_LL] > 0; }
 
-  const FString &GetLastMessage() const {
-    return LastLogEntry;
-  }
+  const FString &GetLastMessage() const { return LastLogEntry; }
 
   TArray<FString> GetErrors() const {
     TArray<FString> arr;
@@ -77,9 +67,7 @@ class FSimpleLogger {
     return arr;
   }
 
-  const TArray<int32> &GetLevels() const {
-    return perLevelCount;
-  }
+  const TArray<int32> &GetLevels() const { return perLevelCount; }
 
   private:
   TArray<int32> perLevelCount;
@@ -106,9 +94,7 @@ class FSimpleLogger {
 
 class FLogHelper {
   public:
-  FLogHelper(FSimpleLogger &InLogger, ELogLevel InLogLevel)
-    : Logger(InLogger), LogLevel(InLogLevel) {
-  }
+  FLogHelper(FSimpleLogger &InLogger, ELogLevel InLogLevel) : Logger(InLogger), LogLevel(InLogLevel) {}
 
   FLogHelper &operator<<(const FString &Message) {
     Buffer += Message;
@@ -147,9 +133,7 @@ class FLogHelper {
     return *this;
   }
 
-  ~FLogHelper() {
-    Logger.Log(LogLevel, Buffer);
-  }
+  ~FLogHelper() { Logger.Log(LogLevel, Buffer); }
 
   private:
   FSimpleLogger &Logger;
@@ -161,15 +145,9 @@ class FLogHelper {
     return FString::Printf(TEXT("%s"), *FString::FromInt(Value));
   }
 
-  FString TTypeToString(const FName &Value) const {
-    return Value.ToString();
-  }
+  FString TTypeToString(const FName &Value) const { return Value.ToString(); }
 
-  FString TTypeToString(const bool &Value) const {
-    return Value ? "true" : "false";
-  }
+  FString TTypeToString(const bool &Value) const { return Value ? "true" : "false"; }
 
-  FString TTypeToString(const FVector3i &Value) const {
-    return Value.ToString();
-  }
+  FString TTypeToString(const FVector3i &Value) const { return Value.ToString(); }
 };

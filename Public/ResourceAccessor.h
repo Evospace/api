@@ -26,7 +26,6 @@ class UResourceAccessor : public UAccessor {
   }
 
   public:
-
   static FName Electricity() { return TEXT("Electricity"); }
   static FName Kinetic() { return TEXT("Kinetic"); }
   static FName Fluid() { return TEXT("Fluid"); }
@@ -54,7 +53,8 @@ class UResourceAccessor : public UAccessor {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName Channel = TEXT("Error");
 
-  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output, FName channel);
+  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output,
+            FName channel);
 
   bool IsFrozen() const { return false; }
 
@@ -62,7 +62,5 @@ class UResourceAccessor : public UAccessor {
 
   virtual void TickComponent() override;
 
-  void Bind(UResourceInventory *inv) {
-    mInventory = inv;
-  }
+  void Bind(UResourceInventory *inv) { mInventory = inv; }
 };

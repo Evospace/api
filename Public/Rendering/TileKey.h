@@ -19,7 +19,6 @@ struct FTileKey {
   TObjectPtr<UMaterialInterface> Mat = nullptr;
 
   friend bool operator==(const FTileKey &A, const FTileKey &B) {
-    return A.TileX == B.TileX && A.TileY == B.TileY &&
-           A.Mesh == B.Mesh && A.Mat == B.Mat;
+    return A.TileX == B.TileX && A.TileY == B.TileY && A.Mesh == B.Mesh && A.Mat == B.Mat;
   }
 };

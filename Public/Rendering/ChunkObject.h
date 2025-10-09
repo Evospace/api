@@ -77,7 +77,8 @@
 //
 //     using BuilderType = RealtimeMesh::TRealtimeMeshBuilderLocal<uint16, FPackedNormal, FVector2DHalf, 1>;
 //
-//   static int32 GenerateSection(BuilderType &StaticProvider, const UTesselator::Data &data, int32 section_index, int32 lod_index, int32 precount);
+//   static int32 GenerateSection(BuilderType &StaticProvider, const UTesselator::Data &data, int32 section_index, int32
+//   lod_index, int32 precount);
 //
 //
 //     /* ---------- рендер ------------------------------------------------- */

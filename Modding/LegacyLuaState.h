@@ -6,8 +6,8 @@
 
 namespace evo {
 /**
- * @brief Legacy lua state for BlockLogic lua script part executing
- */
+     * @brief Legacy lua state for BlockLogic lua script part executing
+     */
 class LegacyLuaState : public LuaState {
   public:
   void SetCurrent(AActor *actor);

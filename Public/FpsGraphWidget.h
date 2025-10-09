@@ -12,8 +12,8 @@ class UPerformanceGraphWidget : public UUserWidget {
   GENERATED_BODY()
 
   protected:
-  virtual int32 NativePaint(const FPaintArgs &Args, const FGeometry &AllottedGeometry, const FSlateRect &MyCullingRect,
-                            FSlateWindowElementList &OutDrawElements, int32 LayerId,
+  virtual int32 NativePaint(const FPaintArgs &Args, const FGeometry &AllottedGeometry,
+                            const FSlateRect &MyCullingRect, FSlateWindowElementList &OutDrawElements, int32 LayerId,
                             const FWidgetStyle &InWidgetStyle, bool bParentEnabled) const override;
 
   virtual void NativeTick(const FGeometry &MyGeometry, float InDeltaTime) override;

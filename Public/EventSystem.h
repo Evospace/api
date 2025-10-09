@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
-//#include "ThirdParty/lua/lua.h"
+// #include "ThirdParty/lua/lua.h"
 #include <string>
 
 namespace evo {
@@ -67,8 +67,7 @@ class EventSystem {
   void SetState(evo::LuaState *l);
 
   private:
-  EventSystem()
-    : nextHandlerId(1) {}
+  EventSystem() : nextHandlerId(1) {}
 
   evo::LuaState *lua_state = nullptr;
 

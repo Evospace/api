@@ -26,9 +26,7 @@ class URecipeDictionary : public UPrototype, public ISearchable {
       .addProperty("start_tier", &URecipeDictionary::StartTier) //@field integer
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   URecipeDictionary();
@@ -57,13 +55,13 @@ class URecipeDictionary : public UPrototype, public ISearchable {
 
   void ResetLocked();
 
-  //TODO: remove default
+  // TODO: remove default
   const URecipe *FindByOutput(const UStaticItem *item, int32 count = 1, bool ignore_locked = false) const;
 
-  //TODO: remove default
+  // TODO: remove default
   const URecipe *FindByOutput(UInventoryReader *inventory, bool ignore_locked = false) const;
 
-  //TODO: remove default
+  // TODO: remove default
   const URecipe *FindByItem(const UStaticItem *item, bool ignore_locked = false) const;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

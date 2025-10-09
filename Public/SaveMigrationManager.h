@@ -17,5 +17,3 @@ class USaveMigrationManager : public UObject {
   UFUNCTION(BlueprintCallable)
   static void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
 };
-
-

@@ -35,11 +35,11 @@ class UEngineData : public UInstance {
       .addProperty("fog", &UEngineData::Fog) //@field number
       .addProperty("window_mode", &UEngineData::Windowed) //@field integer
       .addProperty("autosave_period", &UEngineData::AutosavePeriod) //@field integer
-      //direct:
-      //function EngineData:apply() end
+      // direct:
+      // function EngineData:apply() end
       .addFunction("apply", &UEngineData::ApplyData)
-      //direct:
-      //function EngineData:show_confirmation() end
+      // direct:
+      // function EngineData:show_confirmation() end
       .addFunction("show_confirmation", &UEngineData::ShowConfirmationDialog)
       .endClass();
   }

@@ -15,18 +15,18 @@ void UEmitterBatchComponent::AddEmitter(UBlockLogic *Block, UNiagaraSystem *syst
     return;
   }
 
-  UNiagaraComponent *FX = UNiagaraFunctionLibrary::SpawnSystemAttached(
-    system, // Niagara asset
-    Sector->GetRootComponent(), // Parent – корень сектора
-    NAME_None, // Socket name
-    Relative.GetLocation(), // Rel-pos
-    Relative.Rotator(), // Rel-rot
-    Relative.GetScale3D(), // Rel-scale
-    EAttachLocation::KeepRelativeOffset, // Transform rule
-    true,
-    ENCPoolMethod::None,
-    true,
-    true);
+  UNiagaraComponent *FX =
+    UNiagaraFunctionLibrary::SpawnSystemAttached(system, // Niagara asset
+                                                 Sector->GetRootComponent(), // Parent – корень сектора
+                                                 NAME_None, // Socket name
+                                                 Relative.GetLocation(), // Rel-pos
+                                                 Relative.Rotator(), // Rel-rot
+                                                 Relative.GetScale3D(), // Rel-scale
+                                                 EAttachLocation::KeepRelativeOffset, // Transform rule
+                                                 true,
+                                                 ENCPoolMethod::None,
+                                                 true,
+                                                 true);
 
   if (!FX) {
     LOG(ERROR_LL) << "EmitterBatchComponent::AddEmitter: Failed to spawn NiagaraComponent";

@@ -78,7 +78,8 @@ void UGameSessionSubsystem::SetCreativeAllowed(bool val) {
   Data->CreativeAllowed = val;
 }
 
-void UGameSessionSubsystem::SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> & mods) {
+void UGameSessionSubsystem::SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version,
+                                       const TArray<FString> &mods) {
   check(dat);
   Data = dat;
   Data->SaveName = saveName;

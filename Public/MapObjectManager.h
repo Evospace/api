@@ -36,7 +36,8 @@ class UMapObjectManager : public UObject {
   void ReportBuilt(UBlockLogic *Block);
 
   private:
-  // Not a UPROPERTY: nested containers of weak pointers are not reflected/serialized and we don't need GC tracking here
+  // Not a UPROPERTY: nested containers of weak pointers are not reflected/serialized and we don't need GC tracking
+  // here
   TMap<const UStaticItem *, TArray<UBlockLogic *>> ItemToBlocks;
 
   static void MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color);

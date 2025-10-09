@@ -18,9 +18,7 @@ class UPropsGenerator : public UPrototype {
       .addProperty("proplist", &UPropsGenerator::proplist) //@property StaticPropList
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &start_point) const;

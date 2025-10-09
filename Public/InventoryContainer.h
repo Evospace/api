@@ -10,15 +10,16 @@ class UInventoryContainer : public UInventoryAccess {
   EVO_CODEGEN_INSTANCE(InventoryContainer)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<UInventoryContainer, UInventoryAccess>("InventoryContainer") //@class InventoryContainer : InventoryAccess
-      //direct:
+      .deriveClass<UInventoryContainer, UInventoryAccess>(
+        "InventoryContainer") //@class InventoryContainer : InventoryAccess
+      // direct:
       //---@field index integer
       //---@return InventoryAccess
-      //function InventoryContainer:get_access(index) end
+      // function InventoryContainer:get_access(index) end
       .addFunction("get_access", &UInventoryContainer::GetAccess)
-      //direct:
+      // direct:
       //---@field inventory InventoryAccess
-      //function InventoryContainer:bind(inventory) end
+      // function InventoryContainer:bind(inventory) end
       .addFunction("bind", &UInventoryContainer::BindInventory)
       .endClass();
   }

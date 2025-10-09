@@ -82,7 +82,7 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   TArray<UStaticResearch *> GetAllResearchesSorted() const;
 
   UFUNCTION(BlueprintCallable)
-  int64 ApplyResearchPoints(int64 Points) { 
+  int64 ApplyResearchPoints(int64 Points) {
     ActiveResearchLeft -= Points;
     if (ActiveResearchLeft < 0) {
       ActiveResearchLeft = 0;
@@ -94,17 +94,16 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   TArray<UStaticResearch *> GetAllResearchesSortedFiltered(const FString &Filter) const;
 
   UFUNCTION(BlueprintCallable)
-  const TArray<UStaticResearch *> & GetResearchQueue() const { return ResearchQueue; }
+  const TArray<UStaticResearch *> &GetResearchQueue() const { return ResearchQueue; }
 
   UFUNCTION(BlueprintCallable)
   bool IsUnlocked(const UStaticItem *Item) const;
-
 
   // Called regularly to update progress and auto-complete
   void TickResearch(float DeltaSeconds);
 
   UFUNCTION()
-  void InitializeResearchTreeOnStart(UGameSessionData * gameSessionData);
+  void InitializeResearchTreeOnStart(UGameSessionData *gameSessionData);
 
   // Event for UI
   UPROPERTY(BlueprintAssignable)
@@ -150,5 +149,3 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
 
   FTSTicker::FDelegateHandle TickDelegateHandle;
 };
-
-

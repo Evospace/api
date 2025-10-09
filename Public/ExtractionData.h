@@ -13,10 +13,10 @@ struct FExtractionData {
     luabridge::getGlobalNamespace(L)
       .beginClass<Self>("ExtractionData") //@class ExtractionData
       .addStaticFunction("new", []() { return FExtractionData(); })
-      //direct:
+      // direct:
       //--- Create new instance of ExtractionData
       //--- @return ExtractionData
-      //function ExtractionData.new() end
+      // function ExtractionData.new() end
       .addProperty("item", &Self::Item) //@field StaticItem
       .addProperty("speed", &Self::Speed) //@field integer
       .endClass();

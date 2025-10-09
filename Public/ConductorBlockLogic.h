@@ -207,18 +207,17 @@ class UConductorBlockLogic : public UStorageBlockLogic {
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStorageBlockLogic>("ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
+      .deriveClass<Self, UStorageBlockLogic>(
+        "ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
       .addProperty("side_cover", &Self::mSideCover) //@field StaticCover
       .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
       .addProperty("channel", QR_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
-      //direct:
+      // direct:
       //---Add side wire
       //---@param acc ResourceAccessor
-      //function ConductorBlockLogic:add_wire(acc) end
-      .addFunction("add_wire", [](UConductorBlockLogic *self, UResourceAccessor *acc) {
-        self->mWireAccessor.Add(acc);
-      }) //@field integer
+      // function ConductorBlockLogic:add_wire(acc) end
+      .addFunction("add_wire", [](UConductorBlockLogic *self, UResourceAccessor *acc) { self->mWireAccessor.Add(acc); }) //@field integer
       .endClass();
   }
   GENERATED_BODY()

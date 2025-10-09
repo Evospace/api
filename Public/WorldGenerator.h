@@ -17,7 +17,8 @@ class UWorldGenerator : public UPrototype {
   virtual void Generate(FColumnLoaderData &data, const Vec3i &pos, USurfaceDefinition *surfaceDefinition) const;
 
   UFUNCTION(BlueprintCallable)
-  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width, bool no_biome) const;
+  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width,
+                              bool no_biome) const;
 
   UFUNCTION(BlueprintCallable)
   virtual void SetSeed(int32 seed);
@@ -25,7 +26,7 @@ class UWorldGenerator : public UPrototype {
   UFUNCTION(BlueprintCallable)
   virtual void Initialize();
 
-  //TODO: remove
+  // TODO: remove
   UFUNCTION(BlueprintCallable)
   virtual void LoadBiomeFamily();
 
@@ -36,7 +37,6 @@ class UWorldGenerator : public UPrototype {
   FLoc mLabel;
 
   protected:
-
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   int32 mSeed = 0;
 
@@ -47,7 +47,5 @@ class UWorldGenerator : public UPrototype {
       .deriveClass<UWorldGenerator, UPrototype>("WorldGenerator") //@class WorldGenerator : Prototype
       .endClass();
   }
-  virtual UClass *GetSuperProto() const override {
-    return StaticClass();
-  }
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
 };
