@@ -26,6 +26,7 @@ class UResourceAccessor : public UAccessor {
   }
 
   public:
+
   static FName Electricity() { return TEXT("Electricity"); }
   static FName Kinetic() { return TEXT("Kinetic"); }
   static FName Fluid() { return TEXT("Fluid"); }
@@ -33,8 +34,7 @@ class UResourceAccessor : public UAccessor {
   static FName Data() { return TEXT("Data"); }
   static FName Plasma() { return TEXT("Plasma"); }
 
-  UResourceAccessor *GetOutsideAccessorCached();
-  const UResourceAccessor *GetOutsideAccessorCached() const;
+  UResourceAccessor *GetOutsideNeighborSameTypeCached();
 
   void AddInput(const UStaticItem *item, int64 a) const;
   void RemoveOutput(int64 a) const;

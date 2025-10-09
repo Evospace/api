@@ -50,6 +50,10 @@ class UAccessor : public UInstance {
     return GetOutsideAccessor(GetClass());
   }
 
+
+  UAccessor *GetOutsideNeighborSameTypeCached();
+  void InvalidateNeighborCache();
+
   template <class T>
   T *GetOutsideAccessor() {
     return static_cast<T *>(GetOutsideAccessor(T::StaticClass()));
@@ -76,4 +80,8 @@ class UAccessor : public UInstance {
 
   UPROPERTY(VisibleAnywhere)
   FVector3i Side;
+
+  private:
+  // Cached neighbor accessor of the same class as this accessor
+  UAccessor *CachedOutsideSameType = nullptr;
 };

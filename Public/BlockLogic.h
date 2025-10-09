@@ -70,6 +70,8 @@ class UBlockLogic : public UInstance {
   // Neighbor and accessor events
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
+  // Notify accessors to invalidate cached neighbor pointers
+  void InvalidateAccessorsNeighborCache();
 
   // Item interactions
   virtual void SpawnedByItem(AItemLogic *item);

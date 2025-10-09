@@ -6,7 +6,7 @@
 #include "Public/LogicSettings.h"
 #include "ChestBlockLogic.generated.h"
 
-class USolidAccessor;
+class UBaseInventoryAccessor;
 class UCoreAccessor;
 class UInventory;
 class UItemMap;
@@ -57,5 +57,5 @@ class UChestBlockLogic : public UStorageBlockLogic {
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   UInventory *mInventory;
 
-  USolidAccessor *input_accessor[Side::NumSides];
+  UBaseInventoryAccessor *input_accessor[Side::NumSides];
 };

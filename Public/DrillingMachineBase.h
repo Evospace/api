@@ -8,7 +8,7 @@
 class UInventoryContainer;
 class UResourceAccessor;
 class USingleSlotInventory;
-class USolidOutputAccessor;
+class UBaseInventoryAccessor;
 
 /**
  * Base class for all drilling machines in the game.
