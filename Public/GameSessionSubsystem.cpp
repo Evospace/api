@@ -36,6 +36,10 @@ bool UGameSessionSubsystem::SetCreativeMode(bool val) {
   return newCreative;
 }
 
+void UGameSessionSubsystem::SetMenuMuffling(bool bMuffled) {
+  OnMenuMuffling.Broadcast(bMuffled);
+}
+
 bool UGameSessionSubsystem::IsCreative() const {
   check(Data);
 #ifdef EVOSPACE_DEMO

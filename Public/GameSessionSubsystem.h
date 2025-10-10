@@ -10,6 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDataUpdated, UGameSessionData *, gameSessionData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveRequested, const FString &, SaveName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveLoading, const FString &, SaveName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuMuffling, bool, bMuffled);
 
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
@@ -23,8 +24,7 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   void SetData(UGameSessionData *dat);
 
   UFUNCTION(BlueprintCallable)
-  void SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version,
-                  const TArray<FString> &mods);
+  void SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> &mods);
 
   UFUNCTION(BlueprintCallable)
   void SetSeed(const FString &seed);
@@ -85,6 +85,12 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override {}
+
+  UFUNCTION(BlueprintCallable)
+  void SetMenuMuffling(bool bMuffled);
+
+  UPROPERTY(BlueprintAssignable)
+  FOnMenuMuffling OnMenuMuffling;
 
   private:
   UPROPERTY(EditAnywhere)

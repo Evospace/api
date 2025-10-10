@@ -12,7 +12,7 @@
 void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
 
-  Collection.InitializeDependency(UGameSessionSubsystem::StaticClass());
+  Collection.InitializeDependency<UGameSessionSubsystem>();
 
   auto GameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>();
   if (ensure(GameSessionSubsystem)) {
