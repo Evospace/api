@@ -139,7 +139,8 @@ void UEngineData::ApplyData() const {
       break;
     }
   }
-
+  
+  // Can be null in the main menu
   if (dim) {
     dim->DimensionPropComponent->SetRangeMultiplier(PropsMul);
     dim->DimensionPropComponent->SetLodMultiplier(PropsQuality);
@@ -161,7 +162,7 @@ void UEngineData::ApplyData() const {
 
 void UEngineData::ApplyControllerData() const {
   auto pc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-  if (pc && pc->BeginPlayFired) {
+  if (pc && pc->PreloadFinished) {
     pc->SectorArea->SetRadius(LoadingRange);
 
     pc->AltHotbar = AltHotbar;
