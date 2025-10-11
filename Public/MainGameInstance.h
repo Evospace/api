@@ -226,6 +226,10 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   static void OpenDiscord();
 
+  // Frees as much memory/VRAM as possible while on an empty map
+  UFUNCTION(BlueprintCallable)
+  void CleanupMemoryOnEmptyMap(bool bAggressive = false);
+
   UFUNCTION(BlueprintCallable)
   static TArray<FString> GetErrors();
 
