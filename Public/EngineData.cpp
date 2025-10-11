@@ -13,6 +13,7 @@
 #include "Framework/Application/SlateApplication.h"
 #include "Widgets/SWindow.h"
 #include "Qr/ModLoadingSubsystem.h"
+#include "HAL/IConsoleManager.h"
 
 class USettingsConfirmationWidget;
 bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
@@ -100,6 +101,24 @@ void UEngineData::CancelSettings() {
 }
 
 void UEngineData::ApplyData() const {
+  // Apply global rendering console variables once per settings application
+  {
+    auto SetCVar = [](const TCHAR *Name, float Value) {
+      if (IConsoleVariable *CVar = IConsoleManager::Get().FindConsoleVariable(Name)) {
+        CVar->Set(Value, ECVF_SetByConsole);
+      }
+    };
+
+    SetCVar(TEXT("r.AOGlobalDistanceField"), 0);
+    SetCVar(TEXT("r.Substrate"), 0);
+    SetCVar(TEXT("r.GBufferFormat"), 1);
+    SetCVar(TEXT("r.VT.PoolSizeScale"), 0.5f);
+    SetCVar(TEXT("r.Streaming.PoolSize"), 512);
+    SetCVar(TEXT("r.ReflectionEnvironment"), 0);
+    SetCVar(TEXT("r.TemporalAA.Upsampling"), 0);
+    SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
+  }
+
   if (Fps == 0) {
     UMainGameInstance::GraphicsSettings__SetFrameRateToBeUnbound();
   } else {
