@@ -112,10 +112,7 @@ void UEngineData::ApplyData() const {
     SetCVar(TEXT("r.AOGlobalDistanceField"), 0);
     SetCVar(TEXT("r.Substrate"), 0);
     SetCVar(TEXT("r.GBufferFormat"), 1);
-    SetCVar(TEXT("r.VT.PoolSizeScale"), 0.5f);
     SetCVar(TEXT("r.Streaming.PoolSize"), 512);
-    SetCVar(TEXT("r.ReflectionEnvironment"), 0);
-    SetCVar(TEXT("r.TemporalAA.Upsampling"), 0);
     SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
   }
 
@@ -166,8 +163,6 @@ void UEngineData::ApplyControllerData() const {
   auto pc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
   if (pc && pc->BeginPlayFired) {
     pc->SectorArea->SetRadius(LoadingRange);
-    pc->PerformanceGraph = PerformanceGraph;
-    pc->Performance = Performance;
 
     pc->AltHotbar = AltHotbar;
     pc->CtrlHotbar = CtrlHotbar;

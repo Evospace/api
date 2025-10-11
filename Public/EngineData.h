@@ -35,6 +35,7 @@ class UEngineData : public UInstance {
       .addProperty("fog", &UEngineData::Fog) //@field number
       .addProperty("window_mode", &UEngineData::Windowed) //@field integer
       .addProperty("autosave_period", &UEngineData::AutosavePeriod) //@field integer
+      .addProperty("memory_stats", &UEngineData::MemoryStats) //@field boolean
       // direct:
       // function EngineData:apply() end
       .addFunction("apply", &UEngineData::ApplyData)
@@ -63,19 +64,22 @@ class UEngineData : public UInstance {
   UPROPERTY(EditAnywhere)
   bool DetailShadows = true;
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool Performance;
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool PerformanceGraph;
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool MemoryStats;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool CtrlHotbar;
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool AltHotbar;
 
-  UPROPERTY(EditAnywhere)
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool ShiftHotbar;
 
   UPROPERTY(EditAnywhere)
