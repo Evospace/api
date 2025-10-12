@@ -254,7 +254,7 @@ class UConductorBlockLogic : public UStorageBlockLogic {
   int mSides = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  FName Channel = "Any";
+  FName Channel = "Error";
 
   UPROPERTY(VisibleAnywhere)
   UStaticIndexedHierarchicalInstancedStaticMeshComponent *mComponent;
