@@ -11,6 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDataUpdated, UGameSessionData *, ga
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveRequested, const FString &, SaveName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveLoading, const FString &, SaveName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuMuffling, bool, bMuffled);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurfaceChange, FString, SurfaceName);
 
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
@@ -91,6 +92,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UPROPERTY(BlueprintAssignable)
   FOnMenuMuffling OnMenuMuffling;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSurfaceChange OnSurfaceChange;
 
   private:
   UPROPERTY(EditAnywhere)

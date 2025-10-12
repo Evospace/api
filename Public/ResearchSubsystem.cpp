@@ -23,9 +23,10 @@
 
 void UResearchSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
-  if (auto session = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
-    session->OnDataUpdated.AddDynamic(this, &UResearchSubsystem::InitializeResearchTreeOnStart);
-  }
+  //TODO: remake this
+  // if (auto session = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
+  //   session->OnDataUpdated.AddDynamic(this, &UResearchSubsystem::InitializeResearchTreeOnStart);
+  // }
 }
 
 void UResearchSubsystem::Deinitialize() {

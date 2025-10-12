@@ -9,6 +9,7 @@
 class UAudioComponent;
 class USoundBase;
 class UGameSessionSubsystem;
+class UMusicPlaylist;
 
 UCLASS()
 class UMusicManagerSubsystem : public UGameInstanceSubsystem {
@@ -19,27 +20,60 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   virtual void Deinitialize() override;
 
   UFUNCTION(BlueprintCallable)
-  void SetMusicSound(USoundBase *InSound);
-
-  UFUNCTION(BlueprintCallable)
   void SetMuffled(bool bInMuffled);
 
   UFUNCTION(BlueprintCallable)
   void EnsureAudioComponent();
 
+  UFUNCTION(BlueprintCallable)
+  void StartCrossfade(USoundBase *NewSound);
+
   private:
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  USoundBase *MusicSound = nullptr;
+  // MetaSound used as a music player graph. The actual track is injected via a "Wave" parameter.
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
+  USoundBase *MusicMetaSoundSource = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
+  UMusicPlaylist *Playlist = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UAudioComponent *AudioComponent = nullptr;
+  UAudioComponent *AudioComponentA = nullptr;
 
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UAudioComponent *AudioComponentB = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float CrossfadeTime = 3.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  bool bUseAAsActive = true;
+
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float AudioComponentADuration = 0.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float AudioComponentBDuration = 0.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
 
   UFUNCTION()
   void HandleMenuMuffling(bool bInMuffled);
 
   void RegisterAudioToWorld(UWorld *NewWorld);
+  
+  UFUNCTION()
   void OnPostLoadMap(UWorld *NewWorld);
+
   void OnWorldCleanup(UWorld *World, bool bSessionEnded, bool bCleanupResources);
+  
+
+  UAudioComponent *GetActiveComponent() const;
+  UAudioComponent *GetInactiveComponent() const;
+  void ScheduleNextTimer(float DurationSeconds);
+  UFUNCTION()
+  void OnNextTrackTimer();
+
+  FTimerHandle NextTrackTimerHandle;
 };
