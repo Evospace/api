@@ -14,10 +14,15 @@ class UMusicPlaylist : public UObject {
 
   public:
   UFUNCTION(BlueprintCallable)
-  USoundBase *GetRandomSound() const;
+  USoundBase *GetRandomSound();
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<USoundBase *> Tracks;
+
+  private:
+  // Transient shuffle bag to avoid immediate repeats; refilled from Tracks when empty
+  UPROPERTY(Transient)
+  TArray<USoundBase *> ShuffleBag;
 };
 
 

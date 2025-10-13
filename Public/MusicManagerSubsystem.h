@@ -28,6 +28,13 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void StartCrossfade(USoundBase *NewSound);
 
+  UFUNCTION(BlueprintCallable)
+  void StartRandomTrack();
+
+  UFUNCTION(BlueprintCallable)
+  void SetPlaylist(UMusicPlaylist *NewPlaylist);
+  
+
   private:
   // MetaSound used as a music player graph. The actual track is injected via a "Wave" parameter.
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
@@ -46,17 +53,22 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   float CrossfadeTime = 3.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float NextTrackDelay = 40.0f;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bUseAAsActive = true;
 
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float AudioComponentADuration = 0.0f;
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float AudioComponentBDuration = 0.0f;
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
+
+  UFUNCTION()
+  void ResetTimers();
 
   UFUNCTION()
   void HandleMenuMuffling(bool bInMuffled);
@@ -72,6 +84,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
   void ScheduleNextTimer(float DurationSeconds);
+  
   UFUNCTION()
   void OnNextTrackTimer();
 

@@ -50,8 +50,7 @@ AActor *UActorPoolComponent::SpawnOne() {
   return World->SpawnActor<AActor>(ActorClass, FTransform::Identity, Params);
 }
 
-void UActorPoolComponent::ResetActor(AActor *Actor, const FTransform &WorldTransform, USceneComponent *AttachParent,
-                                     FName SocketName) {
+void UActorPoolComponent::ResetActor(AActor *Actor, const FTransform &WorldTransform, USceneComponent *AttachParent, FName SocketName) {
   if (!Actor)
     return;
   if (AttachParent) {
