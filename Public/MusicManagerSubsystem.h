@@ -53,7 +53,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   float CrossfadeTime = 3.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float NextTrackDelay = 40.0f;
+  float NextTrackDelay = 70.0f;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bUseAAsActive = true;
