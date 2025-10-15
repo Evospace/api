@@ -25,7 +25,7 @@ class UBiomeFamily : public UBiome {
   // Only baked
   virtual FLayering GetLayering(const Vec2i &pos) const override;
 
-  virtual float GetHeight(const FVector2D &pos) const override;
+  virtual float GetHeight(const FVector2D &pos) const override PURE_VIRTUAL(UBiomeFamily::GetHeight, return 0.f; )
 
   // Only baked
   virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;

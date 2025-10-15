@@ -18,18 +18,14 @@ class UBiome : public UPrototype {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UBiome, UPrototype>("Biome") //@class Biome : Prototype
-      .addProperty("height", &UBiome::height)
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;
-  virtual float GetHeight(const FVector2D &pos) const;
-  // Returns biome-local height adjusted relative to provided global height (with internal limiting)
-  virtual float GetHeightRelative(const FVector2D &pos, float globalHeight) const;
+  virtual float GetHeight(const FVector2D &pos) const PURE_VIRTUAL(UBiome::GetHeight, return 0.f; )
   virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
-  virtual float GetWeight(const FVector2D &pos) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void SetSeed(int32 seed);
@@ -39,7 +35,4 @@ class UBiome : public UPrototype {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UPropsGenerator *props = nullptr;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  UHeightGenerator *height = nullptr;
 };
