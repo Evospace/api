@@ -197,6 +197,7 @@ class UBlockLogic : public UInstance {
   // State controls
   void SetAccessorsInstances(bool show);
   void SetWorking(bool working);
+  FORCEINLINE bool IsWorking() const { return Working; }
 
   // Variables (public)
   float DeltaTime = 0.05f;
@@ -259,7 +260,7 @@ class UBlockLogic : public UInstance {
 
   // Internal state
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  bool Working;
+  bool Working = false;
 
   TArray<int32> AccessorInstances;
 };

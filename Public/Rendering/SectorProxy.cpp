@@ -2,7 +2,7 @@
 
 #include "EngineUtils.h"
 #include "RealtimeMeshSimple.h"
-#include "Evospace/Blocks/BlockActor.h"
+#include "Public/BlockActor.h"
 #include "Evospace/Item/DroppedInventory.h"
 #include "Evospace/Item/InventoryLibrary.h"
 #include "Evospace/Player/MainPlayerController.h"

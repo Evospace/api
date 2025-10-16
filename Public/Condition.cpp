@@ -5,10 +5,10 @@
 #include "Evospace/JsonHelper.h"
 #include "Evospace/PerformanceStat.h"
 
-// DECLARE_CYCLE_STAT_EXTERN(TEXT("Tick Condition"), STAT_TickCondition, STATGROUP_BLOCKLOGIC);
+DECLARE_CYCLE_STAT(TEXT("Tick Condition"), STAT_TickCondition, STATGROUP_BLOCKLOGIC);
 
 int64 UCondition::Evaluate(const ULogicContext *ctx) const {
-  // SCOPE_CYCLE_COUNTER(STAT_TickCondition);
+  SCOPE_CYCLE_COUNTER(STAT_TickCondition);
   switch (Mode) {
   case EConditionMode::Expr: {
     int64 actual = ctx->Input->Get(VarA);

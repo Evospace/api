@@ -1,6 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
-#include "Evospace/Blocks/BlockWidget.h"
+#include "Public/BlockWidget.h"
 #include "CoreMinimal.h"
 #include "Recipe.h"
 #include "Public/AbstractCrafter.h"

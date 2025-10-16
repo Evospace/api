@@ -7,15 +7,11 @@
 #include "Public/BlockLogic.h"
 #include "Qr/Prototype.h"
 #include "Public/StaticObject.h"
-
-#include <string>
-#include <Chaos/Array.h>
-#include <UObject/ScriptInterface.h>
+#include "Evospace/World/Tesselator.h"
 
 #include "StaticBlock.generated.h"
 
 class ABlockActor;
-class UTesselator;
 class UBlockLogic;
 class UPartBlockLogic;
 class ADimension;
