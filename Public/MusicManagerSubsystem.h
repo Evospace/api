@@ -33,7 +33,6 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
 
   UFUNCTION(BlueprintCallable)
   void SetPlaylist(UMusicPlaylist *NewPlaylist);
-  
 
   private:
   // MetaSound used as a music player graph. The actual track is injected via a "Wave" parameter.
@@ -74,17 +73,16 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   void HandleMenuMuffling(bool bInMuffled);
 
   void RegisterAudioToWorld(UWorld *NewWorld);
-  
+
   UFUNCTION()
   void OnPostLoadMap(UWorld *NewWorld);
 
   void OnWorldCleanup(UWorld *World, bool bSessionEnded, bool bCleanupResources);
-  
 
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
   void ScheduleNextTimer(float DurationSeconds);
-  
+
   UFUNCTION()
   void OnNextTrackTimer();
 

@@ -7,7 +7,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
-void UAnimatedBlockManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection) {
+void UAnimatedBlockManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
   LodLevels.Reset();
   // Hardcoded three LODs. Distances are squared; tune as needed.
@@ -19,14 +19,13 @@ void UAnimatedBlockManagerSubsystem::Initialize(FSubsystemCollectionBase& Collec
   LodLevels.Add({ 5500.0f * 5500.0f, 0.9f, true });
 }
 
-
 DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.Tick"), STAT_AnimatedBlockManager_Tick, STATGROUP_UObjects);
 DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.UpdateActor"), STAT_AnimatedBlockManager_UpdateActor, STATGROUP_UObjects);
 
 void UAnimatedBlockManagerSubsystem::RegisterAnimated(AAnimatedBlockActor *Actor) {
   if (!Actor || bManagerShuttingDown) return;
   if (ActorToIndex.Contains(Actor)) return; // prevent duplicates
-  const int32 NewIndex = Animated.Add(FAnimatedEntry{Actor});
+  const int32 NewIndex = Animated.Add(FAnimatedEntry{ Actor });
   ActorToIndex.Add(Actor, NewIndex);
 }
 
@@ -45,8 +44,8 @@ void UAnimatedBlockManagerSubsystem::UnregisterAnimated(AAnimatedBlockActor *Act
   Animated.RemoveAtSwap(Index);
   // Fix moved element index
   if (Animated.IsValidIndex(Index)) {
-    if (AAnimatedBlockActor* MovedActor = Animated[Index].Actor.Get()) {
-      if (int32* Entry = ActorToIndex.Find(MovedActor)) {
+    if (AAnimatedBlockActor *MovedActor = Animated[Index].Actor.Get()) {
+      if (int32 *Entry = ActorToIndex.Find(MovedActor)) {
         *Entry = Index;
       }
     }
@@ -85,8 +84,8 @@ void UAnimatedBlockManagerSubsystem::Tick(float DeltaTime) {
       if (Actor && ActorToIndex.RemoveAndCopyValue(Actor, Index)) {
         Animated.RemoveAtSwap(Index);
         if (Animated.IsValidIndex(Index)) {
-          if (AAnimatedBlockActor* MovedActor = Animated[Index].Actor.Get()) {
-            if (int32* Entry = ActorToIndex.Find(MovedActor)) {
+          if (AAnimatedBlockActor *MovedActor = Animated[Index].Actor.Get()) {
+            if (int32 *Entry = ActorToIndex.Find(MovedActor)) {
               *Entry = Index;
             }
           }
@@ -94,8 +93,8 @@ void UAnimatedBlockManagerSubsystem::Tick(float DeltaTime) {
       } else {
         Animated.RemoveAtSwap(i);
         if (Animated.IsValidIndex(i)) {
-          if (AAnimatedBlockActor* MovedActor = Animated[i].Actor.Get()) {
-            if (int32* Entry = ActorToIndex.Find(MovedActor)) {
+          if (AAnimatedBlockActor *MovedActor = Animated[i].Actor.Get()) {
+            if (int32 *Entry = ActorToIndex.Find(MovedActor)) {
               *Entry = i;
             }
           }
@@ -141,7 +140,7 @@ void UAnimatedBlockManagerSubsystem::Tick(float DeltaTime) {
       const auto alpha = FMath::Clamp(StepDelta, 0.0f, 1.0f);
       E.Speed = FMath::Lerp(E.Speed, bWorking ? 1.0f : 0.0f, alpha);
       E.Progress += E.Speed * StepDelta;
-      
+
       Actor->UpdateLODStopRestart(IsSfxDisabled);
       Actor->OnAnimationUpdate(StepDelta, E.Speed, E.Progress);
 
@@ -169,5 +168,3 @@ void UAnimatedBlockManagerSubsystem::Tick(float DeltaTime) {
     }
   }
 }
-
-

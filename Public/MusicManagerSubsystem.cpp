@@ -48,7 +48,7 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     TEXT("/Script/Engine.SoundWave'/Game/Music/21_2_amnbient_.21_2_amnbient_'")
   };
 
-  for (const auto& path : music_paths) {
+  for (const auto &path : music_paths) {
     auto wave = LoadObject<USoundBase>(nullptr, *path);
     if (ensure(wave)) {
       music_playlist->Tracks.Add(wave);
@@ -73,7 +73,7 @@ void UMusicManagerSubsystem::Deinitialize() {
   }
 
   ResetTimers();
-  
+
   if (AudioComponentA) {
     if (AudioComponentA->IsRegistered()) {
       AudioComponentA->UnregisterComponent();
@@ -148,7 +148,6 @@ void UMusicManagerSubsystem::RegisterAudioToWorld(UWorld *NewWorld) {
     }
     AudioComponentB->SetBoolParameter(TEXT("Muffled"), bMuffled);
   }
-
 }
 
 void UMusicManagerSubsystem::OnPostLoadMap(UWorld *NewWorld) {
@@ -211,7 +210,6 @@ void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
   check(Inactive);
   check(MusicMetaSoundSource);
 
-
   if (USoundWave *AsWave = Cast<USoundWave>(NewSound)) {
     Inactive->SetSound(MusicMetaSoundSource);
     Inactive->SetWaveParameter(TEXT("Wave"), AsWave);
@@ -228,7 +226,7 @@ void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
   } else {
     AudioComponentBDuration = Duration;
   }
-  
+
   Inactive->Play(0.0f);
   Inactive->FadeIn(CrossfadeTime, 1.0f);
   if (Active) {

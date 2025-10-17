@@ -12,27 +12,25 @@ class USurfaceDefinition;
 UCLASS()
 class USurfaceSimContext : public UObject, public ISimSurface {
   GENERATED_BODY()
-public:
+  public:
   // Initialization
-  void Init(const FGuid& InSurfaceId, USurfaceDefinition* InSurfaceDef);
+  void Init(const FGuid &InSurfaceId, USurfaceDefinition *InSurfaceDef);
 
   // Tick simulation (no-op for now)
   void TickContext(float DeltaSeconds);
 
   // ISimSurface
-  virtual const FGuid& GetSurfaceId() const override { return SurfaceId; }
-  virtual bool GetBlock(const Vec3i& pos, const UStaticBlock*& outBlock, BlockDensity& outDensity) const override;
-  virtual void SetBlock(const Vec3i& pos, const UStaticBlock* block, const BlockDensity& density) override;
+  virtual const FGuid &GetSurfaceId() const override { return SurfaceId; }
+  virtual bool GetBlock(const Vec3i &pos, const UStaticBlock *&outBlock, BlockDensity &outDensity) const override;
+  virtual void SetBlock(const Vec3i &pos, const UStaticBlock *block, const BlockDensity &density) override;
 
   // Accessors
-  USurfaceDefinition* GetSurfaceDefinition() const { return SurfaceDef; }
+  USurfaceDefinition *GetSurfaceDefinition() const { return SurfaceDef; }
 
-private:
+  private:
   UPROPERTY()
-  USurfaceDefinition* SurfaceDef = nullptr;
+  USurfaceDefinition *SurfaceDef = nullptr;
 
   UPROPERTY()
   FGuid SurfaceId;
 };
-
-

@@ -24,5 +24,3 @@ class UMusicPlaylist : public UObject {
   UPROPERTY(Transient)
   TArray<USoundBase *> ShuffleBag;
 };
-
-

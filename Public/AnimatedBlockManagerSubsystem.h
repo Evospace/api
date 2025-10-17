@@ -9,8 +9,7 @@ class AAnimatedBlockActor;
 class UBlockLogic;
 
 USTRUCT(BlueprintType)
-struct FLodLevel
-{
+struct FLodLevel {
   GENERATED_BODY()
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation|Budget")
@@ -37,11 +36,11 @@ class UAnimatedBlockManagerSubsystem : public UTickableWorldSubsystem {
   bool bVisualizeActorTicks = false;
 
   // World units per single "block" for debug height conversion
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation|Debug", meta=(ClampMin="1.0"))
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation|Debug", meta = (ClampMin = "1.0"))
   float DebugBlockUnitUU = 100.0f;
 
   // Debug line thickness in pixels
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation|Debug", meta=(ClampMin="0.1", ClampMax="20.0"))
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation|Debug", meta = (ClampMin = "0.1", ClampMax = "20.0"))
   float DebugLineThickness = 2.0f;
 
   // Register/unregister
@@ -49,7 +48,7 @@ class UAnimatedBlockManagerSubsystem : public UTickableWorldSubsystem {
   void UnregisterAnimated(AAnimatedBlockActor *Actor);
 
   // UTickableWorldSubsystem
-  virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+  virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Tick(float DeltaTime) override;
   virtual void Deinitialize() override;
   virtual TStatId GetStatId() const override {
@@ -65,11 +64,9 @@ class UAnimatedBlockManagerSubsystem : public UTickableWorldSubsystem {
   };
 
   TArray<FAnimatedEntry> Animated;
-  TMap<AAnimatedBlockActor*, int32> ActorToIndex;
+  TMap<AAnimatedBlockActor *, int32> ActorToIndex;
 
   bool bManagerShuttingDown = false;
 
   float ComputeDistance2D2(const FVector &A, const FVector &B) const;
 };
-
-

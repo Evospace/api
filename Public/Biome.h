@@ -24,8 +24,7 @@ class UBiome : public UPrototype {
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;
-  virtual float GetHeight(const FVector2D &pos) const PURE_VIRTUAL(UBiome::GetHeight, return 0.f; )
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
+  virtual float GetHeight(const FVector2D &pos) const PURE_VIRTUAL(UBiome::GetHeight, return 0.f;) virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void SetSeed(int32 seed);

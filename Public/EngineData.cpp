@@ -139,7 +139,7 @@ void UEngineData::ApplyData() const {
       break;
     }
   }
-  
+
   // Can be null in the main menu
   if (dim) {
     dim->DimensionPropComponent->SetRangeMultiplier(PropsMul);

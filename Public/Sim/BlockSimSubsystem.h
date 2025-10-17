@@ -13,18 +13,16 @@ class USurfaceSimContext;
 UCLASS()
 class UBlockSimSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
-public:
+  public:
   // Get or create simulation context for a surface
-  USurfaceSimContext* GetOrCreate(const FGuid& SurfaceId, USurfaceDefinition* SurfaceDef);
+  USurfaceSimContext *GetOrCreate(const FGuid &SurfaceId, USurfaceDefinition *SurfaceDef);
 
   // Subsystem lifecycle
-  virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+  virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
-private:
-  TMap<FGuid, USurfaceSimContext*> Contexts;
+  private:
+  TMap<FGuid, USurfaceSimContext *> Contexts;
   FTSTicker::FDelegateHandle TickHandle;
   bool TickAll(float DeltaSeconds);
 };
-
-

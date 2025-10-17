@@ -11,9 +11,7 @@ USoundBase *UMusicPlaylist::GetRandomSound() {
   if (ShuffleBag.Num() == 0)
     return nullptr;
   const int32 Index = FMath::RandRange(0, ShuffleBag.Num() - 1);
-  USoundBase* Chosen = ShuffleBag[Index];
+  USoundBase *Chosen = ShuffleBag[Index];
   ShuffleBag.RemoveAtSwap(Index, 1, /*bAllowShrinking*/ false);
   return Chosen;
 }
-
-
