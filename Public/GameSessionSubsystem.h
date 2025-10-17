@@ -63,6 +63,19 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void IncrementTime(double delta);
 
+  // World time controls stored in GameSessionData
+  UFUNCTION(BlueprintCallable)
+  double GetWorldTimeOfDayHours() const;
+
+  UFUNCTION(BlueprintCallable)
+  void SetWorldTimeOfDayHours(double Hours);
+
+  UFUNCTION(BlueprintCallable)
+  bool GetWorldTimeAutoAdvance() const;
+
+  UFUNCTION(BlueprintCallable)
+  void SetWorldTimeAutoAdvance(bool bEnable);
+
   UFUNCTION(BlueprintCallable)
   bool IsCreative() const;
 

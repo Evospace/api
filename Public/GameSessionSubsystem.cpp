@@ -117,6 +117,28 @@ void UGameSessionSubsystem::IncrementTime(double delta) {
   Data->TotalGameTime += delta;
 }
 
+double UGameSessionSubsystem::GetWorldTimeOfDayHours() const {
+  check(Data);
+  return Data->WorldTimeOfDayHours;
+}
+
+void UGameSessionSubsystem::SetWorldTimeOfDayHours(double Hours) {
+  check(Data);
+  // clamp and wrap within [0,24)
+  const double clamped = FMath::Fmod(FMath::Max(0.0, Hours), 24.0);
+  Data->WorldTimeOfDayHours = clamped;
+}
+
+bool UGameSessionSubsystem::GetWorldTimeAutoAdvance() const {
+  check(Data);
+  return Data->WorldTimeAutoAdvance;
+}
+
+void UGameSessionSubsystem::SetWorldTimeAutoAdvance(bool bEnable) {
+  check(Data);
+  Data->WorldTimeAutoAdvance = bEnable;
+}
+
 void UGameSessionSubsystem::SetInfiniteOre(bool val) {
   check(Data);
   Data->InfiniteOre = val;

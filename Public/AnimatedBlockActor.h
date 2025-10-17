@@ -5,6 +5,7 @@
 
 class UAudioComponent;
 class USkeletalMeshComponent;
+class UFXSystemComponent;
 
 UCLASS(BlueprintType)
 class AAnimatedBlockActor : public ABlockActor {
@@ -28,6 +29,9 @@ class AAnimatedBlockActor : public ABlockActor {
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation|Components")
   UAudioComponent *FirstAudio = nullptr;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation|Components")
+  UFXSystemComponent *FirstParticle = nullptr;
+
   // Called after manager updates speed and progress
   UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Animation")
   void OnAnimationUpdate(float DeltaTime, float Speed, float NewProgress);
@@ -38,10 +42,8 @@ class AAnimatedBlockActor : public ABlockActor {
 
   // Stops animation and audio at the highest simulation LOD (manager's FarTickInterval)
   UFUNCTION(BlueprintCallable, Category = "Animation|LOD")
-  void UpdateLODStopRestart(bool bAtSimulationHighestLOD);
+  void UpdateLODStopRestart(bool IsSfxDisabled);
 
   private:
   bool bStoppedByLOD = false;
 };
-
-

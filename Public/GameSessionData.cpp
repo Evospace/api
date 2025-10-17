@@ -94,6 +94,8 @@ bool UGameSessionData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "Cloud", Cloud);
   json_helper::TryGet(json, "AllResearchCompleted", AllResearchCompleted);
   json_helper::TryGet(json, "SaveName", SaveName);
+  json_helper::TryGet(json, "WorldTimeOfDayHours", WorldTimeOfDayHours);
+  json_helper::TryGet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
 
   return true;
 }
@@ -111,6 +113,8 @@ bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "Cloud", Cloud);
   json_helper::TrySet(json, "AllResearchCompleted", AllResearchCompleted);
   json_helper::TrySet(json, "SaveName", SaveName);
+  json_helper::TrySet(json, "WorldTimeOfDayHours", WorldTimeOfDayHours);
+  json_helper::TrySet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
   return true;
 }
 
@@ -127,6 +131,8 @@ void UGameSessionData::Reset() {
   Mods.Empty();
   Cloud = false;
   SaveName = "Default";
+  WorldTimeOfDayHours = 8.0;
+  WorldTimeAutoAdvance = true;
 }
 
 FString UGameSessionData::GetModsCombined() const {
