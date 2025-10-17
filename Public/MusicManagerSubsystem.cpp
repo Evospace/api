@@ -30,14 +30,11 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     TEXT("/Script/Engine.SoundWave'/Game/Music/evospace_main_menu.evospace_main_menu'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Binary_Serenity.Binary_Serenity'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Realm.Elven_Realm'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/7__classic_ОК.7__classic_ОК'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Stellar_Serenity.Stellar_Serenity'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/DowntempoNeon.DowntempoNeon'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Epic_Fantasy.Epic_Fantasy'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinery.Celestial_Machinery'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/11_blues_chill_.11_blues_chill_'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Serenity.Celestial_Serenity'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/16_Various.16_Various'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Automatic_Rhythms.Automatic_Rhythms'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Magical_Fantasy.Magical_Fantasy'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Harmonies__no_percussion_.Elven_Harmonies__no_percussion_'"),
@@ -45,7 +42,6 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'"),
     TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Tranquility_Comb.Cosmic_Tranquility_Comb'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/21_2_amnbient_.21_2_amnbient_'")
   };
 
   for (const auto &path : music_paths) {

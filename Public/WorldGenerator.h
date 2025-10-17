@@ -17,8 +17,7 @@ class UWorldGenerator : public UPrototype {
   virtual void Generate(FColumnLoaderData &data, const Vec3i &pos, USurfaceDefinition *surfaceDefinition) const;
 
   UFUNCTION(BlueprintCallable)
-  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, float Scale, int32 height_width,
-                              bool no_biome) const;
+  virtual void GenerateGlobal(FColumnMaps &data, const FVector &pos, USurfaceDefinition *surfaceDefinition, float Scale, int32 height_width, bool no_biome) const;
 
   UFUNCTION(BlueprintCallable)
   virtual void SetSeed(int32 seed);
