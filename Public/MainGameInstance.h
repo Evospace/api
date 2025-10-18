@@ -183,6 +183,9 @@ class UMainGameInstance : public USteamGameInstance {
   static FString GetBuildString();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetLicensesText();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
   static bool IsDemoVersion();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
