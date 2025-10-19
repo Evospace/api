@@ -13,6 +13,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveLoading, const FString &, Sav
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuMuffling, bool, bMuffled);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurfaceChange, FString, SurfaceName);
 
+class UStaticItem;
+
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
@@ -82,15 +84,6 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void SetAllResearchCompleted(bool val);
 
-  UPROPERTY(BlueprintAssignable)
-  FDataUpdated OnDataUpdated;
-
-  UPROPERTY(BlueprintAssignable)
-  FOnSaveRequested OnSaveRequested;
-
-  UPROPERTY(BlueprintAssignable)
-  FOnSaveLoading OnSaveLoading;
-
   UFUNCTION(BlueprintCallable)
   void RequestSave(const FString &saveName);
 
@@ -102,6 +95,18 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UFUNCTION(BlueprintCallable)
   void SetMenuMuffling(bool bMuffled);
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  UStaticItem *ItemTypeHighlight = nullptr;
+
+  UPROPERTY(BlueprintAssignable)
+  FDataUpdated OnDataUpdated;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSaveRequested OnSaveRequested;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSaveLoading OnSaveLoading;
 
   UPROPERTY(BlueprintAssignable)
   FOnMenuMuffling OnMenuMuffling;
