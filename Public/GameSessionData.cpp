@@ -47,8 +47,7 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
   return result;
 }
 
-void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &saveName, bool CreativeMode,
-                                  bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
+void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
   check(WorldContextObject && WorldContextObject->GetWorld());
 
   SaveName = saveName;

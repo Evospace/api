@@ -13,14 +13,18 @@
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
   if (!GameInstance) {
-    UE_LOGFMT(LogLoad, Error, "SaveMigrationManager: GameInstance is null");
+    LOG(ERROR_LL) << "SaveMigrationManager: GameInstance is null";
     return;
   }
 
-  UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionData(GameInstance->GetWorld(), saveName);
+  bool gameSessionFallback = false;
+  UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionData(GameInstance, saveName);
   if (!loadedSession) {
-    UE_LOGFMT(LogLoad, Warning, "SaveMigrationManager: No GameSessionData found for save '{0}'", saveName);
-    return;
+    LOG(ERROR_LL) << "SaveMigrationManager: No GameSessionData found for save '" << saveName << "'";
+    loadedSession = NewObject<UGameSessionData>(GameInstance, TEXT("GameSessionData"));
+    loadedSession->Version = FVersionStruct{ 0, 19, 0, 0, TEXT("?") };
+    loadedSession->Mods = {};
+    gameSessionFallback = true;
   }
 
   const FVersionStruct saveVersion = loadedSession->Version;
@@ -233,9 +237,9 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    return true;
                  } });
 
+  // Update Temperate/SurfaceDefinition.json: for each region set FertileLayer/ OilLayer subregions
+  // CurrentValue = 10 * InitialCapacity
   migrators.Add({ FVersionStruct{ 0, 20, 1, 36, TEXT("*") },
-                  // Update Temperate/SurfaceDefinition.json: for each region set FertileLayer/ OilLayer subregions
-                  // CurrentValue = 10 * InitialCapacity
                   [](const FString &saveName, UGameInstance *GameInstance) {
                     const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
                     const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
@@ -342,6 +346,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                     return true;
                   } });
 
+
+
   int applied = 0;
   for (const FMigrator &m : migrators) {
     if (m.Target > saveVersion) {
@@ -353,6 +359,11 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
       }
       ++applied;
     }
+  }
+
+  if (gameSessionFallback) {
+    loadedSession->Initialize(GameInstance, saveName, true, true, true, "Default", FName("WorldGeneratorRivers"));
+    UStaticSaveHelpers::SaveGameSessionData(saveName, loadedSession);
   }
 
   if (applied > 0) {
