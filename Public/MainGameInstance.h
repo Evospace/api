@@ -19,7 +19,7 @@
 
 #include "MainGameInstance.generated.h"
 
-class UEngineData;
+class UEngineDataSubsystem;
 class UMapgenData;
 class UNeiComponent;
 class URegionMap;
@@ -66,12 +66,9 @@ class UMainGameInstance : public USteamGameInstance {
   void lua_reg(lua_State *L) {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UMainGameInstance, UObject>("Game") //@class Game : Object
-      .addProperty("engine_data", &UMainGameInstance::EngineData) //@field EngineData
       .addProperty("mapgen_data", &UMainGameInstance::MapgenData) //@field MapgenData
-      .addStaticFunction("get_supported_resolutions",
-                         &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
-      .addProperty("localization", &UMainGameInstance::GetLocalization,
-                   &UMainGameInstance::SetLocalization) //@field string
+      .addStaticFunction("get_supported_resolutions", &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
+      .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
       .endClass();
     lua_reg_detail(L);
@@ -269,9 +266,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   AViewCapture *mCaptureActor;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-  UEngineData *EngineData;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UMapgenData *MapgenData;

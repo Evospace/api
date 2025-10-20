@@ -1,4 +1,4 @@
-#include "EngineData.h"
+#include "EngineDataSubsystem.h"
 #include "Dimension.h"
 #include "EngineUtils.h"
 #include "Evospace/JsonHelper.h"
@@ -20,59 +20,67 @@ bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
   return Point.X >= Rect.Left && Point.X < Rect.Right && Point.Y >= Rect.Top && Point.Y < Rect.Bottom;
 }
 
-void UEngineData::FixResolution() {
-  if (Windowed == EWindowMode::WindowedFullscreen) {
+void UEngineDataSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
+  Super::Initialize(Collection);
+}
+
+void UEngineDataSubsystem::Deinitialize() {
+  Super::Deinitialize();
+}
+
+void UEngineDataSubsystem::FixResolution() {
+  if (Storage.Windowed == EWindowMode::WindowedFullscreen) {
     FDisplayMetrics DisplayMetrics;
     FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
-    ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
-    ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
+    Storage.ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
+    Storage.ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
   }
 
-  if (Windowed == EWindowMode::Fullscreen) {
-    uint32 x = ResolutionX;
-    uint32 y = ResolutionY;
+  if (Storage.Windowed == EWindowMode::Fullscreen) {
+    uint32 x = Storage.ResolutionX;
+    uint32 y = Storage.ResolutionY;
     RHIGetSupportedResolution(x, y);
-    ResolutionX = x;
-    ResolutionY = y;
+    Storage.ResolutionX = x;  
+    Storage.ResolutionY = y;
   }
 
-  if (Windowed == EWindowMode::Windowed) {
+  if (Storage.Windowed == EWindowMode::Windowed) {
     FDisplayMetrics DisplayMetrics;
     FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
-    if (ResolutionX > DisplayMetrics.PrimaryDisplayWidth) {
-      ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
+    if (Storage.ResolutionX > DisplayMetrics.PrimaryDisplayWidth) {
+      Storage.ResolutionX = DisplayMetrics.PrimaryDisplayWidth;
     }
-    if (ResolutionY > DisplayMetrics.PrimaryDisplayHeight) {
-      ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
+    if (Storage.ResolutionY > DisplayMetrics.PrimaryDisplayHeight) {
+      Storage.ResolutionY = DisplayMetrics.PrimaryDisplayHeight;
     }
   }
 }
 
-void UEngineData::ShowConfirmationDialog() {
+void UEngineDataSubsystem::ShowConfirmationDialog() {
   if (!GEngine->GetEngineSubsystem<UModLoadingSubsystem>()->IsContentLoaded())
     return;
 
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
-    OldResolutionX = UserSettings->GetScreenResolution().X;
-    OldResolutionY = UserSettings->GetScreenResolution().Y;
-    OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
+    Storage.OldResolutionX = UserSettings->GetScreenResolution().X;
+    Storage.OldResolutionY = UserSettings->GetScreenResolution().Y;
+    Storage.OldWindowed = static_cast<int32>(UserSettings->GetFullscreenMode());
 
     FixResolution();
 
-    UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Windowed));
-    UserSettings->SetScreenResolution({ ResolutionX, ResolutionY });
+    UserSettings->SetFullscreenMode(static_cast<EWindowMode::Type>(Storage.Windowed));
+    UserSettings->SetScreenResolution({ Storage.ResolutionX, Storage.ResolutionY });
     UserSettings->ApplyResolutionSettings(false);
   }
 
-  auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+  UWorld *World = GetGameInstance()->GetWorld();
+  auto pc = UGameplayStatics::GetPlayerController(World, 0);
   auto widget = CreateWidget<USettingsConfirmationWidget>(
     pc, LoadObject<UClass>(nullptr, TEXT("/Game/Gui/SettingsConfirmationDialog.SettingsConfirmationDialog_C")), TEXT("SettingsConfirmationDialog"));
-  widget->ed = this;
   widget->AddToViewport(10000);
 }
 
-void UEngineData::ConfirmSettings() {
+void UEngineDataSubsystem::ConfirmSettings() {
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
     UserSettings->ConfirmVideoMode();
@@ -80,19 +88,19 @@ void UEngineData::ConfirmSettings() {
   ApplyData();
 }
 
-void UEngineData::CancelSettings() {
+void UEngineDataSubsystem::CancelSettings() {
   UGameUserSettings *UserSettings = GEngine->GetGameUserSettings();
   if (ensure(UserSettings)) {
     UserSettings->RevertVideoMode();
   }
   if (auto set = QrFind<USetting>("Fullscreen")) {
     std::vector opts = { "Fullscreen", "WindowedFullscreen", "Windowed", "Windowed" };
-    set->StringValue = opts[OldWindowed];
+    set->StringValue = opts[Storage.OldWindowed];
   }
   if (auto set = QrFind<USetting>("Resolution")) {
     FStringFormatOrderedArguments args;
-    args.Add(OldResolutionX);
-    args.Add(OldResolutionY);
+    args.Add(Storage.OldResolutionX);
+    args.Add(Storage.OldResolutionY);
     set->StringValue = qr::to_string(FString::Format(TEXT("{0}x{1}"), args));
   }
   FixResolution();
@@ -100,7 +108,7 @@ void UEngineData::CancelSettings() {
   ApplyData();
 }
 
-void UEngineData::ApplyData() const {
+void UEngineDataSubsystem::ApplyData() const {
   // Apply global rendering console variables once per settings application
   {
     auto SetCVar = [](const TCHAR *Name, float Value) {
@@ -116,13 +124,17 @@ void UEngineData::ApplyData() const {
     SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
   }
 
-  if (Fps == 0) {
-    UMainGameInstance::GraphicsSettings__SetFrameRateToBeUnbound();
-  } else {
-    UMainGameInstance::GraphicsSettings__SetFrameRateCap(Fps);
+  if (initial || LastAppliedData.Fps != Storage.Fps) {
+    if (Storage.Fps == 0) {
+      UMainGameInstance::GraphicsSettings__SetFrameRateToBeUnbound();
+    } else {
+      UMainGameInstance::GraphicsSettings__SetFrameRateCap(Storage.Fps);
+    }
   }
 
-  UMainGameInstance::SetDPI(Dpi);
+  if (initial || LastAppliedData.Dpi != Storage.Dpi) {
+    UMainGameInstance::SetDPI(Storage.Dpi);
+  }
 
   ApplyControllerData();
 
@@ -132,8 +144,9 @@ void UEngineData::ApplyData() const {
     UserSettings->SaveSettings();
   }
 
+  UWorld *World = GetGameInstance()->GetWorld();
   ADimension *dim = nullptr;
-  for (TActorIterator<ADimension> It(GetWorld()); It; ++It) {
+  for (TActorIterator<ADimension> It(World); It; ++It) {
     if (It) {
       dim = *It;
       break;
@@ -142,13 +155,19 @@ void UEngineData::ApplyData() const {
 
   // Can be null in the main menu
   if (dim) {
-    dim->DimensionPropComponent->SetRangeMultiplier(PropsMul);
-    dim->DimensionPropComponent->SetLodMultiplier(PropsQuality);
-    dim->DimensionPropComponent->SetDetailShadowsEnabled(DetailShadows);
+    if (initial || LastAppliedData.PropsMul != Storage.PropsMul) {
+      dim->DimensionPropComponent->SetRangeMultiplier(Storage.PropsMul);
+    }
+    if (initial || LastAppliedData.PropsQuality != Storage.PropsQuality) {
+      dim->DimensionPropComponent->SetLodMultiplier(Storage.PropsQuality);
+    }
+    if (initial || LastAppliedData.DetailShadows != Storage.DetailShadows) {
+      dim->DimensionPropComponent->SetDetailShadowsEnabled(Storage.DetailShadows);
+    }
   }
 
   AWorldFeaturesManager *wfm = nullptr;
-  for (TActorIterator<AWorldFeaturesManager> It(GetWorld()); It; ++It) {
+  for (TActorIterator<AWorldFeaturesManager> It(World); It; ++It) {
     if (It) {
       wfm = *It;
       break;
@@ -156,17 +175,22 @@ void UEngineData::ApplyData() const {
   }
 
   if (wfm) {
-    wfm->UpdateSettings();
+    wfm->UpdateSettings(Storage, LastAppliedData, initial);
   }
+
+  LastAppliedData = Storage;
+  initial = false;
 }
 
-void UEngineData::ApplyControllerData() const {
-  auto pc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+void UEngineDataSubsystem::ApplyControllerData() const {
+  UWorld *World = GetGameInstance()->GetWorld();
+  auto pc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(World, 0));
   if (pc && pc->PreloadFinished) {
-    pc->SectorArea->SetRadius(LoadingRange);
+    pc->SectorArea->SetRadius(Storage.LoadingRange);
 
-    pc->AltHotbar = AltHotbar;
-    pc->CtrlHotbar = CtrlHotbar;
-    pc->ShiftHotbar = ShiftHotbar;
+    pc->AltHotbar = Storage.AltHotbar;
+    pc->CtrlHotbar = Storage.CtrlHotbar;
+    pc->ShiftHotbar = Storage.ShiftHotbar;
   }
 }
+
