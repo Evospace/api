@@ -37,6 +37,8 @@ class UInventoryReader : public UInstance {
 
   virtual int32 _Find(const UStaticItem *item) const PURE_VIRTUAL(UInventoryReader::_Find, return 0;);
 
+  virtual TArray<int32> _FindAll(const UStaticItem *item) const PURE_VIRTUAL(UInventoryReader::_FindAll, return {};);
+
   virtual bool IsEmpty() const PURE_VIRTUAL(UInventoryReader::IsEmpty, return 0;);
 
   virtual int64 _Sum(const UStaticItem *item) const PURE_VIRTUAL(UInventoryReader::_Sum, return 0;);

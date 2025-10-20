@@ -27,6 +27,7 @@ class UInventoryContainer : public UInventoryAccess {
   virtual TSubclassOf<UBaseInventoryWidgetBase> GetWidgetClass() const override;
 
   virtual int32 _Find(const UStaticItem *item) const override;
+  virtual TArray<int32> _FindAll(const UStaticItem *item) const override;
 
   virtual bool IsEmpty() const override;
 

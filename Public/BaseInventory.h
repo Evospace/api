@@ -53,6 +53,8 @@ class UBaseInventory : public UInventoryAccess {
 
   virtual int32 _Find(const UStaticItem *item) const override;
 
+  virtual TArray<int32> _FindAll(const UStaticItem *item) const override;
+
   virtual const FItemData &_SafeGet(int32 index) const override;
 
   UFUNCTION(BlueprintCallable)

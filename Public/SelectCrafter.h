@@ -44,12 +44,17 @@ class USelectCrafter : public UAbstractCrafter {
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const override;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
 
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  TArray<bool> ContainsArray() const;
+
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  TArray<bool> CanHoldOutputArray() const;
+
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
   void GenerateOutput(bool bonus);
 
   void ProcessRecipe();
-  bool CanGenerateOutput();
   void ResetCrafterState();
 
   virtual void BlockBeginPlay() override;

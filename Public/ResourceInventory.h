@@ -26,9 +26,6 @@ class UResourceInventory : public USingleSlotInventory {
   UPROPERTY(VisibleAnywhere)
   int64 mDrain = 0;
 
-  UPROPERTY(VisibleAnywhere)
-  FColor Color = FColor::White;
-
   // TODO: why in single slot
   void AddResource(int64 a) {
     Data[0].mValue += a;

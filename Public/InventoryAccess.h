@@ -82,6 +82,12 @@ class UInventoryAccess : public UInventoryReader {
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
   int32 mHighlight = INDEX_NONE;
 
+  UPROPERTY(BlueprintReadOnly, EditAnywhere)
+  FColor HighlightColor = FColor::White;
+
+  UFUNCTION(BlueprintCallable)
+  virtual void SetHighlightColor(FColor _l) { HighlightColor = _l; };
+
   UFUNCTION(BlueprintCallable)
   virtual void SetHighlight(int32 _l) { mHighlight = _l; };
 
