@@ -175,7 +175,7 @@ void UEngineDataSubsystem::ApplyData() const {
   }
 
   if (wfm) {
-    wfm->UpdateSettings(Storage, LastAppliedData, initial);
+    wfm->UpdateSettings();
   }
 
   LastAppliedData = Storage;

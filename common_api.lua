@@ -180,6 +180,12 @@ function SoundClass.load(path) end
 --- @class Dimension
 dim = {}
 
+---
+---
+--- @class EngineData
+engine = {}
+
+
 ---@meta
 -- Lua bindings for coordinate system conversion (via LuaBridge).
 -- Provides utility functions for converting between block, sector, and world coordinates.

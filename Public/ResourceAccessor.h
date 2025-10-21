@@ -1,7 +1,8 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "Evospace/Blocks/Accessors/BaseInventorySideAccessor.h"
+#include "Public/AccessorComponent.h"
+#include "Qr/CommonConverter.h"
 
 #include "ResourceAccessor.generated.h"
 
@@ -19,8 +20,7 @@ class UResourceAccessor : public UAccessor {
       .addProperty("inventory", &Self::mInventory) //@field ResourceInventory
       .addProperty("is_input", &Self::IsInput) //@field boolean
       .addProperty("is_output", &Self::IsOutput) //@field boolean
-      .addProperty(
-        "channel", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*self->Channel.ToString()); }, [](Self *self, const std::string &s) { self->Channel = UTF8_TO_TCHAR(s.data()); })
+      .addProperty("channel", QR_NAME_GET_SET(Channel)) //@field string
       .addFunction("init", &Self::Init)
       .endClass();
   }
@@ -53,8 +53,7 @@ class UResourceAccessor : public UAccessor {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName Channel = TEXT("Error");
 
-  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output,
-            FName channel);
+  void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output, FName channel);
 
   bool IsFrozen() const { return false; }
 

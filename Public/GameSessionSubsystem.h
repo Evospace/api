@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Public/GameSessionData.h"
+#include "Public/ItemHighlighter.h"
 #include "GameSessionSubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDataUpdated, UGameSessionData *, gameSessionData);
@@ -96,8 +97,14 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void SetMenuMuffling(bool bMuffled);
 
+  UFUNCTION(BlueprintCallable)
+  void SetHoveredItem(UStaticItem* item);
+
+  UFUNCTION(BlueprintCallable)
+  void SetSearchItems(const TArray<UStaticItem*>& InItems);
+
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  UStaticItem *ItemTypeHighlight = nullptr;
+  FItemHighlighter ItemTypeHighlight;
 
   UPROPERTY(BlueprintAssignable)
   FDataUpdated OnDataUpdated;

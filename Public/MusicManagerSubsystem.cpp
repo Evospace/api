@@ -25,33 +25,60 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMusicManagerSubsystem::OnPostLoadMap);
   FWorldDelegates::OnWorldCleanup.AddUObject(this, &UMusicManagerSubsystem::OnWorldCleanup);
 
-  auto music_playlist = NewObject<UMusicPlaylist>();
-  const TArray<FString> music_paths = {
-    TEXT("/Script/Engine.SoundWave'/Game/Music/evospace_main_menu.evospace_main_menu'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Binary_Serenity.Binary_Serenity'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Realm.Elven_Realm'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Stellar_Serenity.Stellar_Serenity'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/DowntempoNeon.DowntempoNeon'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Epic_Fantasy.Epic_Fantasy'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinery.Celestial_Machinery'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Serenity.Celestial_Serenity'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Automatic_Rhythms.Automatic_Rhythms'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Magical_Fantasy.Magical_Fantasy'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Harmonies__no_percussion_.Elven_Harmonies__no_percussion_'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinations.Celestial_Machinations'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'"),
-    TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Tranquility_Comb.Cosmic_Tranquility_Comb'"),
-  };
+  {
+    auto music_playlist = NewObject<UMusicPlaylist>();
+    const TArray<FString> music_paths = {
+      TEXT("/Script/Engine.SoundWave'/Game/Music/evospace_main_menu.evospace_main_menu'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Binary_Serenity.Binary_Serenity'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Realm.Elven_Realm'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Stellar_Serenity.Stellar_Serenity'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/DowntempoNeon.DowntempoNeon'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Epic_Fantasy.Epic_Fantasy'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinery.Celestial_Machinery'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Serenity.Celestial_Serenity'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Automatic_Rhythms.Automatic_Rhythms'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Magical_Fantasy.Magical_Fantasy'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Harmonies__no_percussion_.Elven_Harmonies__no_percussion_'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinations.Celestial_Machinations'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Tranquility_Comb.Cosmic_Tranquility_Comb'")
+    };
 
-  for (const auto &path : music_paths) {
-    auto wave = LoadObject<USoundBase>(nullptr, *path);
-    if (ensure(wave)) {
-      music_playlist->Tracks.Add(wave);
+    for (const auto &path : music_paths) {
+      auto wave = LoadObject<USoundBase>(nullptr, *path);
+      if (ensure(wave)) {
+        music_playlist->Tracks.Add(wave);
+      }
     }
+
+    SetPlaylist(music_playlist);
   }
 
-  SetPlaylist(music_playlist);
+  {
+    auto music_playlist = NewObject<UMusicPlaylist>();
+    const TArray<FString> music_paths = {
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Cosmic_Echoes.Cosmic_Echoes'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Echoes_of_the_Unknown.Echoes_of_the_Unknown'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Frozen_Echoes.Frozen_Echoes'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Galactic_Ghosts.Galactic_Ghosts'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Pew_Pew_Echoes.Pew_Pew_Echoes'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Ppmp_Aah_Echoes.Ppmp_Aah_Echoes'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Starlight_Voyager.Starlight_Voyager'"),
+  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Tidim_Echoes.Tidim_Echoes'")
+    };
+
+    for (const auto &path : music_paths) {
+      auto wave = LoadObject<USoundBase>(nullptr, *path);
+      if (ensure(wave)) {
+        music_playlist->Tracks.Add(wave);
+      }
+    }
+
+    SetPlaylist(music_playlist);
+  }
+
+
 
   MusicMetaSoundSource = LoadObject<USoundBase>(nullptr, TEXT("/Script/MetasoundEngine.MetaSoundSource'/Game/Sounds/MS_MusicPlayer.MS_MusicPlayer'"));
 }

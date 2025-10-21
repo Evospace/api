@@ -82,6 +82,18 @@ void UGameSessionSubsystem::SetCreativeAllowed(bool val) {
   Data->CreativeAllowed = val;
 }
 
+void UGameSessionSubsystem::SetSearchItems(const TArray<UStaticItem*>& InItems) {
+  TArray<const UStaticItem*> const_items;
+  for (auto i : InItems) {
+    const_items.Add(i);
+  }
+  ItemTypeHighlight.SetSearchItems(const_items);
+}
+
+void UGameSessionSubsystem::SetHoveredItem(UStaticItem* item) {
+  ItemTypeHighlight.SetHoveredItem(item);
+}
+
 void UGameSessionSubsystem::SetDataExt(UGameSessionData *dat, const FString &saveName, const FVersionStruct &version, const TArray<FString> &mods) {
   check(dat);
   Data = dat;

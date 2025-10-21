@@ -180,6 +180,12 @@ function SoundClass.load(path) end
 --- @class Dimension
 dim = {}
 
+---
+---
+--- @class EngineData
+engine = {}
+
+
 ---@meta
 -- Lua bindings for coordinate system conversion (via LuaBridge).
 -- Provides utility functions for converting between block, sector, and world coordinates.
@@ -307,6 +313,11 @@ function StaticAchievement.get_class() end
 --- @param object Object to cast
 --- @return StaticAchievement
 function StaticAchievement.cast(object) end
+
+--- 
+--- 
+--- @class AnimatedBlockActor : BlockActor
+AnimatedBlockActor = {}
 
 --- 
 --- 
@@ -452,6 +463,11 @@ function BiomeWorldGenerator.get_class() end
 --- @param object Object to cast
 --- @return BiomeWorldGenerator
 function BiomeWorldGenerator.cast(object) end
+
+--- 
+--- 
+--- @class BlockActor : Actor
+BlockActor = {}
 
 --- 
 --- 
@@ -808,7 +824,7 @@ function DrillingRig.cast(object) end
 
 --- 
 --- 
---- @class EngineData : Instance
+--- @class EngineData : Object
 --- @field props_mul number undocumented
 --- @field dpi number undocumented
 --- @field mouse_sensitivity_x number undocumented
@@ -833,30 +849,12 @@ function DrillingRig.cast(object) end
 --- @field fog number undocumented
 --- @field window_mode integer undocumented
 --- @field autosave_period integer undocumented
+--- @field memory_stats boolean undocumented
 EngineData = {}
 
 function EngineData:apply() end
 
 function EngineData:show_confirmation() end
-
---- Creates a new EngineData instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return EngineData
-function EngineData.new(parent, name) end
-
---- Creates a new EngineData instance
---- @return EngineData
-function EngineData.new_simple() end
-
---- Return EngineData class object
---- @return Class
-function EngineData.get_class() end
-
---- Trying to cast Object into EngineData
---- @param object Object to cast
---- @return EngineData
-function EngineData.cast(object) end
 
 --- 
 --- 
@@ -903,8 +901,8 @@ function FluidContainerBlockLogic.cast(object) end
 --- 
 --- 
 --- @class Game : Object
---- @field engine_data EngineData undocumented
 --- @field mapgen_data MapgenData undocumented
+--- @field localization string undocumented
 --- @field build_string string undocumented
 Game = {}
 
@@ -916,13 +914,15 @@ Game = {}
 --- @field creative_mode boolean undocumented
 --- @field creative_allowed boolean undocumented
 --- @field infinite_ore boolean undocumented
---- @field total_game_time double undocumented
+--- @field total_game_time number undocumented
 --- @field total_game_ticks integer undocumented
 --- @field seed string undocumented
 --- @field version string undocumented
 --- @field generator string undocumented
 --- @field save_name string undocumented
 --- @field cloud boolean undocumented
+--- @field world_time number undocumented
+--- @field world_time_freeze boolean undocumented
 GameSessionData = {}
 
 --- Creates a new GameSessionData instance
