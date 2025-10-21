@@ -4,20 +4,31 @@
 
 #include "CoreMinimal.h"
 #include <Subsystems/GameInstanceSubsystem.h>
+#include "Tickable.h"
 #include "MusicManagerSubsystem.generated.h"
 
 class UAudioComponent;
 class USoundBase;
 class UGameSessionSubsystem;
 class UMusicPlaylist;
+class AMainPlayerController;
+struct FReverbParameters;
 
 UCLASS()
-class UMusicManagerSubsystem : public UGameInstanceSubsystem {
+class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
   GENERATED_BODY()
 
   public:
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
+
+  // FTickableGameObject interface
+  virtual void Tick(float DeltaTime) override;
+  virtual TStatId GetStatId() const override;
+  virtual bool IsTickable() const override { return true; }
+  virtual bool IsTickableInEditor() const override { return false; }
+  virtual bool IsTickableWhenPaused() const override { return false; }
+  virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
 
   UFUNCTION(BlueprintCallable)
   void SetMuffled(bool bInMuffled);
@@ -52,7 +63,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   float CrossfadeTime = 3.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float NextTrackDelay = 70.0f;
+  float NextTrackDelay = 50.0f;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bUseAAsActive = true;
@@ -66,8 +77,17 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float CurrentReverbAmount = 0.0f;
+
   UFUNCTION()
   void ResetTimers();
+
+  // Update reverb from player controller's ambient tracing component
+  void UpdateReverbFromAmbientTracing();
+
+  // Apply all reverb parameters to an audio component
+  void ApplyReverbParameters(UAudioComponent *AudioComponent, const FReverbParameters &Params);
 
   UFUNCTION()
   void HandleMenuMuffling(bool bInMuffled);

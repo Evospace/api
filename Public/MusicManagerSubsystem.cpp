@@ -6,11 +6,15 @@
 #include <Sound/SoundBase.h>
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
 #include "Public/GameSessionSubsystem.h"
+#include "Public/ReverbParameters.h"
 #include "Subsystems/SubsystemCollection.h"
 #include "MusicPlaylist.h"
 #include "TimerManager.h"
 #include <Sound/SoundWave.h>
+#include "Evospace/Player/MainPlayerController.h"
+#include "Evospace/Player/AmbientTracingComponent.h"
 
 void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
@@ -75,7 +79,7 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
       }
     }
 
-    SetPlaylist(music_playlist);
+    //SetPlaylist(music_playlist);
   }
 
 
@@ -114,6 +118,74 @@ void UMusicManagerSubsystem::Deinitialize() {
   FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
   FWorldDelegates::OnWorldCleanup.RemoveAll(this);
   Super::Deinitialize();
+}
+
+TStatId UMusicManagerSubsystem::GetStatId() const {
+  RETURN_QUICK_DECLARE_CYCLE_STAT(UMusicManagerSubsystem, STATGROUP_Tickables);
+}
+
+void UMusicManagerSubsystem::Tick(float DeltaTime) {
+  UpdateReverbFromAmbientTracing();
+}
+
+void UMusicManagerSubsystem::UpdateReverbFromAmbientTracing() {
+  UWorld *World = GetWorld();
+  if (!World) {
+    return;
+  }
+
+  // Get the first player controller
+  APlayerController *PC = World->GetFirstPlayerController();
+  if (!PC) {
+    return;
+  }
+
+  // Cast to our main player controller
+  AMainPlayerController *MainPC = Cast<AMainPlayerController>(PC);
+  if (!MainPC || !MainPC->mAmbientTracing) {
+    return;
+  }
+
+  // Get the complete reverb parameters from ambient tracing
+  const FReverbParameters &ReverbParams = MainPC->mAmbientTracing->ReverbParams;
+  float NewReverbAmount = MainPC->mAmbientTracing->ReverbAmount;
+  
+  // Update if the value has changed meaningfully
+  if (FMath::Abs(NewReverbAmount - CurrentReverbAmount) > 0.001f) {
+    CurrentReverbAmount = NewReverbAmount;
+
+    // Apply all reverb parameters to both audio components
+    if (AudioComponentA && AudioComponentA->IsRegistered()) {
+      ApplyReverbParameters(AudioComponentA, ReverbParams);
+    }
+    if (AudioComponentB && AudioComponentB->IsRegistered()) {
+      ApplyReverbParameters(AudioComponentB, ReverbParams);
+    }
+  }
+}
+
+void UMusicManagerSubsystem::ApplyReverbParameters(UAudioComponent *AudioComponent, const FReverbParameters &Params) {
+  if (!AudioComponent) {
+    return;
+  }
+
+  // Apply all reverb parameters to the MetaSound
+  AudioComponent->SetFloatParameter(TEXT("ReverbAmount"), Params.WetLevel);
+  AudioComponent->SetFloatParameter(TEXT("RoomSize"), Params.RoomSize);
+  AudioComponent->SetFloatParameter(TEXT("WetLevel"), Params.WetLevel);
+  AudioComponent->SetFloatParameter(TEXT("DryLevel"), Params.DryLevel);
+  AudioComponent->SetFloatParameter(TEXT("Delay"), Params.Delay);
+  AudioComponent->SetFloatParameter(TEXT("Gain"), Params.Gain);
+  AudioComponent->SetFloatParameter(TEXT("Bandwidth"), Params.Bandwidth);
+  AudioComponent->SetFloatParameter(TEXT("Diffusion"), Params.Diffusion);
+  AudioComponent->SetFloatParameter(TEXT("Dampening"), Params.Dampening);
+  AudioComponent->SetFloatParameter(TEXT("Decay"), Params.Decay);
+  AudioComponent->SetFloatParameter(TEXT("Density"), Params.Density);
+  AudioComponent->SetFloatParameter(TEXT("AverageAbsorption"), Params.AverageAbsorption);
+  AudioComponent->SetFloatParameter(TEXT("AverageDistance"), Params.AverageDistance);
+  
+  // Wind stereo balance: 0 = left ear, 1 = right ear
+  AudioComponent->SetFloatParameter(TEXT("WindBalance"), Params.WindBalance);
 }
 
 void UMusicManagerSubsystem::SetMuffled(bool bInMuffled) {
