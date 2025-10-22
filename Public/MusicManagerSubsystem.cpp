@@ -8,7 +8,6 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "Public/GameSessionSubsystem.h"
-#include "Public/ReverbParameters.h"
 #include "Subsystems/SubsystemCollection.h"
 #include "MusicPlaylist.h"
 #include "TimerManager.h"
@@ -82,9 +81,19 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     //SetPlaylist(music_playlist);
   }
 
+  FactoryBus = LoadObject<USoundSubmix>(nullptr, TEXT("/Game/Audio/Submixes/FactoryBus.FactoryBus"));
+  
+  // Get the reverb preset from the first submix effect in the chain
+  if (FactoryBus && FactoryBus->SubmixEffectChain.Num() > 0) {
+    ReverbPreset = Cast<USubmixEffectReverbPreset>(FactoryBus->SubmixEffectChain[0]);
+    if (!ReverbPreset) {
+      LOG(WARN_LL) << "FactoryBus first submix effect is not a USubmixEffectReverbPreset";
+    }
+  } else {
+    LOG(WARN_LL) << "FactoryBus has no submix effects in chain";
+  }
 
-
-  MusicMetaSoundSource = LoadObject<USoundBase>(nullptr, TEXT("/Script/MetasoundEngine.MetaSoundSource'/Game/Sounds/MS_MusicPlayer.MS_MusicPlayer'"));
+  MusicMetaSoundSource = LoadObject<USoundBase>(nullptr, TEXT("/Script/MetasoundEngine.MetaSoundSource'/Game/Audio/MS_MusicPlayer.MS_MusicPlayer'"));
 }
 
 void UMusicManagerSubsystem::ResetTimers() {
@@ -143,49 +152,41 @@ void UMusicManagerSubsystem::UpdateReverbFromAmbientTracing() {
   // Cast to our main player controller
   AMainPlayerController *MainPC = Cast<AMainPlayerController>(PC);
   if (!MainPC || !MainPC->mAmbientTracing) {
+    // If ambient tracing is not available, disable reverb
+    if (CurrentReverbAmount > 0.001f) {
+      CurrentReverbAmount = 0.0f;
+      
+      // Create disabled reverb settings
+      FSubmixEffectReverbSettings DisabledSettings;
+      DisabledSettings.bBypass = true;
+      DisabledSettings.WetLevel = 0.0f;
+      DisabledSettings.DryLevel = 1.0f;
+      
+      ApplyReverbSettings(DisabledSettings);
+    }
     return;
   }
 
-  // Get the complete reverb parameters from ambient tracing
-  const FReverbParameters &ReverbParams = MainPC->mAmbientTracing->ReverbParams;
+  // Get the reverb settings from ambient tracing
+  const FSubmixEffectReverbSettings &ReverbSettings = MainPC->mAmbientTracing->ReverbSettings;
   float NewReverbAmount = MainPC->mAmbientTracing->ReverbAmount;
   
   // Update if the value has changed meaningfully
   if (FMath::Abs(NewReverbAmount - CurrentReverbAmount) > 0.001f) {
     CurrentReverbAmount = NewReverbAmount;
 
-    // Apply all reverb parameters to both audio components
-    if (AudioComponentA && AudioComponentA->IsRegistered()) {
-      ApplyReverbParameters(AudioComponentA, ReverbParams);
-    }
-    if (AudioComponentB && AudioComponentB->IsRegistered()) {
-      ApplyReverbParameters(AudioComponentB, ReverbParams);
-    }
+    // Apply reverb settings to the submix
+    ApplyReverbSettings(ReverbSettings);
   }
 }
 
-void UMusicManagerSubsystem::ApplyReverbParameters(UAudioComponent *AudioComponent, const FReverbParameters &Params) {
-  if (!AudioComponent) {
+void UMusicManagerSubsystem::ApplyReverbSettings(const FSubmixEffectReverbSettings &Settings) {
+  if (!ReverbPreset) {
     return;
   }
 
-  // Apply all reverb parameters to the MetaSound
-  AudioComponent->SetFloatParameter(TEXT("ReverbAmount"), Params.WetLevel);
-  AudioComponent->SetFloatParameter(TEXT("RoomSize"), Params.RoomSize);
-  AudioComponent->SetFloatParameter(TEXT("WetLevel"), Params.WetLevel);
-  AudioComponent->SetFloatParameter(TEXT("DryLevel"), Params.DryLevel);
-  AudioComponent->SetFloatParameter(TEXT("Delay"), Params.Delay);
-  AudioComponent->SetFloatParameter(TEXT("Gain"), Params.Gain);
-  AudioComponent->SetFloatParameter(TEXT("Bandwidth"), Params.Bandwidth);
-  AudioComponent->SetFloatParameter(TEXT("Diffusion"), Params.Diffusion);
-  AudioComponent->SetFloatParameter(TEXT("Dampening"), Params.Dampening);
-  AudioComponent->SetFloatParameter(TEXT("Decay"), Params.Decay);
-  AudioComponent->SetFloatParameter(TEXT("Density"), Params.Density);
-  AudioComponent->SetFloatParameter(TEXT("AverageAbsorption"), Params.AverageAbsorption);
-  AudioComponent->SetFloatParameter(TEXT("AverageDistance"), Params.AverageDistance);
-  
-  // Wind stereo balance: 0 = left ear, 1 = right ear
-  AudioComponent->SetFloatParameter(TEXT("WindBalance"), Params.WindBalance);
+  // Directly apply the settings calculated in AmbientTracingComponent
+  ReverbPreset->SetSettings(Settings);
 }
 
 void UMusicManagerSubsystem::SetMuffled(bool bInMuffled) {
@@ -209,6 +210,11 @@ void UMusicManagerSubsystem::EnsureAudioComponent() {
       AudioComponentA->bIsUISound = true;
       AudioComponentA->bAutoActivate = false;
       AudioComponentA->SetVolumeMultiplier(1.0f);
+      
+      // Route to FactoryBus submix for reverb processing
+      if (FactoryBus) {
+        AudioComponentA->SetSubmixSend(FactoryBus, 1.0f);
+      }
     }
   }
   if (!AudioComponentB) {
@@ -217,6 +223,11 @@ void UMusicManagerSubsystem::EnsureAudioComponent() {
       AudioComponentB->bIsUISound = true;
       AudioComponentB->bAutoActivate = false;
       AudioComponentB->SetVolumeMultiplier(1.0f);
+      
+      // Route to FactoryBus submix for reverb processing
+      if (FactoryBus) {
+        AudioComponentB->SetSubmixSend(FactoryBus, 1.0f);
+      }
     }
   }
 }

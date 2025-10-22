@@ -5,6 +5,11 @@
 #include "CoreMinimal.h"
 #include <Subsystems/GameInstanceSubsystem.h>
 #include "Tickable.h"
+
+#include "Sound/SoundSubmix.h"
+#include "Sound/SoundEffectSubmix.h"
+#include "SubmixEffects/AudioMixerSubmixEffectReverb.h"
+
 #include "MusicManagerSubsystem.generated.h"
 
 class UAudioComponent;
@@ -12,7 +17,6 @@ class USoundBase;
 class UGameSessionSubsystem;
 class UMusicPlaylist;
 class AMainPlayerController;
-struct FReverbParameters;
 
 UCLASS()
 class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
@@ -80,14 +84,19 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float CurrentReverbAmount = 0.0f;
 
+  UPROPERTY(VisibleAnywhere)
+  USoundSubmix * FactoryBus;
+
+  UPROPERTY(VisibleAnywhere) 
+  USubmixEffectReverbPreset * ReverbPreset;
+
   UFUNCTION()
   void ResetTimers();
 
   // Update reverb from player controller's ambient tracing component
   void UpdateReverbFromAmbientTracing();
 
-  // Apply all reverb parameters to an audio component
-  void ApplyReverbParameters(UAudioComponent *AudioComponent, const FReverbParameters &Params);
+  void ApplyReverbSettings(const FSubmixEffectReverbSettings &Settings);
 
   UFUNCTION()
   void HandleMenuMuffling(bool bInMuffled);
