@@ -14,34 +14,34 @@ struct FEngineDataStorage {
     float PropsQuality = 1.0;
   
     UPROPERTY(EditAnywhere)
-    int32 ReflectionPreset;
+    int32 ReflectionPreset = 0;
   
     UPROPERTY(EditAnywhere)
-    int32 TransparencyPreset;
+    int32 TransparencyPreset = 0;
   
     UPROPERTY(EditAnywhere)
-    int32 GiPreset;
+    int32 GiPreset = 0;
   
     UPROPERTY(EditAnywhere)
     bool DetailShadows = true;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool Performance;
+    bool Performance = false;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool PerformanceGraph;
+    bool PerformanceGraph = false;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool MemoryStats;
+    bool MemoryStats = false;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool CtrlHotbar;
+    bool CtrlHotbar = false;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool AltHotbar;
+    bool AltHotbar = false;
   
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool ShiftHotbar;
+    bool ShiftHotbar = false;
   
     UPROPERTY(EditAnywhere)
     int32 Fps = 60;
@@ -77,7 +77,7 @@ struct FEngineDataStorage {
     int32 ResolutionY = 1080;
   
     UPROPERTY(EditAnywhere)
-    int32 Windowed;
+    int32 Windowed = 0;
   
     // Для ручного отката настроек
     int32 OldResolutionX = 1920;
