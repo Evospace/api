@@ -71,7 +71,6 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
   }
 
   private:
-  mutable FEngineDataStorage LastAppliedData;
   mutable bool initial = true;
 };
 

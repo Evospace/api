@@ -124,17 +124,13 @@ void UEngineDataSubsystem::ApplyData() const {
     SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
   }
 
-  if (initial || LastAppliedData.Fps != Storage.Fps) {
-    if (Storage.Fps == 0) {
-      UMainGameInstance::GraphicsSettings__SetFrameRateToBeUnbound();
-    } else {
-      UMainGameInstance::GraphicsSettings__SetFrameRateCap(Storage.Fps);
-    }
+  if (Storage.Fps == 0) {
+    UMainGameInstance::GraphicsSettings__SetFrameRateToBeUnbound();
+  } else {
+    UMainGameInstance::GraphicsSettings__SetFrameRateCap(Storage.Fps);
   }
 
-  if (initial || LastAppliedData.Dpi != Storage.Dpi) {
-    UMainGameInstance::SetDPI(Storage.Dpi);
-  }
+  UMainGameInstance::SetDPI(Storage.Dpi);
 
   ApplyControllerData();
 
@@ -155,15 +151,9 @@ void UEngineDataSubsystem::ApplyData() const {
 
   // Can be null in the main menu
   if (dim) {
-    if (initial || LastAppliedData.PropsMul != Storage.PropsMul) {
-      dim->DimensionPropComponent->SetRangeMultiplier(Storage.PropsMul);
-    }
-    if (initial || LastAppliedData.PropsQuality != Storage.PropsQuality) {
-      dim->DimensionPropComponent->SetLodMultiplier(Storage.PropsQuality);
-    }
-    if (initial || LastAppliedData.DetailShadows != Storage.DetailShadows) {
-      dim->DimensionPropComponent->SetDetailShadowsEnabled(Storage.DetailShadows);
-    }
+    dim->DimensionPropComponent->SetRangeMultiplier(Storage.PropsMul);
+    dim->DimensionPropComponent->SetLodMultiplier(Storage.PropsQuality);
+    dim->DimensionPropComponent->SetDetailShadowsEnabled(Storage.DetailShadows);
   }
 
   AWorldFeaturesManager *wfm = nullptr;
@@ -178,7 +168,6 @@ void UEngineDataSubsystem::ApplyData() const {
     wfm->UpdateSettings();
   }
 
-  LastAppliedData = Storage;
   initial = false;
 }
 
