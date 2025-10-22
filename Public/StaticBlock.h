@@ -33,6 +33,7 @@ class UStaticBlock : public UStaticObject {
       .addProperty("color_top", &Self::mColorTop) //@field Vec3
       .addProperty("tier", &Self::Tier) //@field integer
       .addProperty("level", &Self::Level) //@field integer
+      .addProperty("break_effect", &Self::BreakEffect) //@field Class
       .addProperty("lua", &Self::Table) //@field table
       .endClass();
   }
@@ -56,6 +57,9 @@ class UStaticBlock : public UStaticObject {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UClass *mSelectorClass = nullptr;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  UClass *BreakEffect = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FLinearColor mColorSide = FLinearColor::White;
