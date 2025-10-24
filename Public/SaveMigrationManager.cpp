@@ -347,7 +347,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                   } });
 
   // Fix broken ore sources with empty Item/Prop by setting them to Pyrite
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 52, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 123, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
                    const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
                    const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
