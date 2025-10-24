@@ -346,112 +346,99 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                     return true;
                   } });
 
+  // Fix broken ore sources with empty Item/Prop by setting them to Pyrite
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 52, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+                   const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
-  // Replace Pyrite with Magnetite in sources/props
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 90, TEXT("*") },
-                  [](const FString &saveName, UGameInstance *GameInstance) {
-                    const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-                    const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+                   FString jsonStr;
+                   if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
+                     return true; // Nothing to migrate
+                   }
 
-                    FString jsonStr;
-                    if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
-                      return true; // Nothing to migrate
-                    }
+                   TSharedPtr<FJsonObject> rootObj;
+                   TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
+                   if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-                    TSharedPtr<FJsonObject> rootObj;
-                    TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
-                    if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
-                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
-                                    << saveName << "'";
-                      return false;
-                    }
+                   TSharedPtr<FJsonObject> surfaceObj;
+                   if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
+                     surfaceObj = surfaceVal->AsObject();
+                   }
+                   if (!surfaceObj.IsValid()) {
+                     return true; // Unexpected structure; skip
+                   }
 
-                    TSharedPtr<FJsonObject> surfaceObj;
-                    if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
-                      surfaceObj = surfaceVal->AsObject();
-                    }
-                    if (!surfaceObj.IsValid()) {
-                      return true; // Unexpected structure; skip
-                    }
+                   TSharedPtr<FJsonObject> regionMapObj;
+                   if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
+                     regionMapObj = regionMapVal->AsObject();
+                   }
+                   if (!regionMapObj.IsValid()) {
+                     return true; // No regions to process
+                   }
 
-                    TSharedPtr<FJsonObject> regionMapObj;
-                    if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
-                      regionMapObj = regionMapVal->AsObject();
-                    }
-                    if (!regionMapObj.IsValid()) {
-                      return true; // No regions to process
-                    }
+                   const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
+                   if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
+                     return true; // Nothing known
+                   }
 
-                    const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
-                    if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
-                      return true; // Nothing known
-                    }
+                   // Clone Known to allow modification
+                   TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
+                   for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
+                     if (!entryVal.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
+                     if (!entryObj.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> regionObj;
+                     if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
+                       regionObj = valueVal->AsObject();
+                     }
+                     if (!regionObj.IsValid())
+                       continue;
 
-                    // Clone Known to allow modification
-                    TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
+                     const TArray<TSharedPtr<FJsonValue>> *sourcesPtr = nullptr;
+                     if (!regionObj->TryGetArrayField(TEXT("Sources"), sourcesPtr) || !sourcesPtr)
+                       continue;
+                     TArray<TSharedPtr<FJsonValue>> sources = *sourcesPtr;
+                     for (TSharedPtr<FJsonValue> &srcVal : sources) {
+                       if (!srcVal.IsValid())
+                         continue;
+                       TSharedPtr<FJsonObject> srcObj = srcVal->AsObject();
+                       if (!srcObj.IsValid())
+                         continue;
 
-                    // Iterate known entries and update sources
-                    for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
-                      if (!entryVal.IsValid())
-                        continue;
-                      TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
-                      if (!entryObj.IsValid())
-                        continue;
+                       FString itemStr, propStr;
+                       const bool itemEmpty = !srcObj->TryGetStringField(TEXT("Item"), itemStr) || itemStr.IsEmpty();
+                       const bool propEmpty = !srcObj->TryGetStringField(TEXT("Prop"), propStr) || propStr.IsEmpty();
 
-                      TSharedPtr<FJsonObject> regionObj;
-                      if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
-                        regionObj = valueVal->AsObject();
-                      }
-                      if (!regionObj.IsValid())
-                        continue;
+                       if (itemEmpty && propEmpty) {
+                         srcObj->SetStringField(TEXT("Item"), TEXT("PyriteOre"));
+                         srcObj->SetStringField(TEXT("Prop"), TEXT("PyriteCluster"));
+                       }
+                     }
+                     // Write back possibly modified sources array
+                     regionObj->SetArrayField(TEXT("Sources"), sources);
+                   }
 
-                      const TArray<TSharedPtr<FJsonValue>> *sourcesPtr = nullptr;
-                      if (!regionObj->TryGetArrayField(TEXT("Sources"), sourcesPtr) || !sourcesPtr)
-                        continue;
+                   // Write back possibly modified known array
+                   regionMapObj->SetArrayField(TEXT("Known"), knownArray);
 
-                      TArray<TSharedPtr<FJsonValue>> sources = *sourcesPtr;
-                      for (TSharedPtr<FJsonValue> &srcVal : sources) {
-                        if (!srcVal.IsValid())
-                          continue;
-                        TSharedPtr<FJsonObject> srcObj = srcVal->AsObject();
-                        if (!srcObj.IsValid())
-                          continue;
+                   // Save updated JSON
+                   FString outStr;
+                   const auto writer = TJsonWriterFactory<>::Create(&outStr);
+                   FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
+                   if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-                        FString itemStr;
-                        if (srcObj->TryGetStringField(TEXT("Item"), itemStr)) {
-                          if (itemStr == TEXT("PyriteOre")) {
-                            srcObj->SetStringField(TEXT("Item"), TEXT("MagnetiteOre"));
-                          }
-                        }
-
-                        FString propStr;
-                        if (srcObj->TryGetStringField(TEXT("Prop"), propStr)) {
-                          if (propStr.Contains(TEXT("Pyrite"))) {
-                            propStr = propStr.Replace(TEXT("Pyrite"), TEXT("Magnetite"), ESearchCase::CaseSensitive);
-                            srcObj->SetStringField(TEXT("Prop"), propStr);
-                          }
-                        }
-                      }
-                      // Write back modified sources
-                      regionObj->SetArrayField(TEXT("Sources"), sources);
-                    }
-
-                    // Write back possibly modified known array
-                    regionMapObj->SetArrayField(TEXT("Known"), knownArray);
-
-                    // Save updated JSON
-                    FString outStr;
-                    const auto writer = TJsonWriterFactory<>::Create(&outStr);
-                    FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
-                    if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
-                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
-                                    << saveName << "'";
-                      return false;
-                    }
-
-                    return true;
-                  } });
-
+                   return true;
+                 } });
 
   int applied = 0;
   for (const FMigrator &m : migrators) {
