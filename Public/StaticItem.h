@@ -41,7 +41,6 @@ class UStaticItem : public UPrototype, public ISearchable {
       .addProperty("mesh", &Self::mMesh) //@field StaticMesh Mesh for item rendering in world
       .addProperty("block", &Self::Block) //@field StaticObject Buildable object pointer for this item
       .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
-      .addProperty("custom_data", &Self::CustomData) //@field bool Is item instance contains CustomData
       .addProperty("logic", &Self::mItemLogic) //@field Class Class for item while in hand
       .addProperty("lua", &Self::Table) //@field table
       .addProperty("tags", &Self::Tags) //@field string

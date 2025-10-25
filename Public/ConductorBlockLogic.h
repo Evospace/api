@@ -10,6 +10,9 @@
 #include "Public/EvoRingBuffer.h"
 #include "Public/LazyGameSessionData.h"
 
+
+#include "CoverAttachInterface.h"
+
 #include "ConductorBlockLogic.generated.h"
 
 class USectorProxy;
@@ -202,7 +205,7 @@ class UBlockNetwork : public UObject {
 /// Conductors
 
 UCLASS(BlueprintType)
-class UConductorBlockLogic : public UStorageBlockLogic {
+class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInterface {
   using Self = UConductorBlockLogic;
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
@@ -312,6 +315,18 @@ class UConductorBlockLogic : public UStorageBlockLogic {
   TArray<RCoverWrapper> SideCovers;
 
   RCoverWrapper CenterCover;
+
+  // User-placed center cover support
+  UPROPERTY(VisibleAnywhere)
+  UStaticCover *UserCenterCover = nullptr;
+
+  RCoverWrapper UserCenterCoverInstance;
+
+  // ICoverAttachInterface
+  virtual bool AttachCover_Implementation(UStaticCover *cover) override;
+  virtual bool DetachCover_Implementation() override;
+  virtual bool HasCover_Implementation() const override;
+  virtual UStaticCover *GetAttachedCover_Implementation() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UBlockNetwork *mNetwork = nullptr;
