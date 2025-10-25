@@ -30,6 +30,7 @@ class ABlockActor : public AActor {
       .deriveClass<ABlockActor, AActor>("BlockActor") //@class BlockActor : Actor
       .addProperty("logic", &ABlockActor::mBlockLogic, false)
       .addProperty("hull_material", &ABlockActor::HullMaterial)
+      .addStaticFunction("cast", [](UObject *obj) { return Cast<ABlockActor>(obj); })
       .endClass();
   }
 };
