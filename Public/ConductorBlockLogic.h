@@ -323,10 +323,9 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
   RCoverWrapper UserCenterCoverInstance;
 
   // ICoverAttachInterface
-  virtual bool AttachCover_Implementation(UStaticCover *cover) override;
-  virtual bool DetachCover_Implementation() override;
-  virtual bool HasCover_Implementation() const override;
-  virtual UStaticCover *GetAttachedCover_Implementation() const override;
+  virtual bool AttachCover(UStaticCover *cover) override;
+  virtual bool DetachCover() override;
+  virtual UStaticCover *GetAttachedCover() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UBlockNetwork *mNetwork = nullptr;

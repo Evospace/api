@@ -82,8 +82,7 @@ class UStaticBlock : public UStaticObject {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 Level = 0;
 
-  virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic,
-                                                const FTransform &tr) const;
+  virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FString GetLuaTooltip(UBlockLogic *s) const;
@@ -96,6 +95,5 @@ class UStaticBlock : public UStaticObject {
 
   virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
 
-  virtual UPartBlockLogic *SpawnPart(ADimension *world, const FTransform &tr, const Vec3i &bpos,
-                                     UBlockLogic *parent) const;
+  virtual UPartBlockLogic *SpawnPart(ADimension *world, const FTransform &tr, const Vec3i &bpos, UBlockLogic *parent) const;
 };

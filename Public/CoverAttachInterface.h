@@ -6,7 +6,7 @@
 
 class UStaticCover;
 
-UINTERFACE(MinimalAPI, Blueprintable)
+UINTERFACE(NotBlueprintable)
 class UCoverAttachInterface : public UInterface {
   GENERATED_BODY()
 };
@@ -15,21 +15,14 @@ class ICoverAttachInterface {
   GENERATED_BODY()
 
   public:
-  UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-  bool AttachCover(UStaticCover *cover);
-  virtual bool AttachCover_Implementation(UStaticCover *cover) = 0;
+  UFUNCTION(BlueprintCallable)
+  virtual bool AttachCover(UStaticCover *cover) PURE_VIRTUAL(UCoverAttachInterface::AttachCover, return false;);
 
-  UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-  bool DetachCover();
-  virtual bool DetachCover_Implementation() = 0;
+  UFUNCTION(BlueprintCallable)
+  virtual bool DetachCover() PURE_VIRTUAL(UCoverAttachInterface::DetachCover, return false;);
 
-  UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-  bool HasCover() const;
-  virtual bool HasCover_Implementation() const = 0;
-
-  UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-  UStaticCover *GetAttachedCover() const;
-  virtual UStaticCover *GetAttachedCover_Implementation() const = 0;
+  UFUNCTION(BlueprintCallable)
+  virtual UStaticCover *GetAttachedCover() const PURE_VIRTUAL(UCoverAttachInterface::GetAttachedCover, return nullptr;);
 };
 
 

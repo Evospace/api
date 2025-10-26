@@ -62,6 +62,8 @@ class UBlockLogic : public UInstance {
 
   public:
   // Lifecycle
+
+  // Before SetRenderable
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
@@ -91,7 +93,7 @@ class UBlockLogic : public UInstance {
   virtual bool IsHandleRecipeSelection() const;
   virtual void HandleRecipeSelection(UStaticItem *item);
 
-  // Actor and rendering
+  // Actor and rendering, calls after BlockBeginPlay
   virtual void SetRenderable(AColumn *sector);
   virtual void SetActor(ABlockActor *actor);
   virtual void RemoveActorOrRenderable();
