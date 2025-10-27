@@ -23,6 +23,10 @@ class IDesignToolSupportInterface {
   // Select and apply a specific design (cover)
   UFUNCTION(BlueprintCallable)
   virtual bool SelectCover(UStaticCover *cover) PURE_VIRTUAL(IDesignToolSupportInterface::SelectCover, return false;);
+
+  // Set per-instance color for the currently applied cover
+  UFUNCTION(BlueprintCallable)
+  virtual bool SetCoverColor(const FLinearColor &color, int32 colorIndex = 0) PURE_VIRTUAL(IDesignToolSupportInterface::SetCoverColor, return false;);
 };
 
 

@@ -52,11 +52,11 @@ class UStaticObject : public UPrototype {
   UStaticItem *mStaticItem;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere)
-  FStaticBlockMinable mMinable = {};
+  FStaticBlockMinable Minable = {};
 
   UPROPERTY(BlueprintReadOnly)
-  FQuat mDefaultRotation = FQuat::Identity;
+  FQuat DefaultRotation = FQuat::Identity;
 
   UPROPERTY(BlueprintReadOnly)
-  bool mSurface = false;
+  bool Surface = false;
 };

@@ -32,6 +32,9 @@ class UDesignToolDialogBase : public UUserWidget {
   UFUNCTION(BlueprintCallable)
   void SelectCover(UStaticCover *cover);
 
+  UFUNCTION(BlueprintCallable)
+  void SetColor(const FColor &color, int32 colorIndex);
+
   UFUNCTION(BlueprintImplementableEvent)
   void OnContextSet();
 

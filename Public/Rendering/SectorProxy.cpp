@@ -243,7 +243,7 @@ USectorPropComponent *USectorProxy::GetInstancingComponent() const {
 
 namespace {
 void Drop(const UStaticProp *prop, UInventory *inv) {
-  auto &minable = prop->mMinable;
+  auto &minable = prop->Minable;
   if (minable.Minable) {
     UInventoryLibrary::Add(inv, { minable.Result, minable.Count });
   }

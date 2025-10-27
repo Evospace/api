@@ -37,6 +37,17 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
   // Design tool support
   virtual UStaticCoverSet *GetDesignOptions() const override { return CoverSet; }
   virtual bool SelectCover(UStaticCover *cover) override;
+  virtual bool SetCoverColor(const FLinearColor &color, int32 colorIndex = 0) override {
+    if (colorIndex == 0) {
+      AppliedCoverColor = color;
+    }
+#ifdef EVOSPACE_COVERS_RENDERING
+    if (!AppliedCoverInstance.IsEmpty()) {
+      return AppliedCoverInstance.SetColor(color, colorIndex);
+    }
+#endif
+    return true;
+  }
   
   virtual void BlockBeginPlay() override;
 
@@ -47,6 +58,9 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
   UStaticCover *AppliedCover = nullptr;
 
   RCoverWrapper AppliedCoverInstance;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Covers")
+  FLinearColor AppliedCoverColor = FLinearColor::White;
 };
 
 

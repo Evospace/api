@@ -6,6 +6,7 @@
 #include "DesignToolItemLogic.generated.h"
 
 class UStaticCoverSet;
+class IDesignToolSupportInterface;
 
 /**
  * Design Tool item logic. Allows choosing a cover design and applying it to blocks
@@ -16,9 +17,6 @@ class ADesignToolItemLogic : public AItemLogic {
   GENERATED_BODY()
 
   public:
-  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-  virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
-
   virtual void ActionPrimaryPressed() override;
 
   virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
@@ -27,19 +25,17 @@ class ADesignToolItemLogic : public AItemLogic {
   UFUNCTION(BlueprintCallable)
   void UpdateDesign(UStaticCover *cover);
 
+  // Called by UI to apply color to the current block's cover instance
   UFUNCTION(BlueprintCallable)
-  void SetSelectedCover(UStaticCover *cover) { SelectedCover = cover; }
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  UStaticCover *GetSelectedCover() const { return SelectedCover; }
+  void UpdateDesignColor(const FLinearColor &color, int32 colorIndex);
 
   // Fetch available cover options from a targeted block (for GUI population)
   UFUNCTION(BlueprintCallable, BlueprintPure)
   UStaticCoverSet * GetAvailableCoversFromTarget() const;
 
-  protected:
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  UStaticCover *SelectedCover = nullptr;
+  private:
+
+  IDesignToolSupportInterface* DesignToolSupportInterface = nullptr;
 };
 
 
