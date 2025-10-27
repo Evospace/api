@@ -2,7 +2,7 @@
 #include "StaticObject.h"
 #include "StaticCover.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType)
 class UStaticCover : public UStaticObject {
   GENERATED_BODY()
   PROTOTYPE_CODEGEN(StaticCover, StaticCover)
