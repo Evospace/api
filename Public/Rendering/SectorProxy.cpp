@@ -107,7 +107,7 @@ void USectorProxy::LoadSector(const AColumn &c) {
     const auto bpos = cs::IndexToCell(i, gSectorSize) + GetPivotPos();
     auto logic = dim->GetBlockLogic(bpos);
     auto &block = StaticBlocks[i].block;
-    if (block == nullptr && logic != nullptr) {
+    if (logic != nullptr && (block == nullptr || block != logic->GetStaticBlock())) {
       LOG(ERROR_LL) << "Sector desync at " << bpos << ". Logic " << logic->GetName() << ". Trying to fix";
       block = logic->GetStaticBlock();
       restored = true;

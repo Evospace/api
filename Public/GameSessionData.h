@@ -34,12 +34,12 @@ struct FVersionStruct {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Hash = "";
 
-  std::strong_ordering operator<=>(const FVersionStruct &other) const {
-    return Major != other.Major   ? Major <=> other.Major
-           : Minor != other.Minor ? Minor <=> other.Minor
-           : Patch != other.Patch ? Patch <=> other.Patch
-                                  : Build <=> other.Build;
-  }
+  std::strong_ordering operator<=>(const FVersionStruct& other) const {
+    if (auto r = Major <=> other.Major; r != 0) return r;
+    if (auto r = Minor <=> other.Minor; r != 0) return r;
+    if (auto r = Patch <=> other.Patch; r != 0) return r;
+    return Build <=> other.Build;
+}
 };
 
 UCLASS(BlueprintType)

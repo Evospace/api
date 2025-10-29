@@ -16,4 +16,12 @@ class USaveMigrationManager : public UObject {
   // Applies hardcoded migrators whose target version is less than the save's version
   UFUNCTION(BlueprintCallable)
   static void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
+
+  // Replace block names in Logic.bin files (safe operation, ignores sector .bin files)
+  UFUNCTION(BlueprintCallable)
+  static bool ReplaceBlocksInLogicJson(const FString &saveName, const FString &oldBlockName, const FString &newBlockName);
+
+  // Remove "SingleStaticBlock" from StaticBlock values in Logic.bin files
+  UFUNCTION(BlueprintCallable)
+  static bool RemoveSingleStaticBlocksFromLogicJson(const FString &saveName);
 };
