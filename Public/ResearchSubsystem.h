@@ -103,7 +103,7 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   void TickResearch(float DeltaSeconds);
 
   UFUNCTION()
-  void InitializeResearchTreeOnStart(UGameSessionData *gameSessionData);
+  void InitializeResearchTreeOnStart(const UGameSessionData *gameSessionData);
 
   // Event for UI
   UPROPERTY(BlueprintAssignable)

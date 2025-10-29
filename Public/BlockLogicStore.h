@@ -71,7 +71,7 @@ struct FBlockLogicStore {
     return true;
   }
 
-  void ForEachFlipFlop(TFunctionRef<void(UBlockLogic *)> Func) {
+  FORCEINLINE void ForEachFlipFlop(TFunctionRef<void(UBlockLogic *)> Func) {
     if (Flip) {
       ForEachForward(Func);
     } else {
@@ -80,13 +80,13 @@ struct FBlockLogicStore {
     Flip = !Flip;
   }
 
-  void ForEachForward(TFunctionRef<void(UBlockLogic *)> Func) const {
+  FORCEINLINE void ForEachForward(TFunctionRef<void(UBlockLogic *)> Func) const {
     for (UBlockLogic *Logic : Blocks) {
       Func(Logic);
     }
   }
 
-  void ForEachReverse(TFunctionRef<void(UBlockLogic *)> Func) const {
+  FORCEINLINE void ForEachReverse(TFunctionRef<void(UBlockLogic *)> Func) const {
     for (int32 i = Blocks.Num() - 1; i >= 0; --i) {
       Func(Blocks[i]);
     }

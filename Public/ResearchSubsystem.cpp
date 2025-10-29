@@ -23,10 +23,6 @@
 
 void UResearchSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
-  //TODO: remake this
-  // if (auto session = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
-  //   session->OnDataUpdated.AddDynamic(this, &UResearchSubsystem::InitializeResearchTreeOnStart);
-  // }
 }
 
 void UResearchSubsystem::Deinitialize() {
@@ -415,7 +411,7 @@ void UResearchSubsystem::Reset() {
   AllResearchesCache.Empty();
 }
 
-void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData *gameSessionData) {
+void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *gameSessionData) {
   check(gameSessionData);
   LOG(INFO_LL) << "UResearchSubsystem::InitializeResearchTreeOnStart";
   auto bAllResearchesFinishedFlag = gameSessionData->AllResearchCompleted;
@@ -447,6 +443,13 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(UGameSessionData *gameSes
   } else {
     for (auto res : GetAllResearches()) {
       CompleteResearch_Internal(res);
+    }
+  }
+
+  // Open researches that have no prerequisites or all prerequisites are met
+  for (auto res : GetAllResearches()) {
+    if (res->Type != EResearchStatus::Complete && HasAllRequired(res)) {
+      res->Type = EResearchStatus::Opened;
     }
   }
 }

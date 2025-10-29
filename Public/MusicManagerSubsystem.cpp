@@ -5,6 +5,7 @@
 #include <Components/AudioComponent.h>
 #include <Sound/SoundBase.h>
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "Public/GameSessionSubsystem.h"
@@ -32,25 +33,25 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     auto music_playlist = NewObject<UMusicPlaylist>();
     const TArray<FString> music_paths = {
       TEXT("/Script/Engine.SoundWave'/Game/Music/evospace_main_menu.evospace_main_menu'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Binary_Serenity.Binary_Serenity'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Realm.Elven_Realm'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Stellar_Serenity.Stellar_Serenity'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/DowntempoNeon.DowntempoNeon'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Epic_Fantasy.Epic_Fantasy'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinery.Celestial_Machinery'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Serenity.Celestial_Serenity'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Automatic_Rhythms.Automatic_Rhythms'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Automatic_Rhythms.Automatic_Rhythms'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Factory_Must_Grow.Factory_Must_Grow'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Pababam_Must_Grow.Pababam_Must_Grow'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Magical_Fantasy.Magical_Fantasy'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Harmonies__no_percussion_.Elven_Harmonies__no_percussion_'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinations.Celestial_Machinations'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Celestial_Machinations.Celestial_Machinations'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Tranquility_Comb.Cosmic_Tranquility_Comb'")
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'")
     };
 
     for (const auto &path : music_paths) {
       auto wave = LoadObject<USoundBase>(nullptr, *path);
-      if (ensure(wave)) {
+      if (expect(wave, "Failed to load music wave: " + path)) {
         music_playlist->Tracks.Add(wave);
       }
     }
@@ -73,7 +74,7 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 
     for (const auto &path : music_paths) {
       auto wave = LoadObject<USoundBase>(nullptr, *path);
-      if (ensure(wave)) {
+      if (expect(wave, "Failed to load music wave: " + path)) {
         music_playlist->Tracks.Add(wave);
       }
     }
@@ -308,6 +309,11 @@ void UMusicManagerSubsystem::SetPlaylist(UMusicPlaylist *NewPlaylist) {
 // Wind crossfade removed; wind handled in MetaSound graph now
 
 void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
+#if WITH_EDITOR
+  if (GEngine && NewSound) {
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Starting crossfade: %s"), *NewSound->GetName()));
+  }
+#endif
   EnsureAudioComponent();
   ResetTimers();
 
