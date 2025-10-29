@@ -393,6 +393,29 @@ function BaseInventory.cast(object) end
 
 --- 
 --- 
+--- @class BaseInventoryAccessor : Accessor
+--- @field auto_output boolean undocumented
+--- @field input InventoryAccess undocumented
+--- @field output InventoryAccess undocumented
+BaseInventoryAccessor = {}
+
+--- Creates a new BaseInventoryAccessor instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return BaseInventoryAccessor
+function BaseInventoryAccessor.new(parent, name) end
+
+--- Return BaseInventoryAccessor class object
+--- @return Class
+function BaseInventoryAccessor.get_class() end
+
+--- Trying to cast Object into BaseInventoryAccessor
+--- @param object Object to cast
+--- @return BaseInventoryAccessor
+function BaseInventoryAccessor.cast(object) end
+
+--- 
+--- 
 --- @class Biome : Prototype
 Biome = {}
 
@@ -731,6 +754,31 @@ function DB.get_class() end
 --- @param object Object to cast
 --- @return DB
 function DB.cast(object) end
+
+--- 
+--- 
+--- @class DesignableCoverBlockLogic : BlockLogic
+--- @field cover_set StaticCoverSet CoverSet
+DesignableCoverBlockLogic = {}
+
+--- Creates a new DesignableCoverBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return DesignableCoverBlockLogic
+function DesignableCoverBlockLogic.new(parent, name) end
+
+--- Creates a new DesignableCoverBlockLogic instance
+--- @return DesignableCoverBlockLogic
+function DesignableCoverBlockLogic.new_simple() end
+
+--- Return DesignableCoverBlockLogic class object
+--- @return Class
+function DesignableCoverBlockLogic.get_class() end
+
+--- Trying to cast Object into DesignableCoverBlockLogic
+--- @param object Object to cast
+--- @return DesignableCoverBlockLogic
+function DesignableCoverBlockLogic.cast(object) end
 
 --- 
 --- 
@@ -2890,6 +2938,7 @@ function RegionMap.cast(object) end
 --- @field inventory ResourceInventory undocumented
 --- @field is_input boolean undocumented
 --- @field is_output boolean undocumented
+--- @field channel string undocumented
 ResourceAccessor = {}
 
 --- Creates a new ResourceAccessor instance
@@ -3157,6 +3206,7 @@ function SourceData.cast(object) end
 --- @field color_top Vec3 undocumented
 --- @field tier integer undocumented
 --- @field level integer undocumented
+--- @field break_effect Class undocumented
 --- @field lua table undocumented
 StaticBlock = {}
 
@@ -3181,7 +3231,7 @@ function StaticBlock.cast(object) end
 
 --- 
 --- 
---- @class StaticCover : StaticObject
+--- @class StaticCover : Prototype
 StaticCover = {}
 
 --- Register a new StaticCover static object
@@ -3205,6 +3255,31 @@ function StaticCover.cast(object) end
 
 --- 
 --- 
+--- @class StaticCoverSet : Prototype
+--- @field covers StaticCover[] undocumented
+StaticCoverSet = {}
+
+--- Register a new StaticCoverSet static object
+--- @param name string The name of the object
+--- @return StaticCoverSet
+function StaticCoverSet.reg(name) end
+
+--- Searching for StaticCoverSet in db
+--- @param name string The name of the object
+--- @return StaticCoverSet
+function StaticCoverSet.find(name) end
+
+--- Return StaticCoverSet class object
+--- @return Class
+function StaticCoverSet.get_class() end
+
+--- Trying to cast Object into StaticCoverSet
+--- @param object Object to cast
+--- @return StaticCoverSet
+function StaticCoverSet.cast(object) end
+
+--- 
+--- 
 --- @class StaticItem : Prototype
 --- @field image Texture Item image in UI
 --- @field stack_size integer Size of item stack
@@ -3212,7 +3287,6 @@ function StaticCover.cast(object) end
 --- @field unit_mul number multiplier for UI
 --- @field mesh StaticMesh Mesh for item rendering in world
 --- @field block StaticObject Buildable object pointer for this item
---- @field custom_data bool Is item instance contains CustomData
 --- @field custom_data bool Is item instance contains CustomData
 --- @field logic Class Class for item while in hand
 --- @field lua table undocumented

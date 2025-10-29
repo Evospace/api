@@ -237,8 +237,6 @@ class UBlockLogic : public UInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   bool mRenderable = false;
 
-  RCoverWrapper Cover;
-
   protected:
   // Core
   UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
