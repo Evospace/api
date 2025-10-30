@@ -6,13 +6,13 @@
 #include <Blueprint/UserWidget.h>
 
 #include "Evospace/Shared/Public/StaticCover.h"
+#include "Evospace/Shared/Public/DesignToolSupportInterface.h"
 #include "DesignToolDialogBase.generated.h"
 
-class ADesignToolItemLogic;
 class UStaticCoverSet;
 
 /**
- * Base widget for Design Tool dialog. Holds available designs and calls back into the tool when user selects one.
+ * Base widget for Design Tool dialog. Holds available designs and calls back into the block via interface.
  */
 UCLASS(BlueprintType)
 class UDesignToolDialogBase : public UUserWidget {
@@ -20,8 +20,8 @@ class UDesignToolDialogBase : public UUserWidget {
 
   public:
   UFUNCTION(BlueprintCallable)
-  void SetContext(ADesignToolItemLogic *toolLogic, UStaticCoverSet *available) {
-    ToolLogic = toolLogic;
+  void SetContext(TScriptInterface<IDesignToolSupportInterface> supportInterface, UStaticCoverSet *available) {
+    DesignToolSupportInterface = supportInterface;
     AvailableCovers = available;
     OnContextSet();
   }
@@ -40,7 +40,7 @@ class UDesignToolDialogBase : public UUserWidget {
 
   protected:
   UPROPERTY(BlueprintReadOnly)
-  ADesignToolItemLogic *ToolLogic = nullptr;
+  TScriptInterface<IDesignToolSupportInterface> DesignToolSupportInterface = nullptr;
 
   UPROPERTY(BlueprintReadOnly)
   UStaticCoverSet *AvailableCovers = nullptr;

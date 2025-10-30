@@ -49,6 +49,10 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
     return true;
   }
   
+  // Actions
+  virtual bool HasAction() const override { return true; }
+  virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
+  
   virtual void BlockBeginPlay() override;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Covers")

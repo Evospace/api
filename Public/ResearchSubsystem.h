@@ -120,6 +120,9 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
 
   void CompleteResearch_Internal(UStaticResearch *Research);
 
+  // Initialize recipe locking state: set mDefaultLocked for research-locked recipes and reset locked state
+  void InitializeRecipeLocking();
+
   UPROPERTY(EditAnywhere)
   UStaticResearch *ActiveResearch = nullptr;
 

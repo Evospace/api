@@ -16,6 +16,7 @@
 #include "Qr/Ensure.h"
 #include "Public/MainGameInstance.h"
 #include "Public/RecipeDictionary.h"
+#include "Public/Recipe.h"
 #include "Public/StaticResearchRecipe.h"
 #include "UObject/UObjectIterator.h"
 #include <Engine/Engine.h>
@@ -47,6 +48,9 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
       CompletedResearches.Add(res);
     }
   }
+
+  // Initialize recipe locking state before applying completed researches
+  InitializeRecipeLocking();
 
   // Integrate previously separate ApplyLoadedCompletedResearches logic here
   for (auto r : CompletedResearches) {
@@ -398,6 +402,35 @@ void UResearchSubsystem::TickResearch(float DeltaSeconds) {
   }
 }
 
+void UResearchSubsystem::InitializeRecipeLocking() {
+  // Set mDefaultLocked = true for all recipes that are unlocked by research
+  for (auto research : GetAllResearches()) {
+    if (auto item_r = Cast<UStaticResearchRecipe>(research))
+      for (auto lock : item_r->RecipeUnlocks) {
+        lock->mDefaultLocked = true;
+      }
+  }
+
+  // Also set mDefaultLocked for recipes that have mUnlocksBy set but might not be in RecipeUnlocks
+  for (TObjectIterator<URecipe> recipe_it; recipe_it; ++recipe_it) {
+    if (recipe_it->IsTemplate()) {
+      continue;
+    }
+    auto recipe = *recipe_it;
+    if (recipe->mUnlocksBy != nullptr) {
+      recipe->mDefaultLocked = true;
+    }
+  }
+
+  // Reset locked state based on mDefaultLocked
+  for (TObjectIterator<URecipeDictionary> recipe_d; recipe_d; ++recipe_d) {
+    if (recipe_d->IsTemplate()) {
+      continue;
+    }
+    (*recipe_d)->ResetLocked();
+  }
+}
+
 void UResearchSubsystem::Reset() {
   ActiveResearch = nullptr;
   ActiveResearchLeft = 0;
@@ -421,19 +454,9 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *g
   for (auto research : GetAllResearches()) {
     research->Type = EResearchStatus::Closed;
     research->mLevel = 0;
-
-    if (auto item_r = Cast<UStaticResearchRecipe>(research))
-      for (auto lock : item_r->RecipeUnlocks) {
-        lock->mDefaultLocked = true;
-      }
   }
 
-  for (TObjectIterator<URecipeDictionary> recipe_d; recipe_d; ++recipe_d) {
-    if (recipe_d->IsTemplate()) {
-      continue;
-    }
-    (*recipe_d)->ResetLocked();
-  }
+  InitializeRecipeLocking();
 
   if (!bAllResearchesFinishedFlag) {
     for (auto res : GetAllResearches()) {
