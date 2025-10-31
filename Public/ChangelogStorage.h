@@ -6,6 +6,16 @@ class UAutosizeInventory;
 class UDB;
 
 USTRUCT(BlueprintType)
+struct FChangelogCategory {
+  GENERATED_BODY()
+
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  FString name;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  TArray<FString> items;
+};
+
+USTRUCT(BlueprintType)
 struct FChangelog {
   GENERATED_BODY()
 
@@ -15,6 +25,12 @@ struct FChangelog {
   FString description;
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   FDateTime dt;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  bool isImportant = false;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  TArray<FString> tags;
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  TArray<FChangelogCategory> category;
 };
 
 UCLASS(BlueprintType)
