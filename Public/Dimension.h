@@ -15,7 +15,7 @@
 #include <Engine/EngineTypes.h>
 #include <Math/Vector.h>
 #include <Containers/Ticker.h>
-
+#include "Evospace/Props/ItemInstancingComponent.h"
 #include <memory>
 
 #include "Dimension.generated.h"
