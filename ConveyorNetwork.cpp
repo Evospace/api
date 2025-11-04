@@ -13,7 +13,7 @@
 namespace {
 struct FSenderReceiverPair {
   UConveyorBlockLogic *Sender;
-  UConveyorBlockLogic *Receiver;
+  UBaseInventoryAccessor *ReceiverAcc; // any item-accessor in front, not only conveyors
 };
 }
 
@@ -63,12 +63,9 @@ void UConveyorNetwork::Tick() {
 
     // Neighbor move candidate: output ready and has an item
     if (bl->output_path >= ConveyorConsts::SegmentLen && !outAcc->IsEmpty()) {
-      const Vec3i neighborPos = bl->GetBlockPos() + RotateVector(bl->GetBlockQuat(), Side::Right);
-      if (UBlockLogic *neighbor = bl->GetDim()->GetBlockLogic(neighborPos)) {
-        if (UBlockLogic *root = neighbor->GetPartRootBlock()) {
-          if (UConveyorBlockLogic *receiver = Cast<UConveyorBlockLogic>(root)) {
-            NeighborMoves.Add({ bl, receiver });
-          }
+      if (auto *senderOutAcc = bl->GetOutputAccessor()) {
+        if (auto *receiverAcc = senderOutAcc->GetOutsideNeighborSameTypeCached()) {
+          NeighborMoves.Add({ bl, receiverAcc });
         }
       }
     }
@@ -76,14 +73,14 @@ void UConveyorNetwork::Tick() {
 
   // Resolve conflicts deterministically for neighbor moves (by sender/receiver pointer)
   NeighborMoves.Sort([](const FSenderReceiverPair &A, const FSenderReceiverPair &B) {
-    if (A.Receiver == B.Receiver) return A.Sender < B.Sender;
-    return A.Receiver < B.Receiver;
+    if (A.ReceiverAcc == B.ReceiverAcc) return A.Sender < B.Sender;
+    return A.ReceiverAcc < B.ReceiverAcc;
   });
-  TSet<UConveyorBlockLogic *> takenReceivers;
+  TSet<UBaseInventoryAccessor *> takenReceivers;
   TArray<FSenderReceiverPair> MovesToApply;
   for (const auto &p : NeighborMoves) {
     bool existed = false;
-    takenReceivers.Add(p.Receiver, &existed);
+    takenReceivers.Add(p.ReceiverAcc, &existed);
     if (!existed) {
       MovesToApply.Add(p);
     }
@@ -105,17 +102,15 @@ void UConveyorNetwork::Tick() {
   // Apply neighbor moves
   for (const auto &mv : MovesToApply) {
     auto *senderOut = mv.Sender->GetOutputAccess_Implementation();
-    if (!senderOut) continue;
-    if (auto *senderOutAcc = mv.Sender->GetOutputAccessor()) {
-      if (auto *receiverAcc = senderOutAcc->GetOutsideNeighborSameTypeCached()) {
-        if (receiverAcc->Push(senderOut, false)) {
-        const int32 leftover = mv.Sender->output_path - ConveyorConsts::SegmentLen;
-        mv.Sender->output_path = FMath::Max(0, leftover);
-        // Optionally seed receiver progress with leftover
-        mv.Receiver->input_path = FMath::Min(mv.Receiver->input_path + FMath::Max(0, leftover), ConveyorConsts::SegmentLen - 1);
-        mv.Sender->NotifyOutputPushedVisual();
-        }
+    if (!senderOut || !mv.ReceiverAcc) continue;
+    if (mv.ReceiverAcc->Push(senderOut, false)) {
+      const int32 leftover = mv.Sender->output_path - ConveyorConsts::SegmentLen;
+      mv.Sender->output_path = FMath::Max(0, leftover);
+      // If receiver is a conveyor, optionally seed its input progress
+      if (auto *recvBl = Cast<UConveyorBlockLogic>(mv.ReceiverAcc->GetOuter())) {
+        recvBl->input_path = FMath::Min(recvBl->input_path + FMath::Max(0, leftover), ConveyorConsts::SegmentLen - 1);
       }
+      mv.Sender->NotifyOutputPushedVisual();
     }
   }
 }
