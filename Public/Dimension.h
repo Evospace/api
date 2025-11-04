@@ -174,6 +174,8 @@ class ADimension : public AActor {
   void RegionUpdate();
 
   UBlockNetwork *GetNewNetwork(int64 per_wire = 0);
+  class UConveyorNetwork *GetNewConveyorNetwork();
+  void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UGraphStorage *ResourceGraph;
@@ -222,6 +224,13 @@ class ADimension : public AActor {
 
   void TeleportProcess();
   void LoadingProcess();
+
+  // Conveyor networks storage
+  UPROPERTY()
+  TArray<class UConveyorNetwork *> mConveyorNetworks;
+
+  UPROPERTY()
+  TArray<class UConveyorNetwork *> mConveyorNetworksToKill;
 
   float mPlayerTeleportDelay = 1.0;
   bool mPlayerTeleported = false;
