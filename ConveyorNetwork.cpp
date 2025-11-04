@@ -9,6 +9,8 @@
 #include "Public/MainGameInstance.h"
 #include "DrawDebugHelpers.h"
 #include "Public/ConveyorConsts.h"
+#include "Public/Dimension.h"
+#include "Public/StaticBlock.h"
 
 namespace {
 struct FSenderReceiverPair {
@@ -49,7 +51,43 @@ void UConveyorNetwork::Tick() {
     const FVector end = cs::WBtoWd(outPos) + FVector(gCubeSize / 2.0);
     DrawDebugLine(bl->GetWorld(), start, end, color, false, 0.0f, 0, 4.0f);
 
-    // Skip switched off
+    // Visualization: ensure instances reflect current inventories
+    {
+      bool is_valid_actor = bl->GetActor() != nullptr;
+#ifndef EVOSPACE_ITEMS_RENDERING
+      is_valid_actor = false;
+#endif
+      auto *inAcc = bl->GetInputAccess_Implementation();
+      auto *outAcc = bl->GetOutputAccess_Implementation();
+      if (is_valid_actor && inAcc && outAcc) {
+        // Output visual instance lifecycle (at right side)
+        if (bl->mItemInstancing2.IsEmpty() && !outAcc->IsEmpty()) {
+          auto rt = bl->GetTransformLocation();
+          rt.AddToTranslation(RotateVector(bl->GetBlockQuat(), Side::Right).vec() * gCubeSize / 2.f);
+          bl->mItemInstancing2 = bl->GetDim()->AddItemInstance(outAcc->_Get(0).mItem, rt);
+        } else if (outAcc->IsEmpty()) {
+          bl->mItemInstancing2.Reset();
+          bl->output_path = 0;
+        }
+
+        // Input visual instance lifecycle (center)
+        if (bl->mItemInstancing.IsEmpty() && !inAcc->IsEmpty()) {
+          auto rt = bl->GetTransformLocation();
+          bl->mItemInstancing = bl->GetDim()->AddItemInstance(inAcc->_Get(0).mItem, rt);
+        } else if (inAcc->IsEmpty()) {
+          bl->mItemInstancing.Reset();
+          bl->input_path = 0;
+        }
+
+        // If switched off, stop movement
+        if (!bl->GetSwitch_Implementation()) {
+          bl->mItemInstancing2.UpdateData(Vec3i::Zero(), 0);
+          bl->mItemInstancing.UpdateData(Vec3i::Zero(), 0);
+        }
+      }
+    }
+
+    // Skip switched off for logic
     if (!bl->GetSwitch_Implementation()) continue;
 
     auto *inAcc = bl->GetInputAccess_Implementation();
@@ -86,7 +124,7 @@ void UConveyorNetwork::Tick() {
     }
   }
 
-  // Apply internal moves
+  // Apply internal moves (and visuals)
   for (auto *bl : InternalMoves) {
     auto *inAcc = bl->GetInputAccess_Implementation();
     auto *outAcc = bl->GetOutputAccess_Implementation();
@@ -95,22 +133,46 @@ void UConveyorNetwork::Tick() {
       bl->input_path -= ConveyorConsts::SegmentLen;
       if (bl->input_path < 0) bl->input_path = 0;
       bl->output_path = 0;
-      bl->NotifyInternalMoveVisual();
+
+#ifdef EVOSPACE_ITEMS_RENDERING
+      if (bl->GetActor()) {
+        // Move visual from center to right side within the block
+        bl->mItemInstancing2 = MoveTemp(bl->mItemInstancing);
+        bl->mItemInstancing2.UpdateData(RotateVector(bl->GetBlockQuat(), Side::Right), ConveyorConsts::StepPerTick);
+        bl->mItemInstancing2.UpdateTransform(bl->GetTransformLocation());
+      }
+#endif
     }
   }
 
-  // Apply neighbor moves
+  // Apply neighbor moves (and visuals)
   for (const auto &mv : MovesToApply) {
     auto *senderOut = mv.Sender->GetOutputAccess_Implementation();
     if (!senderOut || !mv.ReceiverAcc) continue;
-    if (mv.ReceiverAcc->Push(senderOut, false)) {
+
+#ifdef EVOSPACE_ITEMS_RENDERING
+    bool pushed = false;
+    if (mv.Sender->GetActor()) {
+      // Transfer with visual handle if available
+      pushed = mv.ReceiverAcc->PushWithData(senderOut, 1, MoveTemp(mv.Sender->mItemInstancing2));
+      if (!pushed) {
+        // Stop animation if transfer failed this tick
+        mv.Sender->mItemInstancing2.UpdateData(Vec3i::Zero(), 0);
+      }
+    } else {
+      pushed = mv.ReceiverAcc->Push(senderOut, false);
+    }
+#else
+    const bool pushed = mv.ReceiverAcc->Push(senderOut, false);
+#endif
+
+    if (pushed) {
       const int32 leftover = mv.Sender->output_path - ConveyorConsts::SegmentLen;
       mv.Sender->output_path = FMath::Max(0, leftover);
-      // If receiver is a conveyor, optionally seed its input progress
+      // If receiver is a conveyor, seed its input progress
       if (auto *recvBl = Cast<UConveyorBlockLogic>(mv.ReceiverAcc->GetOuter())) {
         recvBl->input_path = FMath::Min(recvBl->input_path + FMath::Max(0, leftover), ConveyorConsts::SegmentLen - 1);
       }
-      mv.Sender->NotifyOutputPushedVisual();
     }
   }
 }
