@@ -40,12 +40,21 @@ class UConveyorNetwork : public UNetworkBase {
   UPROPERTY(VisibleAnywhere)
   TArray<UInventoryAccess *> CachedOutput; // per conveyor
 
+  UPROPERTY(VisibleAnywhere)
+  TArray<UInventoryAccess *> ReceiverExternalInput; // per conveyor, only for non-conveyor receivers
+
+  struct FConveyorTickState {
+    bool InputEmpty = true;
+    bool OutputEmpty = true;
+    bool InputReady = false;
+    bool OutputReady = false;
+  };
+
+  TArray<FConveyorTickState> TickStates;
+  TArray<int32> ActivePostOrder;
+
   // Working buffers reused between ticks (to avoid reallocations)
   TArray<uint8> TmpVisited;
-  TArray<bool> InputEmpty;
-  TArray<bool> OutputEmpty;
-  TArray<bool> InputReady;
-  TArray<bool> OutputReady;
   TArray<bool> Accept;
   TArray<bool> OutClears;
   TArray<UConveyorBlockLogic *> ChosenSenderByReceiver; // indexed by compact ReceiverId

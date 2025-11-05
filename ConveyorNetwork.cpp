@@ -11,6 +11,9 @@
 #include "Public/ConveyorConsts.h"
 #include "Public/Dimension.h"
 #include "Public/StaticBlock.h"
+#include "Evospace/PerformanceStat.h"
+
+DECLARE_CYCLE_STAT(TEXT("Tick ConveyorNetwork"), STAT_TickConveyorNetwork, STATGROUP_BLOCKLOGIC);
 
 namespace {
 struct FSenderReceiverPair {
@@ -28,6 +31,7 @@ void UConveyorNetwork::RebuildCache() {
   ReceiverId.SetNum(n);
   CachedInput.SetNum(n);
   CachedOutput.SetNum(n);
+  ReceiverExternalInput.SetNum(n);
   PostOrder.Reset();
   PostOrder.Reserve(n);
 
@@ -46,6 +50,7 @@ void UConveyorNetwork::RebuildCache() {
     ReceiverId[i] = -1;
     CachedInput[i] = nullptr;
     CachedOutput[i] = nullptr;
+    ReceiverExternalInput[i] = nullptr;
     if (!bl) continue;
 
     CachedInput[i] = bl->GetInputAccess_Implementation();
@@ -65,6 +70,10 @@ void UConveyorNetwork::RebuildCache() {
           }
         }
       }
+    }
+
+    if (ReceiverAccessors[i] && NeighborIndex[i] < 0) {
+      ReceiverExternalInput[i] = ReceiverAccessors[i]->GetInput();
     }
   }
 
@@ -102,21 +111,20 @@ void UConveyorNetwork::RebuildCache() {
   for (int32 i = 0; i < n; ++i) dfs(i);
 
   // Prepare working buffers
-  InputEmpty.SetNum(n);
-  OutputEmpty.SetNum(n);
-  InputReady.SetNum(n);
-  OutputReady.SetNum(n);
+  TickStates.SetNum(n);
   Accept.SetNum(n);
   OutClears.SetNum(n);
+  ActivePostOrder.Reset();
+  ActivePostOrder.Reserve(n);
 }
 
 void UConveyorNetwork::Tick() {
+  SCOPE_CYCLE_COUNTER(STAT_TickConveyorNetwork);
 
+  const TArray<UConveyorBlockLogic *> &conveyors = Conveyors;
+  const int32 conveyorCount = conveyors.Num();
 
-  // Collect snapshot to avoid mutation order dependence
-  TArray<UConveyorBlockLogic *> conveyors = Conveyors;
-
-  for (auto *bl : conveyors) {
+  for (UConveyorBlockLogic *bl : conveyors) {
     if (!bl) continue;
 
     // Advance paths deterministically here (independent of block tick order)
@@ -185,88 +193,101 @@ void UConveyorNetwork::Tick() {
     // No collection here; we will resolve moves in a single dependency-aware pass below
   }
 
-  const int32 N = conveyors.Num();
+  const int32 orderCount = PostOrder.Num();
+  TickStates.SetNum(conveyorCount);
+  Accept.SetNum(conveyorCount);
+  OutClears.SetNum(conveyorCount);
+  ActivePostOrder.Reset();
+  ActivePostOrder.Reserve(orderCount);
 
-  // Gather dynamic state per node
-  for (int32 i = 0; i < N; ++i) {
-    UConveyorBlockLogic *bl = conveyors[i];
+  for (int32 orderIdx = 0; orderIdx < orderCount; ++orderIdx) {
+    const int32 index = PostOrder[orderIdx];
+    FConveyorTickState &state = TickStates[index];
+    state.InputEmpty = true;
+    state.OutputEmpty = true;
+    state.InputReady = false;
+    state.OutputReady = false;
+
+    UConveyorBlockLogic *bl = conveyors[index];
+    UInventoryAccess *inputAccess = CachedInput[index];
+    UInventoryAccess *outputAccess = CachedOutput[index];
+
+    const bool inputEmpty = !inputAccess || inputAccess->IsEmpty();
+    const bool outputEmpty = !outputAccess || outputAccess->IsEmpty();
+
+    state.InputEmpty = inputEmpty;
+    state.OutputEmpty = outputEmpty;
+
     if (!bl || !bl->GetSwitch_Implementation()) {
-      InputEmpty[i] = true;
-      OutputEmpty[i] = true;
-      InputReady[i] = false;
-      OutputReady[i] = false;
+      Accept[index] = false;
+      OutClears[index] = outputEmpty;
       continue;
     }
-    UInventoryAccess *inAcc = CachedInput[i];
-    UInventoryAccess *outAcc = CachedOutput[i];
-    const bool inEmpty = inAcc ? inAcc->IsEmpty() : true;
-    const bool outEmpty = outAcc ? outAcc->IsEmpty() : true;
-    InputEmpty[i] = inEmpty;
-    OutputEmpty[i] = outEmpty;
-    InputReady[i] = (bl->input_path >= ConveyorConsts::SegmentLen) && !inEmpty;
-    OutputReady[i] = (bl->output_path >= ConveyorConsts::SegmentLen) && !outEmpty;
-  }
 
-  // Downstream-to-upstream DP for accept/outClears
-  for (int32 k = 0; k < PostOrder.Num(); ++k) {
-    const int32 i = PostOrder[k];
-    UConveyorBlockLogic *bl = conveyors[i];
-    if (!bl || !bl->GetSwitch_Implementation()) {
-      Accept[i] = false;
-      OutClears[i] = OutputEmpty[i];
-      continue;
-    }
-    bool acc = false;
-    UBaseInventoryAccessor *recvAcc = ReceiverAccessors[i];
-    const int32 j = NeighborIndex[i];
-    if (!recvAcc) {
-      acc = false;
-    } else if (j < 0) {
-      if (UInventoryAccess *recvIn = recvAcc->GetInput()) {
-        acc = recvIn->IsEmpty();
+    const bool inputReady = (bl->input_path >= ConveyorConsts::SegmentLen) && !inputEmpty;
+    const bool outputReady = (bl->output_path >= ConveyorConsts::SegmentLen) && !outputEmpty;
+    state.InputReady = inputReady;
+    state.OutputReady = outputReady;
+
+    bool accept = false;
+    UBaseInventoryAccessor *receiverAccessor = ReceiverAccessors[index];
+    const int32 neighborIndex = NeighborIndex[index];
+    if (receiverAccessor) {
+      if (neighborIndex < 0) {
+        UInventoryAccess *receiverInput = ReceiverExternalInput[index];
+        accept = receiverInput ? receiverInput->IsEmpty() : false;
       } else {
-        acc = false;
+        const FConveyorTickState &downstreamState = TickStates[neighborIndex];
+        const bool downstreamAccepts = downstreamState.InputEmpty || (downstreamState.InputReady && OutClears[neighborIndex]);
+        accept = downstreamAccepts;
       }
-    } else {
-      const bool recvAccepts = InputEmpty[j] || (InputReady[j] && OutClears[j]);
-      acc = recvAccepts;
     }
-    Accept[i] = acc;
-    OutClears[i] = OutputEmpty[i] || (OutputReady[i] && acc);
+
+    Accept[index] = accept;
+    OutClears[index] = outputEmpty || (outputReady && accept);
+
+    if (!inputEmpty || !outputEmpty || inputReady || outputReady) {
+      ActivePostOrder.Add(index);
+    }
   }
 
-  // Choose one sender per receiver deterministically (by pointer address)
   if (ChosenSenderByReceiver.Num() != UniqueReceiverCount) {
     ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
   }
-  for (int32 r = 0; r < ChosenSenderByReceiver.Num(); ++r) ChosenSenderByReceiver[r] = nullptr;
-  for (int32 i = 0; i < N; ++i) {
-    UConveyorBlockLogic *bl = conveyors[i];
-    if (!bl || !bl->GetSwitch_Implementation()) continue;
-    const int32 rid = ReceiverId[i];
-    if (rid < 0) continue;
-    if (!(OutputReady[i] && Accept[i])) continue;
-    UConveyorBlockLogic *&slot = ChosenSenderByReceiver[rid];
-    if (!slot || bl < slot) slot = bl;
+  for (int32 receiverIdx = 0; receiverIdx < ChosenSenderByReceiver.Num(); ++receiverIdx) {
+    ChosenSenderByReceiver[receiverIdx] = nullptr;
   }
 
-  // Process in cached downstream-to-upstream order: push then internal move
-  for (int32 k = 0; k < PostOrder.Num(); ++k) {
-    const int32 i = PostOrder[k];
-    UConveyorBlockLogic *bl = conveyors[i];
+  for (int32 index : ActivePostOrder) {
+    UConveyorBlockLogic *bl = conveyors[index];
     if (!bl || !bl->GetSwitch_Implementation()) continue;
-    UInventoryAccess *inAcc = CachedInput[i];
-    UInventoryAccess *outAcc = CachedOutput[i];
+
+    const int32 receiverId = ReceiverId[index];
+    if (receiverId < 0) continue;
+    if (!(TickStates[index].OutputReady && Accept[index])) continue;
+
+    UConveyorBlockLogic *&chosen = ChosenSenderByReceiver[receiverId];
+    if (!chosen || bl < chosen) {
+      chosen = bl;
+    }
+  }
+
+  for (int32 index : ActivePostOrder) {
+    UConveyorBlockLogic *bl = conveyors[index];
+    if (!bl || !bl->GetSwitch_Implementation()) continue;
+
+    UInventoryAccess *inputAccess = CachedInput[index];
+    UInventoryAccess *outputAccess = CachedOutput[index];
 
     bool didPush = false;
-    const int32 rid = ReceiverId[i];
-    if (rid >= 0 && ReceiverAccessors[i] && OutputReady[i] && Accept[i]) {
-      if (ChosenSenderByReceiver[rid] == bl) {
-        if (outAcc && !outAcc->IsEmpty()) {
+    const int32 receiverId = ReceiverId[index];
+    if (receiverId >= 0 && ReceiverAccessors[index] && TickStates[index].OutputReady && Accept[index]) {
+      if (ChosenSenderByReceiver[receiverId] == bl) {
+        if (outputAccess && !TickStates[index].OutputEmpty) {
 #ifdef EVOSPACE_ITEMS_RENDERING
           bool pushed = false;
           if (bl->GetActor()) {
-            auto ret = ReceiverAccessors[i]->PushWithData(outAcc, 1, MoveTemp(bl->mItemInstancing2));
+            auto ret = ReceiverAccessors[index]->PushWithData(outputAccess, 1, MoveTemp(bl->mItemInstancing2));
             if (ret.has_value()) {
               // push failed: keep and stop movement
               bl->mItemInstancing2 = MoveTemp(*ret);
@@ -278,10 +299,10 @@ void UConveyorNetwork::Tick() {
               pushed = true;
             }
           } else {
-            pushed = ReceiverAccessors[i]->Push(outAcc, false);
+            pushed = ReceiverAccessors[index]->Push(outputAccess, false);
           }
 #else
-          const bool pushed = ReceiverAccessors[i]->Push(outAcc, false);
+          const bool pushed = ReceiverAccessors[index]->Push(outputAccess, false);
 #endif
           if (pushed) {
             bl->output_path = 0;
@@ -291,10 +312,14 @@ void UConveyorNetwork::Tick() {
       }
     }
 
-    if (inAcc && outAcc) {
-      const bool outputCleared = outAcc->IsEmpty() || didPush;
-      if (InputReady[i] && outputCleared) {
-        if (UInventoryLibrary::TryMoveFromAny(outAcc, inAcc)) {
+    if (inputAccess && outputAccess) {
+      bool outputCleared = TickStates[index].OutputEmpty || didPush;
+      if (!outputCleared) {
+        outputCleared = outputAccess ? outputAccess->IsEmpty() : true;
+      }
+
+      if (TickStates[index].InputReady && outputCleared) {
+        if (UInventoryLibrary::TryMoveFromAny(outputAccess, inputAccess)) {
           bl->input_path -= ConveyorConsts::SegmentLen;
           if (bl->input_path < 0) bl->input_path = 0;
           bl->output_path = 0;
