@@ -19,6 +19,97 @@ struct FSenderReceiverPair {
 };
 }
 
+void UConveyorNetwork::RebuildCache() {
+
+  const int32 n = Conveyors.Num();
+
+  NeighborIndex.SetNum(n);
+  ReceiverAccessors.SetNum(n);
+  ReceiverId.SetNum(n);
+  CachedInput.SetNum(n);
+  CachedOutput.SetNum(n);
+  PostOrder.Reset();
+  PostOrder.Reserve(n);
+
+  // Build pointer->index map for conveyors
+  TMap<UConveyorBlockLogic *, int32> indexByPtr;
+  indexByPtr.Reserve(n);
+  for (int32 i = 0; i < n; ++i) {
+    if (Conveyors[i]) indexByPtr.Add(Conveyors[i], i);
+  }
+
+  // Assign static neighbor indices and receiver accessors; cache IO pointers
+  for (int32 i = 0; i < n; ++i) {
+    UConveyorBlockLogic *bl = Conveyors[i];
+    NeighborIndex[i] = -1;
+    ReceiverAccessors[i] = nullptr;
+    ReceiverId[i] = -1;
+    CachedInput[i] = nullptr;
+    CachedOutput[i] = nullptr;
+    if (!bl) continue;
+
+    CachedInput[i] = bl->GetInputAccess_Implementation();
+    CachedOutput[i] = bl->GetOutputAccess_Implementation();
+
+    if (auto *outAcc = bl->GetOutputAccessor()) {
+      ReceiverAccessors[i] = outAcc->GetOutsideNeighborSameTypeCached();
+    }
+
+    // Downstream neighbor conveyor index (by world position)
+    const Vec3i neighborPos = bl->GetBlockPos() + RotateVector(bl->GetBlockQuat(), Side::Right);
+    if (UBlockLogic *neighbor = bl->GetDim()->GetBlockLogic(neighborPos)) {
+      if (UBlockLogic *root = neighbor->GetPartRootBlock()) {
+        if (UConveyorBlockLogic *neighborConv = Cast<UConveyorBlockLogic>(root)) {
+          if (int32 *idx = indexByPtr.Find(neighborConv)) {
+            NeighborIndex[i] = *idx;
+          }
+        }
+      }
+    }
+  }
+
+  // Compact receiver accessors into IDs to avoid hash maps in Tick
+  TMap<UBaseInventoryAccessor *, int32> receiverToId;
+  receiverToId.Reserve(n);
+  int32 nextId = 0;
+  for (int32 i = 0; i < n; ++i) {
+    UBaseInventoryAccessor *acc = ReceiverAccessors[i];
+    if (!acc) { ReceiverId[i] = -1; continue; }
+    int32 *found = receiverToId.Find(acc);
+    if (found) {
+      ReceiverId[i] = *found;
+    } else {
+      ReceiverId[i] = nextId;
+      receiverToId.Add(acc, nextId);
+      ++nextId;
+    }
+  }
+  UniqueReceiverCount = nextId;
+  ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
+  for (int32 i = 0; i < UniqueReceiverCount; ++i) ChosenSenderByReceiver[i] = nullptr;
+
+  // Build downstream-to-upstream post-order once
+  TmpVisited.SetNumZeroed(n);
+  TFunction<void(int32)> dfs = [&](int32 i) {
+    if (i < 0 || i >= n) return;
+    if (TmpVisited[i]) return;
+    TmpVisited[i] = 1;
+    const int32 j = NeighborIndex[i];
+    if (j >= 0) dfs(j);
+    TmpVisited[i] = 2;
+    PostOrder.Add(i);
+  };
+  for (int32 i = 0; i < n; ++i) dfs(i);
+
+  // Prepare working buffers
+  InputEmpty.SetNum(n);
+  OutputEmpty.SetNum(n);
+  InputReady.SetNum(n);
+  OutputReady.SetNum(n);
+  Accept.SetNum(n);
+  OutClears.SetNum(n);
+}
+
 void UConveyorNetwork::Tick() {
 
 
@@ -94,205 +185,122 @@ void UConveyorNetwork::Tick() {
     // No collection here; we will resolve moves in a single dependency-aware pass below
   }
 
-  // Build indices for O(1) lookups
-  TMap<UConveyorBlockLogic *, int32> indexByPtr;
-  indexByPtr.Reserve(conveyors.Num());
-  for (int32 i = 0; i < conveyors.Num(); ++i) {
-    if (conveyors[i]) indexByPtr.Add(conveyors[i], i);
+  const int32 N = conveyors.Num();
+
+  // Resize working buffers if topology changed without rebuild (safety)
+  if (InputEmpty.Num() != N) {
+    InputEmpty.SetNum(N);
+    OutputEmpty.SetNum(N);
+    InputReady.SetNum(N);
+    OutputReady.SetNum(N);
+    Accept.SetNum(N);
+    OutClears.SetNum(N);
+  }
+  if (PostOrder.Num() != N || NeighborIndex.Num() != N) {
+    // Topology desync: rebuild
+    RebuildCache();
   }
 
-  struct FNodeData {
-    UConveyorBlockLogic *BL = nullptr;
-    UInventoryAccess *In = nullptr;
-    UInventoryAccess *Out = nullptr;
-    UBaseInventoryAccessor *ReceiverAcc = nullptr; // neighbor accessor to push into
-    int32 NeighborConvIndex = -1;                  // -1 if neighbor is not a conveyor
-    bool InputEmptyNow = true;
-    bool OutputEmptyNow = true;
-    bool InputReadyToMove = false;
-    bool OutputReadyToPush = false;
-  };
-
-  const int32 N = conveyors.Num();
-  TArray<FNodeData> nodes;
-  nodes.SetNum(N);
-
-  // Precompute per-node state and neighbor relations
+  // Gather dynamic state per node
   for (int32 i = 0; i < N; ++i) {
     UConveyorBlockLogic *bl = conveyors[i];
     if (!bl || !bl->GetSwitch_Implementation()) {
-      nodes[i].BL = bl;
+      InputEmpty[i] = true;
+      OutputEmpty[i] = true;
+      InputReady[i] = false;
+      OutputReady[i] = false;
       continue;
     }
-
-    nodes[i].BL = bl;
-    nodes[i].In = bl->GetInputAccess_Implementation();
-    nodes[i].Out = bl->GetOutputAccess_Implementation();
-    nodes[i].InputEmptyNow = nodes[i].In ? nodes[i].In->IsEmpty() : true;
-    nodes[i].OutputEmptyNow = nodes[i].Out ? nodes[i].Out->IsEmpty() : true;
-    nodes[i].InputReadyToMove = (bl->input_path >= ConveyorConsts::SegmentLen) && !nodes[i].InputEmptyNow;
-    nodes[i].OutputReadyToPush = (bl->output_path >= ConveyorConsts::SegmentLen) && !nodes[i].OutputEmptyNow;
-
-    if (auto *senderOutAcc = bl->GetOutputAccessor()) {
-      nodes[i].ReceiverAcc = senderOutAcc->GetOutsideNeighborSameTypeCached();
-    }
-
-    // Try to resolve neighbor conveyor via world position (robust and O(1) per node)
-    UConveyorBlockLogic *neighborConv = nullptr;
-    {
-      const Vec3i neighborPos = bl->GetBlockPos() + RotateVector(bl->GetBlockQuat(), Side::Right);
-      if (UBlockLogic *neighbor = bl->GetDim()->GetBlockLogic(neighborPos)) {
-        if (UBlockLogic *root = neighbor->GetPartRootBlock()) {
-          neighborConv = Cast<UConveyorBlockLogic>(root);
-        }
-      }
-    }
-    if (neighborConv) {
-      if (int32 *idx = indexByPtr.Find(neighborConv)) {
-        nodes[i].NeighborConvIndex = *idx;
-      }
-    }
+    UInventoryAccess *inAcc = CachedInput.IsValidIndex(i) ? CachedInput[i] : bl->GetInputAccess_Implementation();
+    UInventoryAccess *outAcc = CachedOutput.IsValidIndex(i) ? CachedOutput[i] : bl->GetOutputAccess_Implementation();
+    const bool inEmpty = inAcc ? inAcc->IsEmpty() : true;
+    const bool outEmpty = outAcc ? outAcc->IsEmpty() : true;
+    InputEmpty[i] = inEmpty;
+    OutputEmpty[i] = outEmpty;
+    InputReady[i] = (bl->input_path >= ConveyorConsts::SegmentLen) && !inEmpty;
+    OutputReady[i] = (bl->output_path >= ConveyorConsts::SegmentLen) && !outEmpty;
   }
 
-  // Build predecessor lists
-  TArray<TArray<int32>> preds;
-  preds.SetNum(N);
-  for (int32 i = 0; i < N; ++i) {
-    const int32 nb = nodes[i].NeighborConvIndex;
-    if (nb >= 0 && nb < N) {
-      preds[nb].Add(i);
+  // Downstream-to-upstream DP for accept/outClears
+  for (int32 k = 0; k < PostOrder.Num(); ++k) {
+    const int32 i = PostOrder[k];
+    UConveyorBlockLogic *bl = conveyors[i];
+    if (!bl || !bl->GetSwitch_Implementation()) {
+      Accept[i] = false;
+      OutClears[i] = OutputEmpty.IsValidIndex(i) ? OutputEmpty[i] : true;
+      continue;
     }
-  }
-
-  // Compute downstream acceptance via DFS with memoization (O(N))
-  TArray<uint8> outState; // 0=unvisited,1=visiting,2=done
-  outState.SetNumZeroed(N);
-  TArray<bool> outClears;
-  outClears.SetNumZeroed(N);
-  TArray<bool> accept;
-  accept.SetNumZeroed(N);
-
-  TFunction<bool(int32)> ComputeOutClears = [&](int32 i) -> bool {
-    if (i < 0 || i >= N) return false;
-    if (!nodes[i].BL || !nodes[i].BL->GetSwitch_Implementation()) return nodes[i].OutputEmptyNow;
-
-    if (outState[i] == 2) return outClears[i];
-    if (outState[i] == 1) {
-      // Cycle: conservatively assume no clearing besides already empty output
-      accept[i] = false;
-      outClears[i] = nodes[i].OutputEmptyNow;
-      outState[i] = 2;
-      return outClears[i];
-    }
-
-    outState[i] = 1;
-
     bool acc = false;
-    if (!nodes[i].ReceiverAcc) {
+    UBaseInventoryAccessor *recvAcc = ReceiverAccessors.IsValidIndex(i) ? ReceiverAccessors[i] : nullptr;
+    const int32 j = NeighborIndex.IsValidIndex(i) ? NeighborIndex[i] : -1;
+    if (!recvAcc) {
       acc = false;
-    } else if (nodes[i].NeighborConvIndex < 0) {
-      if (UInventoryAccess *recvIn = nodes[i].ReceiverAcc->GetInput()) {
+    } else if (j < 0) {
+      if (UInventoryAccess *recvIn = recvAcc->GetInput()) {
         acc = recvIn->IsEmpty();
       } else {
         acc = false;
       }
     } else {
-      const int32 j = nodes[i].NeighborConvIndex;
-      const bool recvAccepts = nodes[j].InputEmptyNow || (nodes[j].InputReadyToMove && ComputeOutClears(j));
+      const bool recvAccepts = InputEmpty[j] || (InputReady[j] && OutClears[j]);
       acc = recvAccepts;
     }
-
-    accept[i] = acc;
-    outClears[i] = nodes[i].OutputEmptyNow || (nodes[i].OutputReadyToPush && acc);
-    outState[i] = 2;
-    return outClears[i];
-  };
-
-  for (int32 i = 0; i < N; ++i) {
-    if (outState[i] == 0) {
-      ComputeOutClears(i);
-    }
+    Accept[i] = acc;
+    OutClears[i] = OutputEmpty[i] || (OutputReady[i] && acc);
   }
 
-  // Choose one sender per receiver deterministically
-  TMap<UBaseInventoryAccessor *, UConveyorBlockLogic *> chosenSenderByReceiver;
-  chosenSenderByReceiver.Reserve(N);
+  // Choose one sender per receiver deterministically (by pointer address)
+  if (ChosenSenderByReceiver.Num() != UniqueReceiverCount) {
+    ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
+  }
+  for (int32 r = 0; r < ChosenSenderByReceiver.Num(); ++r) ChosenSenderByReceiver[r] = nullptr;
   for (int32 i = 0; i < N; ++i) {
-    auto *bl = nodes[i].BL;
+    UConveyorBlockLogic *bl = conveyors[i];
     if (!bl || !bl->GetSwitch_Implementation()) continue;
-    if (!nodes[i].ReceiverAcc) continue;
-    if (!(nodes[i].OutputReadyToPush && accept[i])) continue;
-
-    UConveyorBlockLogic *&current = chosenSenderByReceiver.FindOrAdd(nodes[i].ReceiverAcc);
-    if (!current || bl < current) {
-      current = bl;
-    }
+    const int32 rid = ReceiverId.IsValidIndex(i) ? ReceiverId[i] : -1;
+    if (rid < 0) continue;
+    if (!(OutputReady[i] && Accept[i])) continue;
+    UConveyorBlockLogic *&slot = ChosenSenderByReceiver[rid];
+    if (!slot || bl < slot) slot = bl;
   }
 
-  // Build downstream-to-upstream processing order (post-order DFS)
-  TArray<uint8> vis; // 0=unvisited,1=visiting,2=done
-  vis.SetNumZeroed(N);
-  TArray<int32> order;
-  order.Reserve(N);
-  TFunction<void(int32)> DfsOrder = [&](int32 i) {
-    if (i < 0 || i >= N) return;
-    if (!nodes[i].BL || !nodes[i].BL->GetSwitch_Implementation()) return;
-    if (vis[i]) return;
-    vis[i] = 1;
-    const int32 j = nodes[i].NeighborConvIndex;
-    if (j >= 0 && j < N) {
-      DfsOrder(j);
-    }
-    vis[i] = 2;
-    order.Add(i);
-  };
-  for (int32 i = 0; i < N; ++i) {
-    DfsOrder(i);
-  }
-
-  // Single downstream-to-upstream sweep: push then internal move for each node
-  TSet<UConveyorBlockLogic *> pushedSenders;
-  pushedSenders.Reserve(chosenSenderByReceiver.Num());
-  for (int32 k = 0; k < order.Num(); ++k) {
-    const int32 i = order[k];
-    UConveyorBlockLogic *bl = nodes[i].BL;
+  // Process in cached downstream-to-upstream order: push then internal move
+  for (int32 k = 0; k < PostOrder.Num(); ++k) {
+    const int32 i = PostOrder[k];
+    UConveyorBlockLogic *bl = conveyors[i];
     if (!bl || !bl->GetSwitch_Implementation()) continue;
+    UInventoryAccess *inAcc = CachedInput[i];
+    UInventoryAccess *outAcc = CachedOutput[i];
 
-    // Attempt push if selected for its receiver and logically accepted
     bool didPush = false;
-    if (nodes[i].ReceiverAcc && nodes[i].OutputReadyToPush && accept[i]) {
-      UConveyorBlockLogic *chosen = chosenSenderByReceiver.FindRef(nodes[i].ReceiverAcc);
-      if (chosen == bl) {
-        auto *senderOut = nodes[i].Out;
-        if (senderOut && !senderOut->IsEmpty()) {
+    const int32 rid = ReceiverId[i];
+    if (rid >= 0 && ReceiverAccessors[i] && OutputReady[i] && Accept[i]) {
+      if (ChosenSenderByReceiver[rid] == bl) {
+        if (outAcc && !outAcc->IsEmpty()) {
 #ifdef EVOSPACE_ITEMS_RENDERING
           bool pushed = false;
           if (bl->GetActor()) {
-            pushed = nodes[i].ReceiverAcc->PushWithData(senderOut, 1, MoveTemp(bl->mItemInstancing2));
+            pushed = ReceiverAccessors[i]->PushWithData(outAcc, 1, MoveTemp(bl->mItemInstancing2));
             if (!pushed) {
               bl->mItemInstancing2.UpdateData(Vec3i::Zero(), 0);
             }
           } else {
-            pushed = nodes[i].ReceiverAcc->Push(senderOut, false);
+            pushed = ReceiverAccessors[i]->Push(outAcc, false);
           }
 #else
-          const bool pushed = nodes[i].ReceiverAcc->Push(senderOut, false);
+          const bool pushed = ReceiverAccessors[i]->Push(outAcc, false);
 #endif
           if (pushed) {
             bl->output_path = 0;
-            pushedSenders.Add(bl);
             didPush = true;
           }
         }
       }
     }
 
-    // Internal move after push so upstream can push into us later in this sweep
-    auto *inAcc = nodes[i].In;
-    auto *outAcc = nodes[i].Out;
     if (inAcc && outAcc) {
       const bool outputCleared = outAcc->IsEmpty() || didPush;
-      if (nodes[i].InputReadyToMove && outputCleared) {
+      if (InputReady[i] && outputCleared) {
         if (UInventoryLibrary::TryMoveFromAny(outAcc, inAcc)) {
           bl->input_path -= ConveyorConsts::SegmentLen;
           if (bl->input_path < 0) bl->input_path = 0;
