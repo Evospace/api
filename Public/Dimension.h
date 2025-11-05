@@ -169,10 +169,6 @@ class ADimension : public AActor {
   UFUNCTION(BlueprintCallable)
   void Unpause();
 
-  // TODO: move to surface definition
-  UFUNCTION(BlueprintCallable)
-  void RegionUpdate();
-
   UBlockNetwork *GetNewNetwork(int64 per_wire = 0);
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);

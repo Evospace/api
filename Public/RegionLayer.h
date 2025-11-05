@@ -12,16 +12,13 @@ USTRUCT(BlueprintType)
 struct FSubregionData final {
   GENERATED_BODY()
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 InitialCapacity = 10000;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 CurrentValue = 100000;
-
   // Accumulated fertility regeneration bonus provided by gameplay (e.g., fertilizer blocks).
   // This value is consumed and reset during periodic region regeneration updates.
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 RegenBoost = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int32 Yield = 300;
 
   static constexpr int Subdivision = 4;
   static constexpr FVector2i SubdivisionSize = { Subdivision, Subdivision };
@@ -65,16 +62,8 @@ class URegionLayer : public UInstance {
   UFUNCTION(BlueprintCosmetic, BlueprintPure)
   float GetVisualPercent(const FVector2i &pos) const;
 
-  static int32 CalculateRegen(const FSubregionData &sub);
-
-  UFUNCTION(BlueprintCosmetic, BlueprintPure)
-  float GetRegen(const FVector2i &pos) const;
-
   UFUNCTION(BlueprintCallable)
   int32 GetTotalYield(const FVector2i &sr) const;
-
-  UFUNCTION(BlueprintCallable)
-  int64 GetInitialCapacity(const FVector2i &pos) const;
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
