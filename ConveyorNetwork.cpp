@@ -187,20 +187,6 @@ void UConveyorNetwork::Tick() {
 
   const int32 N = conveyors.Num();
 
-  // Resize working buffers if topology changed without rebuild (safety)
-  if (InputEmpty.Num() != N) {
-    InputEmpty.SetNum(N);
-    OutputEmpty.SetNum(N);
-    InputReady.SetNum(N);
-    OutputReady.SetNum(N);
-    Accept.SetNum(N);
-    OutClears.SetNum(N);
-  }
-  if (PostOrder.Num() != N || NeighborIndex.Num() != N) {
-    // Topology desync: rebuild
-    RebuildCache();
-  }
-
   // Gather dynamic state per node
   for (int32 i = 0; i < N; ++i) {
     UConveyorBlockLogic *bl = conveyors[i];
@@ -211,8 +197,8 @@ void UConveyorNetwork::Tick() {
       OutputReady[i] = false;
       continue;
     }
-    UInventoryAccess *inAcc = CachedInput.IsValidIndex(i) ? CachedInput[i] : bl->GetInputAccess_Implementation();
-    UInventoryAccess *outAcc = CachedOutput.IsValidIndex(i) ? CachedOutput[i] : bl->GetOutputAccess_Implementation();
+    UInventoryAccess *inAcc = CachedInput[i];
+    UInventoryAccess *outAcc = CachedOutput[i];
     const bool inEmpty = inAcc ? inAcc->IsEmpty() : true;
     const bool outEmpty = outAcc ? outAcc->IsEmpty() : true;
     InputEmpty[i] = inEmpty;
@@ -227,12 +213,12 @@ void UConveyorNetwork::Tick() {
     UConveyorBlockLogic *bl = conveyors[i];
     if (!bl || !bl->GetSwitch_Implementation()) {
       Accept[i] = false;
-      OutClears[i] = OutputEmpty.IsValidIndex(i) ? OutputEmpty[i] : true;
+      OutClears[i] = OutputEmpty[i];
       continue;
     }
     bool acc = false;
-    UBaseInventoryAccessor *recvAcc = ReceiverAccessors.IsValidIndex(i) ? ReceiverAccessors[i] : nullptr;
-    const int32 j = NeighborIndex.IsValidIndex(i) ? NeighborIndex[i] : -1;
+    UBaseInventoryAccessor *recvAcc = ReceiverAccessors[i];
+    const int32 j = NeighborIndex[i];
     if (!recvAcc) {
       acc = false;
     } else if (j < 0) {
@@ -257,7 +243,7 @@ void UConveyorNetwork::Tick() {
   for (int32 i = 0; i < N; ++i) {
     UConveyorBlockLogic *bl = conveyors[i];
     if (!bl || !bl->GetSwitch_Implementation()) continue;
-    const int32 rid = ReceiverId.IsValidIndex(i) ? ReceiverId[i] : -1;
+    const int32 rid = ReceiverId[i];
     if (rid < 0) continue;
     if (!(OutputReady[i] && Accept[i])) continue;
     UConveyorBlockLogic *&slot = ChosenSenderByReceiver[rid];
