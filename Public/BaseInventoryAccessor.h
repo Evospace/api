@@ -5,6 +5,7 @@
 #include "Public/AccessorComponent.h"
 #include "Public/ConveyorInterface.h"
 #include "Evospace/Blocks/Accessors/InventoryAccessor.h"
+#include <optional>
 #include "BaseInventoryAccessor.generated.h"
 
 class UInventoryReader;
@@ -43,7 +44,7 @@ class UBaseInventoryAccessor : public UAccessor, public IInventoryAccessor {
   bool Push();
 
   virtual bool Push(UInventoryAccess *from, bool by_arm = false) override;
-  virtual bool PushWithData(UInventoryAccess *from, int32 max_count, RItemInstancingHandle &&item);
+  virtual std::optional<RItemInstancingHandle> PushWithData(UInventoryAccess *from, int32 max_count, RItemInstancingHandle &&item);
 
   virtual bool Pop(UInventoryAccess *to) override;
   virtual bool Pop(UInventoryAccess *to, int32 max_count) override;

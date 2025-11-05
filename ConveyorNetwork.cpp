@@ -139,7 +139,7 @@ void UConveyorNetwork::Tick() {
     // const FVector end = cs::WBtoWd(outPos) + FVector(gCubeSize / 2.0);
     // DrawDebugLine(bl->GetWorld(), start, end, color, false, 0.0f, 0, 4.0f);
 
-    // Visualization: ensure instances reflect current inventories
+    // Visualization: ensure instances reflect current inventories (auto-spawn)
     {
       bool is_valid_actor = bl->GetActor() != nullptr;
 #ifndef EVOSPACE_ITEMS_RENDERING
@@ -280,9 +280,16 @@ void UConveyorNetwork::Tick() {
 #ifdef EVOSPACE_ITEMS_RENDERING
           bool pushed = false;
           if (bl->GetActor()) {
-            pushed = ReceiverAccessors[i]->PushWithData(outAcc, 1, MoveTemp(bl->mItemInstancing2));
-            if (!pushed) {
+            auto ret = ReceiverAccessors[i]->PushWithData(outAcc, 1, MoveTemp(bl->mItemInstancing2));
+            if (ret.has_value()) {
+              // push failed: keep and stop movement
+              bl->mItemInstancing2 = MoveTemp(*ret);
               bl->mItemInstancing2.UpdateData(Vec3i::Zero(), 0);
+              pushed = false;
+            } else {
+              // push succeeded: we no longer own handle
+              bl->mItemInstancing2.Reset();
+              pushed = true;
             }
           } else {
             pushed = ReceiverAccessors[i]->Push(outAcc, false);
@@ -308,8 +315,8 @@ void UConveyorNetwork::Tick() {
 #ifdef EVOSPACE_ITEMS_RENDERING
           if (bl->GetActor()) {
             bl->mItemInstancing2 = MoveTemp(bl->mItemInstancing);
-            bl->mItemInstancing2.UpdateData(RotateVector(bl->GetBlockQuat(), Side::Right), ConveyorConsts::StepForLevel(bl->GetStaticBlock()->Level));
             bl->mItemInstancing2.UpdateTransform(bl->GetTransformLocation());
+            bl->mItemInstancing2.UpdateData(RotateVector(bl->GetBlockQuat(), Side::Right), ConveyorConsts::StepForLevel(bl->GetStaticBlock()->Level));
           }
 #endif
         }
