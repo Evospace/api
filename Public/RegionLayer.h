@@ -12,11 +12,6 @@ USTRUCT(BlueprintType)
 struct FSubregionData final {
   GENERATED_BODY()
 
-  // Accumulated fertility regeneration bonus provided by gameplay (e.g., fertilizer blocks).
-  // This value is consumed and reset during periodic region regeneration updates.
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int32 RegenBoost = 0;
-
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 Yield = 300;
 
@@ -41,9 +36,6 @@ class URegionLayer : public UInstance {
 
   public:
   URegionLayer();
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 MaxCapacity = 1000;
 
   UPROPERTY(EditAnywhere)
   TArray<FSubregionData> Data;
