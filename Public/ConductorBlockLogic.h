@@ -336,10 +336,6 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
   private:
   UPROPERTY(VisibleAnywhere)
   FLazyGameSession GameSessionCache;
-
-  // Guard to avoid redundant network rebuilds within the same frame
-  UPROPERTY(VisibleAnywhere)
-  uint64 LastRebuildFrame = 0;
 };
 
 UCLASS()
