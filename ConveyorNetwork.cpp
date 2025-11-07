@@ -235,7 +235,8 @@ void UConveyorNetwork::Tick() {
     if (receiverAccessor) {
       if (neighborIndex < 0) {
         UInventoryAccess *receiverInput = ReceiverExternalInput[index];
-        accept = receiverInput ? receiverInput->IsEmpty() : false;
+        // External receiver (not a conveyor): accept if it can accommodate our output contents
+        accept = (receiverInput && outputAccess) ? UInventoryLibrary::CanAccommodate(receiverInput, outputAccess) : false;
       } else {
         const FConveyorTickState &downstreamState = TickStates[neighborIndex];
         const bool downstreamAccepts = downstreamState.InputEmpty || (downstreamState.InputReady && OutClears[neighborIndex]);

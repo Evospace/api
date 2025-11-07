@@ -303,8 +303,6 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
 
   virtual bool IsDataNetwork() const;
 
-  virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
-
   UFUNCTION(BlueprintCallable)
   UBlockNetwork *GetNetwork() const;
 
