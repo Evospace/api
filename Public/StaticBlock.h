@@ -8,6 +8,7 @@
 #include "Qr/Prototype.h"
 #include "Public/StaticObject.h"
 #include "Evospace/World/Tesselator.h"
+#include "Public/StaticCover.h"
 
 #include "StaticBlock.generated.h"
 
@@ -35,6 +36,9 @@ class UStaticBlock : public UStaticObject {
       .addProperty("level", &Self::Level) //@field integer
       .addProperty("break_effect", &Self::BreakEffect) //@field Class
       .addProperty("lua", &Self::Table) //@field table
+      .addProperty("half_cover", &Self::HalfCover) //@field StaticCover
+      .addProperty("center_cover", &Self::CenterCover) //@field StaticCover
+      .addProperty("body_cover", &Self::BodyCover) //@field StaticCover
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
@@ -81,6 +85,15 @@ class UStaticBlock : public UStaticObject {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 Level = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UStaticCover *HalfCover = nullptr;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UStaticCover *CenterCover = nullptr;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UStaticCover *BodyCover = nullptr;
 
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 

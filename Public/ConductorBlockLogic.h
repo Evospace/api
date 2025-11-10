@@ -270,9 +270,6 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
   virtual void BlockBeginPlay() override;
 
   UPROPERTY(VisibleAnywhere)
-  UStaticCover *mCover;
-
-  UPROPERTY(VisibleAnywhere)
   UStaticCover *mSideCover;
 
   UPROPERTY(VisibleAnywhere)
