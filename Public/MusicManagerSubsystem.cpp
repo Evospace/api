@@ -33,17 +33,13 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     auto music_playlist = NewObject<UMusicPlaylist>();
     const TArray<FString> music_paths = {
       TEXT("/Script/Engine.SoundWave'/Game/Music/evospace_main_menu.evospace_main_menu'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Realm_Cue.Elven_Realm_Cue'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Stellar_Serenity.Stellar_Serenity'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/DowntempoNeon.DowntempoNeon'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Epic_Fantasy_Cue.Epic_Fantasy_Cue'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Machinery.Celestial_Machinery'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Serenity.Celestial_Serenity'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Automatic_Rhythms.Automatic_Rhythms'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Factory_Must_Grow.Factory_Must_Grow'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Pababam_Must_Grow.Pababam_Must_Grow'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Magical_Fantasy_Cue.Magical_Fantasy_Cue'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Elven_Harmonies__no_percussion_Cue.Elven_Harmonies__no_percussion_Cue'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Celestial_Machinations.Celestial_Machinations'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'")
