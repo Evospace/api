@@ -1,4 +1,4 @@
-й#include "SectorProxy.h"
+#include "SectorProxy.h"
 
 #include "EngineUtils.h"
 #include "RealtimeMeshSimple.h"

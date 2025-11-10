@@ -611,6 +611,16 @@ migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") }, [](const FString &save
     return true;
   } });
 
+  // Rename FluetedColumn -> Column (designable migration)
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 190, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+    ReplaceBlocksInLogicJson(saveName, "FluetedColumn", "Column");
+    return true;
+  } });
+
+  // Migrators end
+  // ================================
+  // ================================
+
   int applied = 0;
   for (const FMigrator &m : migrators) {
     if (m.Target > saveVersion) {

@@ -26,6 +26,7 @@ class UDrillingMachineBase : public UBlockLogic {
       .addProperty("energy_per_tick", &Self::EnergyPerTick) //@field integer
       .addProperty("remaining_energy", &Self::RemainingEnergy) //@field integer
       .addProperty("productivity", &Self::Productivity) //@field integer percent (e.g. 15 = +15%)
+      .addProperty("total_production", &Self::TotalProduction) //@field integer
       .addFunction("has_storage_space", &Self::HasStorageSpace) //@function boolean
       .addFunction("is_energy_available", &Self::IsEnergyAvailable) //@function boolean
       .addProperty("inventory", &Self::Inventory) //@field InventoryContainer
@@ -53,6 +54,10 @@ class UDrillingMachineBase : public UBlockLogic {
   virtual float GetBonusMiningProgress() const;
 
   int32 Production = 1;
+
+  // Counts number of completed cycles, including bonus cycles
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Stats")
+  int32 TotalProduction = 0;
 
   UFUNCTION(BlueprintCallable)
   virtual TArray<UStaticItem *> GetExtractOption() const;
