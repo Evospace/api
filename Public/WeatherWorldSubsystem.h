@@ -89,11 +89,9 @@ private:
   void LoadAllWeatherAssets();
   void SelectNextRandomWeather();
   
-  bool bWasTransitioning = false;
   float TimeSinceLastWeatherChange = 0.0f;
   float CurrentWeatherDuration = 0.0f; // Current duration for the weather (includes min duration + random duration)
   float TimeInCurrentWeather = 0.0f; // Time spent in current weather state
-  float TransitionStartTime = 0.0f; // Time when current transition started
   
   // Minimum time between weather changes (even if keeping current weather)
   static constexpr float MinTimeBetweenWeatherChanges = 10.0f; // seconds
