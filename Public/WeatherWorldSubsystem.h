@@ -48,7 +48,7 @@ public:
 
   // Duration of weather transition in seconds (how long it takes to transition from current to target)
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.1"))
-  float TransitionDurationSeconds = 60.0f;
+  float TransitionDurationSeconds = 180.0f;
 
   // Epsilon for deciding if change is worth broadcasting
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
