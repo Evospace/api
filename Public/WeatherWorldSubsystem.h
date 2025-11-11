@@ -31,6 +31,10 @@ public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current active weather asset"))
   UStaticWeather* CurrentWeatherAsset = nullptr;
   
+  // Display remaining time until next weather change (seconds)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Remaining time until next weather change in seconds"))
+  float RemainingTimeUntilNextWeather = 0.0f;
+  
   // Display all available weather assets in editor
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "All available weather assets loaded from content"))
   TArray<UStaticWeather*> AvailableWeatherAssets;
@@ -48,7 +52,7 @@ public:
 
   // Duration of weather transition in seconds (how long it takes to transition from current to target)
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.1"))
-  float TransitionDurationSeconds = 180.0f;
+  float TransitionDurationSeconds = 120.0f;
 
   // Epsilon for deciding if change is worth broadcasting
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
@@ -87,6 +91,9 @@ private:
   
   bool bWasTransitioning = false;
   float TimeSinceLastWeatherChange = 0.0f;
+  float CurrentWeatherDuration = 0.0f; // Current duration for the weather (includes min duration + random duration)
+  float TimeInCurrentWeather = 0.0f; // Time spent in current weather state
+  float TransitionStartTime = 0.0f; // Time when current transition started
   
   // Minimum time between weather changes (even if keeping current weather)
   static constexpr float MinTimeBetweenWeatherChanges = 10.0f; // seconds

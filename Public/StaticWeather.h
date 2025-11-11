@@ -43,6 +43,14 @@ public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float WindSpeed = 0.0f;
 
+  /** Minimum duration this weather lasts (seconds) */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ToolTip = "Minimum duration this weather lasts in seconds"))
+  float MinDurationSeconds = 60.0f;
+
+  /** Maximum duration this weather lasts (seconds). Random duration will be between MinDurationSeconds and MaxDurationSeconds */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ToolTip = "Maximum duration this weather lasts in seconds. Random duration will be between MinDurationSeconds and MaxDurationSeconds"))
+  float MaxDurationSeconds = 300.0f;
+
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };
