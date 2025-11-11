@@ -32,7 +32,7 @@ public:
   UStaticWeather* CurrentWeatherAsset = nullptr;
   
   // Display remaining time until next weather change (seconds)
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Remaining time until next weather change in seconds"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Remaining time until next weather change in seconds"))
   float RemainingTimeUntilNextWeather = 0.0f;
   
   // Display all available weather assets in editor
