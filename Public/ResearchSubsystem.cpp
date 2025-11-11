@@ -21,6 +21,7 @@
 #include "UObject/UObjectIterator.h"
 #include <Engine/Engine.h>
 #include <EngineUtils.h>
+#include "Kismet/GameplayStatics.h"
 
 void UResearchSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
