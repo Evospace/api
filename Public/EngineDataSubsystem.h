@@ -61,6 +61,7 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
       .addProperty("window_mode", QR_GET_SET(Storage.Windowed)) //@field integer
       .addProperty("autosave_period", QR_GET_SET(Storage.AutosavePeriod)) //@field integer
       .addProperty("memory_stats", QR_GET_SET(Storage.MemoryStats)) //@field boolean
+      .addProperty("enable_rain", QR_GET_SET(Storage.EnableRain)) //@field boolean
       // direct:
       // function EngineData:apply() end
       .addFunction("apply", &Self::ApplyData)

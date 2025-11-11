@@ -86,4 +86,7 @@ struct FEngineDataStorage {
   
     UPROPERTY(EditAnywhere)
     float Dpi = 1.0;
+
+    UPROPERTY(EditAnywhere)
+    bool EnableRain = true;
 };
