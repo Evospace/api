@@ -95,6 +95,23 @@ private:
   
   // Minimum time between weather changes (even if keeping current weather)
   static constexpr float MinTimeBetweenWeatherChanges = 10.0f; // seconds
+
+public:
+  // Normalized surface wetness for world surfaces (0=dry, 1=fully wet)
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Wetness")
+  float SurfaceWetness01 = 0.0f;
+
+  // Precipitation threshold above which wetness increases
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+  float RainIncreaseThreshold = 0.2f;
+
+  // Time (seconds) to dry fully from 1.0 to 0.0 when below threshold
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.1"))
+  float DryingTimeSeconds = 60.0f;
+
+  // Scale of wetting speed when raining above threshold
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0"))
+  float WettingRate = 1.0f;
 };
 
 
