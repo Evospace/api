@@ -15,6 +15,7 @@
 #include <Sound/SoundWave.h>
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/AmbientTracingComponent.h"
+#include "Qr/Ensure.h"
 
 void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
