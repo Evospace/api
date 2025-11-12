@@ -103,11 +103,11 @@ public:
 
   // Precipitation threshold above which wetness increases
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0", ClampMax = "1.0"))
-  float RainIncreaseThreshold = 0.2f;
+  float RainIncreaseThreshold = 0.05f;
 
   // Time (seconds) to dry fully from 1.0 to 0.0 when below threshold
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.1"))
-  float DryingTimeSeconds = 60.0f;
+  float DryingTimeSeconds = 300.0f;
 
   // Scale of wetting speed when raining above threshold
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0"))

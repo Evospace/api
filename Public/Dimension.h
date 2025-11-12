@@ -96,7 +96,7 @@ class ADimension : public AActor {
   ADimension();
 
   UFUNCTION(BlueprintCallable)
-  void BeginTeleport(const FVector &pos, bool find_best_pos = true);
+  void BeginTeleport(const FVector &pos);
 
   UFUNCTION(BlueprintCallable)
   float GetTps() const;
@@ -230,7 +230,6 @@ class ADimension : public AActor {
 
   float mPlayerTeleportDelay = 1.0;
   bool mPlayerTeleported = false;
-  bool mPlayerTeleportedBest = false;
   bool mFirstLoading = true;
 
   UPROPERTY(VisibleAnywhere)
