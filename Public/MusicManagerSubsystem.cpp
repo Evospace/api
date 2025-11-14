@@ -323,6 +323,7 @@ void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
     Inactive->SetSound(MusicMetaSoundSource);
     Inactive->SetWaveParameter(TEXT("Wave"), AsWave);
     Inactive->SetBoolParameter(TEXT("Muffled"), bMuffled);
+    Inactive->SetFloatParameter(TEXT("WindTime"), WindTime);
   } else {
     Inactive->SetSound(NewSound);
     Inactive->SetBoolParameter(TEXT("Muffled"), bMuffled);
@@ -353,7 +354,9 @@ void UMusicManagerSubsystem::ScheduleNextTimer(float DurationSeconds) {
   if (DurationSeconds <= 0.0f)
     return;
   if (auto *World = GetWorld()) {
-    const float TimeUntilNext = FMath::Max(0.01f, DurationSeconds - CrossfadeTime + NextTrackDelay);
+    // Account for wind time that plays after track ends (WindTime + 10 seconds)
+    const float TotalTrackDuration = DurationSeconds + WindTime + 10.0f;
+    const float TimeUntilNext = FMath::Max(0.01f, TotalTrackDuration - CrossfadeTime + NextTrackDelay);
     World->GetTimerManager().SetTimer(NextTrackTimerHandle, this, &UMusicManagerSubsystem::OnNextTrackTimer, TimeUntilNext, false);
   }
 }

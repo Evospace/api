@@ -100,6 +100,13 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
   }
 
   OnResearchQueueUpdated.Broadcast();
+
+  // Update NeiComponent unlocked tab after loading researches
+  auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+  if (controller && controller->mNei) {
+    controller->mNei->UpdateUnlockedTab();
+  }
+
   return true;
 }
 
@@ -475,5 +482,11 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *g
     if (res->Type != EResearchStatus::Complete && HasAllRequired(res)) {
       res->Type = EResearchStatus::Opened;
     }
+  }
+
+  // Update NeiComponent unlocked tab after research tree initialization
+  auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+  if (controller && controller->mNei) {
+    controller->mNei->UpdateUnlockedTab();
   }
 }

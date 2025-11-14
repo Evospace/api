@@ -69,6 +69,9 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float NextTrackDelay = 50.0f;
 
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float WindTime = 50.0f;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bUseAAsActive = true;
 
