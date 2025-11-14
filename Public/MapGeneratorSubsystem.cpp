@@ -36,7 +36,6 @@ void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionDa
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {
   WorldGenerators.Empty();
 
-  WorldGenerators.Add(NewObject<UWorldGeneratorPlains>(this, TEXT("WorldGeneratorPlains")));
   WorldGenerators.Add(NewObject<UWorldGeneratorRivers>(this, TEXT("WorldGeneratorRivers")));
   WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
   WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));

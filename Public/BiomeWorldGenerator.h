@@ -88,15 +88,3 @@ class UWorldGeneratorRivers : public UBiomeWorldGenerator {
   UWorldGeneratorRivers();
   virtual void LoadBiomeFamily() override;
 };
-
-/**
- *
- */
-UCLASS(BlueprintType)
-class UWorldGeneratorPlains : public UBiomeWorldGenerator {
-  GENERATED_BODY()
-
-  public:
-  UWorldGeneratorPlains();
-  virtual void LoadBiomeFamily() override;
-};
