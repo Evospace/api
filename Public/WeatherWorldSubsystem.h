@@ -7,6 +7,7 @@
 #include "WeatherWorldSubsystem.generated.h"
 
 class UStaticWeather;
+class UBiome;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeatherChanged, const FWeatherState&, State);
 
@@ -39,8 +40,16 @@ public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "All available weather assets loaded from content"))
   TArray<UStaticWeather*> AvailableWeatherAssets;
 
+  // Current biome for weather selection
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current biome that determines available weather"))
+  const UBiome* CurrentBiome = nullptr;
+
   virtual void Initialize(FSubsystemCollectionBase& Collection) override;
   virtual void Deinitialize() override;
+
+  // Set current biome for weather selection
+  UFUNCTION(BlueprintCallable, Category = "Weather")
+  void SetCurrentBiome(const UBiome* Biome);
 
   // Set current weather directly (immediate change)
   UFUNCTION(BlueprintCallable, Category = "Weather")
@@ -74,7 +83,7 @@ public:
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SnapCurrentToTarget();
 
-  // Get a random weather asset from available weathers
+  // Get a random weather asset from available weathers (or from current biome if set)
   UFUNCTION(BlueprintCallable, Category = "Weather")
   UStaticWeather* GetRandomWeatherAsset() const;
 

@@ -43,6 +43,11 @@ class UBiomeFamily : public UBiome {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   float mSubFrequency = 0.016f;
 
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  TArray<UStaticWeather*> AvailableWeather;
+
+  virtual TArray<UStaticWeather*> GetAvailableWeather() const override { return AvailableWeather; }
+
   protected:
   std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
   std::unique_ptr<FastNoiseSIMD> mWarpNoise;

@@ -263,6 +263,7 @@ class ADimension : public AActor {
   // Columns
 
   friend class AColumn;
+  friend class USectorArea;
 
   struct ColumnDataKeyFuncs {
     typedef Vec3i KeyType;

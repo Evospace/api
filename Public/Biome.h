@@ -10,6 +10,7 @@
 class ULayeringGenerator;
 class UStaticProp;
 class UPropsGenerator;
+class UStaticWeather;
 
 UCLASS()
 class UBiome : public UPrototype {
@@ -34,4 +35,6 @@ class UBiome : public UPrototype {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UPropsGenerator *props = nullptr;
+
+  virtual TArray<UStaticWeather*> GetAvailableWeather() const { return TArray<UStaticWeather*>(); }
 };
