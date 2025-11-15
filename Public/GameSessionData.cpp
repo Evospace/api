@@ -3,6 +3,7 @@
 #include "Public/GameSessionData.h"
 
 #include "Public/SurfaceDefinition.h"
+#include "Public/MainGameInstance.h"
 #include "Qr/JsonHelperCommon.h"
 #include "Qr/Ensure.h"
 #include "Qr/StaticSaveHelpers.h"
