@@ -67,6 +67,10 @@ public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float BroadcastTolerance = 0.0005f;
 
+  // Minimum precipitation intensity reported to subscribers (values below are treated as dry)
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+  float MinVisiblePrecipitation01 = 0.1f;
+
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SetTargetWeatherFromAsset(UStaticWeather* Asset);
 

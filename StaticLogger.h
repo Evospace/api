@@ -1,9 +1,12 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Containers/Deque.h"
+#include "HAL/CriticalSection.h"
+#include "HAL/FileManager.h"
 #include "Public/EvoRingBuffer.h"
 #include "Qr/Vector.h"
 #include "Logging/StructuredLog.h"
+#include "Templates/UniquePtr.h"
 
 #include <string>
 
@@ -39,6 +42,7 @@ class FSimpleLogger {
     LastLogEntry = MoveTemp(LogEntry);
     ++perLevelCount[LogLevel];
     ++LogVersion;
+    WriteLineToDisk(LastLogEntry);
   }
 
   void Clear() {
@@ -69,6 +73,9 @@ class FSimpleLogger {
 
   const TArray<int32> &GetLevels() const { return perLevelCount; }
 
+  void StartFileLogging(const FString &FileName);
+  void StopFileLogging();
+
   private:
   TArray<int32> perLevelCount;
 
@@ -77,6 +84,13 @@ class FSimpleLogger {
   TDeque<FString> ErrorEntries;
 
   int32 LogVersion = 0;
+
+  FCriticalSection FileLock;
+  TUniquePtr<IFileHandle> LogFileHandle;
+  FString LogFilePath;
+  bool bWriteToDisk = false;
+
+  void WriteLineToDisk(const FString &Line);
 
   FString GetLogLevelString(ELogLevel LogLevel) const {
     switch (LogLevel) {
