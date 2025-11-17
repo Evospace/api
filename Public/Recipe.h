@@ -25,17 +25,12 @@ class URecipe : public UPrototype, public ISearchable {
       .addProperty("default_locked", &URecipe::mDefaultLocked) //@field boolean If **true**, the recipe starts
       //hidden until research unlocks it.
       .addProperty("locked", &URecipe::mLocked) //@field boolean Currently locked if **true**
-      .addProperty("productivity",
-                   &URecipe::mProductivityBonus) //@field integer Percentage bonus (e.g. `20` = +20 %)
-      .addProperty("input", &URecipe::mInput,
-                   false) //@field RecipeInventory Read/write container of required items
-      .addProperty("output", &URecipe::mOutput,
-                   false) //@field RecipeInventory Read/write container of produced items
-      .addProperty("tier",
-                   &URecipe::Tier) //@field integer Recipe tier used for speed scaling: every tier **above** the
+      .addProperty("productivity", &URecipe::mProductivityBonus) //@field integer Percentage bonus (e.g. `20` = +20 %)
+      .addProperty("input", &URecipe::mInput, false) //@field RecipeInventory Read/write container of required items
+      .addProperty("output", &URecipe::mOutput, false) //@field RecipeInventory Read/write container of produced items
+      .addProperty("tier", &URecipe::Tier) //@field integer Recipe tier used for speed scaling: every tier **above** the
       //machine tier halves speed; every tier **below** doubles it.
-      .addProperty("start_tier",
-                   &URecipe::StartTier) //@field integer Machine-unlock tier (same for all its recipes); lets you
+      .addProperty("start_tier", &URecipe::StartTier) //@field integer Machine-unlock tier (same for all its recipes); lets you
       //compute the recipe’s level relative to that minimum.
       .endClass();
   }
