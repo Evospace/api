@@ -27,8 +27,6 @@ class UStaticCoverSet : public UPrototype {
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Covers", meta=(ToolTip="Allowed covers for design tool and designable blocks"))
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Covers", meta = (ToolTip = "Allowed covers for design tool and designable blocks"))
   TArray<UStaticCover *> Covers;
 };
-
-

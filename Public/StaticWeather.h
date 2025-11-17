@@ -13,7 +13,7 @@
 UCLASS(BlueprintType)
 class UStaticWeather : public UPrototype {
   GENERATED_BODY()
-public:
+  public:
   PROTOTYPE_CODEGEN(StaticWeather, StaticWeather)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -54,5 +54,3 @@ public:
   public:
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 };
-
-

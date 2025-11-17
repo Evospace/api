@@ -21,13 +21,13 @@ class UDesignableFenceBlockLogic : public UBlockLogic, public IDesignToolSupport
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UBlockLogic>("DesignableFenceBlockLogic") //@class DesignableFenceBlockLogic : BlockLogic
-      .addProperty("half_cover", &Self::HalfCover)   //@field StaticCover
+      .addProperty("half_cover", &Self::HalfCover) //@field StaticCover
       .addProperty("center_cover", &Self::CenterCover) //@field StaticCover
       .addProperty("cover_set", &Self::CoverSet) //@field StaticCoverSet
       .endClass();
   }
 
-public:
+  public:
   UDesignableFenceBlockLogic() = default;
 
   // Lifecycle
@@ -53,7 +53,7 @@ public:
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos) override;
 
   // Allow free rotation if needed
-  virtual Vec3i GetRotationLocks() const override { return {0, 0, 0}; }
+  virtual Vec3i GetRotationLocks() const override { return { 0, 0, 0 }; }
 
   // Configurable covers
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fence|Covers")
@@ -68,12 +68,11 @@ public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fence|Covers")
   FLinearColor AppliedCoverColor = FLinearColor::White;
 
-protected:
+  protected:
   void RebuildInstances(UBlockLogic *exceptNeighbor = nullptr);
   bool ShouldConnectTo(const Vec3i &otherBpos, UBlockLogic *exceptNeighbor) const;
 
-private:
+  private:
   RCoverWrapper CenterCoverInstance;
   TArray<RCoverWrapper> HalfCoverInstances;
 };
-

@@ -5,35 +5,31 @@
 class UStaticItem;
 
 USTRUCT(BlueprintType)
-struct FItemHighlighter
-{
-    GENERATED_BODY()
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<const UStaticItem *> SearchItems;
+struct FItemHighlighter {
+  GENERATED_BODY()
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<const UStaticItem *> HoveredItem;
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  TArray<const UStaticItem *> SearchItems;
 
-public:
-	void SetSearchItems(const TArray<const UStaticItem*>& InItems)
-	{
-		SearchItems = InItems;
-	}
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  TArray<const UStaticItem *> HoveredItem;
 
-	void SetHoveredItem(const UStaticItem* InItem)
-	{
-		HoveredItem.Empty();
-        if (InItem) {
-		    HoveredItem.Add(InItem);
-        }
-	}
+  public:
+  void SetSearchItems(const TArray<const UStaticItem *> &InItems) {
+    SearchItems = InItems;
+  }
 
-	const TArray<const UStaticItem*> &GetActiveHighlighted() const
-	{
-        if (SearchItems.IsEmpty()) {
-            return HoveredItem;
-        }
-		return SearchItems;
-	}
+  void SetHoveredItem(const UStaticItem *InItem) {
+    HoveredItem.Empty();
+    if (InItem) {
+      HoveredItem.Add(InItem);
+    }
+  }
+
+  const TArray<const UStaticItem *> &GetActiveHighlighted() const {
+    if (SearchItems.IsEmpty()) {
+      return HoveredItem;
+    }
+    return SearchItems;
+  }
 };

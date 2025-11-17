@@ -98,10 +98,10 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   void SetMenuMuffling(bool bMuffled);
 
   UFUNCTION(BlueprintCallable)
-  void SetHoveredItem(UStaticItem* item);
+  void SetHoveredItem(UStaticItem *item);
 
   UFUNCTION(BlueprintCallable)
-  void SetSearchItems(const TArray<UStaticItem*>& InItems);
+  void SetSearchItems(const TArray<UStaticItem *> &InItems);
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   FItemHighlighter ItemTypeHighlight;

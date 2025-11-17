@@ -23,6 +23,7 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
       .addProperty("cover_set", &Self::CoverSet) //@field StaticCoverSet* CoverSet
       .endClass();
   }
+
   public:
   UDesignableCoverBlockLogic() = default;
 
@@ -48,23 +49,21 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
 #endif
     return true;
   }
-  
+
   // Actions
   virtual bool HasAction() const override { return true; }
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
-  
+
   virtual void BlockBeginPlay() override;
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Covers")
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Covers")
   UStaticCoverSet *CoverSet = nullptr;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Covers")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Covers")
   UStaticCover *AppliedCover = nullptr;
 
   RCoverWrapper AppliedCoverInstance;
 
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Covers")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Covers")
   FLinearColor AppliedCoverColor = FLinearColor::White;
 };
-
-

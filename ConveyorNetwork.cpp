@@ -20,7 +20,7 @@ struct FSenderReceiverPair {
   UConveyorBlockLogic *Sender;
   UBaseInventoryAccessor *ReceiverAcc; // any item-accessor in front, not only conveyors
 };
-}
+} // namespace
 
 void UConveyorNetwork::RebuildCache() {
 
@@ -83,7 +83,10 @@ void UConveyorNetwork::RebuildCache() {
   int32 nextId = 0;
   for (int32 i = 0; i < n; ++i) {
     UBaseInventoryAccessor *acc = ReceiverAccessors[i];
-    if (!acc) { ReceiverId[i] = -1; continue; }
+    if (!acc) {
+      ReceiverId[i] = -1;
+      continue;
+    }
     int32 *found = receiverToId.Find(acc);
     if (found) {
       ReceiverId[i] = *found;
@@ -95,7 +98,8 @@ void UConveyorNetwork::RebuildCache() {
   }
   UniqueReceiverCount = nextId;
   ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
-  for (int32 i = 0; i < UniqueReceiverCount; ++i) ChosenSenderByReceiver[i] = nullptr;
+  for (int32 i = 0; i < UniqueReceiverCount; ++i)
+    ChosenSenderByReceiver[i] = nullptr;
 
   // Build downstream-to-upstream post-order once
   TmpVisited.SetNumZeroed(n);
@@ -108,7 +112,8 @@ void UConveyorNetwork::RebuildCache() {
     TmpVisited[i] = 2;
     PostOrder.Add(i);
   };
-  for (int32 i = 0; i < n; ++i) dfs(i);
+  for (int32 i = 0; i < n; ++i)
+    dfs(i);
 
   // Prepare working buffers
   TickStates.SetNum(n);
@@ -336,5 +341,3 @@ void UConveyorNetwork::Tick() {
     }
   }
 }
-
-

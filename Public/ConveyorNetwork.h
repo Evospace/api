@@ -60,5 +60,3 @@ class UConveyorNetwork : public UNetworkBase {
   TArray<UConveyorBlockLogic *> ChosenSenderByReceiver; // indexed by compact ReceiverId
   int32 UniqueReceiverCount = 0;
 };
-
-

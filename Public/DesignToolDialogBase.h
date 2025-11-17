@@ -45,5 +45,3 @@ class UDesignToolDialogBase : public UUserWidget {
   UPROPERTY(BlueprintReadOnly)
   UStaticCoverSet *AvailableCovers = nullptr;
 };
-
-

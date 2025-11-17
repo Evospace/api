@@ -36,5 +36,5 @@ class UBiome : public UPrototype {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UPropsGenerator *props = nullptr;
 
-  virtual TArray<UStaticWeather*> GetAvailableWeather() const { return TArray<UStaticWeather*>(); }
+  virtual TArray<UStaticWeather *> GetAvailableWeather() const { return TArray<UStaticWeather *>(); }
 };

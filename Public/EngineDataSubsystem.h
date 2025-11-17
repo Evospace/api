@@ -74,4 +74,3 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
   private:
   mutable bool initial = true;
 };
-

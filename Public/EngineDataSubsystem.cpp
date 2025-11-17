@@ -40,7 +40,7 @@ void UEngineDataSubsystem::FixResolution() {
     uint32 x = Storage.ResolutionX;
     uint32 y = Storage.ResolutionY;
     RHIGetSupportedResolution(x, y);
-    Storage.ResolutionX = x;  
+    Storage.ResolutionX = x;
     Storage.ResolutionY = y;
   }
 
@@ -182,4 +182,3 @@ void UEngineDataSubsystem::ApplyControllerData() const {
     pc->ShiftHotbar = Storage.ShiftHotbar;
   }
 }
-

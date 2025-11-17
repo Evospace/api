@@ -28,5 +28,3 @@ class IDesignToolSupportInterface {
   UFUNCTION(BlueprintCallable)
   virtual bool SetCoverColor(const FLinearColor &color, int32 colorIndex = 0) PURE_VIRTUAL(IDesignToolSupportInterface::SetCoverColor, return false;);
 };
-
-

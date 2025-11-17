@@ -32,7 +32,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   virtual bool IsTickable() const override { return true; }
   virtual bool IsTickableInEditor() const override { return false; }
   virtual bool IsTickableWhenPaused() const override { return false; }
-  virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
+  virtual UWorld *GetTickableGameObjectWorld() const override { return GetWorld(); }
 
   UFUNCTION(BlueprintCallable)
   void SetMuffled(bool bInMuffled);
@@ -88,10 +88,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   float CurrentReverbAmount = 0.0f;
 
   UPROPERTY(VisibleAnywhere)
-  USoundSubmix * FactoryBus;
+  USoundSubmix *FactoryBus;
 
-  UPROPERTY(VisibleAnywhere) 
-  USubmixEffectReverbPreset * ReverbPreset;
+  UPROPERTY(VisibleAnywhere)
+  USubmixEffectReverbPreset *ReverbPreset;
 
   UFUNCTION()
   void ResetTimers();

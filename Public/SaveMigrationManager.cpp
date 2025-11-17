@@ -15,15 +15,15 @@
 #include <Serialization/BufferArchive.h>
 
 namespace {
-  static const auto TierArray = {
-    "Copper",
-    "Steel",
-    "Aluminium",
-    "StainlessSteel",
-    "Titanium",
-    "HardMetal",
-    "Neutronium",
-  };
+static const auto TierArray = {
+  "Copper",
+  "Steel",
+  "Aluminium",
+  "StainlessSteel",
+  "Titanium",
+  "HardMetal",
+  "Neutronium",
+};
 }
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
@@ -52,48 +52,48 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   TArray<FMigrator> migrators;
   migrators.Reserve(8);
 
-// Convert Logic.json to Logic.bin for saves from 0.18.2
-migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-  const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-  const FString logicJsonPath = saveRoot / TEXT("Dimension") / TEXT("Logic.json");
-  const FString logicBinPath = saveRoot / TEXT("Dimension") / TEXT("Logic.bin");
+  // Convert Logic.json to Logic.bin for saves from 0.18.2
+  migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+                   const FString logicJsonPath = saveRoot / TEXT("Dimension") / TEXT("Logic.json");
+                   const FString logicBinPath = saveRoot / TEXT("Dimension") / TEXT("Logic.bin");
 
-  // Load Logic.json
-  FString jsonStr;
-  if (!FFileHelper::LoadFileToString(jsonStr, *logicJsonPath)) {
-    return true; // No Logic.json to convert
-  }
+                   // Load Logic.json
+                   FString jsonStr;
+                   if (!FFileHelper::LoadFileToString(jsonStr, *logicJsonPath)) {
+                     return true; // No Logic.json to convert
+                   }
 
-  if (jsonStr.IsEmpty()) {
-    LOG(WARN_LL) << "SaveMigrationManager: Logic.json is empty for save '" << saveName << "'";
-    return true;
-  }
+                   if (jsonStr.IsEmpty()) {
+                     LOG(WARN_LL) << "SaveMigrationManager: Logic.json is empty for save '" << saveName << "'";
+                     return true;
+                   }
 
-  // Write to compressed binary format (same as current save format)
-  FBufferArchive uncompressedData;
-  FMemoryWriter memoryWriter(uncompressedData, true);
-  int32 version = 0; // Use version 0 as in current saves
-  memoryWriter << version;
-  memoryWriter << jsonStr;
+                   // Write to compressed binary format (same as current save format)
+                   FBufferArchive uncompressedData;
+                   FMemoryWriter memoryWriter(uncompressedData, true);
+                   int32 version = 0; // Use version 0 as in current saves
+                   memoryWriter << version;
+                   memoryWriter << jsonStr;
 
-  // Compress the data with ZLIB
-  TArray<uint8> compressedData;
-  FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
-  compressor << uncompressedData;
-  compressor.Flush();
+                   // Compress the data with ZLIB
+                   TArray<uint8> compressedData;
+                   FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
+                   compressor << uncompressedData;
+                   compressor.Flush();
 
-  // Save the compressed data as Logic.bin
-  if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << saveName << "'";
-    return false;
-  }
+                   // Save the compressed data as Logic.bin
+                   if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << saveName << "'";
+                     return false;
+                   }
 
-  LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << saveName << "'";
+                   LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << saveName << "'";
 
-  RemoveSingleStaticBlocksFromLogicJson(saveName);
+                   RemoveSingleStaticBlocksFromLogicJson(saveName);
 
-  return true;
-} });
+                   return true;
+                 } });
 
   // Rename Dimension to Temperate, move Player.json and Preview.jpg to save root, rename Dimension.json to
   // GameSessionData.json
@@ -499,123 +499,123 @@ migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") }, [](const FString &save
                  } });
 
   migrators.Add({ FVersionStruct{ 0, 20, 1, 140, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-    for (const auto &tier : TierArray) {
-      ReplaceBlocksInLogicJson(saveName, FString(tier) + "Scaffold", "Scaffold");
-      ReplaceBlocksInLogicJson(saveName, FString(tier) + "Corner", "Corner");
-      ReplaceBlocksInLogicJson(saveName, FString(tier) + "Beam", "Beam");
-    }
-    ReplaceBlocksInLogicJson(saveName, "WoodenStairs", "Stairs");
-    return true;
-  } });
+                   for (const auto &tier : TierArray) {
+                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Scaffold", "Scaffold");
+                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Corner", "Corner");
+                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Beam", "Beam");
+                   }
+                   ReplaceBlocksInLogicJson(saveName, "WoodenStairs", "Stairs");
+                   return true;
+                 } });
 
   // Rename InitialCapacity -> Yield in Temperate/SurfaceDefinition.json for FertileLayer and OilLayer
   migrators.Add({ FVersionStruct{ 0, 20, 1, 176, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-    const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-    const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+                   const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
-    FString jsonStr;
-    if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
-      return true; // Nothing to migrate
-    }
+                   FString jsonStr;
+                   if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
+                     return true; // Nothing to migrate
+                   }
 
-    TSharedPtr<FJsonObject> rootObj;
-    TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
-    if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
-      LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
-                    << saveName << "'";
-      return false;
-    }
+                   TSharedPtr<FJsonObject> rootObj;
+                   TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
+                   if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-    TSharedPtr<FJsonObject> surfaceObj;
-    if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
-      surfaceObj = surfaceVal->AsObject();
-    }
-    if (!surfaceObj.IsValid()) {
-      return true; // Unexpected structure; skip
-    }
+                   TSharedPtr<FJsonObject> surfaceObj;
+                   if (TSharedPtr<FJsonValue> surfaceVal = rootObj->TryGetField(TEXT("SurfaceDefinition"))) {
+                     surfaceObj = surfaceVal->AsObject();
+                   }
+                   if (!surfaceObj.IsValid()) {
+                     return true; // Unexpected structure; skip
+                   }
 
-    TSharedPtr<FJsonObject> regionMapObj;
-    if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
-      regionMapObj = regionMapVal->AsObject();
-    }
-    if (!regionMapObj.IsValid()) {
-      return true; // No regions to process
-    }
+                   TSharedPtr<FJsonObject> regionMapObj;
+                   if (TSharedPtr<FJsonValue> regionMapVal = surfaceObj->TryGetField(TEXT("RegionMap"))) {
+                     regionMapObj = regionMapVal->AsObject();
+                   }
+                   if (!regionMapObj.IsValid()) {
+                     return true; // No regions to process
+                   }
 
-    const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
-    if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
-      return true; // Nothing known
-    }
+                   const TArray<TSharedPtr<FJsonValue>> *knownArrayPtr = nullptr;
+                   if (!regionMapObj->TryGetArrayField(TEXT("Known"), knownArrayPtr) || !knownArrayPtr) {
+                     return true; // Nothing known
+                   }
 
-    auto renameInLayer = [](TSharedPtr<FJsonObject> layerObj, float multiplier) {
-      if (!layerObj.IsValid())
-        return;
+                   auto renameInLayer = [](TSharedPtr<FJsonObject> layerObj, float multiplier) {
+                     if (!layerObj.IsValid())
+                       return;
 
-      // Preferred path: Data array exists
-      const TArray<TSharedPtr<FJsonValue>> *dataPtr = nullptr;
-      if (layerObj->TryGetArrayField(TEXT("Data"), dataPtr) && dataPtr) {
-        TArray<TSharedPtr<FJsonValue>> data = *dataPtr;
-        for (TSharedPtr<FJsonValue> &subVal : data) {
-          if (!subVal.IsValid())
-            continue;
-          TSharedPtr<FJsonObject> subObj = subVal->AsObject();
-          if (!subObj.IsValid())
-            continue;
-          double initialCapacity = 0.0;
-          if (subObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacity)) {
-            subObj->SetNumberField(TEXT("Yield"), initialCapacity * multiplier);
-            subObj->RemoveField(TEXT("InitialCapacity"));
-          }
-        }
-        layerObj->SetArrayField(TEXT("Data"), data);
-        return;
-      }
-    };
+                     // Preferred path: Data array exists
+                     const TArray<TSharedPtr<FJsonValue>> *dataPtr = nullptr;
+                     if (layerObj->TryGetArrayField(TEXT("Data"), dataPtr) && dataPtr) {
+                       TArray<TSharedPtr<FJsonValue>> data = *dataPtr;
+                       for (TSharedPtr<FJsonValue> &subVal : data) {
+                         if (!subVal.IsValid())
+                           continue;
+                         TSharedPtr<FJsonObject> subObj = subVal->AsObject();
+                         if (!subObj.IsValid())
+                           continue;
+                         double initialCapacity = 0.0;
+                         if (subObj->TryGetNumberField(TEXT("InitialCapacity"), initialCapacity)) {
+                           subObj->SetNumberField(TEXT("Yield"), initialCapacity * multiplier);
+                           subObj->RemoveField(TEXT("InitialCapacity"));
+                         }
+                       }
+                       layerObj->SetArrayField(TEXT("Data"), data);
+                       return;
+                     }
+                   };
 
-    // Clone Known to allow modification
-    TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
-    for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
-      if (!entryVal.IsValid())
-        continue;
-      TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
-      if (!entryObj.IsValid())
-        continue;
-      TSharedPtr<FJsonObject> regionObj;
-      if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
-        regionObj = valueVal->AsObject();
-      }
-      if (!regionObj.IsValid())
-        continue;
+                   // Clone Known to allow modification
+                   TArray<TSharedPtr<FJsonValue>> knownArray = *knownArrayPtr;
+                   for (TSharedPtr<FJsonValue> &entryVal : knownArray) {
+                     if (!entryVal.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
+                     if (!entryObj.IsValid())
+                       continue;
+                     TSharedPtr<FJsonObject> regionObj;
+                     if (TSharedPtr<FJsonValue> valueVal = entryObj->TryGetField(TEXT("Value"))) {
+                       regionObj = valueVal->AsObject();
+                     }
+                     if (!regionObj.IsValid())
+                       continue;
 
-      if (TSharedPtr<FJsonValue> fertileVal = regionObj->TryGetField(TEXT("FertileLayer"))) {
-        renameInLayer(fertileVal->AsObject(), 0.3f);
-      }
-      if (TSharedPtr<FJsonValue> oilVal = regionObj->TryGetField(TEXT("OilLayer"))) {
-        renameInLayer(oilVal->AsObject(), 0.05f);
-      }
-    }
+                     if (TSharedPtr<FJsonValue> fertileVal = regionObj->TryGetField(TEXT("FertileLayer"))) {
+                       renameInLayer(fertileVal->AsObject(), 0.3f);
+                     }
+                     if (TSharedPtr<FJsonValue> oilVal = regionObj->TryGetField(TEXT("OilLayer"))) {
+                       renameInLayer(oilVal->AsObject(), 0.05f);
+                     }
+                   }
 
-    // Write back possibly modified known array
-    regionMapObj->SetArrayField(TEXT("Known"), knownArray);
+                   // Write back possibly modified known array
+                   regionMapObj->SetArrayField(TEXT("Known"), knownArray);
 
-    // Save updated JSON
-    FString outStr;
-    const auto writer = TJsonWriterFactory<>::Create(&outStr);
-    FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
-    if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
-      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
-                    << saveName << "'";
-      return false;
-    }
+                   // Save updated JSON
+                   FString outStr;
+                   const auto writer = TJsonWriterFactory<>::Create(&outStr);
+                   FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
+                   if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
+                                   << saveName << "'";
+                     return false;
+                   }
 
-    return true;
-  } });
+                   return true;
+                 } });
 
   // Rename FluetedColumn -> Column (designable migration)
   migrators.Add({ FVersionStruct{ 0, 20, 1, 190, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-    ReplaceBlocksInLogicJson(saveName, "FluetedColumn", "Column");
-    return true;
-  } });
+                   ReplaceBlocksInLogicJson(saveName, "FluetedColumn", "Column");
+                   return true;
+                 } });
 
   // Migrators end
   // ================================
@@ -742,7 +742,7 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   // Write back to compressed format (same as original Logic.bin structure)
   FBufferArchive uncompressedData;
   FMemoryWriter memoryWriter(uncompressedData, true);
-  memoryWriter << version;  // Keep the same version
+  memoryWriter << version; // Keep the same version
   memoryWriter << modifiedJsonStr;
 
   // Compress the data with ZLIB
@@ -847,7 +847,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   // Write back to compressed format (same as original Logic.bin structure)
   FBufferArchive finalUncompressedData;
   FMemoryWriter memoryWriter(finalUncompressedData, true);
-  memoryWriter << version;  // Keep the same version
+  memoryWriter << version; // Keep the same version
   memoryWriter << modifiedJsonStr;
 
   // Compress the data with ZLIB

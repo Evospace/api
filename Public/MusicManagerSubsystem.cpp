@@ -59,14 +59,14 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   {
     auto music_playlist = NewObject<UMusicPlaylist>();
     const TArray<FString> music_paths = {
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Cosmic_Echoes.Cosmic_Echoes'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Echoes_of_the_Unknown.Echoes_of_the_Unknown'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Frozen_Echoes.Frozen_Echoes'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Galactic_Ghosts.Galactic_Ghosts'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Pew_Pew_Echoes.Pew_Pew_Echoes'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Ppmp_Aah_Echoes.Ppmp_Aah_Echoes'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Starlight_Voyager.Starlight_Voyager'"),
-  TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Tidim_Echoes.Tidim_Echoes'")
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Cosmic_Echoes.Cosmic_Echoes'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Echoes_of_the_Unknown.Echoes_of_the_Unknown'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Frozen_Echoes.Frozen_Echoes'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Galactic_Ghosts.Galactic_Ghosts'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Pew_Pew_Echoes.Pew_Pew_Echoes'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Ppmp_Aah_Echoes.Ppmp_Aah_Echoes'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Starlight_Voyager.Starlight_Voyager'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmos/Tidim_Echoes.Tidim_Echoes'")
     };
 
     for (const auto &path : music_paths) {
@@ -80,7 +80,7 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   }
 
   FactoryBus = LoadObject<USoundSubmix>(nullptr, TEXT("/Game/Audio/Submixes/FactoryBus.FactoryBus"));
-  
+
   // Get the reverb preset from the first submix effect in the chain
   if (FactoryBus && FactoryBus->SubmixEffectChain.Num() > 0) {
     ReverbPreset = Cast<USubmixEffectReverbPreset>(FactoryBus->SubmixEffectChain[0]);
@@ -153,13 +153,13 @@ void UMusicManagerSubsystem::UpdateReverbFromAmbientTracing() {
     // If ambient tracing is not available, disable reverb
     if (CurrentReverbAmount > 0.001f) {
       CurrentReverbAmount = 0.0f;
-      
+
       // Create disabled reverb settings
       FSubmixEffectReverbSettings DisabledSettings;
       DisabledSettings.bBypass = true;
       DisabledSettings.WetLevel = 0.0f;
       DisabledSettings.DryLevel = 1.0f;
-      
+
       ApplyReverbSettings(DisabledSettings);
     }
     return;
@@ -168,7 +168,7 @@ void UMusicManagerSubsystem::UpdateReverbFromAmbientTracing() {
   // Get the reverb settings from ambient tracing
   const FSubmixEffectReverbSettings &ReverbSettings = MainPC->mAmbientTracing->ReverbSettings;
   float NewReverbAmount = MainPC->mAmbientTracing->ReverbAmount;
-  
+
   // Update if the value has changed meaningfully
   if (FMath::Abs(NewReverbAmount - CurrentReverbAmount) > 0.001f) {
     CurrentReverbAmount = NewReverbAmount;
@@ -208,7 +208,7 @@ void UMusicManagerSubsystem::EnsureAudioComponent() {
       AudioComponentA->bIsUISound = true;
       AudioComponentA->bAutoActivate = false;
       AudioComponentA->SetVolumeMultiplier(1.0f);
-      
+
       // Route to FactoryBus submix for reverb processing
       if (FactoryBus) {
         AudioComponentA->SetSubmixSend(FactoryBus, 1.0f);
@@ -221,7 +221,7 @@ void UMusicManagerSubsystem::EnsureAudioComponent() {
       AudioComponentB->bIsUISound = true;
       AudioComponentB->bAutoActivate = false;
       AudioComponentB->SetVolumeMultiplier(1.0f);
-      
+
       // Route to FactoryBus submix for reverb processing
       if (FactoryBus) {
         AudioComponentB->SetSubmixSend(FactoryBus, 1.0f);

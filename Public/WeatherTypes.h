@@ -23,5 +23,3 @@ struct FWeatherState {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float WindSpeed = 0.0f;
 };
-
-

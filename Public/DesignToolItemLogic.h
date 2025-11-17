@@ -31,11 +31,8 @@ class ADesignToolItemLogic : public AItemLogic {
 
   // Fetch available cover options from a targeted block (for GUI population)
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  UStaticCoverSet * GetAvailableCoversFromTarget() const;
+  UStaticCoverSet *GetAvailableCoversFromTarget() const;
 
   private:
-
-  IDesignToolSupportInterface* DesignToolSupportInterface = nullptr;
+  IDesignToolSupportInterface *DesignToolSupportInterface = nullptr;
 };
-
-

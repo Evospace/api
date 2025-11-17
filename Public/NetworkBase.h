@@ -30,5 +30,3 @@ class UNetworkBase : public UObject {
   UPROPERTY(VisibleAnywhere)
   bool bUpdated = false;
 };
-
-

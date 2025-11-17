@@ -10,7 +10,6 @@
 #include "Public/EvoRingBuffer.h"
 #include "Public/LazyGameSessionData.h"
 
-
 #include "CoverAttachInterface.h"
 
 #include "ConductorBlockLogic.generated.h"

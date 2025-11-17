@@ -1,4 +1,4 @@
-#include "StaticWeather.h"  
+#include "StaticWeather.h"
 #include "Qr/JsonHelperCommon.h"
 
 bool UStaticWeather::DeserializeJson(TSharedPtr<FJsonObject> json) {
@@ -9,7 +9,7 @@ bool UStaticWeather::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, TEXT("WindSpeed"), WindSpeed);
   json_helper::TryGet(json, TEXT("MinDurationSeconds"), MinDurationSeconds);
   json_helper::TryGet(json, TEXT("MaxDurationSeconds"), MaxDurationSeconds);
-  
+
   Cloudiness01 = FMath::Clamp(Cloudiness01, 0.0f, 1.0f);
   Precipitation01 = FMath::Clamp(Precipitation01, 0.0f, 1.0f);
   Fog01 = FMath::Clamp(Fog01, 0.0f, 1.0f);

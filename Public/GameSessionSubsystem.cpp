@@ -82,15 +82,15 @@ void UGameSessionSubsystem::SetCreativeAllowed(bool val) {
   Data->CreativeAllowed = val;
 }
 
-void UGameSessionSubsystem::SetSearchItems(const TArray<UStaticItem*>& InItems) {
-  TArray<const UStaticItem*> const_items;
+void UGameSessionSubsystem::SetSearchItems(const TArray<UStaticItem *> &InItems) {
+  TArray<const UStaticItem *> const_items;
   for (auto i : InItems) {
     const_items.Add(i);
   }
   ItemTypeHighlight.SetSearchItems(const_items);
 }
 
-void UGameSessionSubsystem::SetHoveredItem(UStaticItem* item) {
+void UGameSessionSubsystem::SetHoveredItem(UStaticItem *item) {
   ItemTypeHighlight.SetHoveredItem(item);
 }
 

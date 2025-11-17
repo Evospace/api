@@ -24,5 +24,3 @@ class ICoverAttachInterface {
   UFUNCTION(BlueprintCallable)
   virtual UStaticCover *GetAttachedCover() const PURE_VIRTUAL(UCoverAttachInterface::GetAttachedCover, return nullptr;);
 };
-
-
