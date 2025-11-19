@@ -14,4 +14,5 @@ enum class ENaturalBiome : uint8 {
   Swamp = 7, // (8, 250, 54)
   Volcano = 8, // (255, 0, 0)
   FertileForest = 9, // top-level fertile forest biome
+  Wasteland = 10, // dry wasteland biome for concrete worlds
 };
