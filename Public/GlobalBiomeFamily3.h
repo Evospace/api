@@ -26,4 +26,3 @@ class UGlobalBiomeFamily3 : public UGlobalBiomeFamily {
   private:
   std::unique_ptr<FastNoiseSIMD> river_noise;
 };
-
