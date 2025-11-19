@@ -315,7 +315,7 @@ float UResearchSubsystem::GetResearchProgress() const {
 }
 
 float UResearchSubsystem::GetResearchApprox() const {
-  return ActiveResearchLeft / static_cast<float>(ScienceMedian + 1) * 2.f;
+  return ActiveResearchLeft / static_cast<float>(ScienceMedian + 1) * 4;
 }
 
 TArray<UStaticResearch *> UResearchSubsystem::RequiredBy(UStaticResearch *Research) const {

@@ -67,6 +67,9 @@ class UComputerBlockLogic : public UBlockLogic {
   UPROPERTY(BlueprintReadWrite)
   int32 WorkingCD = 20;
 
+  UPROPERTY(BlueprintReadWrite)
+  int64 AccumulatedEnergy = 0;
+
   UPROPERTY()
   AMainPlayerController *mpc;
 };

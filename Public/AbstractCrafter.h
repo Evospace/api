@@ -32,6 +32,7 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
       .addProperty("real_ticks_passed", &Self::RealTicksPassed) //@field integer
       .addProperty("total_production", &Self::TotalProduction) //@field integer
       .addProperty("speed", &Self::Speed) //@field integer
+      .addProperty("productivity", &Self::Productivity) //@field integer percent (e.g. 15 = +15%)
 
       .addProperty("energy_input_inventory", &Self::EnergyInputInventory) //@field ResourceInventory
       .addProperty("energy_output_inventory", &Self::EnergyOutputInventory) //@field ResourceInventory
@@ -134,6 +135,9 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 Speed = 100;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 Productivity = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   EBlockState State = EBlockState::InputShortage;
