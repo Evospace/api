@@ -10,7 +10,6 @@
 class UInventoryReader;
 class UInventoryAccess;
 
-
 UCLASS(BlueprintType)
 class UItemMap : public UObject {
   GENERATED_BODY()
