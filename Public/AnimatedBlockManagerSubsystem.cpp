@@ -19,8 +19,8 @@ void UAnimatedBlockManagerSubsystem::Initialize(FSubsystemCollectionBase &Collec
   LodLevels.Add({ 5500.0f * 5500.0f, 0.9f, true });
 }
 
-DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.Tick"), STAT_AnimatedBlockManager_Tick, STATGROUP_UObjects);
-DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.UpdateActor"), STAT_AnimatedBlockManager_UpdateActor, STATGROUP_UObjects);
+DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.Tick"), STAT_AnimatedBlockManager_Tick, STATGROUP_Evospace);
+DECLARE_CYCLE_STAT(TEXT("AnimatedBlockManager.UpdateActor"), STAT_AnimatedBlockManager_UpdateActor, STATGROUP_Evospace);
 
 void UAnimatedBlockManagerSubsystem::RegisterAnimated(AAnimatedBlockActor *Actor) {
   if (!Actor || bManagerShuttingDown) return;

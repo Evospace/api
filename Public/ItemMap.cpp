@@ -1,5 +1,4 @@
 #include "ItemMap.h"
-
 #include "Public/InventoryAccess.h"
 #include "Qr/Ensure.h"
 #include "Public/BaseInventory.h"

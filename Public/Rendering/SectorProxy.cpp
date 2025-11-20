@@ -19,6 +19,8 @@
 
 #include "Public/StaticBlock.h"
 #include "Public/StaticProp.h"
+#include "Evospace/WorldEntities/WetnessMapSubsystem.h"
+
 bool USectorProxy::SetDataForCompiler(SectorCompilerData &data) {
   SetDirty(false);
 
@@ -232,6 +234,9 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
   RuntimeMeshBuilder::BuildRealtimeMesh(rmc->GetRealtimeMeshAs<URealtimeMeshSimple>(), MoveTemp(data), IsSectionGroupCreated);
 
   callback();
+  if (owner) {
+    owner->UpdateWetnessMap();
+  }
   return true;
 }
 

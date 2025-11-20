@@ -16,6 +16,7 @@
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/AmbientTracingComponent.h"
 #include "Qr/Ensure.h"
+#include "Evospace/PerformanceStat.h"
 
 void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
@@ -128,7 +129,7 @@ void UMusicManagerSubsystem::Deinitialize() {
 }
 
 TStatId UMusicManagerSubsystem::GetStatId() const {
-  RETURN_QUICK_DECLARE_CYCLE_STAT(UMusicManagerSubsystem, STATGROUP_Tickables);
+  RETURN_QUICK_DECLARE_CYCLE_STAT(UMusicManagerSubsystem, STATGROUP_Evospace);
 }
 
 void UMusicManagerSubsystem::Tick(float DeltaTime) {

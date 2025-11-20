@@ -2,11 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "InventoryReader.h"
+
 #include "UObject/ObjectMacros.h"
 #include "ItemData.h"
 #include "ItemMap.generated.h"
 
 class UInventoryReader;
+class UInventoryAccess;
+
+
 UCLASS(BlueprintType)
 class UItemMap : public UObject {
   GENERATED_BODY()

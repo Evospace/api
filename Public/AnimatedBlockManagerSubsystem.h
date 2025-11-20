@@ -3,6 +3,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "UObject/WeakObjectPtr.h"
 #include "Containers/Array.h"
+#include "Evospace/PerformanceStat.h"
 #include "AnimatedBlockManagerSubsystem.generated.h"
 
 class AAnimatedBlockActor;
@@ -52,7 +53,7 @@ class UAnimatedBlockManagerSubsystem : public UTickableWorldSubsystem {
   virtual void Tick(float DeltaTime) override;
   virtual void Deinitialize() override;
   virtual TStatId GetStatId() const override {
-    RETURN_QUICK_DECLARE_CYCLE_STAT(AnimatedBlockManagerSubsystem, STATGROUP_Tickables);
+    RETURN_QUICK_DECLARE_CYCLE_STAT(AnimatedBlockManagerSubsystem, STATGROUP_Evospace);
   }
 
   private:
