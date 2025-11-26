@@ -145,7 +145,7 @@ class UBlockNetwork : public UObject {
   int64 GetCapacity64(int32 sub) const;
 
   UFUNCTION(BlueprintCallable)
-  float GetTotalDrain() const;
+  int64 GetTotalDrain() const;
 
   UFUNCTION(BlueprintCallable)
   float GetTotalProduction(int32 sub) const;
@@ -414,6 +414,36 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
   bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   int64 GetCharge() const override;
+};
+
+UCLASS()
+class UFluidConductorBlockLogic : public UConductorBlockLogic {
+  GENERATED_BODY()
+  using Self = UFluidConductorBlockLogic;
+  EVO_CODEGEN_INSTANCE(FluidConductorBlockLogic)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<Self, UConductorBlockLogic>("FluidConductorBlockLogic") //@class FluidConductorBlockLogic : ConductorBlockLogic
+      .addProperty("capacity", &Self::Capacity) //@field integer
+      .endClass();
+  }
+
+  public:
+  UFluidConductorBlockLogic();
+
+  virtual int64 GetCapacity() const override;
+  virtual int64 GetCharge() const override;
+
+  virtual bool IsResourceStorage() const override { return true; }
+  virtual bool IsBatteryContainer() const override { return false; }
+
+  virtual void BlockBeginPlay() override;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  int64 Capacity = 100;
+
+  UPROPERTY()
+  UResourceInventory *mStorage;
 };
 
 /// Switches
