@@ -17,6 +17,7 @@
 class USectorProxy;
 class UResourceAccessor;
 class UStaticProp;
+class UStaticItem;
 class USwitchBlockLogic;
 class UConductorBlockLogic;
 class UBaseInventoryAccessor;
@@ -100,6 +101,9 @@ class UBlockNetwork : public UObject {
   UPROPERTY(VisibleAnywhere)
   TArray<UConductorBlockLogic *> mWires;
 
+  UPROPERTY(VisibleAnywhere)
+  FName NetworkChannel = NAME_None;
+
   protected:
   UPROPERTY(VisibleAnywhere)
   TArray<USwitchBlockLogic *> mSwitches;
@@ -152,6 +156,10 @@ class UBlockNetwork : public UObject {
   UFUNCTION(BlueprintCallable)
   bool AddCharge(int64 addition);
 
+  int64 InjectResource(int32 subnetworkIndex, const UStaticItem *resource, int64 amount);
+  int64 ExtractResource(int32 subnetworkIndex, int64 amount);
+  bool IsFluidNetwork() const;
+
   UFUNCTION()
   void EndTick();
 
@@ -168,6 +176,8 @@ class UBlockNetwork : public UObject {
   bool mCollectedDirty = true;
 
   private:
+  void TickNetworkInternal();
+
   const UStaticItem *mResource = nullptr;
 
   bool mKillDeffered = false;
@@ -358,8 +368,6 @@ class UHeatConductorBlockLogic : public UConductorBlockLogic {
 
   bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  virtual void UpdateSides(UAccessor *except) override;
-
   int64 GetCharge() const override;
 };
 
@@ -374,8 +382,6 @@ class UDataConductorBlockLogic : public UConductorBlockLogic {
   virtual bool IsDataNetwork() const override { return true; }
 
   virtual int32 GetChannel() const override { return 6000; }
-
-  void UpdateSides(UAccessor *except) override;
 };
 
 UCLASS()
@@ -402,8 +408,6 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
   virtual bool IsResourceStorage() const override { return true; }
   virtual bool IsBatteryContainer() const override { return false; }
 
-  virtual void UpdateSides(UAccessor *except) override;
-
   virtual bool IsBlockTicks() const override;
 
   UPROPERTY()
@@ -414,6 +418,33 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float mBonusCapacity = 1.f;
+
+  bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  int64 GetCharge() const override;
+};
+
+UCLASS()
+class UFluidConductorBlockLogic : public UConductorBlockLogic {
+  GENERATED_BODY()
+  public:
+  UFluidConductorBlockLogic();
+
+  virtual int32 GetChannel() const override { return 2000; }
+
+  virtual bool IsResourceStorage() const override { return true; }
+  virtual bool IsBatteryContainer() const override { return false; }
+
+  virtual int64 GetCapacity() const override;
+
+  UPROPERTY(VisibleAnywhere)
+  class UResourceInventory *mStorage;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float mBaseCapacity = 0.02f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  float mBonusCapacity = 0.01f;
 
   bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
