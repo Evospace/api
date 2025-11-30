@@ -47,5 +47,3 @@ class UNetworkResourceInventory : public UResourceInventory {
   // Backing slot for _Get/_SafeGet
   mutable FItemData CachedSlot;
 };
-
-

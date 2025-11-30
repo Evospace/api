@@ -25,7 +25,7 @@ USubnetwork *ResolveSubnetwork(const UConductorBlockLogic *ownerBlock) {
   return nullptr;
 }
 
-}  // namespace
+} // namespace
 
 void UNetworkResourceInventory::Initialize(UConductorBlockLogic *inOwnerBlock) {
   OwnerBlock = inOwnerBlock;
@@ -138,4 +138,3 @@ int64 UNetworkResourceInventory::GetAvailableOutput() const {
   const int64 charge = sub->Charge;
   return FMath::Min(capacity != INDEX_NONE ? capacity : charge, charge);
 }
-
