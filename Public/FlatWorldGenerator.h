@@ -9,6 +9,7 @@
 
 class UStaticBlock;
 class USurfaceDefinition;
+class UBiome;
 
 UCLASS(BlueprintType)
 class UFlatWorldGenerator : public UWorldGenerator {
@@ -26,4 +27,5 @@ class UFlatWorldGenerator : public UWorldGenerator {
 
   private:
   TArray<UStaticBlock *> mBlocks;
+  UBiome *FlatWorldBiome = nullptr;
 };

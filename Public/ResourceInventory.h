@@ -38,16 +38,16 @@ class UResourceInventory : public USingleSlotInventory {
     ++Version;
   }
 
-  int64 GetInput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
+  virtual int64 GetInput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
 
-  int64 GetOutput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
+  virtual int64 GetOutput() const { return Capacity != INDEX_NONE ? Capacity : 0; }
 
-  int64 GetFreeInput() const {
+  virtual int64 GetFreeInput() const {
     const auto v = (Capacity != INDEX_NONE ? Capacity : 0) * 2 - _Get(0).mValue;
     return v > 0 ? v : 0;
   }
 
-  int64 GetAvailableOutput() const {
+  virtual int64 GetAvailableOutput() const {
     auto slot_value = _Get(0).mValue;
     return FMath::Min(Capacity != INDEX_NONE ? Capacity : slot_value, slot_value);
   }

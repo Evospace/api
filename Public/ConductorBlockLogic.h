@@ -3,12 +3,11 @@
 #include "../CoordinateSystem.h"
 #include "Public/BlockWidget.h"
 #include "CoreMinimal.h"
-#include "StorageBlockLogic.h"
-
 #include "Public/SwitchInterface.h"
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Public/EvoRingBuffer.h"
 #include "Public/LazyGameSessionData.h"
+#include "Public/LogicSettingsBlockLogic.h"
 
 #include "CoverAttachInterface.h"
 
@@ -21,12 +20,15 @@ class UStaticItem;
 class USwitchBlockLogic;
 class UConductorBlockLogic;
 class UBaseInventoryAccessor;
+class UNetworkResourceInventory;
 class UGraphStorage;
 class USingleSlotInventory;
 class UBlockLogic;
 class UAccessor;
 class AItemLogic;
 class UGameSessionData;
+class UResourceInventory;
+class UCoreAccessor;
 
 UCLASS(BlueprintType)
 class USubnetwork : public UObject {
@@ -43,9 +45,6 @@ class USubnetwork : public UObject {
 
   UPROPERTY(VisibleAnywhere)
   TArray<UResourceAccessor *> Outputs;
-
-  UPROPERTY(VisibleAnywhere)
-  TArray<UConductorBlockLogic *> Storages;
 
   UPROPERTY(VisibleAnywhere)
   int64 Charge = 0;
@@ -185,7 +184,6 @@ class UBlockNetwork : public UObject {
   TArray<int64> TotalProduction;
   TArray<TArray<UResourceAccessor *>> AllCollectedOutputs;
   TArray<TArray<UResourceAccessor *>> AllCollectedInputs;
-  TArray<TArray<UConductorBlockLogic *>> AllCollectedStorages;
   TArray<TArray<int32>> AllCollectedSubnetworks;
 
   public:
@@ -205,18 +203,17 @@ class UBlockNetwork : public UObject {
 /// Conductors
 
 UCLASS(BlueprintType)
-class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInterface {
+class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttachInterface {
   using Self = UConductorBlockLogic;
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UStorageBlockLogic>(
-        "ConductorBlockLogic") //@class ConductorBlockLogic : StorageBlockLogic
+      .deriveClass<Self, UBlockLogic>("ConductorBlockLogic") //@class ConductorBlockLogic : BlockLogic
       .addProperty("side_cover", &Self::mSideCover) //@field StaticCover
       .addProperty("center_cover", &Self::mCenterCover) //@field StaticCover
       .addProperty("channel", QR_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
-      .addProperty("charge", &Self::GetCharge) //@field integer
+      .addProperty("capacity", &Self::Capacity) //@field integer
       // direct:
       //---Add side wire
       //---@param acc ResourceAccessor
@@ -230,12 +227,7 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos) override;
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos) override;
 
-  virtual bool IsResourceStorage() const { return false; }
-  virtual bool IsBatteryContainer() const { return false; }
-
-  virtual int64 GetCapacity() const override;
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
+  virtual int64 GetCapacity() const;
   virtual int64 GetCharge() const;
 
   virtual Vec3i GetRotationLocks() const override;
@@ -251,6 +243,9 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 ConductorChannel;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  int64 Capacity = 0;
 
   virtual EBlockWidgetType GetWidgetType() const override;
 
@@ -306,6 +301,9 @@ class UConductorBlockLogic : public UStorageBlockLogic, public ICoverAttachInter
 
   virtual void SetRenderable(AColumn *sector) override;
 
+  // Use virtual network inventory as primary core accessor for GUI/logic
+  virtual UCoreAccessor *CoreInit() override;
+
   virtual void RemoveActorOrRenderable() override;
 
   TArray<RCoverWrapper> SideCovers;
@@ -343,24 +341,6 @@ class UHeatConductorBlockLogic : public UConductorBlockLogic {
   virtual int64 GetPerWire() const override;
 
   virtual int32 GetChannel() const override { return 3000; }
-
-  virtual bool IsResourceStorage() const override { return true; }
-  virtual bool IsBatteryContainer() const override { return false; }
-
-  virtual int64 GetCapacity() const override;
-
-  UPROPERTY(VisibleAnywhere)
-  class UResourceInventory *mStorage;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBaseCapacity = 1.f;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBonusCapacity = 1.f;
-
-  bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  int64 GetCharge() const override;
 };
 
 UCLASS()
@@ -395,55 +375,7 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
 
   virtual int32 GetChannel() const override { return 4000; }
 
-  virtual int64 GetCapacity() const override;
-
-  virtual bool IsResourceStorage() const override { return true; }
-  virtual bool IsBatteryContainer() const override { return false; }
-
   virtual bool IsBlockTicks() const override;
-
-  UPROPERTY()
-  UResourceInventory *mStorage;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBaseCapacity = 1.f;
-
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float mBonusCapacity = 1.f;
-
-  bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
-
-  int64 GetCharge() const override;
-};
-
-UCLASS()
-class UFluidConductorBlockLogic : public UConductorBlockLogic {
-  GENERATED_BODY()
-  using Self = UFluidConductorBlockLogic;
-  EVO_CODEGEN_INSTANCE(FluidConductorBlockLogic)
-  virtual void lua_reg(lua_State *L) const override {
-    luabridge::getGlobalNamespace(L)
-      .deriveClass<Self, UConductorBlockLogic>("FluidConductorBlockLogic") //@class FluidConductorBlockLogic : ConductorBlockLogic
-      .addProperty("capacity", &Self::Capacity) //@field integer
-      .endClass();
-  }
-
-  public:
-  UFluidConductorBlockLogic();
-
-  virtual int64 GetCapacity() const override;
-  virtual int64 GetCharge() const override;
-
-  virtual bool IsResourceStorage() const override { return true; }
-  virtual bool IsBatteryContainer() const override { return false; }
-
-  virtual void BlockBeginPlay() override;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  int64 Capacity = 100;
-
-  UPROPERTY()
-  UResourceInventory *mStorage;
 };
 
 /// Switches

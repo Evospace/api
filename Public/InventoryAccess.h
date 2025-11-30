@@ -118,6 +118,11 @@ class UInventoryAccess : public UInventoryReader {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   virtual int64 GetVersion() const { return 0; }
 
+  // Clear all item contents while preserving slot structure. Implement in
+  // concrete inventory classes (for example, UBaseInventory).
+  UFUNCTION(BlueprintCallable)
+  virtual void Empty() { checkNoEntry(); }
+
   protected:
   UPROPERTY(EditAnywhere)
   bool mCanHaveZeroSlot = false;

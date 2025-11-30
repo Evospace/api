@@ -26,7 +26,6 @@ class UBaseInventory : public UInventoryAccess {
 
   UBaseInventory();
 
-  UFUNCTION(BlueprintCallable)
   void Empty();
 
   UFUNCTION(BlueprintCallable)
