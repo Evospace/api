@@ -161,7 +161,8 @@ class UBlockNetwork : public UObject {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UGraphStorage *mProductionStorage;
 
-  int64 mPerWireCon = 0;
+  UPROPERTY(VisibleAnywhere)
+  int64 CachedDrain = 0;
 
   void ClearCollectedDirty();
 
@@ -214,6 +215,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
       .addProperty("channel", QR_NAME_GET_SET(Channel)) //@field string
       .addProperty("conductor_channel", &Self::ConductorChannel) //@field integer
       .addProperty("capacity", &Self::Capacity) //@field integer
+      .addProperty("drain", &Self::Drain) //@field integer
       // direct:
       //---Add side wire
       //---@param acc ResourceAccessor
@@ -232,8 +234,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   virtual Vec3i GetRotationLocks() const override;
 
-  UFUNCTION(BlueprintCallable)
-  virtual int64 GetPerWire() const { return 0; }
+
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
@@ -246,6 +247,9 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int64 Capacity = 0;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  int64 Drain = 0;
 
   virtual EBlockWidgetType GetWidgetType() const override;
 
@@ -271,7 +275,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   UPROPERTY(VisibleAnywhere)
   UStaticCover *mCenterCover;
 
-  void RebuildFrom(int64 rem_capacity = 0);
+  void RebuildFrom();
 
   virtual void BlockEndPlay() override;
 
@@ -286,6 +290,12 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   public:
   friend UBlockNetwork;
   friend USwitchBlockLogic;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  int32 GetSavedNetworkId() const { return SavedNetworkId; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  int32 GetSavedSubnetworkId() const { return SavedSubnetworkId; }
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
@@ -329,6 +339,12 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   private:
   UPROPERTY(VisibleAnywhere)
+  int32 SavedNetworkId = INDEX_NONE;
+
+  UPROPERTY(VisibleAnywhere)
+  int32 SavedSubnetworkId = INDEX_NONE;
+
+  UPROPERTY(VisibleAnywhere)
   FLazyGameSession GameSessionCache;
 };
 
@@ -338,7 +354,7 @@ class UHeatConductorBlockLogic : public UConductorBlockLogic {
   public:
   UHeatConductorBlockLogic();
 
-  virtual int64 GetPerWire() const override;
+
 
   virtual int32 GetChannel() const override { return 3000; }
 };
@@ -371,7 +387,7 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
 
   public:
   UKineticConductorBlockLogic();
-  virtual int64 GetPerWire() const override;
+
 
   virtual int32 GetChannel() const override { return 4000; }
 

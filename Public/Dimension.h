@@ -39,6 +39,7 @@ class UDimensionPropComponent;
 class UStaticIndexedHierarchicalInstancedStaticMeshComponent;
 class USectorCompiler;
 class APlayerController;
+class UResourceNetworkManager;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
@@ -169,7 +170,7 @@ class ADimension : public AActor {
   UFUNCTION(BlueprintCallable)
   void Unpause();
 
-  UBlockNetwork *GetNewNetwork(int64 per_wire = 0);
+  UBlockNetwork *GetNewNetwork();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
@@ -253,11 +254,8 @@ class ADimension : public AActor {
   UPROPERTY()
   FBlockLogicStore mDimensionLogicsTick;
 
-  UPROPERTY()
-  TSet<UBlockNetwork *> mBlockNetworks;
-
-  UPROPERTY()
-  TSet<UBlockNetwork *> mNetworksToKill;
+  UPROPERTY(VisibleAnywhere)
+  UResourceNetworkManager *ResourceNetworkManager;
 
   private:
   // Columns

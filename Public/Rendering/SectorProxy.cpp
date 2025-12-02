@@ -110,7 +110,18 @@ void USectorProxy::LoadSector(const AColumn &c) {
     auto logic = dim->GetBlockLogic(bpos);
     auto &block = StaticBlocks[i].block;
     if (logic != nullptr && (block == nullptr || block != logic->GetStaticBlock())) {
-      LOG(ERROR_LL) << "Sector desync at " << bpos << ". Logic " << logic->GetName() << ". Trying to fix";
+      const UStaticBlock *logicStaticBlock = logic->GetStaticBlock();
+      if (block) {
+        LOG(ERROR_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
+                      << "). Logic " << logic->GetName()
+                      << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
+                      << ", but sector has block " << block->GetName() << ". Trying to fix";
+      } else {
+        LOG(ERROR_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
+                      << "). Logic " << logic->GetName()
+                      << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
+                      << ", but sector has no block. Trying to fix";
+      }
       block = logic->GetStaticBlock();
       restored = true;
     }
@@ -156,8 +167,9 @@ void USectorProxy::LoadSector(const AColumn &c) {
         }
       }
     } else [[unlikely]] {
-      LOG(ERROR_LL) << "Sector desync at " << bpos << ". Block class " << block->GetName()
-                    << " clearing this cell";
+      LOG(ERROR_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
+                    << "). Block class " << block->GetName()
+                    << " has static data but no logic, clearing this cell";
       dim->SetBlockLogic(bpos, nullptr);
       SetStaticBlock(i, nullptr);
       SetBlockDensity(i, 0);
