@@ -52,5 +52,3 @@ class UResourceNetworkManager : public UObject {
   /** Saved subnetwork charges keyed by transient NetworkId from save file. */
   TMap<int32, TArray<int64>> savedNetworkCharges;
 };
-
-

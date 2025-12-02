@@ -122,5 +122,3 @@ void UResourceNetworkManager::ApplySavedState() {
 
   savedNetworkCharges.Empty();
 }
-
-

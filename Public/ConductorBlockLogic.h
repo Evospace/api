@@ -234,8 +234,6 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   virtual Vec3i GetRotationLocks() const override;
 
-
-
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   virtual TArray<ConnectionInfo> GetConnectionInfo() const;
@@ -354,8 +352,6 @@ class UHeatConductorBlockLogic : public UConductorBlockLogic {
   public:
   UHeatConductorBlockLogic();
 
-
-
   virtual int32 GetChannel() const override { return 3000; }
 };
 
@@ -387,7 +383,6 @@ class UKineticConductorBlockLogic : public UConductorBlockLogic {
 
   public:
   UKineticConductorBlockLogic();
-
 
   virtual int32 GetChannel() const override { return 4000; }
 
