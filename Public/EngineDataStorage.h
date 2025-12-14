@@ -20,6 +20,9 @@ struct FEngineDataStorage {
   int32 TransparencyPreset = 0;
 
   UPROPERTY(EditAnywhere)
+  int32 CloudPreset = 0;
+
+  UPROPERTY(EditAnywhere)
   int32 GiPreset = 0;
 
   UPROPERTY(EditAnywhere)
