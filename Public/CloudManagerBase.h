@@ -17,4 +17,3 @@ class ACloudManagerBase : public AActor {
 
   virtual void ApplyCloudSettings_Implementation(int32 CloudPreset);
 };
-

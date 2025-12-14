@@ -7,6 +7,7 @@
 
 class ADimension;
 class UBlockNetwork;
+class UStaticItem;
 
 UCLASS()
 class UResourceNetworkManager : public UObject {
