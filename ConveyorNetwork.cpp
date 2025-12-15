@@ -12,6 +12,7 @@
 #include "Public/Dimension.h"
 #include "Public/StaticBlock.h"
 #include "Evospace/PerformanceStat.h"
+#include "Public/InventoryAccess.h"
 
 DECLARE_CYCLE_STAT(TEXT("Tick ConveyorNetwork"), STAT_TickConveyorNetwork, STATGROUP_BLOCKLOGIC);
 
