@@ -5,10 +5,6 @@
 
 #include "ConductorStorages.generated.h"
 
-class UInventory;
-class USingleSlotInventory;
-class UAccessor;
-
 UCLASS()
 class UElectricityContainerBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
