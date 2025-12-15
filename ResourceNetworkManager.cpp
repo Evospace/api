@@ -69,8 +69,10 @@ void UResourceNetworkManager::Tick() {
   }
 }
 
-void UResourceNetworkManager::SetSavedState(const TMap<int32, TArray<int64>> &inNetworkCharges) {
+void UResourceNetworkManager::SetSavedState(const TMap<int32, TArray<int64>> &inNetworkCharges,
+                                            const TMap<int32, UStaticItem *> &inNetworkResources) {
   savedNetworkCharges = inNetworkCharges;
+  savedNetworkResources = inNetworkResources;
 }
 
 void UResourceNetworkManager::ApplySavedState() {
@@ -117,8 +119,16 @@ void UResourceNetworkManager::ApplySavedState() {
       const int64 capacity = sub->Capacity;
       const int64 clampedCharge = capacity >= 0 ? FMath::Clamp<int64>(savedCharge, 0, capacity) : savedCharge;
       sub->Charge = clampedCharge;
+
+      // Initialize network resource type once per saved network id.
+      if (UStaticItem *const *savedResPtr = savedNetworkResources.Find(savedNetId)) {
+        if (*savedResPtr) {
+          network->SetResource(*savedResPtr);
+        }
+      }
     }
   }
 
   savedNetworkCharges.Empty();
+  savedNetworkResources.Empty();
 }

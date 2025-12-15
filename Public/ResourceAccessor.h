@@ -55,8 +55,6 @@ class UResourceAccessor : public UAccessor {
 
   void Init(const Vec3i &side, const Vec3i &pos, UResourceInventory *inv, bool is_input, bool is_output, FName channel);
 
-  bool IsFrozen() const { return false; }
-
   const UStaticItem *GetResource() const;
 
   virtual void TickComponent() override;

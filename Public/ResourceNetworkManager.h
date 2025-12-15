@@ -31,8 +31,9 @@ class UResourceNetworkManager : public UObject {
   /** Read-only enumeration helper for diagnostics/testing. */
   const TSet<UBlockNetwork *> &GetNetworks() const { return networks; }
 
-  /** Provide previously saved per-network charges so they can be applied after rebuild. */
-  void SetSavedState(const TMap<int32, TArray<int64>> &inNetworkCharges);
+  /** Provide previously saved per-network charges and resource types so they can be applied after rebuild. */
+  void SetSavedState(const TMap<int32, TArray<int64>> &inNetworkCharges,
+                     const TMap<int32, UStaticItem *> &inNetworkResources);
 
   /** Apply saved charges to rebuilt networks based on conductor mappings. */
   void ApplySavedState();
@@ -52,4 +53,7 @@ class UResourceNetworkManager : public UObject {
 
   /** Saved subnetwork charges keyed by transient NetworkId from save file. */
   TMap<int32, TArray<int64>> savedNetworkCharges;
+
+  /** Saved network resource type keyed by transient NetworkId from save file. */
+  TMap<int32, UStaticItem *> savedNetworkResources;
 };

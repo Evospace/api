@@ -161,6 +161,10 @@ class ADimension : public AActor {
   UPROPERTY()
   TArray<UBlockLogic *> RenderBlocksDeferred;
 
+  /** Maximum time budget (in milliseconds) per frame for deferred actor FinishSpawning. */
+  UPROPERTY(EditAnywhere, Category = "Performance")
+  float DeferredActorSpawnTimeMs = 3.0f;
+
   UFUNCTION(BlueprintCallable)
   void ActorBuildModeToggle(bool enabled);
 
