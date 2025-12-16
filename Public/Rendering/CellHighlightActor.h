@@ -68,4 +68,3 @@ class ACellHighlightActor : public AActor {
   void RebuildCells();
   FLinearColor ResolveInstanceColor(int32 Index) const;
 };
-

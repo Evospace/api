@@ -163,4 +163,3 @@ FLinearColor ACellHighlightActor::ResolveInstanceColor(int32 Index) const {
 
   return HighlightColor;
 }
-

@@ -73,5 +73,3 @@ void FCellSelectionHighlighter::EnsureActor(UWorld *World) {
   Actor->SetHighlightColor(ActiveColor);
   Actor->SetActorHiddenInGame(true);
 }
-
-
