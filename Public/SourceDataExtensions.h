@@ -14,5 +14,3 @@ struct FSourceMinerAllocation {
   UPROPERTY()
   int32 Speed = 0;
 };
-
-
