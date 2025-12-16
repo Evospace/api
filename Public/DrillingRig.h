@@ -30,9 +30,19 @@ class UDrillingRig : public UDrillingMachineBase {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
   USourceData *Source = nullptr;
 
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
+  int32 LastSpeed = 100;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
+  int32 CurrentRecipeTime = 0;
+
+  UFUNCTION(BlueprintCallable, Category = "Drilling|Stats")
+  int32 GetTimePerRecipe() const;
+
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   protected:
+  virtual float GetMiningProgress() const override;
   virtual void Drill() override;
   virtual void BlockEndPlay() override;
 };

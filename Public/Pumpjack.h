@@ -45,6 +45,11 @@ class UPumpjack : public UDrillingMachineBase {
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   int32 CurrentRecipeTime = 0;
 
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
+  bool IsRegisteredWithLayer = false;
+
   protected:
   virtual void Drill() override;
+
+  virtual void BlockEndPlay() override;
 };

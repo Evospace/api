@@ -2,6 +2,7 @@
 #include "ExtractionData.h"
 #include "Qr/Prototype.h"
 #include "Public/LazyGameSessionData.h"
+#include "SourceDataExtensions.h"
 #include "SourceData.generated.h"
 
 class ADimension;
@@ -54,11 +55,22 @@ class USourceData : public UInstance {
   FExtractionData ExtractOre(int64 count);
 
   UFUNCTION(BlueprintCallable)
-  void OnMinerStart();
+  FExtractionData ExtractOreForMiner(UObject *Miner, int64 count);
 
   UFUNCTION(BlueprintCallable)
-  void OnMinerStop();
+  int32 GetMinerExtractionSpeed(UObject *Miner) const;
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStart(UObject *Miner);
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStop(UObject *Miner);
 
   private:
+  void RecalculateMinerAllocations();
+
+  UPROPERTY()
+  TArray<FSourceMinerAllocation> MinerAllocations;
+
   FLazyGameSession GameSessionCache;
 };

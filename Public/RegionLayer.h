@@ -3,6 +3,7 @@
 #include "ExtractionData.h"
 #include "Qr/Prototype.h"
 #include "Public/LazyGameSessionData.h"
+#include "SourceDataExtensions.h"
 #include "RegionLayer.generated.h"
 
 class UStaticItem;
@@ -14,6 +15,10 @@ struct FSubregionData final {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int32 Yield = 300;
+
+  // Runtime-only miner allocations for this subregion.
+  UPROPERTY()
+  TArray<FSourceMinerAllocation> MinerAllocations;
 
   static constexpr int Subdivision = 4;
   static constexpr FVector2i SubdivisionSize = { Subdivision, Subdivision };
@@ -44,9 +49,19 @@ class URegionLayer : public UInstance {
   const UStaticItem *Item = nullptr;
 
   FExtractionData ExtractItem(const FVector2i &sr);
+  FExtractionData ExtractItemForMiner(UObject *Miner, const FVector2i &sr);
 
   UFUNCTION(BlueprintPure, BlueprintCallable)
   int32 CalculateExtractionSpeed(const FVector2i &sr) const;
+
+  UFUNCTION(BlueprintCallable)
+  int32 GetMinerExtractionSpeed(UObject *Miner, const FVector2i &sr) const;
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStart(UObject *Miner, const FVector2i &sr);
+
+  UFUNCTION(BlueprintCallable)
+  void OnMinerStop(UObject *Miner, const FVector2i &sr);
 
   const FSubregionData &GetSubregion(const FVector2i &sr) const;
   FSubregionData &GetSubregion(const FVector2i &sr);
@@ -61,5 +76,7 @@ class URegionLayer : public UInstance {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   private:
+  void RecalculateMinerAllocations(FSubregionData &Subregion);
+
   FLazyGameSession GameSessionCache;
 };
