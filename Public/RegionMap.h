@@ -30,7 +30,6 @@ class URegionMap : public UInstance {
     FMapStructure::lua_reg(L);
     luabridge::getGlobalNamespace(L)
       .deriveClass<URegionMap, UInstance>("RegionMap") //@class RegionMap : Instance
-      .addFunction("add_resource", &URegionMap::AddResource)
       // direct:
       //---Delete all regions
       // function RegionMap:reset() end
@@ -76,12 +75,6 @@ class URegionMap : public UInstance {
   TMap<FVector2i, UEvoRegion *> Regions;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<FExtractionData> AllResources;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<int32> ResourceGeneratedCount;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UOreGenerator *OreGenerator;
 
   UFUNCTION(BlueprintCallable)
@@ -112,8 +105,6 @@ class URegionMap : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   USourceData *FindSourceWrapper(const FVector3i &grid);
-
-  void AddResource(const FExtractionData &ed);
 
   UFUNCTION(BlueprintCallable)
   UEvoRegion *GetRegion(const FVector2i &region_pos);
