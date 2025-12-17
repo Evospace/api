@@ -91,6 +91,15 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Weather")
   UStaticWeather *GetRandomWeatherAsset() const;
 
+  // === Save / Load ===
+  // Persist current weather state for a given save and surface.
+  UFUNCTION(BlueprintCallable, Category = "Weather|Save")
+  void SaveWeatherState(const FString &SaveName, const FString &SurfaceName);
+
+  // Restore weather state for a given save and surface if present.
+  UFUNCTION(BlueprintCallable, Category = "Weather|Save")
+  void LoadWeatherState(const FString &SaveName, const FString &SurfaceName);
+
   private:
   bool TickWeather(float DeltaTime);
   FTSTicker::FDelegateHandle TickDelegateHandle;
