@@ -23,6 +23,7 @@ class UStaticWeather : public UPrototype {
       .addProperty("fog01", &Self::Fog01) //@field number 0..1
       .addProperty("storminess01", &Self::Storminess01) //@field number 0..1
       .addProperty("wind_speed", &Self::WindSpeed) //@field number >=0
+      .addProperty("selection_weight", &Self::SelectionWeight) //@field integer >=0
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
@@ -42,6 +43,10 @@ class UStaticWeather : public UPrototype {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float WindSpeed = 0.0f;
+
+  /** Base selection weight for random weather picking. Higher values make this preset more likely. Integer. */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0"))
+  int32 SelectionWeight = 1;
 
   /** Minimum duration this weather lasts (seconds) */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ToolTip = "Minimum duration this weather lasts in seconds"))

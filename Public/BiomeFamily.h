@@ -46,6 +46,10 @@ class UBiomeFamily : public UBiome {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<UStaticWeather *> AvailableWeather;
 
+  // Optional per-biome weather selection weights. If provided, must match AvailableWeather size.
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  TArray<int32> WeatherWeights;
+
   virtual TArray<UStaticWeather *> GetAvailableWeather() const override { return AvailableWeather; }
 
   protected:
