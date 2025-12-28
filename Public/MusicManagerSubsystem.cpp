@@ -355,9 +355,9 @@ void UMusicManagerSubsystem::ScheduleNextTimer(float DurationSeconds) {
   if (DurationSeconds <= 0.0f)
     return;
   if (auto *World = GetWorld()) {
-    // Account for wind time that plays after track ends (WindTime + 10 seconds)
-    const float TotalTrackDuration = DurationSeconds + WindTime + 10.0f;
-    const float TimeUntilNext = FMath::Max(0.01f, TotalTrackDuration - CrossfadeTime + NextTrackDelay);
+    // Wind is baked into the MetaSound graph, so we only need to wait for the actual track plus wind tail
+    const float TotalTrackDuration = DurationSeconds + WindTime;
+    const float TimeUntilNext = FMath::Max(0.01f, TotalTrackDuration);
     World->GetTimerManager().SetTimer(NextTrackTimerHandle, this, &UMusicManagerSubsystem::OnNextTrackTimer, TimeUntilNext, false);
   }
 }
