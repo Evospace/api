@@ -152,6 +152,10 @@ class UBlockNetwork : public UObject {
   UFUNCTION(BlueprintCallable)
   bool AddCharge(int64 addition);
 
+  void CaptureStorageSnapshot();
+  void RestoreStorageSnapshot();
+  void ClearStorageSnapshot();
+
   UFUNCTION()
   void EndTick();
 
@@ -284,16 +288,22 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   virtual void UpdateSides(UAccessor *except = nullptr);
 
+  bool SupportsLocalNetworkStorage() const {
+    return bStoreNetworkChargeLocally && !bSkipLocalNetworkStorageSnapshot;
+  }
+  void ResetStoredNetworkCharge();
+  void AccumulateStoredNetworkCharge(UStaticItem *resource, int64 amount);
+  void ApplyStoredNetworkCharge();
+  void DisableLocalNetworkStorageSnapshot();
+  int64 GetStoredNetworkCharge() const { return StoredNetworkCharge; }
+  const UStaticItem *GetStoredNetworkResource() const { return StoredNetworkResource; }
+
   //==================================================================
   public:
   friend UBlockNetwork;
   friend USwitchBlockLogic;
 
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  int32 GetSavedNetworkId() const { return SavedNetworkId; }
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  int32 GetSavedSubnetworkId() const { return SavedSubnetworkId; }
+  void PrepareNetworkStorageForRemoval();
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
@@ -335,13 +345,18 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 Subnetwork = 0;
 
+  UPROPERTY(VisibleAnywhere)
+  bool bStoreNetworkChargeLocally = false;
+
+  bool bSkipLocalNetworkStorageSnapshot = false;
+
+  UPROPERTY()
+  UStaticItem *StoredNetworkResource = nullptr;
+
+  UPROPERTY()
+  int64 StoredNetworkCharge = 0;
+
   private:
-  UPROPERTY(VisibleAnywhere)
-  int32 SavedNetworkId = INDEX_NONE;
-
-  UPROPERTY(VisibleAnywhere)
-  int32 SavedSubnetworkId = INDEX_NONE;
-
   UPROPERTY(VisibleAnywhere)
   FLazyGameSession GameSessionCache;
 };
