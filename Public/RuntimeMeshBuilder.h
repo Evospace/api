@@ -53,7 +53,12 @@ struct RuntimeMeshBuilder {
     }
 
     if (!bHasLod) {
-      const float ScreenSize = FMath::Pow(0.5f, LodIndex);
+      float ScreenSize = FMath::Pow(0.5f, LodIndex);
+      if (LodIndex == 1) {
+        ScreenSize = 0.7f;
+      } else if (LodIndex == 2) {
+        ScreenSize = 0.3f;
+      }
       Mesh->AddLOD(FRealtimeMeshLODConfig(ScreenSize));
     }
   }
@@ -67,7 +72,6 @@ struct RuntimeMeshBuilder {
 
     EnsureLodExists(rm, LodIndex);
     const FRealtimeMeshSectionGroupKey groupKey = MakeSurfaceGroupKey(LodIndex);
-
     RealtimeMesh::FRealtimeMeshStreamSet StreamSet;
     MeshType Builder(StreamSet);
 
