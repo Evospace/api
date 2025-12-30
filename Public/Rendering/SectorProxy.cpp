@@ -21,6 +21,24 @@
 #include "Public/StaticProp.h"
 #include "Evospace/WorldEntities/WetnessMapSubsystem.h"
 
+namespace {
+
+const FName SurfaceSectionGroupName(TEXT("Surface"));
+
+void RemoveLodSectionGroup(URealtimeMeshSimple *Mesh, int32 LodIndex) {
+  if (!Mesh) {
+    return;
+  }
+
+  const FRealtimeMeshSectionGroupKey SectionGroupKey =
+    FRealtimeMeshSectionGroupKey::Create(FRealtimeMeshLODKey(LodIndex), SurfaceSectionGroupName);
+  if (Mesh->GetSectionGroup(SectionGroupKey).IsValid()) {
+    Mesh->RemoveSectionGroup(SectionGroupKey);
+  }
+}
+
+} // namespace
+
 bool USectorProxy::SetDataForCompiler(SectorCompilerData &data) {
   SetDirty(false);
 
@@ -214,11 +232,19 @@ void USectorProxy::UnloadSector() {
 
 bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
                                          TFunction<void()> callback) {
-  if (data.IsEmpty() && rmc) {
-    auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
-    if (mesh) {
-      mesh->Reset();
+  const bool bHasGeometry = !data.IsEmpty();
+  auto Mesh = rmc ? rmc->GetRealtimeMeshAs<URealtimeMeshSimple>() : nullptr;
+
+  if (!bHasGeometry) {
+    if (Mesh) {
+      RemoveLodSectionGroup(Mesh, lod);
+    }
+    if (lod == 0) {
       IsSectionGroupCreated = false;
+      if (rmc) {
+        rmc->DestroyComponent();
+        rmc = nullptr;
+      }
     }
     callback();
     return true;
@@ -233,20 +259,21 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
     rmc->SetWorldTransform(tr);
     rmc->RegisterComponent();
     rmc->InitializeRealtimeMesh<URealtimeMeshSimple>();
+    Mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
+  } else if (!Mesh) {
+    rmc->InitializeRealtimeMesh<URealtimeMeshSimple>();
+    Mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>();
   }
 
-  if (data.Num() != LastSectionCount) {
-    IsSectionGroupCreated = false;
-    LastSectionCount = data.Num();
-    if (auto mesh = rmc->GetRealtimeMeshAs<URealtimeMeshSimple>()) {
-      mesh->Reset();
-    }
+  if (!Mesh) {
+    callback();
+    return false;
   }
 
-  RuntimeMeshBuilder::BuildRealtimeMesh(rmc->GetRealtimeMeshAs<URealtimeMeshSimple>(), MoveTemp(data), IsSectionGroupCreated);
-
+  RuntimeMeshBuilder::BuildRealtimeMesh(Mesh, MoveTemp(data), lod);
   callback();
-  if (owner) {
+  if (lod == 0 && owner) {
+    IsSectionGroupCreated = true;
     owner->UpdateWetnessMap();
   }
   return true;

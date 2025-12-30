@@ -8,7 +8,7 @@ struct RuntimeMeshBuilder {
 
   private:
   static int32 BuildSection(MeshType &StaticProvider, const UTesselator::Data &data, int32 section_index,
-                            int32 lod_index, int32 precount) {
+                            int32 precount) {
     auto &index_data = data[section_index];
 
     for (int i = 0; i < data[section_index].Vertices.Num(); ++i) {
@@ -25,9 +25,48 @@ struct RuntimeMeshBuilder {
     return data[section_index].Vertices.Num();
   }
 
+  static FRealtimeMeshSectionGroupKey MakeSurfaceGroupKey(int32 LodIndex) {
+    static const FName SurfaceName(TEXT("Surface"));
+    return FRealtimeMeshSectionGroupKey::Create(FRealtimeMeshLODKey(LodIndex), SurfaceName);
+  }
+
+  static bool HasSectionGroup(const URealtimeMeshSimple *Mesh, const FRealtimeMeshSectionGroupKey &GroupKey) {
+    if (!Mesh) {
+      return false;
+    }
+
+    const TArray<FRealtimeMeshSectionGroupKey> SectionGroups = Mesh->GetSectionGroups(GroupKey.LOD());
+    return SectionGroups.Contains(GroupKey);
+  }
+
+  static void EnsureLodExists(URealtimeMeshSimple *Mesh, int32 LodIndex) {
+    if (!Mesh || LodIndex <= 0) {
+      return;
+    }
+
+    bool bHasLod = false;
+    for (const FRealtimeMeshLODKey &Key : Mesh->GetLODs()) {
+      if (Key.Index() == LodIndex) {
+        bHasLod = true;
+        break;
+      }
+    }
+
+    if (!bHasLod) {
+      const float ScreenSize = FMath::Pow(0.5f, LodIndex);
+      Mesh->AddLOD(FRealtimeMeshLODConfig(ScreenSize));
+    }
+  }
+
   public:
-  static void BuildRealtimeMesh(URealtimeMeshSimple *rm, UTesselator::Data &&data, bool &secrionGroup) {
-    auto groupKey = FRealtimeMeshSectionGroupKey::Create(0, FName("Surface"));
+  static void BuildRealtimeMesh(URealtimeMeshSimple *rm, UTesselator::Data &&data, int32 LodIndex) {
+    if (!rm) {
+      data = {};
+      return;
+    }
+
+    EnsureLodExists(rm, LodIndex);
+    const FRealtimeMeshSectionGroupKey groupKey = MakeSurfaceGroupKey(LodIndex);
 
     RealtimeMesh::FRealtimeMeshStreamSet StreamSet;
     MeshType Builder(StreamSet);
@@ -41,20 +80,23 @@ struct RuntimeMeshBuilder {
     for (size_t i = 0; i < data.Num(); ++i) {
       if (data[i].Vertices.Num() > 0) {
         if (ensure(data[i].material)) {
-          section_count += BuildSection(Builder, data, i, 0, section_count);
+          section_count += BuildSection(Builder, data, i, section_count);
           rm->SetupMaterialSlot(i, data[i].material->GetFName(), data[i].material);
         } else {
-          section_count += BuildSection(Builder, data, i, 0, section_count);
+          section_count += BuildSection(Builder, data, i, section_count);
           rm->SetupMaterialSlot(i, "UnloadedMaterial", nullptr);
         }
       }
     }
 
-    if (!secrionGroup) {
-      rm->CreateSectionGroup(groupKey, StreamSet);
-      secrionGroup = true;
+    const bool bHasSectionGroup = HasSectionGroup(rm, groupKey);
+
+    if (!bHasSectionGroup) {
+      auto CreateFuture = rm->CreateSectionGroup(groupKey, StreamSet);
+      CreateFuture.Wait();
     } else {
-      rm->UpdateSectionGroup(groupKey, StreamSet);
+      auto UpdateFuture = rm->UpdateSectionGroup(groupKey, StreamSet);
+      UpdateFuture.Wait();
     }
 
     for (size_t i = 0; i < data.Num(); ++i) {
