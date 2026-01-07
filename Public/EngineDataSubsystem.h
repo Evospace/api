@@ -63,6 +63,7 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
       .addProperty("memory_stats", QR_GET_SET(Storage.MemoryStats)) //@field boolean
       .addProperty("enable_rain", QR_GET_SET(Storage.EnableRain)) //@field boolean
       .addProperty("cloud_preset", QR_GET_SET(Storage.CloudPreset)) //@field integer
+      .addProperty("sector_lod_count", QR_GET_SET(Storage.SectorLodCount)) //@field integer
       // direct:
       // function EngineData:apply() end
       .addFunction("apply", &Self::ApplyData)

@@ -35,7 +35,20 @@ struct RuntimeMeshBuilder {
       return false;
     }
 
-    const TArray<FRealtimeMeshSectionGroupKey> SectionGroups = Mesh->GetSectionGroups(GroupKey.LOD());
+    const FRealtimeMeshLODKey LodKey = GroupKey.LOD();
+    bool bLodExists = false;
+    for (const FRealtimeMeshLODKey &Key : Mesh->GetLODs()) {
+      if (Key == LodKey) {
+        bLodExists = true;
+        break;
+      }
+    }
+
+    if (!bLodExists) {
+      return false;
+    }
+
+    const TArray<FRealtimeMeshSectionGroupKey> SectionGroups = Mesh->GetSectionGroups(LodKey);
     return SectionGroups.Contains(GroupKey);
   }
 
@@ -96,11 +109,9 @@ struct RuntimeMeshBuilder {
     const bool bHasSectionGroup = HasSectionGroup(rm, groupKey);
 
     if (!bHasSectionGroup) {
-      auto CreateFuture = rm->CreateSectionGroup(groupKey, StreamSet);
-      CreateFuture.Wait();
+      rm->CreateSectionGroup(groupKey, StreamSet);
     } else {
-      auto UpdateFuture = rm->UpdateSectionGroup(groupKey, StreamSet);
-      UpdateFuture.Wait();
+      rm->UpdateSectionGroup(groupKey, StreamSet);
     }
 
     for (size_t i = 0; i < data.Num(); ++i) {

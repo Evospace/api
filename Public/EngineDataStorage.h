@@ -92,4 +92,7 @@ struct FEngineDataStorage {
 
   UPROPERTY(EditAnywhere)
   bool EnableRain = true;
+
+  UPROPERTY(EditAnywhere)
+  int32 SectorLodCount = 0;
 };

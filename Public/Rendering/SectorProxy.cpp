@@ -30,9 +30,25 @@ void RemoveLodSectionGroup(URealtimeMeshSimple *Mesh, int32 LodIndex) {
     return;
   }
 
+  const FRealtimeMeshLODKey LodKey(LodIndex);
+  bool bLodExists = false;
+  for (const FRealtimeMeshLODKey &Key : Mesh->GetLODs()) {
+    if (Key == LodKey) {
+      bLodExists = true;
+      break;
+    }
+  }
+
+  if (!bLodExists) {
+    return;
+  }
+
   const FRealtimeMeshSectionGroupKey SectionGroupKey =
-    FRealtimeMeshSectionGroupKey::Create(FRealtimeMeshLODKey(LodIndex), SurfaceSectionGroupName);
-  if (Mesh->GetSectionGroup(SectionGroupKey).IsValid()) {
+    FRealtimeMeshSectionGroupKey::Create(LodKey, SurfaceSectionGroupName);
+
+  // Use safer check for section group existence
+  const TArray<FRealtimeMeshSectionGroupKey> Groups = Mesh->GetSectionGroups(LodKey);
+  if (Groups.Contains(SectionGroupKey)) {
     Mesh->RemoveSectionGroup(SectionGroupKey);
   }
 }
