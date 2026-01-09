@@ -46,5 +46,3 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   FTSTicker::FDelegateHandle TickHandle;
   FDelegateHandle WorldTickHandle;
 };
-
-
