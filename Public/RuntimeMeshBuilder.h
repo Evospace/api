@@ -106,7 +106,7 @@ struct RuntimeMeshBuilder {
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(
       groupKey,
       [StreamSetCopy = MoveTemp(StreamSetCopy)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
-                                               RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
+                                                RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
         SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
         SectionGroup.SetAllStreams(UpdateContext, MoveTemp(StreamSetCopy));
       });
