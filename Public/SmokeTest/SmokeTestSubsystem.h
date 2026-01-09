@@ -30,16 +30,27 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   bool SmokeTick(float DeltaSeconds);
   void OnWorldTickStart(UWorld *World, ELevelTick TickType, float DeltaSeconds);
 
+  enum class ESmokeStage : uint8 {
+    WaitingForMainGameInstance = 0,
+    WaitingForModsLoaded,
+    WaitingBeforeOpenMap,
+    WaitingForTargetMapTick,
+    RunningAfterFirstTick,
+  };
+
   bool Enabled = false;
   bool ModsLoaded = false;
   bool MapLoadRequested = false;
-  bool GameWorldTicked = false;
+  bool TargetMapTicked = false;
 
   double StartSeconds = 0.0;
   double LoadTimeoutSeconds = 30.0;
   double TimeoutSeconds = 90.0;
   double ExitDelaySeconds = 30.0;
   double ExitAtSeconds = 0.0;
+  double OpenMapAtSeconds = 0.0;
+
+  ESmokeStage Stage = ESmokeStage::WaitingForMainGameInstance;
 
   FString SmokeMapName;
 
