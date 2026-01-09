@@ -27,5 +27,3 @@ class UMainMenuGui : public UUserWidget {
   UFUNCTION(BlueprintCallable, Category = "Evospace|MainMenu")
   void RequestLoadGameByName(const FString &SaveName) { LoadGameByName(SaveName); }
 };
-
-
