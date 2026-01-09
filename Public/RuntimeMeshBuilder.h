@@ -139,34 +139,34 @@ struct RuntimeMeshBuilder {
     const bool bHasSectionGroup = HasSectionGroup(rm, groupKey);
     if (!bHasSectionGroup) {
       UpdateBuilder.AddLODTask<RealtimeMesh::FRealtimeMeshLODSimple>(groupKey,
-        [groupKey](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext, RealtimeMesh::FRealtimeMeshLODSimple &LOD) {
-          LOD.CreateOrUpdateSectionGroup(UpdateContext, groupKey, FRealtimeMeshSectionGroupConfig());
-        });
+                                                                     [groupKey](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext, RealtimeMesh::FRealtimeMeshLODSimple &LOD) {
+                                                                       LOD.CreateOrUpdateSectionGroup(UpdateContext, groupKey, FRealtimeMeshSectionGroupConfig());
+                                                                     });
     }
 
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
-      [StreamSet = MoveTemp(StreamSet)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
-                                        RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
-        SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
-        SectionGroup.SetAllStreams(UpdateContext, MoveTemp(StreamSet));
-      });
+                                                                                     [StreamSet = MoveTemp(StreamSet)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                                                                                                       RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
+                                                                                       SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
+                                                                                       SectionGroup.SetAllStreams(UpdateContext, MoveTemp(StreamSet));
+                                                                                     });
 
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
-      [ActivePolyGroups = MoveTemp(ActivePolyGroups), MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
-                                                                               RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
-        for (const int32 PolyGroupIndex : ActivePolyGroups) {
-          const FRealtimeMeshSectionKey SectionKey = FRealtimeMeshSectionKey::CreateForPolyGroup(SectionGroup.GetKey(UpdateContext), PolyGroupIndex);
-          if (const auto Section = SectionGroup.GetSectionAs<RealtimeMesh::FRealtimeMeshSectionSimple>(UpdateContext, SectionKey)) {
-            const FRealtimeMeshSectionConfig SectionConfig(PolyGroupIndex);
-            Section->UpdateConfig(UpdateContext, SectionConfig);
-            Section->SetShouldCreateCollision(UpdateContext, true);
-          } else {
-            // This should not happen if poly-group streams are valid, but avoid hard ensures in the plugin.
-            LOG(ERROR_LL) << "RuntimeMeshBuilder: missing poly-group section " << SectionKey.ToString()
-                          << " Mesh=" << MeshName;
-          }
-        }
-      });
+                                                                                     [ActivePolyGroups = MoveTemp(ActivePolyGroups), MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                                                                                                                                               RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
+                                                                                       for (const int32 PolyGroupIndex : ActivePolyGroups) {
+                                                                                         const FRealtimeMeshSectionKey SectionKey = FRealtimeMeshSectionKey::CreateForPolyGroup(SectionGroup.GetKey(UpdateContext), PolyGroupIndex);
+                                                                                         if (const auto Section = SectionGroup.GetSectionAs<RealtimeMesh::FRealtimeMeshSectionSimple>(UpdateContext, SectionKey)) {
+                                                                                           const FRealtimeMeshSectionConfig SectionConfig(PolyGroupIndex);
+                                                                                           Section->UpdateConfig(UpdateContext, SectionConfig);
+                                                                                           Section->SetShouldCreateCollision(UpdateContext, true);
+                                                                                         } else {
+                                                                                           // This should not happen if poly-group streams are valid, but avoid hard ensures in the plugin.
+                                                                                           LOG(ERROR_LL) << "RuntimeMeshBuilder: missing poly-group section " << SectionKey.ToString()
+                                                                                                         << " Mesh=" << MeshName;
+                                                                                         }
+                                                                                       }
+                                                                                     });
 
     UpdateBuilder.Commit(rm->GetMeshData());
 
