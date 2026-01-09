@@ -40,19 +40,20 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
 
   bool Enabled = false;
   bool ModsLoaded = false;
-  bool MapLoadRequested = false;
-  bool TargetMapTicked = false;
+  bool LoadRequested = false;
+  bool LoadedWorldTicked = false;
 
   double StartSeconds = 0.0;
   double LoadTimeoutSeconds = 30.0;
   double TimeoutSeconds = 90.0;
   double ExitDelaySeconds = 30.0;
   double ExitAtSeconds = 0.0;
-  double OpenMapAtSeconds = 0.0;
+  double StartLoadAtSeconds = 0.0;
 
   ESmokeStage Stage = ESmokeStage::WaitingForMainGameInstance;
 
-  FString SmokeMapName;
+  FString SmokeGameName;
+  FString MapNameBeforeLoad;
 
   FTSTicker::FDelegateHandle TickHandle;
   FDelegateHandle WorldTickHandle;
