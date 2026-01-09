@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <Blueprint/UserWidget.h>
+#include "Blueprint/UserWidget.h"
 
 #include "MainMenuGui.generated.h"
 
@@ -11,7 +11,7 @@
  * The concrete Blueprint (e.g. MainMenuGui) is expected to implement the actual game loading flow.
  */
 UCLASS(Abstract, BlueprintType, Blueprintable)
-class UMainMenuGui : public UUserWidget {
+class EVOSPACE_API UMainMenuGui : public UUserWidget {
   GENERATED_BODY()
 
   public:
