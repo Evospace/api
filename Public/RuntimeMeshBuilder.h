@@ -1,6 +1,7 @@
 #pragma once
 #include "RealtimeMeshComponent.h"
 #include "RealtimeMeshSimple.h"
+#include "Data/RealtimeMeshUpdateBuilder.h"
 #include "Evospace/World/Tesselator.h"
 
 struct RuntimeMeshBuilder {
@@ -28,28 +29,6 @@ struct RuntimeMeshBuilder {
   static FRealtimeMeshSectionGroupKey MakeSurfaceGroupKey(int32 LodIndex) {
     static const FName SurfaceName(TEXT("Surface"));
     return FRealtimeMeshSectionGroupKey::Create(FRealtimeMeshLODKey(LodIndex), SurfaceName);
-  }
-
-  static bool HasSectionGroup(const URealtimeMeshSimple *Mesh, const FRealtimeMeshSectionGroupKey &GroupKey) {
-    if (!Mesh) {
-      return false;
-    }
-
-    const FRealtimeMeshLODKey LodKey = GroupKey.LOD();
-    bool bLodExists = false;
-    for (const FRealtimeMeshLODKey &Key : Mesh->GetLODs()) {
-      if (Key == LodKey) {
-        bLodExists = true;
-        break;
-      }
-    }
-
-    if (!bLodExists) {
-      return false;
-    }
-
-    const TArray<FRealtimeMeshSectionGroupKey> SectionGroups = Mesh->GetSectionGroups(LodKey);
-    return SectionGroups.Contains(GroupKey);
   }
 
   static void EnsureLodExists(URealtimeMeshSimple *Mesh, int32 LodIndex) {
@@ -98,30 +77,57 @@ struct RuntimeMeshBuilder {
       if (data[i].Vertices.Num() > 0) {
         if (ensure(data[i].material)) {
           section_count += BuildSection(Builder, data, i, section_count);
-          rm->SetupMaterialSlot(i, data[i].material->GetFName(), data[i].material);
+          const FString SlotNameString =
+            data[i].material->GetFName().ToString() + (data[i].SmoothNormals ? TEXT("_Smooth") : TEXT("_Flat"));
+          rm->SetupMaterialSlot(i, FName(*SlotNameString), data[i].material);
         } else {
           section_count += BuildSection(Builder, data, i, section_count);
-          rm->SetupMaterialSlot(i, "UnloadedMaterial", nullptr);
+          const FString SlotNameString =
+            FString(TEXT("UnloadedMaterial")) + (data[i].SmoothNormals ? TEXT("_Smooth") : TEXT("_Flat"));
+          rm->SetupMaterialSlot(i, FName(*SlotNameString), nullptr);
         }
       }
     }
 
-    const bool bHasSectionGroup = HasSectionGroup(rm, groupKey);
+    // IMPORTANT:
+    // - Creating/updating section-group streams and updating section configs must be done in a single commit.
+    //   Otherwise, UpdateSectionConfig may run before the poly-group sections are created and triggers
+    //   `ensure(Section.IsValid())` inside RealtimeMeshComponent.
+    RealtimeMesh::FRealtimeMeshUpdateBuilder UpdateBuilder;
 
-    if (!bHasSectionGroup) {
-      rm->CreateSectionGroup(groupKey, StreamSet);
-    } else {
-      rm->UpdateSectionGroup(groupKey, StreamSet);
-    }
+    UpdateBuilder.AddLODTask<RealtimeMesh::FRealtimeMeshLODSimple>(
+      groupKey.LOD(),
+      [groupKey](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext, RealtimeMesh::FRealtimeMeshLODSimple &LOD) {
+        LOD.CreateOrUpdateSectionGroup(UpdateContext, groupKey, FRealtimeMeshSectionGroupConfig());
+      });
+
+    // Copy once; SectionGroup::SetAllStreams expects an rvalue in this path.
+    RealtimeMesh::FRealtimeMeshStreamSet StreamSetCopy(StreamSet);
+    UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(
+      groupKey,
+      [StreamSetCopy = MoveTemp(StreamSetCopy)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                               RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
+        SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
+        SectionGroup.SetAllStreams(UpdateContext, MoveTemp(StreamSetCopy));
+      });
 
     for (size_t i = 0; i < data.Num(); ++i) {
       if (data[i].Triangles.Num() == 0) {
-        LOG(ERROR_LL) << rm->GetName() << " contains empty section #" << i;
         continue;
       }
+
       const FRealtimeMeshSectionKey PolyGroupKey = FRealtimeMeshSectionKey::CreateForPolyGroup(groupKey, i);
-      rm->UpdateSectionConfig(PolyGroupKey, FRealtimeMeshSectionConfig(i), true);
+      const FRealtimeMeshSectionConfig Config(static_cast<int32>(i));
+
+      UpdateBuilder.AddSectionTask<RealtimeMesh::FRealtimeMeshSectionSimple>(
+        PolyGroupKey,
+        [Config](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext, RealtimeMesh::FRealtimeMeshSectionSimple &Section) {
+          Section.UpdateConfig(UpdateContext, Config);
+          Section.SetShouldCreateCollision(UpdateContext, true);
+        });
     }
+
+    UpdateBuilder.Commit(rm->GetMeshData());
 
     data = {};
   }
