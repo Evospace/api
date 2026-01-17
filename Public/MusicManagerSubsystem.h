@@ -110,7 +110,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
 
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
-  void ScheduleNextTimer(float DurationSeconds);
+  void ScheduleNextTimer(float DurationSeconds, bool bAddWindTail);
 
   UFUNCTION()
   void OnNextTrackTimer();

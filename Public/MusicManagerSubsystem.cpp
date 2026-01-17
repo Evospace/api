@@ -320,6 +320,8 @@ void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
   check(Inactive);
   check(MusicMetaSoundSource);
 
+  const bool bUseMetaSoundWaveInjection = (Cast<USoundWave>(NewSound) != nullptr);
+
   if (USoundWave *AsWave = Cast<USoundWave>(NewSound)) {
     Inactive->SetSound(MusicMetaSoundSource);
     Inactive->SetWaveParameter(TEXT("Wave"), AsWave);
@@ -348,16 +350,17 @@ void UMusicManagerSubsystem::StartCrossfade(USoundBase *NewSound) {
   bUseAAsActive = (Inactive == AudioComponentA);
 
   // Schedule next random track before the current one ends
-  ScheduleNextTimer(Duration);
+  ScheduleNextTimer(Duration, bUseMetaSoundWaveInjection);
 }
 
-void UMusicManagerSubsystem::ScheduleNextTimer(float DurationSeconds) {
+void UMusicManagerSubsystem::ScheduleNextTimer(float DurationSeconds, bool bAddWindTail) {
   if (DurationSeconds <= 0.0f)
     return;
   if (auto *World = GetWorld()) {
-    // Wind is baked into the MetaSound graph, so we only need to wait for the actual track plus wind tail
-    const float TotalTrackDuration = DurationSeconds + WindTime;
-    const float TimeUntilNext = FMath::Max(0.01f, TotalTrackDuration);
+    const float WindTailSeconds = bAddWindTail ? WindTime : 0.0f;
+    const float TotalCycleSeconds = DurationSeconds + WindTailSeconds;
+    // Start crossfade before MetaSound restarts its cycle (track + wind tail).
+    const float TimeUntilNext = FMath::Max(0.01f, TotalCycleSeconds - CrossfadeTime);
     World->GetTimerManager().SetTimer(NextTrackTimerHandle, this, &UMusicManagerSubsystem::OnNextTrackTimer, TimeUntilNext, false);
   }
 }
