@@ -295,11 +295,22 @@ class ADimension : public AActor {
   UPROPERTY(VisibleAnywhere)
   TMap<FVector3i, AColumn *> mColumns;
 
+  // Limits bursty game-thread work when many columns transition to save/remove at once.
+  UPROPERTY(EditAnywhere, Category = "Performance")
+  int32 MaxColumnSavesStartedPerFrame = 2;
+
+  UPROPERTY(EditAnywhere, Category = "Performance")
+  int32 MaxColumnDecachesPerFrame = 2;
+
   UPROPERTY(VisibleAnywhere)
   int32 mCountRemove = 0;
 
   UPROPERTY(VisibleAnywhere)
   int32 mCountCreate = 0;
+
+  int32 SaveStartCount = 0;
+  int32 DecacheCount = 0;
+  TArray<TWeakObjectPtr<AColumn>> PendingDecacheColumns;
 
   public:
   void LoadColumn(const Vec3i &pos);
@@ -308,6 +319,7 @@ class ADimension : public AActor {
   bool IsCanCreateColumn() const;
   bool IsCanRemoveColumn() const;
   bool IsCanSaveColumn(const AColumn &tall) const;
+  bool IsCanStartSaveColumn() const;
 
   private:
   void DeferredActorSpawn();
@@ -324,6 +336,8 @@ class ADimension : public AActor {
 
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);
+  void DecacheColumnImmediate(AColumn &column);
+  void ProcessPendingDecache();
 
   void CacheSector(const Vec3i &pos, USectorProxy *sector);
 
