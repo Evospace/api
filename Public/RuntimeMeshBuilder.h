@@ -113,6 +113,8 @@ struct RuntimeMeshBuilder {
     Builder.EnableColors();
     Builder.EnablePolyGroups();
 
+    const bool bUpdateMaterialSlots = (LodIndex == 0);
+
     TSet<int32> ActivePolyGroups;
     int32 VertexBase = 0;
     for (int32 SectionIndex = 0; SectionIndex < data.Num(); ++SectionIndex) {
@@ -121,10 +123,13 @@ struct RuntimeMeshBuilder {
         continue;
       }
 
-      if (SectionData.material) {
-        rm->SetupMaterialSlot(SectionIndex, SectionData.material->GetFName(), SectionData.material);
-      } else {
-        rm->SetupMaterialSlot(SectionIndex, "UnloadedMaterial", nullptr);
+      if (bUpdateMaterialSlots) {
+        if (SectionData.material) {
+          // Use full object path as slot name to avoid FName collisions between different packages.
+          rm->SetupMaterialSlot(SectionIndex, FName(*SectionData.material->GetPathName()), SectionData.material);
+        } else {
+          rm->SetupMaterialSlot(SectionIndex, "UnloadedMaterial", nullptr);
+        }
       }
 
       const int32 AddedVertexCount = BuildSection(Builder, SectionData, SectionIndex, VertexBase);
