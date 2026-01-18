@@ -159,7 +159,5 @@ void ACellHighlightActor::RebuildCells() {
 FLinearColor ACellHighlightActor::ResolveInstanceColor(int32 Index) const {
   if (InstanceColorOverrideMask.IsValidIndex(Index) && InstanceColorOverrideMask[Index] && InstanceColorOverrides.IsValidIndex(Index)) {
     return InstanceColorOverrides[Index];
-  }
-
-  return HighlightColor;
+  }  return HighlightColor;
 }
