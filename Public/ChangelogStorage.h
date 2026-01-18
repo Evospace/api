@@ -26,7 +26,7 @@ struct FChangelog {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   FDateTime dt;
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  bool isImportant = false;
+  int32 isImportant = 0;
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   TArray<FString> tags;
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
