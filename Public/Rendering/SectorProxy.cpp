@@ -99,9 +99,31 @@ void USectorProxy::SetDirty(IndexType index) {
   out.Z += (pos.Z == 0 ? -1 : 0);
   out.Z += (pos.Z == gSectorSize.Z - 1 ? 1 : 0);
 
-  for (IndexType i = 0; i < Vec3i(2, 2, 2).Capacity(); ++i) {
-    if (auto sector = ajacentSectors.Element(out * cs::IndexToCell(i, Vec3i(2, 2, 2))))
+  if (out == Vec3i(0, 0, 0)) {
+    if (auto sector = ajacentSectors.Element(out)) {
       sector->SetDirty(true);
+    }
+  } else {
+    TArray<Vec3i> uniqueOffsets;
+    uniqueOffsets.Reserve(Vec3i(2, 2, 2).Capacity());
+    for (IndexType i = 0; i < Vec3i(2, 2, 2).Capacity(); ++i) {
+      const Vec3i offset = out * cs::IndexToCell(i, Vec3i(2, 2, 2));
+      bool isUnique = true;
+      for (const Vec3i &existing : uniqueOffsets) {
+        if (existing == offset) {
+          isUnique = false;
+          break;
+        }
+      }
+      if (isUnique) {
+        uniqueOffsets.Add(offset);
+      }
+    }
+    for (const Vec3i &offset : uniqueOffsets) {
+      if (auto sector = ajacentSectors.Element(offset)) {
+        sector->SetDirty(true);
+      }
+    }
   }
 
   if (ensure(owner)) {
