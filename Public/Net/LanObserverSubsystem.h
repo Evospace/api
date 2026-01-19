@@ -8,6 +8,17 @@
 
 #include "LanObserverSubsystem.generated.h"
 
+UENUM(BlueprintType)
+enum class ELanObserverStatus : uint8 {
+  None = 0,
+  HostStarted = 1,
+  Connected = 2,
+  HandshakeFailed = 3,
+  SaveMissing = 4,
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLanObserverStatus, ELanObserverStatus, Status, const FString &, Message);
+
 /**
  * Minimal custom LAN "observer" transport (protocol v0).
  *
@@ -45,4 +56,9 @@ class ULanObserverSubsystem : public UGameInstanceSubsystem, public FTickableGam
   /** Stop host/guest and close transport. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Observer")
   void ObserverStop();
+
+  void ReportStatus(ELanObserverStatus Status, const FString &Message);
+
+  UPROPERTY(BlueprintAssignable)
+  FOnLanObserverStatus OnObserverStatus;
 };
