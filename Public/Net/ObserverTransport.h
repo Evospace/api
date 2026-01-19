@@ -30,4 +30,3 @@ class IObserverTransport {
   virtual bool IsConnected() const = 0;
   virtual FString GetRemoteId() const = 0;
 };
-

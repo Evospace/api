@@ -58,4 +58,3 @@ class ULanObserverSubsystem : public UGameInstanceSubsystem, public FTickableGam
   UFUNCTION(Exec)
   void LanObsStop();
 };
-
