@@ -45,5 +45,4 @@ class ULanObserverSubsystem : public UGameInstanceSubsystem, public FTickableGam
   /** Stop host/guest and close transport. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Observer")
   void ObserverStop();
-
 };
