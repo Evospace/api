@@ -78,7 +78,7 @@ void USectorProxy::SpawnColumn(const FSectorData &data) {
 void USectorProxy::GetSectorDataHot(FSectorData &data) {
   data.mStaticBlocks = StaticBlocks;
 
-  // Костыль, нужно переехать на хранение в колонне
+  // TODO: move storage to column to remove this workaround
   if (PivotPos.Z == 0 && ensure(owner && owner->SectorPropComponent)) {
     owner->SectorPropComponent->GetAll(data.mAttaches);
   }
