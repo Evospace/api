@@ -46,15 +46,4 @@ class ULanObserverSubsystem : public UGameInstanceSubsystem, public FTickableGam
   UFUNCTION(BlueprintCallable, Category = "Evospace|Observer")
   void ObserverStop();
 
-  /** Start host on UDP port (default 27050). */
-  UFUNCTION(Exec)
-  void LanObsHost(int32 Port = 27050);
-
-  /** Connect guest to host by IPv4 + UDP port (default 27050). */
-  UFUNCTION(Exec)
-  void LanObsConnect(const FString &HostIp, int32 Port = 27050);
-
-  /** Stop host/guest and close socket. */
-  UFUNCTION(Exec)
-  void LanObsStop();
 };

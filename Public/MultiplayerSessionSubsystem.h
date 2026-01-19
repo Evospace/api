@@ -74,4 +74,5 @@ class UMultiplayerSessionSubsystem : public UGameInstanceSubsystem {
 
   private:
   TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
+  FString PendingJoinSaveName;
 };

@@ -89,10 +89,24 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   void GameLoadingSequence(const FString &saveName);
 
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
+  bool StartGameFromSave(const FString &saveName, bool bListenServer);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Game")
+  FString GetGameplayMapPath() const;
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
+  bool PrepareSaveForSession(const FString &saveName);
+
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;
 
   private:
+  void HandlePostLoadMap(UWorld *NewWorld);
+
+  FDelegateHandle PostLoadMapHandle;
+  FString PendingStartSaveName;
+
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
