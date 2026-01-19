@@ -29,6 +29,8 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   private:
   bool SmokeTick(float DeltaSeconds);
   void OnWorldTickStart(UWorld *World, ELevelTick TickType, float DeltaSeconds);
+  bool RunPostLoadCoreChecks(UWorld *World);
+  bool HasSpawnedColumns(UWorld *World, int32 &OutColumnCount, int32 &OutWallCount) const;
 
   enum class ESmokeStage : uint8 {
     WaitingForMainGameInstance = 0,
@@ -49,6 +51,19 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   double ExitDelaySeconds = 30.0;
   double ExitAtSeconds = 0.0;
   double StartLoadAtSeconds = 0.0;
+
+  double ColumnsTimeoutSeconds = 10.0;
+  double ColumnsStartSeconds = 0.0;
+
+  double PostLoadCoreChecksAtSeconds = 0.0;
+  double LastColumnsLogSeconds = 0.0;
+
+  bool PostLoadCoreChecksDone = false;
+  bool PostLoadCoreChecksPassed = false;
+  bool PostLoadColumnsReady = false;
+
+  TWeakObjectPtr<UWorld> LoadedWorld;
+  FString LoadedMapName;
 
   ESmokeStage Stage = ESmokeStage::WaitingForMainGameInstance;
 

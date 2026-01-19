@@ -126,6 +126,10 @@ class FLogHelper {
   }
 
   FLogHelper &operator<<(const char *Message) {
+    if (Message == nullptr) {
+      Buffer += TEXT("<null>");
+      return *this;
+    }
     Buffer += UTF8_TO_TCHAR(Message);
     return *this;
   }
@@ -137,6 +141,10 @@ class FLogHelper {
   }
 
   FLogHelper &operator<<(TCHAR *const Message) {
+    if (Message == nullptr) {
+      Buffer += TEXT("<null>");
+      return *this;
+    }
     Buffer += Message;
     return *this;
   }

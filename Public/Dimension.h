@@ -193,9 +193,6 @@ class ADimension : public AActor {
   UPROPERTY(EditAnywhere)
   AWorldFeaturesManager *FeatureManager;
 
-  // UPROPERTY(EditAnywhere)
-  // UBatchBlockLogicManager *BatchManager;
-
   protected:
   // Core Tick
 

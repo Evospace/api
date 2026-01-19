@@ -19,13 +19,8 @@ void FSimpleLogger::StartFileLogging(const FString &FileName) {
     return;
   }
 
-  IFileManager &FileManager = IFileManager::Get();
-  if (FileManager.FileExists(*LogFilePath)) {
-    FileManager.Delete(*LogFilePath);
-  }
-
   IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-  LogFileHandle.Reset(PlatformFile.OpenWrite(*LogFilePath));
+  LogFileHandle.Reset(PlatformFile.OpenWrite(*LogFilePath, false, true));
   bWriteToDisk = LogFileHandle.IsValid();
   if (!bWriteToDisk) {
     LogFilePath.Empty();
