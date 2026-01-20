@@ -116,6 +116,7 @@ struct RuntimeMeshBuilder {
     const bool bUpdateMaterialSlots = (LodIndex == 0);
 
     TSet<int32> ActivePolyGroups;
+    TMap<int32, int32> PolyGroupToMaterialSlot;
     int32 VertexBase = 0;
     for (int32 SectionIndex = 0; SectionIndex < data.Num(); ++SectionIndex) {
       const auto &SectionData = data[SectionIndex];
@@ -132,6 +133,7 @@ struct RuntimeMeshBuilder {
         }
       }
 
+      PolyGroupToMaterialSlot.Add(SectionIndex, SectionIndex);
       const int32 AddedVertexCount = BuildSection(Builder, SectionData, SectionIndex, VertexBase);
       if (AddedVertexCount > 0 && SectionData.Triangles.Num() > 0) {
         ActivePolyGroups.Add(SectionIndex);
@@ -150,19 +152,32 @@ struct RuntimeMeshBuilder {
     }
 
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
-                                                                                     [StreamSet = MoveTemp(StreamSet)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                                                                     [PolyGroupToMaterialSlot, StreamSet = MoveTemp(StreamSet)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
                                                                                                                        RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
                                                                                        SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
+                                                                                       SectionGroup.SetPolyGroupSectionHandler(
+                                                                                         UpdateContext,
+                                                                                         RealtimeMesh::FRealtimeMeshPolyGroupConfigHandler::CreateLambda(
+                                                                                           [PolyGroupToMaterialSlot](int32 PolyGroupIndex) {
+                                                                                             if (const int32 *SlotIndex = PolyGroupToMaterialSlot.Find(PolyGroupIndex)) {
+                                                                                               return FRealtimeMeshSectionConfig(*SlotIndex);
+                                                                                             }
+                                                                                             return FRealtimeMeshSectionConfig(PolyGroupIndex);
+                                                                                           }));
                                                                                        SectionGroup.SetAllStreams(UpdateContext, MoveTemp(StreamSet));
                                                                                      });
 
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
-                                                                                     [ActivePolyGroups = MoveTemp(ActivePolyGroups), MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                                                                     [ActivePolyGroups = MoveTemp(ActivePolyGroups), PolyGroupToMaterialSlot, MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
                                                                                                                                                                RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
                                                                                        for (const int32 PolyGroupIndex : ActivePolyGroups) {
                                                                                          const FRealtimeMeshSectionKey SectionKey = FRealtimeMeshSectionKey::CreateForPolyGroup(SectionGroup.GetKey(UpdateContext), PolyGroupIndex);
                                                                                          if (const auto Section = SectionGroup.GetSectionAs<RealtimeMesh::FRealtimeMeshSectionSimple>(UpdateContext, SectionKey)) {
-                                                                                           const FRealtimeMeshSectionConfig SectionConfig(PolyGroupIndex);
+                                                                                           const int32 MaterialSlot =
+                                                                                             PolyGroupToMaterialSlot.Contains(PolyGroupIndex)
+                                                                                               ? PolyGroupToMaterialSlot[PolyGroupIndex]
+                                                                                               : PolyGroupIndex;
+                                                                                           const FRealtimeMeshSectionConfig SectionConfig(MaterialSlot);
                                                                                            Section->UpdateConfig(UpdateContext, SectionConfig);
                                                                                            Section->SetShouldCreateCollision(UpdateContext, true);
                                                                                          } else {
