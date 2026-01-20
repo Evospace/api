@@ -95,9 +95,6 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Game")
   FString GetGameplayMapPath() const;
 
-  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
-  bool PrepareSaveForSession(const FString &saveName);
-
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;
 
