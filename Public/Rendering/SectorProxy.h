@@ -58,6 +58,7 @@ class USectorProxy : public UObject {
 
   virtual bool ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
                                      TFunction<void()> callback);
+  virtual bool ApplyCubeDataFromCompiler(ADimension *dim, UTesselator::Data &&data, TFunction<void()> callback);
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 
@@ -89,4 +90,10 @@ class USectorProxy : public UObject {
 
   UPROPERTY()
   URealtimeMeshComponent *rmc = nullptr;
+
+  UPROPERTY()
+  bool IsCubeSectionGroupCreated = false;
+
+  UPROPERTY()
+  URealtimeMeshComponent *rmcCubes = nullptr;
 };

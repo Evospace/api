@@ -317,6 +317,49 @@ bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&da
   return true;
 }
 
+bool USectorProxy::ApplyCubeDataFromCompiler(ADimension *dim, UTesselator::Data &&data, TFunction<void()> callback) {
+  const bool bHasGeometry = !data.IsEmpty();
+  auto Mesh = rmcCubes ? rmcCubes->GetRealtimeMeshAs<URealtimeMeshSimple>() : nullptr;
+
+  if (!bHasGeometry) {
+    if (Mesh) {
+      RemoveLodSectionGroup(Mesh, 0);
+    }
+    IsCubeSectionGroupCreated = false;
+    if (rmcCubes) {
+      rmcCubes->DestroyComponent();
+      rmcCubes = nullptr;
+    }
+    callback();
+    return true;
+  }
+
+  if (!rmcCubes) {
+    rmcCubes = NewObject<URealtimeMeshComponent>(owner, URealtimeMeshComponent::StaticClass());
+    rmcCubes->AttachToComponent(owner->GetRootComponent(), { EAttachmentRule::KeepWorld, false });
+    rmcCubes->SetMobility(EComponentMobility::Type::Static);
+    FTransform tr;
+    tr.SetLocation(cs::WBtoWd(GetPivotPos()));
+    rmcCubes->SetWorldTransform(tr);
+    rmcCubes->RegisterComponent();
+    rmcCubes->InitializeRealtimeMesh<URealtimeMeshSimple>();
+    Mesh = rmcCubes->GetRealtimeMeshAs<URealtimeMeshSimple>();
+  } else if (!Mesh) {
+    rmcCubes->InitializeRealtimeMesh<URealtimeMeshSimple>();
+    Mesh = rmcCubes->GetRealtimeMeshAs<URealtimeMeshSimple>();
+  }
+
+  if (!Mesh) {
+    callback();
+    return false;
+  }
+
+  RuntimeMeshBuilder::BuildRealtimeMesh(Mesh, MoveTemp(data), 0);
+  callback();
+  IsCubeSectionGroupCreated = true;
+  return true;
+}
+
 USectorPropComponent *USectorProxy::GetInstancingComponent() const {
   return owner->SectorPropComponent;
 }
