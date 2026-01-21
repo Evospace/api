@@ -198,7 +198,19 @@ struct RuntimeMeshBuilder {
                                                                                          if (!SectionKey.IsPolyGroupKey()) {
                                                                                            continue;
                                                                                          }
-                                                                                         if (!PolyGroupRanges.Contains(SectionKey.PolygonGroupIndex())) {
+                                                                                         // Extract polygon group index from section name (format: "Section_PolyGroup{Number}")
+                                                                                         FString SectionName = SectionKey.Name().ToString();
+                                                                                         int32 PolyGroupIndex = INDEX_NONE;
+                                                                                         if (SectionName.RemoveFromStart(TEXT("Section_PolyGroup")))
+                                                                                         {
+                                                                                           // Remove leading underscore if present
+                                                                                           SectionName.RemoveFromStart(TEXT("_"));
+                                                                                           if (!SectionName.IsEmpty())
+                                                                                           {
+                                                                                             PolyGroupIndex = FCString::Atoi(*SectionName);
+                                                                                           }
+                                                                                         }
+                                                                                         if (PolyGroupIndex >= 0 && !PolyGroupRanges.Contains(PolyGroupIndex)) {
                                                                                            SectionGroup.RemoveSection(UpdateContext, SectionKey);
                                                                                          }
                                                                                        }
