@@ -357,6 +357,9 @@ bool USectorProxy::ApplyCubeDataFromCompiler(ADimension *dim, UTesselator::Data 
   RuntimeMeshBuilder::BuildRealtimeMesh(Mesh, MoveTemp(data), 0);
   callback();
   IsCubeSectionGroupCreated = true;
+  if (!IsSectionGroupCreated && owner) {
+    owner->UpdateWetnessMap();
+  }
   return true;
 }
 
