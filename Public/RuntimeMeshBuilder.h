@@ -2,7 +2,6 @@
 #include "RealtimeMeshComponent.h"
 #include "RealtimeMeshSimple.h"
 #include "Data/RealtimeMeshUpdateBuilder.h"
-#include "Mesh/RealtimeMeshAlgo.h"
 #include "Evospace/World/Tesselator.h"
 
 struct RuntimeMeshBuilder {
@@ -142,14 +141,6 @@ struct RuntimeMeshBuilder {
       VertexBase += AddedVertexCount;
     }
 
-    const TOptional<TMap<int32, FRealtimeMeshStreamRange>> PolyGroupRangesResult =
-      RealtimeMeshAlgo::GetStreamRangesFromPolyGroups(StreamSet);
-    if (!PolyGroupRangesResult) {
-      LOG(ERROR_LL) << "RuntimeMeshBuilder: missing poly-group ranges for " << rm->GetName();
-    }
-    const TMap<int32, FRealtimeMeshStreamRange> PolyGroupRanges =
-      PolyGroupRangesResult ? PolyGroupRangesResult.GetValue() : TMap<int32, FRealtimeMeshStreamRange>();
-
     RealtimeMesh::FRealtimeMeshUpdateBuilder UpdateBuilder;
 
     const bool bHasSectionGroup = HasSectionGroup(rm, groupKey);
@@ -163,7 +154,7 @@ struct RuntimeMeshBuilder {
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
                                                                                      [PolyGroupToMaterialSlot, StreamSet = MoveTemp(StreamSet)](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
                                                                                                                                                 RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
-                                                                                       SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, false);
+                                                                                       SectionGroup.SetShouldAutoCreateSectionsForPolyGroups(UpdateContext, true);
                                                                                        SectionGroup.SetPolyGroupSectionHandler(
                                                                                          UpdateContext,
                                                                                          RealtimeMesh::FRealtimeMeshPolyGroupConfigHandler::CreateLambda(
@@ -177,41 +168,22 @@ struct RuntimeMeshBuilder {
                                                                                      });
 
     UpdateBuilder.AddSectionGroupTask<RealtimeMesh::FRealtimeMeshSectionGroupSimple>(groupKey,
-                                                                                     [ActivePolyGroups = MoveTemp(ActivePolyGroups), PolyGroupRanges, PolyGroupToMaterialSlot, MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
+                                                                                     [ActivePolyGroups = MoveTemp(ActivePolyGroups), PolyGroupToMaterialSlot, MeshName = rm->GetName()](RealtimeMesh::FRealtimeMeshUpdateContext &UpdateContext,
                                                                                                                                                                                         RealtimeMesh::FRealtimeMeshSectionGroupSimple &SectionGroup) mutable {
-                                                                                       for (const auto &RangePair : PolyGroupRanges) {
-                                                                                         const int32 PolyGroupIndex = RangePair.Key;
-                                                                                         const FRealtimeMeshStreamRange &StreamRange = RangePair.Value;
+                                                                                       for (const int32 PolyGroupIndex : ActivePolyGroups) {
                                                                                          const FRealtimeMeshSectionKey SectionKey = FRealtimeMeshSectionKey::CreateForPolyGroup(SectionGroup.GetKey(UpdateContext), PolyGroupIndex);
-                                                                                         const int32 MaterialSlot =
-                                                                                           PolyGroupToMaterialSlot.Contains(PolyGroupIndex)
-                                                                                             ? PolyGroupToMaterialSlot[PolyGroupIndex]
-                                                                                             : PolyGroupIndex;
-                                                                                         const FRealtimeMeshSectionConfig SectionConfig(MaterialSlot);
-                                                                                         SectionGroup.CreateOrUpdateSection(UpdateContext, SectionKey, SectionConfig, StreamRange);
                                                                                          if (const auto Section = SectionGroup.GetSectionAs<RealtimeMesh::FRealtimeMeshSectionSimple>(UpdateContext, SectionKey)) {
+                                                                                           const int32 MaterialSlot =
+                                                                                             PolyGroupToMaterialSlot.Contains(PolyGroupIndex)
+                                                                                               ? PolyGroupToMaterialSlot[PolyGroupIndex]
+                                                                                               : PolyGroupIndex;
+                                                                                           const FRealtimeMeshSectionConfig SectionConfig(MaterialSlot);
+                                                                                           Section->UpdateConfig(UpdateContext, SectionConfig);
                                                                                            Section->SetShouldCreateCollision(UpdateContext, true);
-                                                                                         }
-                                                                                       }
-
-                                                                                       for (const FRealtimeMeshSectionKey SectionKey : SectionGroup.GetSectionKeys(UpdateContext)) {
-                                                                                         if (!SectionKey.IsPolyGroupKey()) {
-                                                                                           continue;
-                                                                                         }
-                                                                                         // Extract polygon group index from section name (format: "Section_PolyGroup{Number}")
-                                                                                         FString SectionName = SectionKey.Name().ToString();
-                                                                                         int32 PolyGroupIndex = INDEX_NONE;
-                                                                                         if (SectionName.RemoveFromStart(TEXT("Section_PolyGroup")))
-                                                                                         {
-                                                                                           // Remove leading underscore if present
-                                                                                           SectionName.RemoveFromStart(TEXT("_"));
-                                                                                           if (!SectionName.IsEmpty())
-                                                                                           {
-                                                                                             PolyGroupIndex = FCString::Atoi(*SectionName);
-                                                                                           }
-                                                                                         }
-                                                                                         if (PolyGroupIndex >= 0 && !PolyGroupRanges.Contains(PolyGroupIndex)) {
-                                                                                           SectionGroup.RemoveSection(UpdateContext, SectionKey);
+                                                                                         } else {
+                                                                                           // This should not happen if poly-group streams are valid, but avoid hard ensures in the plugin.
+                                                                                           LOG(ERROR_LL) << "RuntimeMeshBuilder: missing poly-group section " << SectionKey.ToString()
+                                                                                                         << " Mesh=" << MeshName;
                                                                                          }
                                                                                        }
                                                                                      });
