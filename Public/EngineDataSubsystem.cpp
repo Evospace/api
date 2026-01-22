@@ -14,6 +14,8 @@
 #include "Widgets/SWindow.h"
 #include "Qr/ModLoadingSubsystem.h"
 #include "HAL/IConsoleManager.h"
+#include "Blueprint/UserWidget.h"
+#include "UObject/UObjectGlobals.h"
 
 class USettingsConfirmationWidget;
 bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
@@ -22,9 +24,31 @@ bool IsPointInRect(const FPlatformRect &Rect, const FVector2D &Point) {
 
 void UEngineDataSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
+
+  if (auto modSubsystem = GEngine ? GEngine->GetEngineSubsystem<UModLoadingSubsystem>() : nullptr) {
+    modSubsystem->OnModsLoaded.AddDynamic(this, &UEngineDataSubsystem::HandleModsLoaded);
+  }
+
+  if (!PostLoadMapHandle.IsValid()) {
+    PostLoadMapHandle = FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UEngineDataSubsystem::HandlePostLoadMap);
+  }
 }
 
 void UEngineDataSubsystem::Deinitialize() {
+  if (auto modSubsystem = GEngine ? GEngine->GetEngineSubsystem<UModLoadingSubsystem>() : nullptr) {
+    modSubsystem->OnModsLoaded.RemoveDynamic(this, &UEngineDataSubsystem::HandleModsLoaded);
+  }
+
+  if (PostLoadMapHandle.IsValid()) {
+    FCoreUObjectDelegates::PostLoadMapWithWorld.Remove(PostLoadMapHandle);
+    PostLoadMapHandle.Reset();
+  }
+
+  if (UUserWidget *Widget = PerformanceWidget.Get()) {
+    Widget->RemoveFromParent();
+  }
+  PerformanceWidget = nullptr;
+
   Super::Deinitialize();
 }
 
@@ -168,6 +192,8 @@ void UEngineDataSubsystem::ApplyData() const {
     wfm->UpdateSettings();
   }
 
+  UpdatePerformanceWidget();
+
   initial = false;
 }
 
@@ -180,5 +206,64 @@ void UEngineDataSubsystem::ApplyControllerData() const {
     pc->AltHotbar = Storage.AltHotbar;
     pc->CtrlHotbar = Storage.CtrlHotbar;
     pc->ShiftHotbar = Storage.ShiftHotbar;
+  }
+}
+
+void UEngineDataSubsystem::HandleModsLoaded() {
+  UpdatePerformanceWidget();
+}
+
+void UEngineDataSubsystem::HandlePostLoadMap(UWorld *World) {
+  (void)World;
+  UpdatePerformanceWidget();
+}
+
+void UEngineDataSubsystem::UpdatePerformanceWidget() const {
+  auto modSubsystem = GEngine ? GEngine->GetEngineSubsystem<UModLoadingSubsystem>() : nullptr;
+  if (!modSubsystem || !modSubsystem->IsContentLoaded()) {
+    return;
+  }
+
+  if (!Storage.Performance) {
+    if (UUserWidget *Widget = PerformanceWidget.Get()) {
+      Widget->RemoveFromParent();
+    }
+    PerformanceWidget = nullptr;
+    return;
+  }
+
+  UWorld *World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+  if (!World) {
+    LOG(ERROR_LL) << "Performance widget update failed: world is null";
+    return;
+  }
+
+  auto pc = UGameplayStatics::GetPlayerController(World, 0);
+  if (!pc) {
+    LOG(ERROR_LL) << "Performance widget update failed: player controller is null";
+    return;
+  }
+
+  if (UUserWidget *Widget = PerformanceWidget.Get()) {
+    if (Widget->GetWorld() != World) {
+      Widget->RemoveFromParent();
+      PerformanceWidget = nullptr;
+    }
+  }
+
+  if (!PerformanceWidget.IsValid()) {
+    static const TCHAR *WidgetPath = TEXT("/Game/Gui/PerformanceScreen.PerformanceScreen_C");
+    UClass *WidgetClass = LoadObject<UClass>(nullptr, WidgetPath);
+    if (!WidgetClass) {
+      LOG(ERROR_LL) << "Performance widget class not found: " << FString(WidgetPath);
+      return;
+    }
+    PerformanceWidget = CreateWidget<UUserWidget>(pc, WidgetClass, TEXT("PerformanceScreen"));
+  }
+
+  if (UUserWidget *Widget = PerformanceWidget.Get()) {
+    if (!Widget->IsInViewport()) {
+      Widget->AddToViewport(5000);
+    }
   }
 }

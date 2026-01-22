@@ -8,6 +8,8 @@
 #include "Qr/CommonConverter.h"
 #include "EngineDataSubsystem.generated.h"
 
+class UUserWidget;
+
 UCLASS()
 class UEngineDataSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
@@ -74,5 +76,16 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
   }
 
   private:
+  UFUNCTION()
+  void HandleModsLoaded();
+
+  UFUNCTION()
+  void HandlePostLoadMap(UWorld *World);
+
+  void UpdatePerformanceWidget() const;
+
+  mutable TWeakObjectPtr<UUserWidget> PerformanceWidget;
+  FDelegateHandle PostLoadMapHandle;
+
   mutable bool initial = true;
 };
