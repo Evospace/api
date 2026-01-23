@@ -26,11 +26,24 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
+  enum class ESmokeCheck : uint8 {
+    Load = 1 << 0,
+    Player = 1 << 1,
+    Research = 1 << 2,
+    Crafting = 1 << 3,
+    World = 1 << 4,
+    Columns = 1 << 5,
+  };
+
   private:
   bool SmokeTick(float DeltaSeconds);
   void OnWorldTickStart(UWorld *World, ELevelTick TickType, float DeltaSeconds);
   bool RunPostLoadCoreChecks(UWorld *World);
   bool HasSpawnedColumns(UWorld *World, int32 &OutColumnCount, int32 &OutWallCount) const;
+  bool ParseSmokeChecks();
+  static ESmokeCheck GetAllSmokeChecks();
+  static FString BuildSmokeChecksLabel(ESmokeCheck Checks);
+  static bool NeedsPostLoadChecks(ESmokeCheck Checks);
 
   enum class ESmokeStage : uint8 {
     WaitingForMainGameInstance = 0,
@@ -68,8 +81,16 @@ class USmokeTestSubsystem : public UGameInstanceSubsystem {
   ESmokeStage Stage = ESmokeStage::WaitingForMainGameInstance;
 
   FString SmokeGameName;
+  FString SmokeChecksLabel;
   FString MapNameBeforeLoad;
+
+  ESmokeCheck EnabledChecks = static_cast<ESmokeCheck>(
+    static_cast<uint8>(ESmokeCheck::Load) | static_cast<uint8>(ESmokeCheck::Player) |
+    static_cast<uint8>(ESmokeCheck::Research) | static_cast<uint8>(ESmokeCheck::Crafting) |
+    static_cast<uint8>(ESmokeCheck::World) | static_cast<uint8>(ESmokeCheck::Columns));
 
   FTSTicker::FDelegateHandle TickHandle;
   FDelegateHandle WorldTickHandle;
 };
+
+ENUM_CLASS_FLAGS(USmokeTestSubsystem::ESmokeCheck);
