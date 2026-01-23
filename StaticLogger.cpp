@@ -13,13 +13,17 @@ FSimpleLogger FSimpleLogger::static_logger = FSimpleLogger();
 
 void FSimpleLogger::StartFileLogging(const FString &FileName) {
   FScopeLock guard(&FileLock);
-  LogFilePath = FPaths::Combine(FPaths::ProjectLogDir(), FileName);
+  const FString LogDir = FPaths::ProjectLogDir();
+  LogFilePath = FPaths::Combine(LogDir, FileName);
   if (LogFilePath.IsEmpty()) {
     bWriteToDisk = false;
     return;
   }
 
   IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+  if (!LogDir.IsEmpty() && !PlatformFile.DirectoryExists(*LogDir)) {
+    PlatformFile.CreateDirectoryTree(*LogDir);
+  }
   LogFileHandle.Reset(PlatformFile.OpenWrite(*LogFilePath, false, true));
   bWriteToDisk = LogFileHandle.IsValid();
   if (!bWriteToDisk) {
