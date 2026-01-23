@@ -5,16 +5,28 @@
 
 namespace evo {
 
+static luabridge::LuaRef GetLegacyTable(lua_State *L) {
+  luabridge::LuaRef legacy = luabridge::getGlobal(L, "Legacy");
+  if (!legacy.isTable()) {
+    legacy = luabridge::newTable(L);
+    luabridge::setGlobal(L, legacy, "Legacy");
+  }
+  return legacy;
+}
+
 void LegacyLuaState::SetCurrent(AActor *actor) {
-  luabridge::getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", actor).endNamespace();
+  luabridge::LuaRef legacy = GetLegacyTable(L);
+  legacy["this"] = actor;
 }
 
 void LegacyLuaState::SetCurrent(UBlockLogic *actor) {
-  luabridge::getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", actor).endNamespace();
+  luabridge::LuaRef legacy = GetLegacyTable(L);
+  legacy["this"] = actor;
 }
 
 void LegacyLuaState::Init(::IRegistrar *registrar) {
   LuaState::Init(registrar);
-  luabridge::getGlobalNamespace(L).beginNamespace("Legacy").addVariable("this", nullptr).endNamespace();
+  luabridge::LuaRef legacy = GetLegacyTable(L);
+  legacy["this"] = nullptr;
 }
 } // namespace evo
