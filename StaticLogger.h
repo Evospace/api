@@ -22,6 +22,7 @@ enum ELogLevel {
   ERROR_LL,
   WARN_LL,
   INFO_LL,
+  TRACE_LL,
   ELogLevel_Count
 };
 
@@ -29,12 +30,14 @@ class FSimpleLogger {
   public:
   void Log(ELogLevel LogLevel, const FString &Message) {
     FString LogEntry = GetLogLevelString(LogLevel) + TEXT(" : ") + Message;
-    if (LogLevel == WARN_LL) {
-      UE_LOGFMT(LogTemp, Warning, "{0}", *Message);
-    } else if (LogLevel == ERROR_LL) {
-      UE_LOGFMT(LogTemp, Warning, "{0}", *Message);
-    } else {
-      UE_LOGFMT(LogTemp, Log, "{0}", *Message);
+    if (LogLevel <= UnrealLogLevel) {
+      if (LogLevel == WARN_LL) {
+        UE_LOGFMT(LogTemp, Warning, "{0}", *Message);
+      } else if (LogLevel == ERROR_LL) {
+        UE_LOGFMT(LogTemp, Warning, "{0}", *Message);
+      } else {
+        UE_LOGFMT(LogTemp, Log, "{0}", *Message);
+      }
     }
     if (LogLevel == ERROR_LL) {
       ErrorEntries.PushLast(Message);
@@ -76,6 +79,9 @@ class FSimpleLogger {
   void StartFileLogging(const FString &FileName);
   void StopFileLogging();
 
+  void SetUnrealLogLevel(ELogLevel Level) { UnrealLogLevel = Level; }
+  ELogLevel GetUnrealLogLevel() const { return UnrealLogLevel; }
+
   private:
   TArray<int32> perLevelCount;
 
@@ -89,6 +95,7 @@ class FSimpleLogger {
   TUniquePtr<IFileHandle> LogFileHandle;
   FString LogFilePath;
   bool bWriteToDisk = false;
+  ELogLevel UnrealLogLevel = INFO_LL;
 
   void WriteLineToDisk(const FString &Line);
 
@@ -100,6 +107,8 @@ class FSimpleLogger {
       return TEXT("WARN");
     case INFO_LL:
       return TEXT("INFO");
+    case TRACE_LL:
+      return TEXT("TRACE");
     default:
       return TEXT("UNKNOWN");
     }
