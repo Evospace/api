@@ -67,7 +67,7 @@ void FSimpleLogger::RotateLogs(IPlatformFile &PlatformFile, const FString &BaseP
     }
 
     const FString FromPath =
-        (Index == 1) ? BasePath : FString::Printf(TEXT("%s.%d"), *BasePath, Index - 1);
+      (Index == 1) ? BasePath : FString::Printf(TEXT("%s.%d"), *BasePath, Index - 1);
     if (PlatformFile.FileExists(*FromPath)) {
       PlatformFile.MoveFile(*ToPath, *FromPath);
     }
