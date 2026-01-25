@@ -98,6 +98,7 @@ class FSimpleLogger {
   ELogLevel UnrealLogLevel = INFO_LL;
 
   void WriteLineToDisk(const FString &Line);
+  void RotateLogs(IPlatformFile &PlatformFile, const FString &BasePath, int32 MaxFiles);
 
   FString GetLogLevelString(ELogLevel LogLevel) const {
     switch (LogLevel) {

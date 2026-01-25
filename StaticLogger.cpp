@@ -24,6 +24,7 @@ void FSimpleLogger::StartFileLogging(const FString &FileName) {
   if (!LogDir.IsEmpty() && !PlatformFile.DirectoryExists(*LogDir)) {
     PlatformFile.CreateDirectoryTree(*LogDir);
   }
+  RotateLogs(PlatformFile, LogFilePath, 10);
   LogFileHandle.Reset(PlatformFile.OpenWrite(*LogFilePath, false, true));
   bWriteToDisk = LogFileHandle.IsValid();
   if (!bWriteToDisk) {
@@ -51,4 +52,24 @@ void FSimpleLogger::WriteLineToDisk(const FString &Line) {
     LogFileHandle->Write(reinterpret_cast<const uint8 *>(Converter.Get()), Converter.Length());
   }
   LogFileHandle->Flush();
+}
+
+void FSimpleLogger::RotateLogs(IPlatformFile &PlatformFile, const FString &BasePath, int32 MaxFiles) {
+  if (MaxFiles <= 1) {
+    return;
+  }
+
+  const int32 LastIndex = MaxFiles - 1;
+  for (int32 Index = LastIndex; Index >= 1; --Index) {
+    const FString ToPath = FString::Printf(TEXT("%s.%d"), *BasePath, Index);
+    if (PlatformFile.FileExists(*ToPath)) {
+      PlatformFile.DeleteFile(*ToPath);
+    }
+
+    const FString FromPath =
+        (Index == 1) ? BasePath : FString::Printf(TEXT("%s.%d"), *BasePath, Index - 1);
+    if (PlatformFile.FileExists(*FromPath)) {
+      PlatformFile.MoveFile(*ToPath, *FromPath);
+    }
+  }
 }
