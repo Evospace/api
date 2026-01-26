@@ -38,6 +38,15 @@ struct FEngineDataStorage {
   bool MemoryStats = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool Compass = true;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool CompassShowNearestOre = true;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool CompassShowSpawnPoint = true;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool CtrlHotbar = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

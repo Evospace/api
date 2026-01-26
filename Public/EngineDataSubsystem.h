@@ -55,6 +55,9 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
       .addProperty("loading_range", QR_GET_SET(Storage.LoadingRange)) //@field integer
       .addProperty("performance", QR_GET_SET(Storage.Performance)) //@field boolean
       .addProperty("performance_graph", QR_GET_SET(Storage.PerformanceGraph)) //@field boolean
+      .addProperty("compass", QR_GET_SET(Storage.Compass)) //@field boolean
+      .addProperty("compass_show_nearest_ore", QR_GET_SET(Storage.CompassShowNearestOre)) //@field boolean
+      .addProperty("compass_show_spawn_point", QR_GET_SET(Storage.CompassShowSpawnPoint)) //@field boolean
       .addProperty("ctrl_hotbar", QR_GET_SET(Storage.CtrlHotbar)) //@field boolean
       .addProperty("alt_hotbar", QR_GET_SET(Storage.AltHotbar)) //@field boolean
       .addProperty("shift_hotbar", QR_GET_SET(Storage.ShiftHotbar)) //@field boolean
