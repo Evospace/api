@@ -8,7 +8,7 @@
 UENUM(BlueprintType)
 enum class EInventorySortKey : uint8 {
   Name,
-  Type,
+  Category,
   Tier
 };
 
