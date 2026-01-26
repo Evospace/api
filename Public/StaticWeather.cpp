@@ -5,6 +5,7 @@ bool UStaticWeather::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, TEXT("Cloudiness01"), Cloudiness01);
   json_helper::TryGet(json, TEXT("Precipitation01"), Precipitation01);
   json_helper::TryGet(json, TEXT("Fog01"), Fog01);
+  json_helper::TryGet(json, TEXT("SecondFog01"), SecondFog01);
   json_helper::TryGet(json, TEXT("Storminess01"), Storminess01);
   json_helper::TryGet(json, TEXT("WindSpeed"), WindSpeed);
   json_helper::TryGet(json, TEXT("SelectionWeight"), SelectionWeight);
@@ -14,6 +15,7 @@ bool UStaticWeather::DeserializeJson(TSharedPtr<FJsonObject> json) {
   Cloudiness01 = FMath::Clamp(Cloudiness01, 0.0f, 1.0f);
   Precipitation01 = FMath::Clamp(Precipitation01, 0.0f, 1.0f);
   Fog01 = FMath::Clamp(Fog01, 0.0f, 1.0f);
+  SecondFog01 = FMath::Clamp(SecondFog01, 0.0f, 1.0f);
   Storminess01 = FMath::Clamp(Storminess01, 0.0f, 1.0f);
   WindSpeed = FMath::Max(0.0f, WindSpeed);
   SelectionWeight = FMath::Max(0, SelectionWeight);

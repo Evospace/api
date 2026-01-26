@@ -2,6 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "InventoryReader.h"
+#include "InventorySort.h"
 #include "Qr/Prototype.h"
 
 #include "InventoryAccess.generated.h"
@@ -110,6 +111,9 @@ class UInventoryAccess : public UInventoryReader {
 
   UFUNCTION(BlueprintCallable)
   virtual void SortKeyAZ() {}
+
+  UFUNCTION(BlueprintCallable)
+  virtual void SortByKeys(const TArray<FInventorySortRule> &keys) {}
 
   virtual void RemoveAllSlots() { checkNoEntry(); }
 

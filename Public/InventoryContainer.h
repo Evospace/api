@@ -41,6 +41,7 @@ class UInventoryContainer : public UInventoryAccess {
   virtual int32 _Num() const override;
 
   virtual void SortKeyAZ() override;
+  virtual void SortByKeys(const TArray<FInventorySortRule> &keys) override;
 
   virtual int64 _Add(const FItemData &other) override;
 

@@ -21,6 +21,7 @@ class UStaticWeather : public UPrototype {
       .addProperty("cloudiness01", &Self::Cloudiness01) //@field number 0..1
       .addProperty("precipitation01", &Self::Precipitation01) //@field number 0..1
       .addProperty("fog01", &Self::Fog01) //@field number 0..1
+      .addProperty("second_fog01", &Self::SecondFog01) //@field number 0..1
       .addProperty("storminess01", &Self::Storminess01) //@field number 0..1
       .addProperty("wind_speed", &Self::WindSpeed) //@field number >=0
       .addProperty("selection_weight", &Self::SelectionWeight) //@field integer >=0
@@ -37,6 +38,9 @@ class UStaticWeather : public UPrototype {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float Fog01 = 0.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+  float SecondFog01 = 0.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float Storminess01 = 0.0f;

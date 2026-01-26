@@ -91,6 +91,10 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Weather")
   UStaticWeather *GetRandomWeatherAsset() const;
 
+  // Get a random weather asset from all available weathers
+  UFUNCTION(BlueprintCallable, Category = "Weather")
+  UStaticWeather *GetRandomWeatherAssetFromAll() const;
+
   // === Save / Load ===
   // Persist current weather state for a given save and surface.
   UFUNCTION(BlueprintCallable, Category = "Weather|Save")

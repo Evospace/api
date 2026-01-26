@@ -1,6 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "BaseInventory.h"
+#include "InventorySort.h"
 #include "CoreMinimal.h"
 #include "Qr/Prototype.h"
 
@@ -27,6 +28,7 @@ class UInventory : public UBaseInventory {
   void Resize(int32 size);
 
   virtual void SortKeyAZ() override;
+  virtual void SortByKeys(const TArray<FInventorySortRule> &keys) override;
 
   void Sort(const TFunction<bool(const FItemData &l, const FItemData &r)> &f);
 
