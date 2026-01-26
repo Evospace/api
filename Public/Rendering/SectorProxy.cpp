@@ -5,13 +5,10 @@
 #include "Public/BlockActor.h"
 #include "Evospace/Item/DroppedInventory.h"
 #include "Evospace/Item/InventoryLibrary.h"
-#include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Props/SectorPropComponent.h"
 #include "Evospace/World/Column.h"
 #include "Evospace/World/Sector.h"
 #include "Evospace/World/SectorCompiler.h"
-#include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
 #include "Public/AutosizeInventory.h"
 #include "Public/Dimension.h"
 #include "Public/RuntimeMeshBuilder.h"
@@ -398,18 +395,18 @@ void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) 
 
   // TODO: Bad place for that
   if (!out_inventory->IsEmpty()) {
-    auto mpc = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    const auto dropLocation = cs::WBtoWd(_bpos) + FVector(gCubeSize * 0.5f);
+    const FTransform dropTransform(dropLocation);
 
-    if (!ensure(mpc))
+    auto *world = owner->GetWorld();
+    if (!ensure(world))
       return;
 
-    const auto mpcTransform = mpc->GetCharacter()->GetTransform();
-
     const auto dropped =
-      GetWorld()->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), mpcTransform, owner);
+      world->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), dropTransform, owner);
     if (ensure(dropped)) {
       UInventoryLibrary::TryMoveFromAny(dropped->GetInventory(), out_inventory);
-      dropped->FinishSpawning(mpcTransform);
+      dropped->FinishSpawning(dropTransform);
     }
   }
 }
