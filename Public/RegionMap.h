@@ -21,6 +21,29 @@ class UStaticItem;
 class UTexture2D;
 class USurfaceDefinition;
 
+USTRUCT(BlueprintType)
+struct FUserMapMarker {
+  GENERATED_BODY()
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  int64 Id;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FVector2i Position;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FString Label;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FLinearColor Color;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *IconItem;
+
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
+  bool DeserializeJson(TSharedPtr<FJsonObject> json);
+};
+
 UCLASS(BlueprintType)
 class URegionMap : public UInstance {
   GENERATED_BODY()
@@ -77,6 +100,9 @@ class URegionMap : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UOreGenerator *OreGenerator;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  TArray<FUserMapMarker> UserMarkers;
+
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
 
@@ -120,4 +146,17 @@ class URegionMap : public UInstance {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   bool PrepareTextures();
+
+  // User marker API
+  UFUNCTION(BlueprintCallable)
+  int64 AddMarker(const FVector2i &Position, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem);
+
+  UFUNCTION(BlueprintCallable)
+  bool UpdateMarker(int64 Id, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem, const FVector2i &Position);
+
+  UFUNCTION(BlueprintCallable)
+  bool RemoveMarker(int64 Id);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  const TArray<FUserMapMarker> &GetMarkers() const { return UserMarkers; }
 };
