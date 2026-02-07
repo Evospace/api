@@ -19,6 +19,7 @@ UBlockNetwork *UResourceNetworkManager::CreateNetwork(bool bIsDataNetwork) {
     return nullptr;
   }
 
+  network->InitializeNetwork();
   network->mIsDataNetwork = bIsDataNetwork;
   networks.Add(network);
 

@@ -81,6 +81,7 @@ class UBlockNetwork : public UObject {
 
   public:
   UBlockNetwork();
+  void InitializeNetwork();
 
   bool AddSwitch(USwitchBlockLogic *a);
 
