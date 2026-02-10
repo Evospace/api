@@ -21,13 +21,11 @@ class UStaticItem;
 class UTexture2D;
 class USurfaceDefinition;
 
-USTRUCT(BlueprintType)
-struct FUserMapMarker {
+UCLASS(BlueprintType)
+class UUserMapMarker : public UObject {
   GENERATED_BODY()
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  int64 Id;
-
+  public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FVector2i Position;
 
@@ -101,7 +99,7 @@ class URegionMap : public UInstance {
   UOreGenerator *OreGenerator;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<FUserMapMarker> UserMarkers;
+  TArray<UUserMapMarker *> UserMarkers;
 
   UFUNCTION(BlueprintCallable)
   float GetGridSize() const { return gridSize; }
@@ -149,14 +147,18 @@ class URegionMap : public UInstance {
 
   // User marker API
   UFUNCTION(BlueprintCallable)
-  int64 AddMarker(const FVector2i &Position, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem);
+  UUserMapMarker *AddMarker(const FVector2i &Position, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem);
 
   UFUNCTION(BlueprintCallable)
-  bool UpdateMarker(int64 Id, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem, const FVector2i &Position);
+  bool UpdateMarker(UUserMapMarker *Marker,
+                    const FString &Label,
+                    const FLinearColor &Color,
+                    UStaticItem *IconItem,
+                    const FVector2i &Position);
 
   UFUNCTION(BlueprintCallable)
-  bool RemoveMarker(int64 Id);
+  bool RemoveMarker(UUserMapMarker *Marker);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  const TArray<FUserMapMarker> &GetMarkers() const { return UserMarkers; }
+  const TArray<UUserMapMarker *> &GetMarkers() const { return UserMarkers; }
 };
