@@ -58,7 +58,9 @@ void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &sa
   TotalGameTicks = 0;
   CreativeAllowed = CreativeMode;
   Version = UGameSessionData::VersionFromString(UMainGameInstance::GetBuildString()).Get({});
-  Mods = UMainGameInstance::Singleton->DB->GetMods();
+  auto gi = UGameInstanceHelper::GetMainGameInstance(WorldContextObject);
+  check(gi);
+  Mods = gi->DB->GetMods();
 
   // TickDelta is computed from TickRate via getter
 
