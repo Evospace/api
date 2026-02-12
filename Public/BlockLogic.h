@@ -96,6 +96,7 @@ class UBlockLogic : public UInstance {
   // Actor and rendering, calls after BlockBeginPlay
   virtual void SetRenderable(AColumn *sector);
   virtual void SetActor(ABlockActor *actor);
+  // Visual cleanup only (actor/renderable/accessor visuals). Gameplay state and network subscriptions must be managed by block logic lifecycle methods.
   virtual void RemoveActorOrRenderable();
   virtual ABlockActor *GetActor();
   void SetActorMobility(EComponentMobility::Type movable);
