@@ -67,6 +67,9 @@ class USourceData : public UInstance {
   void OnMinerStop(UObject *Miner);
 
   private:
+  /** True if this source has infinite yield (per-source flag or global session setting). */
+  bool IsInfiniteOreEffective() const;
+
   void RecalculateMinerAllocations();
 
   UPROPERTY()
