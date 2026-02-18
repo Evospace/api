@@ -162,16 +162,20 @@ void UResearchSubsystem::DequeueResearch() {
   }
 }
 
-bool UResearchSubsystem::CanEnqueueResearch(UStaticResearch *Research) const {
-  if (!Research)
+bool UResearchSubsystem::CanEnqueueResearch(UStaticResearch* Research) const
+{
+  if (!Research || ResearchQueue.Contains(Research)) {
     return false;
-  if (ResearchQueue.Find(Research) != INDEX_NONE)
-    return false;
-  if (Research->Type == EResearchStatus::Restricted)
-    return false;
-  if (Research->Type == EResearchStatus::Closed)
-    return false;
-  return true;
+  }
+
+  switch (Research->Type) {
+    case EResearchStatus::Restricted:
+    case EResearchStatus::Complete:
+    case EResearchStatus::Closed:
+      return false;
+    default:
+      return true;
+  }
 }
 
 void UResearchSubsystem::FillCanEnqueue(UStaticResearch *EqnuedRes) const {
