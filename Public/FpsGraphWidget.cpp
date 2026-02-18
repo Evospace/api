@@ -52,13 +52,8 @@ int32 UPerformanceGraphWidget::NativePaint(const FPaintArgs &Args, const FGeomet
     Points.Add(FVector2D(X, Y));
   }
 
-  TArray<FSlateVertex> Vertices;
-  TArray<SlateIndex> Indices;
-  for (int32 i = 0; i < Points.Num() - 1; ++i) {
-    FVector2D P1 = Points[i];
-    FVector2D P2 = Points[i + 1];
-    FSlateDrawElement::MakeLines(OutDrawElements, LayerId, AllottedGeometry.ToPaintGeometry(), { P1, P2 }, ESlateDrawEffect::None, FLinearColor::Green, true, 2.0f);
-  }
+  // Single MakeLines call with full polyline so thick segments join continuously
+  FSlateDrawElement::MakeLines(OutDrawElements, LayerId, AllottedGeometry.ToPaintGeometry(), Points, ESlateDrawEffect::None, FLinearColor::Green, true, 2.0f);
 
   return LayerId + 1;
 }
