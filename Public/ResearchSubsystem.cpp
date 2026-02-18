@@ -166,19 +166,18 @@ void UResearchSubsystem::DequeueResearch() {
   }
 }
 
-bool UResearchSubsystem::CanEnqueueResearch(UStaticResearch* Research) const
-{
+bool UResearchSubsystem::CanEnqueueResearch(UStaticResearch *Research) const {
   if (!Research || ResearchQueue.Contains(Research)) {
     return false;
   }
 
   switch (Research->Type) {
-    case EResearchStatus::Restricted:
-    case EResearchStatus::Complete:
-    case EResearchStatus::Closed:
-      return false;
-    default:
-      return true;
+  case EResearchStatus::Restricted:
+  case EResearchStatus::Complete:
+  case EResearchStatus::Closed:
+    return false;
+  default:
+    return true;
   }
 }
 
