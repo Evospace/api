@@ -456,9 +456,7 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *g
 
   if (!bAllResearchesFinishedFlag) {
     static const FName DefaultCompleted[] = {
-      TEXT("MineralsScan"), TEXT("BasicPlatform"), TEXT("Chest"), TEXT("Electricity"),
-      TEXT("PowerGeneration"), TEXT("Smelting"), TEXT("Metalwork"), TEXT("DistributedComputing"),
-      TEXT("CopperWire")
+      TEXT("MineralsScan"), TEXT("BasicPlatform"), TEXT("Chest"), TEXT("Electricity"), TEXT("PowerGeneration"), TEXT("Smelting"), TEXT("Metalwork"), TEXT("DistributedComputing"), TEXT("CopperWire")
     };
     for (FName name : DefaultCompleted) {
       if (UStaticResearch *res = QrTryFind<UStaticResearch>(name)) {
