@@ -13,6 +13,7 @@
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/NeiComponent.h"
 #include "Qr/Ensure.h"
+#include "Qr/QrFind.h"
 #include "Public/MainGameInstance.h"
 #include "Public/RecipeDictionary.h"
 #include "Public/Recipe.h"
@@ -454,9 +455,15 @@ void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *g
   InitializeRecipeLocking();
 
   if (!bAllResearchesFinishedFlag) {
-    for (auto res : GetAllResearches()) {
-      if (res->mCompleteByDefault)
+    static const FName DefaultCompleted[] = {
+      TEXT("MineralsScan"), TEXT("BasicPlatform"), TEXT("Chest"), TEXT("Electricity"),
+      TEXT("PowerGeneration"), TEXT("Smelting"), TEXT("Metalwork"), TEXT("DistributedComputing"),
+      TEXT("CopperWire")
+    };
+    for (FName name : DefaultCompleted) {
+      if (UStaticResearch *res = QrTryFind<UStaticResearch>(name)) {
         CompleteResearch_Internal(res);
+      }
     }
   } else {
     for (auto res : GetAllResearches()) {

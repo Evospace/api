@@ -73,9 +73,6 @@ class UStaticResearch : public UPrototype, public ISearchable {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   EResearchStatus Type;
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  bool mCompleteByDefault = false;
-
   virtual void ComputeSearchMetadata() const override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
