@@ -76,10 +76,10 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   bool HasAllRequiredWithQueue(UStaticResearch *Research) const;
 
   UFUNCTION(BlueprintCallable)
-  TArray<UStaticResearch *> &GetAllResearches() const;
+  TArray<UStaticResearch *> GetAllResearches() const;
 
   UFUNCTION(BlueprintCallable)
-  TArray<UStaticResearch *> GetAllResearchesSorted() const;
+  const TArray<UStaticResearch *> GetAllResearchesSorted() const;
 
   UFUNCTION(BlueprintCallable)
   int64 ApplyResearchPoints(int64 Points) {
@@ -116,8 +116,6 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   TSet<const UStaticItem *> UnlockedItems;
 
   private:
-  void EnsureCachesComputed() const;
-
   void CompleteResearch_Internal(UStaticResearch *Research);
 
   // Initialize recipe locking state: set mDefaultLocked for research-locked recipes and reset locked state
@@ -146,9 +144,4 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
 
   UPROPERTY(EditAnywhere)
   TMap<FName, int64> OldResearches;
-
-  UPROPERTY(EditAnywhere)
-  mutable TArray<UStaticResearch *> AllResearchesCache;
-
-  FTSTicker::FDelegateHandle TickDelegateHandle;
 };

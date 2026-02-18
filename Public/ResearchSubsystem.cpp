@@ -13,6 +13,7 @@
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/NeiComponent.h"
 #include "Qr/Ensure.h"
+#include "Qr/ModLoadingSubsystem.h"
 #include "Qr/QrFind.h"
 #include "Public/MainGameInstance.h"
 #include "Public/RecipeDictionary.h"
@@ -341,19 +342,13 @@ bool UResearchSubsystem::HasAllRequiredWithQueue(UStaticResearch *Research) cons
   return true;
 }
 
-TArray<UStaticResearch *> &UResearchSubsystem::GetAllResearches() const {
-  if (AllResearchesCache.Num() == 0) {
-    for (TObjectIterator<UStaticResearch> unlock; unlock; ++unlock) {
-      if (unlock->IsTemplate()) {
-        continue;
-      }
-      AllResearchesCache.Add(*unlock);
-    }
-  }
-  return AllResearchesCache;
+TArray<UStaticResearch *> UResearchSubsystem::GetAllResearches() const {
+  auto* mls = GEngine->GetEngineSubsystem<UModLoadingSubsystem>();
+  check(mls && mls->JsonObjectLibrary);
+  return mls->JsonObjectLibrary->GetObjects<UStaticResearch>();
 }
 
-TArray<UStaticResearch *> UResearchSubsystem::GetAllResearchesSorted() const {
+const TArray<UStaticResearch *> UResearchSubsystem::GetAllResearchesSorted() const {
   auto res = GetAllResearches();
 
   res.Sort(
@@ -437,7 +432,6 @@ void UResearchSubsystem::Reset() {
   CompletedResearches.Empty();
   OldResearches.Empty();
   UnlockedItems.Empty();
-  AllResearchesCache.Empty();
 }
 
 void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *gameSessionData) {
