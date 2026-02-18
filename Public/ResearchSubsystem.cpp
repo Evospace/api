@@ -12,7 +12,6 @@
 #include "Evospace/Item/InventoryLibrary.h"
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/NeiComponent.h"
-#include "Qr/AchievementSubsystem.h"
 #include "Qr/Ensure.h"
 #include "Public/MainGameInstance.h"
 #include "Public/RecipeDictionary.h"
@@ -276,25 +275,6 @@ void UResearchSubsystem::CompleteResearch(UStaticResearch *Research) {
   }
 
   CompleteResearch_Internal(Research);
-
-  if (Research->GetName() == TEXT("Portal")) {
-    if (auto ach = GetGameInstance()->GetSubsystem<UAchievementSubsystem>()) {
-      ach->IncrementRecord(TEXT("SilverGod"), 1);
-    }
-  }
-
-  bool goldenGod = true;
-  for (const auto res_test : GetAllResearches()) {
-    if (res_test->Type != EResearchStatus::Complete) {
-      goldenGod = false;
-      break;
-    }
-  }
-  if (goldenGod) {
-    if (auto ach = GetGameInstance()->GetSubsystem<UAchievementSubsystem>()) {
-      ach->IncrementRecord(TEXT("GoldenGod"), 1);
-    }
-  }
 
   OnResearchFinished.Broadcast(Research);
 
