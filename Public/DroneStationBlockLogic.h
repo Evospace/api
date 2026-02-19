@@ -8,7 +8,7 @@
 
 class UCondition;
 class UInventory;
-class ADroneManagerActor;
+class UDroneManager;
 UCLASS()
 class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider {
   GENERATED_BODY()
@@ -36,9 +36,10 @@ class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider
   FString StationID;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  TWeakObjectPtr<ADroneManagerActor> DroneManager;
+  TWeakObjectPtr<UDroneManager> DroneManager;
 
   virtual void BlockBeginPlay() override;
+  virtual void BlockDestruction() override;
 
   virtual bool IsBlockTicks() const override { return true; }
   virtual void Tick() override;

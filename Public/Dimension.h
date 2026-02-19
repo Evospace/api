@@ -40,9 +40,11 @@ class UStaticIndexedHierarchicalInstancedStaticMeshComponent;
 class USectorCompiler;
 class APlayerController;
 class UResourceNetworkManager;
+class UDroneManager;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
+class UInstancedStaticMeshComponent;
 
 USTRUCT()
 struct EVOSPACE_API FStatictics {
@@ -175,6 +177,7 @@ class ADimension : public AActor {
   void Unpause();
 
   UBlockNetwork *GetNewNetwork();
+  UDroneManager *GetDroneManager();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
@@ -257,6 +260,12 @@ class ADimension : public AActor {
 
   UPROPERTY(VisibleAnywhere)
   UResourceNetworkManager *ResourceNetworkManager;
+
+  UPROPERTY(VisibleAnywhere)
+  UDroneManager *DroneManager;
+
+  UPROPERTY(VisibleAnywhere)
+  UInstancedStaticMeshComponent *DroneMeshComponent;
 
   private:
   // Columns
