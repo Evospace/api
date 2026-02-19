@@ -343,7 +343,7 @@ bool UResearchSubsystem::HasAllRequiredWithQueue(UStaticResearch *Research) cons
 }
 
 TArray<UStaticResearch *> UResearchSubsystem::GetAllResearches() const {
-  auto* mls = GEngine->GetEngineSubsystem<UModLoadingSubsystem>();
+  auto *mls = GEngine->GetEngineSubsystem<UModLoadingSubsystem>();
   check(mls && mls->JsonObjectLibrary);
   return mls->JsonObjectLibrary->GetObjects<UStaticResearch>();
 }
