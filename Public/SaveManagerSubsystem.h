@@ -12,6 +12,9 @@ class USaveManagerSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
   public:
+  virtual void Initialize(FSubsystemCollectionBase &Collection) override;
+  virtual void Deinitialize() override;
+
   UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
   bool StartGameFromSave(const FString &SaveName, bool bListenServer);
 
@@ -20,4 +23,11 @@ class USaveManagerSubsystem : public UGameInstanceSubsystem {
 
   UFUNCTION(BlueprintCallable, Category = "Evospace|Observer")
   bool ObserverConnect(EObserverTransportType Transport, const FString &Target, int32 Port = 27050);
+
+  private:
+  void HandlePostLoadMapForObserverHost(UWorld *LoadedWorld);
+
+  FDelegateHandle PostLoadMapHandle;
+  int32 PendingObserverHostPort = -1;
+  EObserverTransportType PendingObserverHostTransport = EObserverTransportType::Lan;
 };
