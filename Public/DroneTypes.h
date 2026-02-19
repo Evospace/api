@@ -21,6 +21,7 @@ struct FDroneInstanceData {
   GENERATED_BODY()
 
   FVector Position;
+  FVector VisualPosition;  // Smoothly interpolated for render FPS, lags slightly behind Position
   Vec3i TargetPosition;
 
   TWeakObjectPtr<UDroneStationBlockLogic> Source;

@@ -11,13 +11,16 @@ void UDroneManager::Initialize(ADimension *inOwner, UInstancedStaticMeshComponen
   DroneMeshComponent = inDroneMeshComponent;
 }
 
-void UDroneManager::Tick(float DeltaTime) {
-  UpdateDrones(DeltaTime);
+void UDroneManager::Tick(float TickDelta) {
+  TickLogic(TickDelta);
 }
 
-void UDroneManager::UpdateDrones(float DeltaTime) {
-  UWorld *World = ownerDimension.IsValid() ? ownerDimension->GetWorld() : nullptr;
-  if (!World || !DroneMeshComponent) {
+void UDroneManager::TickVisual(float DeltaTime) {
+  UpdateVisual(DeltaTime);
+}
+
+void UDroneManager::TickLogic(float TickDelta) {
+  if (!DroneMeshComponent) {
     return;
   }
 
@@ -36,19 +39,7 @@ void UDroneManager::UpdateDrones(float DeltaTime) {
     }
 
     FVector Direction = (Drone.TargetPosition.world() - Drone.Position).GetSafeNormal();
-    Drone.Position += Direction * Drone.Speed * DeltaTime;
-
-    float HoverOffset = FMath::Sin(World->TimeSeconds * 3.0f + Drone.InstanceRandom) * 10.0f;
-    float Sway = FMath::Sin(World->TimeSeconds * 1.2f + Drone.InstanceRandom * 3.14f) * 8.0f;
-    FVector VisualPosition = Drone.Position + FVector(0, Sway, 200 + HoverOffset);
-
-    FRotator VisualRotation = Direction.Rotation();
-    float RollAmount = FMath::Sin(World->TimeSeconds * 1.5f + Drone.InstanceRandom * 2.17f) * 7.f;
-    FRotator RollTilt(0, 0, RollAmount);
-    VisualRotation += RollTilt;
-
-    FTransform InstanceTransform = FTransform(VisualRotation, VisualPosition);
-    DroneMeshComponent->UpdateInstanceTransform(i, InstanceTransform, true, true);
+    Drone.Position += Direction * Drone.Speed * TickDelta;
 
     if (FVector::DistSquared(Drone.Position, Drone.TargetPosition.world()) < 100.f * 100.f) {
       if (Drone.State == EDroneState::TravelingToTarget) {
@@ -61,6 +52,35 @@ void UDroneManager::UpdateDrones(float DeltaTime) {
         --i;
       }
     }
+  }
+}
+
+void UDroneManager::UpdateVisual(float DeltaTime) {
+  UWorld *World = ownerDimension.IsValid() ? ownerDimension->GetWorld() : nullptr;
+  if (!World || !DroneMeshComponent) {
+    return;
+  }
+
+  for (int32 i = 0; i < Drones.Num(); ++i) {
+    FDroneInstanceData &Drone = Drones[i];
+
+    if (Drone.State == EDroneState::Idle) {
+      continue;
+    }
+
+    FVector Direction = (Drone.TargetPosition.world() - Drone.VisualPosition).GetSafeNormal();
+    Drone.VisualPosition += Direction * Drone.Speed * DeltaTime;
+    float HoverOffset = FMath::Sin(World->TimeSeconds * 3.0f + Drone.InstanceRandom) * 10.0f;
+    float Sway = FMath::Sin(World->TimeSeconds * 1.2f + Drone.InstanceRandom * 3.14f) * 8.0f;
+    FVector RenderedPosition = Drone.VisualPosition + FVector(0, Sway, 200 + HoverOffset);
+
+    FRotator VisualRotation = Direction.Rotation();
+    float RollAmount = FMath::Sin(World->TimeSeconds * 1.5f + Drone.InstanceRandom * 2.17f) * 7.f;
+    FRotator RollTilt(0, 0, RollAmount);
+    VisualRotation += RollTilt;
+
+    FTransform InstanceTransform = FTransform(VisualRotation, RenderedPosition);
+    DroneMeshComponent->UpdateInstanceTransform(i, InstanceTransform, true, true);
   }
 }
 
@@ -77,6 +97,7 @@ int32 UDroneManager::LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlo
   Drone.State = EDroneState::TravelingToTarget;
   Drone.InstanceRandom = indexCounter++;
   Drone.Position = From->GetBlockPos().world();
+  Drone.VisualPosition = Drone.Position;
   Drone.TargetPosition = To->GetBlockPos();
   Drone.Speed = 600.f;
 

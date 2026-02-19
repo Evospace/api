@@ -15,7 +15,12 @@ class UDroneManager : public UObject {
 
   public:
   void Initialize(ADimension *inOwner, UInstancedStaticMeshComponent *inDroneMeshComponent);
-  void Tick(float DeltaTime);
+
+  /** Deterministic logic: movement and arrival, uses world tick delta. Called from TickBlocks. */
+  void Tick(float TickDelta);
+
+  /** Visual only: instance transforms with sway/hover. Called from Dimension::Tick. */
+  void TickVisual(float DeltaTime);
 
   int32 LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlockLogic *To, UInventory *Payload);
   void RegisterStation(UDroneStationBlockLogic *Station);
@@ -31,7 +36,8 @@ class UDroneManager : public UObject {
   TArray<FDroneInstanceData> Drones;
 
   private:
-  void UpdateDrones(float DeltaTime);
+  void TickLogic(float TickDelta);
+  void UpdateVisual(float DeltaTime);
 
   UPROPERTY()
   TWeakObjectPtr<ADimension> ownerDimension;
