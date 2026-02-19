@@ -37,6 +37,8 @@ void UResourceNetworkManager::KillNetworkDeferred(UBlockNetwork *network) {
 }
 
 void UResourceNetworkManager::Tick() {
+  // Called by Dimension before block logic ticks. Data networks aggregate outputs and
+  // apply to inputs here; blocks then read that state in their Tick() (one-tick delay).
   // Cleanup dead or empty networks
   for (auto network : networks) {
     if (!network) {
