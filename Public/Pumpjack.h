@@ -5,6 +5,7 @@
 #include "Pumpjack.generated.h"
 
 class URegionLayer;
+class UStaticItem;
 /**
  * Specialized drilling machine that extracts oil from oil deposits.
  */
@@ -48,8 +49,16 @@ class UPumpjack : public UDrillingMachineBase {
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
   bool IsRegisteredWithLayer = false;
 
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
+  bool IsLegacyMode = false;
+
   protected:
+  virtual void BlockBeginPlay() override;
   virtual void Drill() override;
 
   virtual void BlockEndPlay() override;
+
+  private:
+  UPROPERTY()
+  const UStaticItem *LegacyOutputItem = nullptr;
 };

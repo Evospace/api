@@ -617,6 +617,11 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    return true;
                  } });
 
+  // Migrate old placed pumpjacks into explicit legacy block.
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 191, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+                   return ReplaceBlocksInLogicJson(saveName, "Pumpjack", "Pumpjack_leg");
+                 } });
+
   // Migrators end
   // ================================
   // ================================
