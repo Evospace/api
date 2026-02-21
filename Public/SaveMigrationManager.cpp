@@ -617,9 +617,11 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    return true;
                  } });
 
-  // Migrate old placed pumpjacks into explicit legacy block.
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 191, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   return ReplaceBlocksInLogicJson(saveName, "Pumpjack", "Pumpjack_leg");
+  // Migrate old placed pumpjacks (all tier variants) into explicit legacy block.
+  migrators.Add({ FVersionStruct{ 0, 21, 0, 322, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+                   return ReplaceBlocksInLogicJson(saveName,
+                     { TEXT("StainlessSteelPumpjack"), TEXT("TitaniumPumpjack"), TEXT("CompositePumpjack"), TEXT("NeutroniumPumpjack") },
+                     TEXT("Pumpjack_leg"));
                  } });
 
   // Migrators end
@@ -764,6 +766,110 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
 
   LOG(INFO_LL) << "SaveMigrationManager: Successfully replaced " << replacementsCount << " blocks from '"
                << oldBlockName << "' to '" << newBlockName << "' in Logic.bin for save '" << saveName << "'";
+
+  return true;
+}
+
+bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, const TArray<FString> &oldBlockNames, const FString &newBlockName) {
+  if (oldBlockNames.Num() == 0 || newBlockName.IsEmpty()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: oldBlockNames cannot be empty and newBlockName cannot be empty";
+    return false;
+  }
+
+  const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
+  const FString logicBinPath = saveRoot / TEXT("Temperate") / TEXT("Logic.bin");
+
+  TArray<uint8> binaryData;
+  if (!UStaticSaveHelpers::LoadFileToArray(binaryData, *logicBinPath)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << saveName << "'";
+    return false;
+  }
+
+  if (binaryData.Num() == 0) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << saveName << "'";
+    return false;
+  }
+
+  FArchiveLoadCompressedProxy decompressor(binaryData, FName("ZLIB"));
+  if (decompressor.GetError()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << saveName << "'";
+    return false;
+  }
+
+  FBufferArchive decompressedData;
+  decompressor << decompressedData;
+
+  if (decompressedData.Num() == 0) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << saveName << "'";
+    return false;
+  }
+
+  FMemoryReader reader(decompressedData, true);
+  if (reader.IsError()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << saveName << "'";
+    return false;
+  }
+
+  reader.Seek(0);
+  int32 version = 0;
+  FString jsonStr;
+  reader << version;
+  reader << jsonStr;
+
+  if (jsonStr.IsEmpty()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << saveName << "'";
+    return false;
+  }
+
+  TSharedPtr<FJsonObject> rootObj;
+  TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
+  if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << saveName << "'";
+    return false;
+  }
+
+  const TSet<FString> oldNamesSet(oldBlockNames);
+  int32 replacementsCount = 0;
+  for (const auto &it : rootObj->Values) {
+    TSharedPtr<FJsonObject> blockObj = it.Value->AsObject();
+    if (blockObj.IsValid()) {
+      FString currentBlockName;
+      if (blockObj->TryGetStringField(TEXT("StaticBlock"), currentBlockName) && oldNamesSet.Contains(currentBlockName)) {
+        blockObj->SetStringField(TEXT("StaticBlock"), newBlockName);
+        replacementsCount++;
+      }
+    }
+  }
+
+  if (replacementsCount == 0) {
+    LOG(INFO_LL) << "SaveMigrationManager: No blocks matching old block names found in Logic.bin for save '" << saveName << "'";
+    return true;
+  }
+
+  FString modifiedJsonStr;
+  const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
+  if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << saveName << "'";
+    return false;
+  }
+
+  FBufferArchive uncompressedData;
+  FMemoryWriter memoryWriter(uncompressedData, true);
+  memoryWriter << version;
+  memoryWriter << modifiedJsonStr;
+
+  TArray<uint8> finalCompressedData;
+  FArchiveSaveCompressedProxy compressor(finalCompressedData, FName("ZLIB"));
+  compressor << uncompressedData;
+  compressor.Flush();
+
+  if (!FFileHelper::SaveArrayToFile(finalCompressedData, *logicBinPath)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << saveName << "'";
+    return false;
+  }
+
+  LOG(INFO_LL) << "SaveMigrationManager: Successfully replaced " << replacementsCount << " blocks to '"
+               << newBlockName << "' in Logic.bin for save '" << saveName << "'";
 
   return true;
 }

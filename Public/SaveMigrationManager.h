@@ -21,6 +21,9 @@ class USaveMigrationManager : public UObject {
   UFUNCTION(BlueprintCallable)
   static bool ReplaceBlocksInLogicJson(const FString &saveName, const FString &oldBlockName, const FString &newBlockName);
 
+  // Replace multiple old block names with one new block name in a single pass
+  static bool ReplaceBlocksInLogicJson(const FString &saveName, const TArray<FString> &oldBlockNames, const FString &newBlockName);
+
   // Remove "SingleStaticBlock" from StaticBlock values in Logic.bin files
   UFUNCTION(BlueprintCallable)
   static bool RemoveSingleStaticBlocksFromLogicJson(const FString &saveName);
