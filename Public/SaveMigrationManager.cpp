@@ -620,8 +620,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   // Migrate old placed pumpjacks (all tier variants) into explicit legacy block.
   migrators.Add({ FVersionStruct{ 0, 21, 0, 322, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
                    return ReplaceBlocksInLogicJson(saveName,
-                     { TEXT("StainlessSteelPumpjack"), TEXT("TitaniumPumpjack"), TEXT("CompositePumpjack"), TEXT("NeutroniumPumpjack") },
-                     TEXT("Pumpjack_leg"));
+                                                   { TEXT("StainlessSteelPumpjack"), TEXT("TitaniumPumpjack"), TEXT("CompositePumpjack"), TEXT("NeutroniumPumpjack") },
+                                                   TEXT("Pumpjack_leg"));
                  } });
 
   // Migrators end
