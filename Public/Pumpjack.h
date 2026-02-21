@@ -7,7 +7,8 @@
 class URegionLayer;
 class UStaticItem;
 /**
- * Specialized drilling machine that extracts oil from oil deposits.
+ * Drilling machine that extracts oil. Does not use regions; outputs constant rate.
+ * Oil region layer is being removed; future ore-based oil will use SourceData.
  */
 UCLASS()
 class UPumpjack : public UDrillingMachineBase {
@@ -19,24 +20,19 @@ class UPumpjack : public UDrillingMachineBase {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UDrillingMachineBase>("Pumpjack") //@class Pumpjack : DrillingMachineBase
-      .addProperty("layer", &Self::Layer) //@field RegionLayer
+      .addProperty("layer", &Self::Layer) //@field RegionLayer, deprecated, always nullptr
       .endClass();
   }
 
   UPumpjack();
 
   public:
-  std::tuple<URegionLayer *, FVector2i> GetLayer() const;
-
   int32 GetTimePerRecipe() const;
 
   virtual float GetMiningProgress() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
-  URegionLayer *Layer = nullptr;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
-  FVector2i Subregion;
+  URegionLayer *Layer = nullptr; // Deprecated, always nullptr. Kept for BP compat.
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
@@ -46,12 +42,6 @@ class UPumpjack : public UDrillingMachineBase {
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   int32 CurrentRecipeTime = 0;
 
-  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
-  bool IsRegisteredWithLayer = false;
-
-  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Resource")
-  bool IsLegacyMode = false;
-
   protected:
   virtual void BlockBeginPlay() override;
   virtual void Drill() override;
@@ -60,5 +50,5 @@ class UPumpjack : public UDrillingMachineBase {
 
   private:
   UPROPERTY()
-  const UStaticItem *LegacyOutputItem = nullptr;
+  const UStaticItem *OutputItem = nullptr;
 };
