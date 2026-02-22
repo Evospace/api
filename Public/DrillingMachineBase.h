@@ -84,6 +84,9 @@ class UDrillingMachineBase : public UBlockLogic {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
   class UResourceInventory *Energy;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
+  class USingleSlotInventory *StorageSlot;
+
   // Energy management
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
   int32 RemainingEnergy = 0;
