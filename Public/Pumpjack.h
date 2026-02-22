@@ -35,6 +35,7 @@ class UPumpjack : public UDrillingMachineBase {
   URegionLayer *Layer = nullptr; // Deprecated, always nullptr. Kept for BP compat.
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
+  virtual UStaticItem *GetSelectedOption() const override;
 
   UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
   int32 LastSpeed = 100; // speed is deprecated in logic, kept for UI compatibility
@@ -45,7 +46,6 @@ class UPumpjack : public UDrillingMachineBase {
   protected:
   virtual void BlockBeginPlay() override;
   virtual void Drill() override;
-
   virtual void BlockEndPlay() override;
 
   private:
