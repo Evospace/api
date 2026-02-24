@@ -247,6 +247,12 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   static bool HasErrors();
 
+  UFUNCTION(BlueprintCallable)
+  static TArray<FString> GetWarnings();
+
+  UFUNCTION(BlueprintCallable)
+  static bool HasWarnings();
+
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   static bool ContainsAllResearches(const TSet<UStaticResearchRecipe *> where,
                                     const TArray<UStaticResearchRecipe *> what);

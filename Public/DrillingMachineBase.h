@@ -5,10 +5,12 @@
 #include "EvoRingBuffer.h"
 #include "DrillingMachineBase.generated.h"
 
-class UInventoryContainer;
 class UResourceAccessor;
 class USingleSlotInventory;
+class UResourceInventory;
+class UInventoryContainer;
 class UBaseInventoryAccessor;
+class USourceData;
 
 /**
  * Base class for all drilling machines in the game.
@@ -33,6 +35,9 @@ class UDrillingMachineBase : public UBlockLogic {
       .addProperty("energy", &Self::Energy) //@field ResourceInventory
       .addProperty("production", &Self::Production) //@field integer
       .addProperty("storage_size", &Self::StorageSize) //@field integer
+      .addFunction("get_source", &Self::GetSource) //@function SourceData or nil
+      .addProperty("last_speed", &Self::LastSpeed) //@field integer
+      .addProperty("current_recipe_time", &Self::CurrentRecipeTime) //@field integer
       .endClass();
   }
 
@@ -59,6 +64,12 @@ class UDrillingMachineBase : public UBlockLogic {
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Stats")
   int32 TotalProduction = 0;
 
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Stats")
+  int32 LastSpeed = 100;
+
+  UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Drilling|Stats")
+  int32 CurrentRecipeTime = 0;
+
   UFUNCTION(BlueprintCallable)
   virtual TArray<UStaticItem *> GetExtractOption() const;
 
@@ -67,6 +78,13 @@ class UDrillingMachineBase : public UBlockLogic {
 
   UFUNCTION(BlueprintCallable)
   virtual void SetExtractOption(UStaticItem *item);
+
+  /** Returns ore source for UI (e.g. deposit name). nullptr for machines without source (e.g. Pumpjack). */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Resource")
+  virtual USourceData *GetSource() const { return nullptr; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
+  virtual int32 GetTimePerRecipe() const;
 
   // UBlockLogic interface
   virtual void Tick() override;
@@ -79,13 +97,10 @@ class UDrillingMachineBase : public UBlockLogic {
   protected:
   // Core components
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
-  UInventoryContainer *Inventory;
+  class UInventoryContainer *Inventory;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
   class UResourceInventory *Energy;
-
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
-  class USingleSlotInventory *StorageSlot;
 
   // Energy management
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))

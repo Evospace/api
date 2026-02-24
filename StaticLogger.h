@@ -3,7 +3,6 @@
 #include "Containers/Deque.h"
 #include "HAL/CriticalSection.h"
 #include "HAL/FileManager.h"
-#include "Public/EvoRingBuffer.h"
 #include "Qr/Vector.h"
 #include "Logging/StructuredLog.h"
 #include "Templates/UniquePtr.h"
@@ -40,7 +39,15 @@ class FSimpleLogger {
       }
     }
     if (LogLevel == ERROR_LL) {
+      if (ErrorEntries.Num() >= MaxStoredLogEntries) {
+        ErrorEntries.PopFirst();
+      }
       ErrorEntries.PushLast(Message);
+    } else if (LogLevel == WARN_LL) {
+      if (WarnEntries.Num() >= MaxStoredLogEntries) {
+        WarnEntries.PopFirst();
+      }
+      WarnEntries.PushLast(Message);
     }
     LastLogEntry = MoveTemp(LogEntry);
     ++perLevelCount[LogLevel];
@@ -53,6 +60,7 @@ class FSimpleLogger {
     perLevelCount.SetNumZeroed(ELogLevel_Count);
     LastLogEntry = "";
     ErrorEntries.Empty();
+    WarnEntries.Empty();
     LogVersion++;
   }
 
@@ -64,11 +72,21 @@ class FSimpleLogger {
 
   bool HasErrors() const { return perLevelCount[ERROR_LL] > 0; }
 
+  bool HasWarnings() const { return perLevelCount[WARN_LL] > 0; }
+
   const FString &GetLastMessage() const { return LastLogEntry; }
 
   TArray<FString> GetErrors() const {
     TArray<FString> arr;
     for (auto &s : ErrorEntries) {
+      arr.Add(s);
+    }
+    return arr;
+  }
+
+  TArray<FString> GetWarnings() const {
+    TArray<FString> arr;
+    for (auto &s : WarnEntries) {
       arr.Add(s);
     }
     return arr;
@@ -87,7 +105,10 @@ class FSimpleLogger {
 
   FString LastLogEntry;
 
+  static constexpr int32 MaxStoredLogEntries = 100;
+
   TDeque<FString> ErrorEntries;
+  TDeque<FString> WarnEntries;
 
   int32 LogVersion = 0;
 

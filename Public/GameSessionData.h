@@ -61,7 +61,7 @@ class UGameSessionData : public UInstance {
       .addProperty("version", [](Self *self) -> std::string { return TCHAR_TO_UTF8(*Self::VersionToString(self->Version)); }) //@field string
       .addProperty("generator", QR_NAME_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
-      .addProperty("cloud", &Self::Cloud) //@field boolean
+      .addProperty("cloud", &Self::GetCloud, &Self::SetCloud) //@field boolean
       .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number
       .addProperty("world_time_freeze", &Self::WorldTimeAutoAdvance) //@field boolean
       .endClass();
@@ -78,6 +78,12 @@ class UGameSessionData : public UInstance {
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool GetCreativeAllowed() const;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  bool GetCloud() const { return Cloud; }
+
+  UFUNCTION(BlueprintCallable)
+  void SetCloud(bool value) { Cloud = value; }
 
   static TOptional<FVersionStruct> VersionFromString(const FString &ser);
 

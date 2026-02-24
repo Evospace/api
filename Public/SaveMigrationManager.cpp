@@ -5,6 +5,7 @@
 #include "Engine/GameInstance.h"
 #include "Qr/StaticSaveHelpers.h"
 #include "Logging/StructuredLog.h"
+#include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
 #include "HAL/FileManager.h"
@@ -60,36 +61,33 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
                    // Load Logic.json
                    FString jsonStr;
-                   if (!FFileHelper::LoadFileToString(jsonStr, *logicJsonPath)) {
-                     return true; // No Logic.json to convert
-                   }
+                   if (FFileHelper::LoadFileToString(jsonStr, *logicJsonPath) && !jsonStr.IsEmpty()) {
+                     // Write to compressed binary format (same as current save format)
+                     FBufferArchive uncompressedData;
+                     FMemoryWriter memoryWriter(uncompressedData, true);
+                     int32 version = 0; // Use version 0 as in current saves
+                     memoryWriter << version;
+                     memoryWriter << jsonStr;
 
-                   if (jsonStr.IsEmpty()) {
+                     // Compress the data with ZLIB
+                     TArray<uint8> compressedData;
+                     FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
+                     compressor << uncompressedData;
+                     compressor.Flush();
+
+                     // Save the compressed data as Logic.bin
+                     if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
+                       LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << saveName << "'";
+                       return false;
+                     }
+
+                     LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << saveName << "'";
+                   } else if (jsonStr.IsEmpty()) {
                      LOG(WARN_LL) << "SaveMigrationManager: Logic.json is empty for save '" << saveName << "'";
-                     return true;
                    }
 
-                   // Write to compressed binary format (same as current save format)
-                   FBufferArchive uncompressedData;
-                   FMemoryWriter memoryWriter(uncompressedData, true);
-                   int32 version = 0; // Use version 0 as in current saves
-                   memoryWriter << version;
-                   memoryWriter << jsonStr;
-
-                   // Compress the data with ZLIB
-                   TArray<uint8> compressedData;
-                   FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
-                   compressor << uncompressedData;
-                   compressor.Flush();
-
-                   // Save the compressed data as Logic.bin
-                   if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << saveName << "'";
-                     return false;
-                   }
-
-                   LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << saveName << "'";
-
+                   // Strip "StaticBlock"/"SingleStaticBlock" suffix from block names (needed for both converted and
+                   // pre-existing Logic.bin)
                    RemoveSingleStaticBlocksFromLogicJson(saveName);
 
                    return true;

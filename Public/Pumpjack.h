@@ -27,8 +27,6 @@ class UPumpjack : public UDrillingMachineBase {
   UPumpjack();
 
   public:
-  int32 GetTimePerRecipe() const;
-
   virtual float GetMiningProgress() const override;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
@@ -36,12 +34,6 @@ class UPumpjack : public UDrillingMachineBase {
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
   virtual UStaticItem *GetSelectedOption() const override;
-
-  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-  int32 LastSpeed = 100; // speed is deprecated in logic, kept for UI compatibility
-
-  UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-  int32 CurrentRecipeTime = 0;
 
   protected:
   virtual void BlockBeginPlay() override;
