@@ -86,7 +86,7 @@ class UBlockLogic : public UInstance {
 
   // Rotation and placement
   virtual Vec3i GetRotationLocks() const;
-  virtual bool CheckPlaceble(ADimension *dim, FVector3i pos);
+  virtual bool CheckPlaceable(ADimension *dim, FVector3i pos);
   virtual void CopyOnReplace(UBlockLogic *from);
 
   // Recipe selection
