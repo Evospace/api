@@ -36,10 +36,15 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
   if (!json)
     return false;
 
+  Reset();
+
+  for (auto research : GetAllResearches()) {
+    research->Type = EResearchStatus::Closed;
+    research->mLevel = 0;
+  }
+
   // Clear queue before loading: TryFind for TArray only appends, so without this
   // a prior in-session state (e.g. from same GameInstance after load) would duplicate entries.
-  ResearchQueue.Empty();
-
   json_helper::TryFind(json, TEXT("ActiveResearch"), ActiveResearch);
   json_helper::TryFind(json, TEXT("ResearchQueue"), ResearchQueue);
   json_helper::TryGet(json, TEXT("ActiveResearchLeft"), ActiveResearchLeft);

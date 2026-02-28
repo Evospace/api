@@ -51,12 +51,17 @@ TOptional<FVersionStruct> UGameSessionData::VersionFromString(const FString &ser
 void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &saveName, bool CreativeMode, bool InfiniteOre, bool AllResearchCompleted, const FString &seed, FName generatorName) {
   check(WorldContextObject && WorldContextObject->GetWorld());
 
+  Reset();
+
   SaveName = saveName;
   Seed = seed;
   GeneratorName = generatorName;
   TotalGameTime = 0.f;
   TotalGameTicks = 0;
-  CreativeAllowed = CreativeMode;
+  this->CreativeMode = CreativeMode;
+  this->CreativeAllowed = CreativeMode;
+  this->InfiniteOre = InfiniteOre;
+  this->AllResearchCompleted = AllResearchCompleted;
   Version = UGameSessionData::VersionFromString(UMainGameInstance::GetBuildString()).Get({});
   auto gi = UGameInstanceHelper::GetMainGameInstance(WorldContextObject);
   check(gi);
