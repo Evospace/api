@@ -5,10 +5,12 @@
 #include "Pumpjack.generated.h"
 
 class URegionLayer;
+class USourceData;
 class UStaticItem;
 /**
- * Drilling machine that extracts oil. Does not use regions; outputs constant rate.
- * Oil region layer is being removed; future ore-based oil will use SourceData.
+ * Drilling machine that extracts oil from deposits.
+ * Non-legacy: uses FindSource() to find oil deposits (OilCluster) created by OreGenerator.
+ * Legacy (Pumpjack_leg): always extracts oil without source checks.
  */
 UCLASS()
 class UPumpjack : public UDrillingMachineBase {
@@ -20,7 +22,7 @@ class UPumpjack : public UDrillingMachineBase {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UDrillingMachineBase>("Pumpjack") //@class Pumpjack : DrillingMachineBase
-      .addProperty("layer", &Self::Layer) //@field RegionLayer, deprecated, always nullptr
+      .addProperty("source", &Self::Source) //@field SourceData
       .endClass();
   }
 
@@ -28,9 +30,10 @@ class UPumpjack : public UDrillingMachineBase {
 
   public:
   virtual float GetMiningProgress() const override;
+  virtual USourceData *GetSource() const override { return Source; }
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
-  URegionLayer *Layer = nullptr; // Deprecated, always nullptr. Kept for BP compat.
+  USourceData *Source = nullptr;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
   virtual UStaticItem *GetSelectedOption() const override;
@@ -41,6 +44,8 @@ class UPumpjack : public UDrillingMachineBase {
   virtual void BlockEndPlay() override;
 
   private:
+  bool IsLegacyPumpjack() const;
+
   UPROPERTY()
   const UStaticItem *OutputItem = nullptr;
 };
