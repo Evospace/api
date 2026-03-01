@@ -83,8 +83,8 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable)
   UInventoryAccess *GetNamedInventory(const FString &name);
 
-  UFUNCTION(BlueprintCallable)
-  static TArray<UStaticTip *> GetAllStaticTips();
+  UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
+  static TArray<UStaticTip *> GetAllStaticTips(const UObject *WorldContextObject);
 
   UFUNCTION(BlueprintCallable)
   void GameLoadingSequence(const FString &saveName);
