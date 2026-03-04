@@ -20,6 +20,21 @@ class USourceData : public UInstance {
       .addProperty("item", &Self::Item) //@field StaticItem item to mine
       .addProperty("active_miners", &Self::ActiveMiners) //@field integer number of miners currently extracting
       .addProperty("infinite_ore", &Self::InfiniteOre) //@field boolean
+      // direct:
+      //--- Total deposit yield (capacity shared among miners)
+      //--- @return integer
+      // function SourceData:get_total_yield() end
+      .addFunction("get_total_yield", &Self::GetTotalYield)
+      // direct:
+      //--- Average yield per miner currently on this deposit. 0 if no miners.
+      //--- @return integer
+      // function SourceData:get_yield_per_miner() end
+      .addFunction("get_yield_per_miner", &Self::GetYieldPerMiner)
+      // direct:
+      //--- Estimated yield a new miner would get if placed on this deposit. For build preview.
+      //--- @return integer
+      // function SourceData:get_estimated_yield_for_new_miner() end
+      .addFunction("get_estimated_yield_for_new_miner", &Self::GetEstimatedYieldForNewMiner)
       .endClass();
   }
 
@@ -59,6 +74,14 @@ class USourceData : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   int32 GetMinerExtractionSpeed(UObject *Miner) const;
+
+  /** Average yield per miner currently on this deposit. 0 if no miners. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Source")
+  int32 GetYieldPerMiner() const;
+
+  /** Estimated yield a new miner would get if placed on this deposit. For build preview. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Source")
+  int32 GetEstimatedYieldForNewMiner() const;
 
   UFUNCTION(BlueprintCallable)
   void OnMinerStart(UObject *Miner);

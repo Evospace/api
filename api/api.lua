@@ -232,6 +232,7 @@ cs.sector_size = Vec3i.new(16, 16, 16)
 --- @field real_ticks_passed integer undocumented
 --- @field total_production integer undocumented
 --- @field speed integer undocumented
+--- @field productivity integer percent (e.g. 15 = +15%)
 --- @field energy_input_inventory ResourceInventory undocumented
 --- @field energy_output_inventory ResourceInventory undocumented
 --- @field crafter_input_container InventoryContainer undocumented
@@ -636,11 +637,13 @@ function ComputerBlockLogic.cast(object) end
 
 --- 
 --- 
---- @class ConductorBlockLogic : StorageBlockLogic
+--- @class ConductorBlockLogic : BlockLogic
 --- @field side_cover StaticCover undocumented
 --- @field center_cover StaticCover undocumented
 --- @field channel string undocumented
 --- @field conductor_channel integer undocumented
+--- @field capacity integer undocumented
+--- @field drain integer undocumented
 ConductorBlockLogic = {}
 
 ---Add side wire
@@ -758,7 +761,7 @@ function DB.cast(object) end
 --- 
 --- 
 --- @class DesignableCoverBlockLogic : BlockLogic
---- @field cover_set StaticCoverSet CoverSet
+--- @field cover_set StaticCoverSet* CoverSet
 DesignableCoverBlockLogic = {}
 
 --- Creates a new DesignableCoverBlockLogic instance
@@ -779,6 +782,33 @@ function DesignableCoverBlockLogic.get_class() end
 --- @param object Object to cast
 --- @return DesignableCoverBlockLogic
 function DesignableCoverBlockLogic.cast(object) end
+
+--- 
+--- 
+--- @class DesignableFenceBlockLogic : BlockLogic
+--- @field half_cover StaticCover undocumented
+--- @field center_cover StaticCover undocumented
+--- @field cover_set StaticCoverSet undocumented
+DesignableFenceBlockLogic = {}
+
+--- Creates a new DesignableFenceBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return DesignableFenceBlockLogic
+function DesignableFenceBlockLogic.new(parent, name) end
+
+--- Creates a new DesignableFenceBlockLogic instance
+--- @return DesignableFenceBlockLogic
+function DesignableFenceBlockLogic.new_simple() end
+
+--- Return DesignableFenceBlockLogic class object
+--- @return Class
+function DesignableFenceBlockLogic.get_class() end
+
+--- Trying to cast Object into DesignableFenceBlockLogic
+--- @param object Object to cast
+--- @return DesignableFenceBlockLogic
+function DesignableFenceBlockLogic.cast(object) end
 
 --- 
 --- 
@@ -820,10 +850,13 @@ Dimension = {}
 --- @field energy_per_tick integer undocumented
 --- @field remaining_energy integer undocumented
 --- @field productivity integer percent (e.g. 15 = +15%)
+--- @field total_production integer undocumented
 --- @field inventory InventoryContainer undocumented
 --- @field energy ResourceInventory undocumented
 --- @field production integer undocumented
 --- @field storage_size integer undocumented
+--- @field last_speed integer undocumented
+--- @field current_recipe_time integer undocumented
 DrillingMachineBase = {}
 
 --- Creates a new DrillingMachineBase instance
@@ -872,6 +905,30 @@ function DrillingRig.cast(object) end
 
 --- 
 --- 
+--- @class ElectricityContainerBlockLogic : ConductorBlockLogic
+ElectricityContainerBlockLogic = {}
+
+--- Creates a new ElectricityContainerBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.new(parent, name) end
+
+--- Creates a new ElectricityContainerBlockLogic instance
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.new_simple() end
+
+--- Return ElectricityContainerBlockLogic class object
+--- @return Class
+function ElectricityContainerBlockLogic.get_class() end
+
+--- Trying to cast Object into ElectricityContainerBlockLogic
+--- @param object Object to cast
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.cast(object) end
+
+--- 
+--- 
 --- @class EngineData : Object
 --- @field props_mul number undocumented
 --- @field dpi number undocumented
@@ -890,6 +947,9 @@ function DrillingRig.cast(object) end
 --- @field loading_range integer undocumented
 --- @field performance boolean undocumented
 --- @field performance_graph boolean undocumented
+--- @field compass boolean undocumented
+--- @field compass_show_nearest_ore boolean undocumented
+--- @field compass_show_spawn_point boolean undocumented
 --- @field ctrl_hotbar boolean undocumented
 --- @field alt_hotbar boolean undocumented
 --- @field shift_hotbar boolean undocumented
@@ -898,6 +958,9 @@ function DrillingRig.cast(object) end
 --- @field window_mode integer undocumented
 --- @field autosave_period integer undocumented
 --- @field memory_stats boolean undocumented
+--- @field enable_rain boolean undocumented
+--- @field cloud_preset integer undocumented
+--- @field sector_lod_count integer undocumented
 EngineData = {}
 
 function EngineData:apply() end
@@ -923,8 +986,6 @@ ExtractionData = {}
 --- 
 --- 
 --- @class FluidContainerBlockLogic : ConductorBlockLogic
---- @field capacity integer undocumented
---- @field charge integer undocumented
 FluidContainerBlockLogic = {}
 
 --- Creates a new FluidContainerBlockLogic instance
@@ -2720,7 +2781,7 @@ function type.cast(object) end
 --- 
 --- 
 --- @class Pumpjack : DrillingMachineBase
---- @field layer RegionLayer undocumented
+--- @field source SourceData undocumented
 Pumpjack = {}
 
 --- Creates a new Pumpjack instance
@@ -2749,6 +2810,8 @@ function Pumpjack.cast(object) end
 --- @field default_locked boolean If **true**, the recipe starts
 --- @field locked boolean Currently locked if **true**
 --- @field productivity integer Percentage bonus (e.g. `20` = +20 %)
+--- @field input RecipeInventory Read/write container of required items
+--- @field output RecipeInventory Read/write container of produced items
 --- @field tier integer Recipe tier used for speed scaling: every tier **above** the
 --- @field start_tier integer Machine-unlock tier (same for all its recipes); lets you
 Recipe = {}
@@ -3168,8 +3231,6 @@ function SingleSlotInventory.cast(object) end
 --- @class SourceData : Instance
 --- @field position Vec2i source position in block coordinates
 --- @field item StaticItem item to mine
---- @field initial_capacity integer initial source capacity (ore quantity)
---- @field current_ore integer current remaining ore quantity (clamped to 2% of initial)
 --- @field active_miners integer number of miners currently extracting
 --- @field infinite_ore boolean undocumented
 SourceData = {}
@@ -3208,6 +3269,9 @@ function SourceData.cast(object) end
 --- @field level integer undocumented
 --- @field break_effect Class undocumented
 --- @field lua table undocumented
+--- @field half_cover StaticCover undocumented
+--- @field center_cover StaticCover undocumented
+--- @field body_cover StaticCover undocumented
 StaticBlock = {}
 
 --- Register a new StaticBlock static object
@@ -3623,6 +3687,37 @@ function StaticTip.get_class() end
 --- @param object Object to cast
 --- @return StaticTip
 function StaticTip.cast(object) end
+
+--- 
+--- 
+--- @class StaticWeather : Prototype
+--- @field cloudiness01 number 0..1
+--- @field precipitation01 number 0..1
+--- @field fog01 number 0..1
+--- @field second_fog01 number 0..1
+--- @field storminess01 number 0..1
+--- @field wind_speed number >=0
+--- @field selection_weight integer >=0
+StaticWeather = {}
+
+--- Register a new StaticWeather static object
+--- @param name string The name of the object
+--- @return StaticWeather
+function StaticWeather.reg(name) end
+
+--- Searching for StaticWeather in db
+--- @param name string The name of the object
+--- @return StaticWeather
+function StaticWeather.find(name) end
+
+--- Return StaticWeather class object
+--- @return Class
+function StaticWeather.get_class() end
+
+--- Trying to cast Object into StaticWeather
+--- @param object Object to cast
+--- @return StaticWeather
+function StaticWeather.cast(object) end
 
 --- 
 --- 
