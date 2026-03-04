@@ -113,6 +113,24 @@
 <dd><p>undocumented</p>
 </dd></dl>
 
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticBlock.half_cover">
+<span class="sig-name descname"><span class="pre">half_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-StaticBlock.half_cover" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticBlock.center_cover">
+<span class="sig-name descname"><span class="pre">center_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-StaticBlock.center_cover" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-StaticBlock.body_cover">
+<span class="sig-name descname"><span class="pre">body_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-StaticBlock.body_cover" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="lua class">
@@ -288,6 +306,12 @@
 </dd></dl>
 
 <dl class="lua data">
+<dt class="sig sig-object lua" id="lua-AbstractCrafter.productivity">
+<span class="sig-name descname"><span class="pre">productivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-AbstractCrafter.productivity" title="Link to this definition">¶</a></dt>
+<dd><p>percent (e.g. 15 = +15%)</p>
+</dd></dl>
+
+<dl class="lua data">
 <dt class="sig sig-object lua" id="lua-AbstractCrafter.energy_input_inventory">
 <span class="sig-name descname"><span class="pre">energy_input_inventory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceInventory" title="ResourceInventory"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">ResourceInventory</span></code></a><a class="headerlink" href="#lua-AbstractCrafter.energy_input_inventory" title="Link to this definition">¶</a></dt>
 <dd><p>undocumented</p>
@@ -345,7 +369,7 @@
 
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-ConductorBlockLogic">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ConductorBlockLogic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-StorageBlockLogic" title="StorageBlockLogic"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StorageBlockLogic</span></code></a><a class="headerlink" href="#lua-ConductorBlockLogic" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ConductorBlockLogic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-BlockLogic" title="BlockLogic"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">BlockLogic</span></code></a><a class="headerlink" href="#lua-ConductorBlockLogic" title="Link to this definition">¶</a></dt>
 <dd><dl class="lua data">
 <dt class="sig sig-object lua" id="lua-ConductorBlockLogic.side_cover">
 <span class="sig-name descname"><span class="pre">side_cover</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">StaticCover</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.side_cover" title="Link to this definition">¶</a></dt>
@@ -370,6 +394,18 @@
 <dd><p>undocumented</p>
 </dd></dl>
 
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.capacity">
+<span class="sig-name descname"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.capacity" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-ConductorBlockLogic.drain">
+<span class="sig-name descname"><span class="pre">drain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-ConductorBlockLogic.drain" title="Link to this definition">¶</a></dt>
+<dd><p>undocumented</p>
+</dd></dl>
+
 <dl class="lua method">
 <dt class="sig sig-object lua" id="lua-ConductorBlockLogic.add_wire">
 <span class="sig-name descname"><span class="pre">add_wire</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ConductorBlockLogic" title="ConductorBlockLogic"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">ConductorBlockLogic</span></code></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">acc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ResourceAccessor" title="ResourceAccessor"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">ResourceAccessor</span></code></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-ConductorBlockLogic.add_wire" title="Link to this definition">¶</a></dt>
@@ -383,19 +419,7 @@
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-FluidContainerBlockLogic">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">FluidContainerBlockLogic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-ConductorBlockLogic" title="ConductorBlockLogic"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">ConductorBlockLogic</span></code></a><a class="headerlink" href="#lua-FluidContainerBlockLogic" title="Link to this definition">¶</a></dt>
-<dd><dl class="lua data">
-<dt class="sig sig-object lua" id="lua-FluidContainerBlockLogic.capacity">
-<span class="sig-name descname"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-FluidContainerBlockLogic.capacity" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
-</dd></dl>
-
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua-FluidContainerBlockLogic.charge">
-<span class="sig-name descname"><span class="pre">charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-FluidContainerBlockLogic.charge" title="Link to this definition">¶</a></dt>
-<dd><p>undocumented</p>
-</dd></dl>
-
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="lua class">
 <dt class="sig sig-object lua" id="lua-StorageBlockLogic">
