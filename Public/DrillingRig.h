@@ -33,7 +33,6 @@ class UDrillingRig : public UDrillingMachineBase {
   virtual USourceData *GetSource() const override { return Source; }
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-  virtual UStaticItem *GetSelectedOption() const override;
 
   protected:
   virtual float GetMiningProgress() const override;

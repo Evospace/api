@@ -8,6 +8,7 @@
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
 #include "Qr/Prototype.h"
+#include "StaticItem.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 #include "UObject/Object.h"
 #include "RegionMap.generated.h"
@@ -68,12 +69,6 @@ class URegionMap : public UInstance {
       // function RegionMap:find_region(spos) end
       .addFunction("find_region", &URegionMap::FindRegion)
       // direct:
-      //---Looking for SourceData near given location in world blocks
-      //---@param wbpos Vec3i position in Dimension grid
-      //---@return SourceData
-      // function RegionMap:find_source(wbpos) end
-      .addFunction("find_source", &URegionMap::FindSourceWrapper)
-      // direct:
       //---Is region exists
       //---@param pos Vec2i region position
       //---@return boolean
@@ -116,6 +111,9 @@ class URegionMap : public UInstance {
   UPROPERTY()
   USourceData *StoneSource;
 
+  UPROPERTY()
+  USourceData *WaterSource;
+
   UFUNCTION(BlueprintCallable)
   static FVector2i SectorToGrid(const FVector2i &pos);
 
@@ -125,10 +123,7 @@ class URegionMap : public UInstance {
   UFUNCTION(BlueprintCallable)
   static FVector2i WorldBlockToSubregion(const FVector3i &pos);
 
-  USourceData *FindSource(const Vec3i &wbpos);
-
-  UFUNCTION(BlueprintCallable)
-  USourceData *FindSourceWrapper(const FVector3i &grid);
+  USourceData *FindSource(const Vec3i &wbpos, EStaticItemType AllowedItemType);
 
   UFUNCTION(BlueprintCallable)
   UEvoRegion *GetRegion(const FVector2i &region_pos);

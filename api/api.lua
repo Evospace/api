@@ -1133,6 +1133,7 @@ function Inventory.cast(object) end
 --- 
 --- @class InventoryAccess : InventoryReader
 --- @field zero_slots boolean undocumented
+--- @field draggable boolean Whether inventory can be dragged in UI (default: true)
 InventoryAccess = {}
 
 --- Add item with count to InventoryAccess
@@ -3234,6 +3235,18 @@ function SingleSlotInventory.cast(object) end
 --- @field active_miners integer number of miners currently extracting
 --- @field infinite_ore boolean undocumented
 SourceData = {}
+
+--- Total deposit yield (capacity shared among miners)
+--- @return integer
+ function SourceData:get_total_yield() end
+
+--- Average yield per miner currently on this deposit. 0 if no miners.
+--- @return integer
+ function SourceData:get_yield_per_miner() end
+
+--- Estimated yield a new miner would get if placed on this deposit. For build preview.
+--- @return integer
+ function SourceData:get_estimated_yield_for_new_miner() end
 
 --- Creates a new SourceData instance
 --- @param parent Object Object of parent

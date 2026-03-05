@@ -5,6 +5,7 @@
 #include "Pumpjack.generated.h"
 
 class URegionLayer;
+class URegionMap;
 class USourceData;
 class UStaticItem;
 /**
@@ -36,7 +37,6 @@ class UPumpjack : public UDrillingMachineBase {
   USourceData *Source = nullptr;
 
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
-  virtual UStaticItem *GetSelectedOption() const override;
 
   protected:
   virtual void BlockBeginPlay() override;

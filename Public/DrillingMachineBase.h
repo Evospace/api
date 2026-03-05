@@ -74,9 +74,6 @@ class UDrillingMachineBase : public UBlockLogic {
   virtual TArray<UStaticItem *> GetExtractOption() const;
 
   UFUNCTION(BlueprintCallable)
-  virtual UStaticItem *GetSelectedOption() const;
-
-  UFUNCTION(BlueprintCallable)
   virtual void SetExtractOption(UStaticItem *item);
 
   /** Returns ore source for UI (e.g. deposit name). nullptr for machines without source (e.g. Pumpjack). */
