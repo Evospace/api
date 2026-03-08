@@ -39,6 +39,13 @@ void FSimpleLogger::StopFileLogging() {
   LogFilePath.Empty();
 }
 
+void FSimpleLogger::FlushFile() {
+  FScopeLock guard(&FileLock);
+  if (bWriteToDisk && LogFileHandle) {
+    LogFileHandle->Flush();
+  }
+}
+
 void FSimpleLogger::WriteLineToDisk(const FString &Line) {
   FScopeLock guard(&FileLock);
   if (!bWriteToDisk || !LogFileHandle) {

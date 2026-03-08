@@ -96,6 +96,7 @@ class FSimpleLogger {
 
   void StartFileLogging(const FString &FileName);
   void StopFileLogging();
+  void FlushFile();
 
   void SetUnrealLogLevel(ELogLevel Level) { UnrealLogLevel = Level; }
   ELogLevel GetUnrealLogLevel() const { return UnrealLogLevel; }
