@@ -31,6 +31,7 @@ class UInventoryAccess : public UInventoryReader {
       // function InventoryAccess:sub(item, count) end
       .addFunction("sub", [](UInventoryAccess *self, const UStaticItem *item, int64 count) { return self->_Sub({ item, count }); })
       .addProperty("zero_slots", &UInventoryAccess::mCanHaveZeroSlot) //@field boolean
+      .addProperty("draggable", &UInventoryAccess::Draggable) //@field boolean Whether inventory can be dragged in UI (default: true)
       .endClass();
   }
 
