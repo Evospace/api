@@ -83,6 +83,9 @@ class UDrillingMachineBase : public UBlockLogic {
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
   virtual int32 GetTimePerRecipe() const;
 
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Drilling|Stats")
+  virtual int32 GetEffectiveProductivity() const { return Productivity; }
+
   // UBlockLogic interface
   virtual void Tick() override;
 

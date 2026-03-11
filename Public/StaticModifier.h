@@ -21,6 +21,9 @@ class UStaticModifier : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FLoc mDescription;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  int32 Value = 0;
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   PROTOTYPE_CODEGEN(StaticModifier, StaticModifier)

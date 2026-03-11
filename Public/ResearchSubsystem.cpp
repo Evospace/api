@@ -8,7 +8,9 @@
 #include "Public/GameSessionSubsystem.h"
 #include "Public/SingleSlotInventory.h"
 #include "Public/StaticResearch.h"
+#include "Public/StaticResearchModifier.h"
 #include "Public/StaticItem.h"
+#include "Public/StaticModifier.h"
 #include "Evospace/Item/InventoryLibrary.h"
 #include "Evospace/Player/MainPlayerController.h"
 #include "Evospace/Player/NeiComponent.h"
@@ -437,6 +439,14 @@ void UResearchSubsystem::Reset() {
   CompletedResearches.Empty();
   OldResearches.Empty();
   UnlockedItems.Empty();
+
+  for (auto *r : GetAllResearches()) {
+    if (auto *modResearch = Cast<UStaticResearchModifier>(r)) {
+      if (modResearch->mModifier) {
+        modResearch->mModifier->Value = 0;
+      }
+    }
+  }
 }
 
 void UResearchSubsystem::InitializeResearchTreeOnStart(const UGameSessionData *gameSessionData) {

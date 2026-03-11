@@ -11,6 +11,8 @@ class UStaticResearchModifier : public UStaticResearch {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UStaticResearch>(
         "StaticResearchModifier") //@class StaticResearchModifier : StaticResearch
+      .addProperty("modifier", &Self::mModifier) //@field StaticModifier
+      .addProperty("bonus_value", &Self::mBonusValue) //@field integer
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return UStaticResearch::StaticClass(); }
@@ -24,5 +26,5 @@ class UStaticResearchModifier : public UStaticResearch {
   class UStaticModifier *mModifier = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  float mBonusValue;
+  int32 mBonusValue = 0;
 };

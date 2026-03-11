@@ -36,6 +36,8 @@ class UPumpjack : public UDrillingMachineBase {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
   USourceData *Source = nullptr;
 
+  virtual int32 GetEffectiveProductivity() const override;
+
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   protected:
@@ -45,6 +47,9 @@ class UPumpjack : public UDrillingMachineBase {
 
   private:
   bool IsLegacyPumpjack() const;
+
+  UPROPERTY()
+  class UStaticModifier *PumpjackProductivityModifier = nullptr;
 
   UPROPERTY()
   const UStaticItem *OutputItem = nullptr;

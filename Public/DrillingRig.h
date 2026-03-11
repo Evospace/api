@@ -32,10 +32,17 @@ class UDrillingRig : public UDrillingMachineBase {
 
   virtual USourceData *GetSource() const override { return Source; }
 
+  virtual int32 GetEffectiveProductivity() const override;
+
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   protected:
+  virtual void BlockBeginPlay() override;
   virtual float GetMiningProgress() const override;
   virtual void Drill() override;
   virtual void BlockEndPlay() override;
+
+  private:
+  UPROPERTY()
+  class UStaticModifier *DrillingRigProductivityModifier = nullptr;
 };
