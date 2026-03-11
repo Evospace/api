@@ -103,23 +103,23 @@ class UDrillingMachineBase : public UBlockLogic {
   class UResourceInventory *Energy;
 
   // Energy management
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
   int32 RemainingEnergy = 0;
 
   // Exact energy consumption per tick
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "0"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
   int32 EnergyPerTick = 60;
 
   // Exact time to extract one item, in ticks
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy", meta = (ClampMin = "1"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
   int32 TicksPerItem = 100;
 
   // Storage configuration
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Storage", meta = (ClampMin = "1"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Storage")
   int32 StorageSize = 100;
 
   // Mining productivity percent (e.g., 15 means +15% output)
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Stats", meta = (ClampMin = "0"))
+  UPROPERTY(EditAnywhere, Category = "Drilling|Stats")
   int32 Productivity = 0;
 
   // Accumulated productivity points for bonus progress
