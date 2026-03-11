@@ -23,7 +23,7 @@ class UStaticResearchRecipe : public UStaticResearch {
 
   virtual void ComputeSearchMetadata() const override;
 
-  virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
+  virtual void ApplyToController(AMainPlayerController *apply_to) override;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 

@@ -69,7 +69,7 @@ bool UResearchSubsystem::DeserializeFromPlayerJson(TSharedPtr<FJsonObject> json)
   for (auto r : CompletedResearches) {
     if (expect(r, "UResearchSubsystem::DeserializeFromPlayerJson: research is nullptr in CompletedResearches")) {
       auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-      r->ApplyToController(controller, r->mLevel + 1);
+      r->ApplyToController(controller);
       r->Type = EResearchStatus::Complete;
     }
   }
@@ -274,7 +274,7 @@ void UResearchSubsystem::CompleteResearch_Internal(UStaticResearch *Research) {
 
   auto controller = Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
   if (expect_once(controller, "UResearchSubsystem::CompleteResearch_Internal: controller is nullptr")) {
-    Research->ApplyToController(controller, 0);
+    Research->ApplyToController(controller);
   }
 }
 

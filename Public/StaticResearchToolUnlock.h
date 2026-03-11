@@ -16,5 +16,5 @@ class UStaticResearchToolUnlock : public UStaticResearch {
   virtual UClass *GetSuperProto() const override { return UStaticResearch::StaticClass(); }
 
   public:
-  virtual void ApplyToController(AMainPlayerController *apply_to, int32 level) override;
+  virtual void ApplyToController(AMainPlayerController *apply_to) override;
 };

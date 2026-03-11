@@ -77,7 +77,7 @@ class UStaticResearch : public UPrototype, public ISearchable {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  virtual void ApplyToController(AMainPlayerController *apply_to, int32 level);
+  virtual void ApplyToController(AMainPlayerController *apply_to);
 
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FText GetLabel() const;
