@@ -318,6 +318,8 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   UFUNCTION(BlueprintCallable)
   UBlockNetwork *GetNetwork() const;
 
+  void RebuildNetworkImmediate();
+
   virtual void SetRenderable(AColumn *sector) override;
 
   // Use virtual network inventory as primary core accessor for GUI/logic

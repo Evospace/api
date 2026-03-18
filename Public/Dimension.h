@@ -41,6 +41,7 @@ class USectorCompiler;
 class APlayerController;
 class UResourceNetworkManager;
 class UDroneManager;
+class UNetworkBuilder;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
@@ -178,6 +179,8 @@ class ADimension : public AActor {
 
   UBlockNetwork *GetNewNetwork();
   UDroneManager *GetDroneManager();
+  UNetworkBuilder *GetNetworkBuilder();
+  bool IsNetworkBuilderEnabled() const { return bUseNetworkBuilder; }
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
@@ -216,6 +219,9 @@ class ADimension : public AActor {
 
   UPROPERTY(EditAnywhere)
   bool mNetworkTicking = true;
+
+  UPROPERTY(EditAnywhere)
+  bool bUseNetworkBuilder = true;
 
   FTSTicker::FDelegateHandle TickDelegateHandle;
 
@@ -263,6 +269,9 @@ class ADimension : public AActor {
 
   UPROPERTY(VisibleAnywhere)
   UDroneManager *DroneManager;
+
+  UPROPERTY(VisibleAnywhere)
+  UNetworkBuilder *NetworkBuilder;
 
   UPROPERTY(VisibleAnywhere)
   UInstancedStaticMeshComponent *DroneMeshComponent;
