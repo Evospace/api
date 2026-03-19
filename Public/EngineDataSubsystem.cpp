@@ -141,10 +141,22 @@ void UEngineDataSubsystem::ApplyData() const {
       }
     };
 
+    const int32 texturePoolSizeMb = FMath::Max(Storage.TexturePoolSizeMb, 256);
+    const int32 textureMaxTempMemoryMb = FMath::Max(Storage.TextureMaxTempMemoryMb, 16);
+    const float textureMipBias = FMath::Clamp(Storage.TextureMipBias, 0.0f, 4.0f);
+    const int32 renderTargetPoolMinMb = FMath::Max(Storage.RenderTargetPoolMinMb, 128);
+
     SetCVar(TEXT("r.AOGlobalDistanceField"), 0);
     SetCVar(TEXT("r.Substrate"), 0);
     SetCVar(TEXT("r.GBufferFormat"), 1);
-    SetCVar(TEXT("r.Streaming.PoolSize"), 512);
+    SetCVar(TEXT("r.TextureStreaming"), 1);
+    SetCVar(TEXT("r.Streaming.LimitPoolSizeToVRAM"), Storage.LimitTexturePoolToVram ? 1.0f : 0.0f);
+    SetCVar(TEXT("r.Streaming.PoolSize"), static_cast<float>(texturePoolSizeMb));
+    SetCVar(TEXT("r.Streaming.MaxTempMemoryAllowed"), static_cast<float>(textureMaxTempMemoryMb));
+    SetCVar(TEXT("r.Streaming.MipBias"), textureMipBias);
+    SetCVar(TEXT("r.Streaming.UsePerTextureBias"), 1);
+    SetCVar(TEXT("r.Streaming.DefragDynamicBounds"), 1);
+    SetCVar(TEXT("r.RenderTargetPoolMin"), static_cast<float>(renderTargetPoolMinMb));
     SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
   }
 

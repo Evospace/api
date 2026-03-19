@@ -50,20 +50,6 @@ void UNetworkBuilder::MarkBlockDirty(UBlockLogic *block) {
     rootBlock = block;
   }
 
-  // Ignore stale objects that are no longer present in Dimension storage.
-  UBlockLogic *liveBlock = ownerDimension->GetBlockLogic(rootBlock->GetBlockPos());
-  if (!liveBlock) {
-    return;
-  }
-
-  UBlockLogic *liveRoot = liveBlock->GetPartRootBlock();
-  if (!liveRoot) {
-    liveRoot = liveBlock;
-  }
-  if (liveRoot != rootBlock) {
-    return;
-  }
-
   if (UConductorBlockLogic *conductor = Cast<UConductorBlockLogic>(rootBlock)) {
     pendingConductors.Add(conductor);
   }

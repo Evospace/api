@@ -48,6 +48,11 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
       .addProperty("reflection_preset", QR_GET_SET(Storage.ReflectionPreset)) //@field integer
       .addProperty("transparency_preset", QR_GET_SET(Storage.TransparencyPreset)) //@field integer
       .addProperty("gi_preset", QR_GET_SET(Storage.GiPreset)) //@field integer
+      .addProperty("limit_texture_pool_to_vram", QR_GET_SET(Storage.LimitTexturePoolToVram)) //@field boolean
+      .addProperty("texture_pool_size_mb", QR_GET_SET(Storage.TexturePoolSizeMb)) //@field integer
+      .addProperty("texture_max_temp_memory_mb", QR_GET_SET(Storage.TextureMaxTempMemoryMb)) //@field integer
+      .addProperty("texture_mip_bias", QR_GET_SET(Storage.TextureMipBias)) //@field number
+      .addProperty("render_target_pool_min_mb", QR_GET_SET(Storage.RenderTargetPoolMinMb)) //@field integer
       .addProperty("detail_shadows", QR_GET_SET(Storage.DetailShadows)) //@field boolean
       .addProperty("fps", QR_GET_SET(Storage.Fps)) //@field integer
       .addProperty("res_x", QR_GET_SET(Storage.ResolutionX)) //@field integer

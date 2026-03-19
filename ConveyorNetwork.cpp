@@ -155,13 +155,13 @@ void UConveyorNetwork::Tick() {
 
     // Visualization: ensure instances reflect current inventories (auto-spawn)
     {
-      bool is_valid_actor = bl->GetActor() != nullptr;
+      bool is_valid_renderable = bl->mRenderable;
 #ifndef EVOSPACE_ITEMS_RENDERING
-      is_valid_actor = false;
+      is_valid_renderable = false;
 #endif
       auto *inAcc = bl->GetInputAccess_Implementation();
       auto *outAcc = bl->GetOutputAccess_Implementation();
-      if (is_valid_actor && inAcc && outAcc) {
+      if (is_valid_renderable && inAcc && outAcc) {
         // Output visual instance lifecycle (at right side)
         if (bl->mItemInstancing2.IsEmpty() && !outAcc->IsEmpty()) {
           auto rt = bl->GetTransformLocation();
@@ -293,7 +293,7 @@ void UConveyorNetwork::Tick() {
         if (outputAccess && !TickStates[index].OutputEmpty) {
 #ifdef EVOSPACE_ITEMS_RENDERING
           bool pushed = false;
-          if (bl->GetActor()) {
+          if (bl->mRenderable) {
             auto ret = ReceiverAccessors[index]->PushWithData(outputAccess, 1, MoveTemp(bl->mItemInstancing2));
             if (ret.has_value()) {
               // push failed: keep and stop movement
@@ -331,7 +331,7 @@ void UConveyorNetwork::Tick() {
           if (bl->input_path < 0) bl->input_path = 0;
           bl->output_path = 0;
 #ifdef EVOSPACE_ITEMS_RENDERING
-          if (bl->GetActor()) {
+          if (bl->mRenderable) {
             bl->mItemInstancing2 = MoveTemp(bl->mItemInstancing);
             bl->mItemInstancing2.UpdateTransform(bl->GetTransformLocation());
             bl->mItemInstancing2.UpdateData(RotateVector(bl->GetBlockQuat(), Side::Right), ConveyorConsts::StepForLevel(bl->GetStaticBlock()->Level));

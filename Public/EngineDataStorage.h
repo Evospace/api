@@ -26,6 +26,21 @@ struct FEngineDataStorage {
   int32 GiPreset = 0;
 
   UPROPERTY(EditAnywhere)
+  bool LimitTexturePoolToVram = true;
+
+  UPROPERTY(EditAnywhere)
+  int32 TexturePoolSizeMb = 1200;
+
+  UPROPERTY(EditAnywhere)
+  int32 TextureMaxTempMemoryMb = 128;
+
+  UPROPERTY(EditAnywhere)
+  float TextureMipBias = 1.0f;
+
+  UPROPERTY(EditAnywhere)
+  int32 RenderTargetPoolMinMb = 300;
+
+  UPROPERTY(EditAnywhere)
   bool DetailShadows = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
