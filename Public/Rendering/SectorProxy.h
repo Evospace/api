@@ -33,7 +33,7 @@ class USectorProxy : public UObject {
   bool GetDirty() const { return Dirty; }
   void SetDirty(bool value) { Dirty = value; }
 
-  void SetDirty(IndexType index);
+  void SetRenderDirty(IndexType index);
 
   FVector3i GetPivotPos() const { return PivotPos; }
   void SetProxyData(FVector3i value, AColumn *actor) {

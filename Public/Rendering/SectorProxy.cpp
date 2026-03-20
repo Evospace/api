@@ -85,7 +85,7 @@ void USectorProxy::GetSectorDataCold(FSectorData &data) {
   data = SectorColdData;
 }
 
-void USectorProxy::SetDirty(IndexType index) {
+void USectorProxy::SetRenderDirty(IndexType index) {
   auto pos = cs::IndexToCell(index, gSectorSize);
 
   Vec3i out(0, 0, 0);
@@ -122,21 +122,26 @@ void USectorProxy::SetDirty(IndexType index) {
       }
     }
   }
-
-  if (ensure(owner)) {
-    owner->SaveDirty = true;
-  }
 }
 
 void USectorProxy::SetStaticBlock(IndexType index, const UStaticBlock *value) {
+  const UStaticBlock *prev = StaticBlocks[index].block;
+  if (prev == value) {
+    return;
+  }
+
   StaticBlocks[index].block = value;
 
   if (value == nullptr) {
     StaticBlocks[index].density = {};
   }
 
+  if (owner) {
+    owner->SetSaveDirty();
+  }
+
   if (!value || value->Tesselator) {
-    SetDirty(index);
+    SetRenderDirty(index);
   }
 }
 const UStaticBlock *USectorProxy::GetStaticBlock(IndexType index) {
@@ -144,7 +149,10 @@ const UStaticBlock *USectorProxy::GetStaticBlock(IndexType index) {
 }
 
 void USectorProxy::SetBlockDensity(IndexType index, BlockDensity density) {
-  SetDirty(index);
+  if (owner) {
+    owner->SetSaveDirty();
+  }
+  SetRenderDirty(index);
   StaticBlocks[index].density = density;
 }
 
@@ -165,17 +173,17 @@ void USectorProxy::LoadSector(const AColumn &c) {
     if (logic != nullptr && (block == nullptr || block != logic->GetStaticBlock())) {
       const UStaticBlock *logicStaticBlock = logic->GetStaticBlock();
       if (block) {
-        LOG(ERROR_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
-                      << "). Logic " << logic->GetName()
-                      << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
-                      << ", but sector has block " << block->GetName() << ". Trying to fix";
+        LOG(WARN_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
+                     << "). Logic " << logic->GetName()
+                     << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
+                     << ", but sector has block " << block->GetName() << ". Restoring sector from logic";
       } else {
-        LOG(ERROR_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
-                      << "). Logic " << logic->GetName()
-                      << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
-                      << ", but sector has no block. Trying to fix";
+        LOG(WARN_LL) << "Sector desync at " << bpos << " (pivot " << GetPivotPos() << ", index " << i
+                     << "). Logic " << logic->GetName()
+                     << " static block " << (logicStaticBlock ? logicStaticBlock->GetName() : TEXT("nullptr"))
+                     << ", but sector has no block. Restoring from logic";
       }
-      block = logic->GetStaticBlock();
+      SetStaticBlock(i, logicStaticBlock);
       restored = true;
     }
     if (block != nullptr && block->mActorClass == nullptr && !block->NoActorRenderable) {
@@ -202,18 +210,12 @@ void USectorProxy::LoadSector(const AColumn &c) {
           if (restored) [[unlikely]] {
             for (auto &pos : block->Positions) {
               auto subPos = bpos + RotateVector(logic->GetBlockQuat(), pos);
-              auto type = dim->GetBlockLogic(subPos);
               int32 index;
               if (auto sector = dim->FindBlockCell(subPos, index)) [[likely]]
               {
                 sector->SetStaticBlock(index, block);
               } else [[unlikely]] {
                 LOG(ERROR_LL) << "fixing part of block is failed at " << pos;
-              }
-              if (type) {
-                LOG(WARN_LL) << type->GetName() << " at " << pos;
-              } else {
-                LOG(ERROR_LL) << "nullptr at " << pos;
               }
             }
           }
