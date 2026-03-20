@@ -4,6 +4,8 @@
 #include "UObject/Object.h"
 #include "Containers/Array.h"
 #include "Containers/Map.h"
+#include "Containers/Set.h"
+#include <Containers/Ticker.h>
 #include "MapObjectManager.generated.h"
 
 /**
@@ -34,11 +36,20 @@ class UMapObjectManager : public UObject {
   // Minimap overlay update API
   UFUNCTION(BlueprintCallable)
   void ReportBuilt(UBlockLogic *Block);
+  void BeginOverlayBatch();
+  void EndOverlayBatch();
 
   private:
   // Not a UPROPERTY: nested containers of weak pointers are not reflected/serialized and we don't need GC tracking
   // here
   TMap<const UStaticItem *, TArray<UBlockLogic *>> ItemToBlocks;
+  TSet<UEvoRegion *> DirtyOverlayRegions;
+  int32 OverlayBatchDepth = 0;
+  bool bOverlayFlushScheduled = false;
+  FTSTicker::FDelegateHandle OverlayFlushTickerHandle;
 
-  static void MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color);
+  void ScheduleOverlayFlush();
+  bool OnOverlayFlushTick(float DeltaTime);
+  void FlushDirtyOverlayRegions();
+  static void MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color, bool bWritePixel);
 };

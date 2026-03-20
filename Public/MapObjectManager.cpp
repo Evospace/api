@@ -6,10 +6,16 @@
 #include "Public/EvoRegion.h"
 #include "Public/Dimension.h"
 #include "Public/SurfaceDefinition.h"
+#include "Containers/Ticker.h"
+
+namespace {
+constexpr float kOverlayFlushDelaySeconds = 0.2f;
+} // namespace
 
 void UMapObjectManager::Register(UBlockLogic *Block, const UStaticItem *Item) {
   if (!Block || !Item)
     return;
+
   auto &bucket = ItemToBlocks.FindOrAdd(Item);
   if (!bucket.Contains(Block)) {
     bucket.Add(Block);
@@ -57,10 +63,65 @@ void UMapObjectManager::ReportBuilt(UBlockLogic *Block) {
 
   const int32 pixelX = wb.X - grid.X * URegionMap::gridSize;
   const int32 pixelY = wb.Y - grid.Y * URegionMap::gridSize;
-  MarkOverlayPixel(region, pixelX, pixelY, FColor(170, 170, 170, 255));
+  MarkOverlayPixel(region, pixelX, pixelY, FColor(170, 170, 170, 255), true);
+  DirtyOverlayRegions.Add(region);
+  if (OverlayBatchDepth == 0) {
+    ScheduleOverlayFlush();
+  }
 }
 
-void UMapObjectManager::MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color) {
+void UMapObjectManager::BeginOverlayBatch() {
+  ++OverlayBatchDepth;
+}
+
+void UMapObjectManager::EndOverlayBatch() {
+  if (OverlayBatchDepth <= 0) {
+    return;
+  }
+
+  --OverlayBatchDepth;
+  if (OverlayBatchDepth != 0) {
+    return;
+  }
+
+  FlushDirtyOverlayRegions();
+}
+
+void UMapObjectManager::ScheduleOverlayFlush() {
+  if (bOverlayFlushScheduled) {
+    return;
+  }
+
+  bOverlayFlushScheduled = true;
+  OverlayFlushTickerHandle = FTSTicker::GetCoreTicker().AddTicker(
+    FTickerDelegate::CreateUObject(this, &UMapObjectManager::OnOverlayFlushTick),
+    kOverlayFlushDelaySeconds);
+}
+
+bool UMapObjectManager::OnOverlayFlushTick(float DeltaTime) {
+  bOverlayFlushScheduled = false;
+  OverlayFlushTickerHandle.Reset();
+  FlushDirtyOverlayRegions();
+  return false;
+}
+
+void UMapObjectManager::FlushDirtyOverlayRegions() {
+  if (bOverlayFlushScheduled) {
+    FTSTicker::GetCoreTicker().RemoveTicker(OverlayFlushTickerHandle);
+    OverlayFlushTickerHandle.Reset();
+    bOverlayFlushScheduled = false;
+  }
+
+  for (UEvoRegion *region : DirtyOverlayRegions) {
+    if (region && region->TextureOverlay) {
+      UTexture2D *textureOverlay = region->TextureOverlay;
+      textureOverlay->UpdateResource();
+    }
+  }
+  DirtyOverlayRegions.Empty();
+}
+
+void UMapObjectManager::MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, const FColor &Color, bool bWritePixel) {
   if (!Region || !Region->TextureOverlay)
     return;
 
@@ -73,7 +134,8 @@ void UMapObjectManager::MarkOverlayPixel(UEvoRegion *Region, int32 X, int32 Y, c
 
   void *Data = Mip.BulkData.Lock(LOCK_READ_WRITE);
   FColor *Pixels = static_cast<FColor *>(Data);
-  Pixels[Y * Width + X] = Color;
+  if (bWritePixel) {
+    Pixels[Y * Width + X] = Color;
+  }
   Mip.BulkData.Unlock();
-  tex->UpdateResource();
 }
