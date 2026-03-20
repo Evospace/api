@@ -154,10 +154,6 @@ void UEngineDataSubsystem::ApplyData() const {
     SetCVar(TEXT("r.Streaming.PoolSize"), static_cast<float>(texturePoolSizeMb));
     SetCVar(TEXT("r.Streaming.MaxTempMemoryAllowed"), static_cast<float>(textureMaxTempMemoryMb));
     SetCVar(TEXT("r.Streaming.MipBias"), textureMipBias);
-    SetCVar(TEXT("r.Streaming.UsePerTextureBias"), 1);
-    SetCVar(TEXT("r.Streaming.DefragDynamicBounds"), 1);
-    SetCVar(TEXT("r.Streaming.AmortizeCPUToGPUCopy"), 1);
-    SetCVar(TEXT("r.Streaming.MaxNumTexturesToStreamPerFrame"), 1);
     SetCVar(TEXT("r.RenderTargetPoolMin"), static_cast<float>(renderTargetPoolMinMb));
     SetCVar(TEXT("r.DynamicRes.OperationMode"), 0);
   }
