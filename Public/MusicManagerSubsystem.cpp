@@ -44,7 +44,9 @@ void UMusicManagerSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Pababam_Must_Grow.Pababam_Must_Grow'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Temperate/Celestial_Machinations.Celestial_Machinations'"),
       TEXT("/Script/Engine.SoundWave'/Game/Music/Cosmic_Machinery.Cosmic_Machinery'"),
-      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'")
+      TEXT("/Script/Engine.SoundWave'/Game/Music/Celestial_Synchronization.Celestial_Synchronization'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/21_2_amnbient_.21_2_amnbient_'"),
+      TEXT("/Script/Engine.SoundWave'/Game/Music/7__classic_ОК.7__classic_ОК'")
     };
 
     for (const auto &path : music_paths) {
