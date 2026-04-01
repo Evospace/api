@@ -2921,31 +2921,6 @@ function Region.cast(object) end
 
 --- 
 --- 
---- @class RegionLayer : Instance
---- @field item StaticItem item to mine
-RegionLayer = {}
-
---- Creates a new RegionLayer instance
---- @param parent Object Object of parent
---- @param name string The name of the instance
---- @return RegionLayer
-function RegionLayer.new(parent, name) end
-
---- Creates a new RegionLayer instance
---- @return RegionLayer
-function RegionLayer.new_simple() end
-
---- Return RegionLayer class object
---- @return Class
-function RegionLayer.get_class() end
-
---- Trying to cast Object into RegionLayer
---- @param object Object to cast
---- @return RegionLayer
-function RegionLayer.cast(object) end
-
---- 
---- 
 --- @class RegionMap : Instance
 RegionMap = {}
 

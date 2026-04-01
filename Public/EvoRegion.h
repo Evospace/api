@@ -3,7 +3,6 @@
 #include "Qr/Prototype.h"
 #include "EvoRegion.generated.h"
 
-class URegionLayer;
 class USourceData;
 
 UCLASS(BlueprintType)
@@ -31,12 +30,6 @@ class UEvoRegion : public UInstance {
 
   public:
   UEvoRegion();
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  URegionLayer *OilLayer;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  URegionLayer *FertileLayer;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<USourceData *> Sources;

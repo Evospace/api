@@ -12,12 +12,6 @@ class UMapWidgetData : public UObject, public ISerializableJson {
   bool OreLayer = true;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  bool FertileLayer = false;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  bool OilLayer = false;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool OreNames = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -25,9 +19,6 @@ class UMapWidgetData : public UObject, public ISerializableJson {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool OreDescription = false;
-
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  bool PercentText = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool SpawnPoint = true;
@@ -47,11 +38,8 @@ class UMapWidgetData : public UObject, public ISerializableJson {
 
 inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "OreLayer", OreLayer);
-  json_helper::TrySet(json, "FertileLayer", FertileLayer);
-  json_helper::TrySet(json, "OilLayer", OilLayer);
   json_helper::TrySet(json, "OreNames", OreNames);
   json_helper::TrySet(json, "OreDescription", OreDescription);
-  json_helper::TrySet(json, "PercentText", PercentText);
   json_helper::TrySet(json, "SpawnPoint", SpawnPoint);
   json_helper::TrySet(json, "MapObjects", MapObjects);
   json_helper::TrySet(json, "UserMarkers", UserMarkers);
@@ -62,11 +50,8 @@ inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) const {
 
 inline bool UMapWidgetData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "OreLayer", OreLayer);
-  json_helper::TryGet(json, "FertileLayer", FertileLayer);
-  json_helper::TryGet(json, "OilLayer", OilLayer);
   json_helper::TryGet(json, "OreNames", OreNames);
   json_helper::TryGet(json, "OreDescription", OreDescription);
-  json_helper::TryGet(json, "PercentText", PercentText);
   json_helper::TryGet(json, "SpawnPoint", SpawnPoint);
   json_helper::TryGet(json, "MapObjects", MapObjects);
   json_helper::TryGet(json, "UserMarkers", UserMarkers);

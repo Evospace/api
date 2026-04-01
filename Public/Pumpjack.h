@@ -4,7 +4,6 @@
 #include "DrillingMachineBase.h"
 #include "Pumpjack.generated.h"
 
-class URegionLayer;
 class URegionMap;
 class USourceData;
 class UStaticItem;

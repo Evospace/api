@@ -16,9 +16,6 @@ World and Map Generation
 .. lua:autoobject:: Region
    :members:
 
-.. lua:autoobject:: RegionLayer
-   :members:
-
 .. lua:autoobject:: RegionMap
    :members:
 
