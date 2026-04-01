@@ -32,6 +32,9 @@ class UDumpCrafterBlockLogic : public UAbstractCrafter {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventory *OutputInventory;
 
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+  UResourceInventory *FluidInputInventory;
+
   UPROPERTY()
   UResourceAccessor *acc;
 
