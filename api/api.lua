@@ -1013,6 +1013,7 @@ function FluidContainerBlockLogic.cast(object) end
 --- @field mapgen_data MapgenData undocumented
 --- @field localization string undocumented
 --- @field build_string string undocumented
+--- @field tick_rate integer target simulation ticks per second
 Game = {}
 
 --- 
@@ -1032,6 +1033,7 @@ Game = {}
 --- @field cloud boolean undocumented
 --- @field world_time number undocumented
 --- @field world_time_freeze boolean undocumented
+--- @field tick_rate integer target simulation ticks per second
 GameSessionData = {}
 
 --- Creates a new GameSessionData instance

@@ -17,6 +17,7 @@
 #include "Editor.h"
 #endif
 
+#include "Public/GameSessionSubsystem.h"
 #include "MainGameInstance.generated.h"
 
 class UEngineDataSubsystem;
@@ -70,6 +71,20 @@ class UMainGameInstance : public USteamGameInstance {
       .addStaticFunction("get_supported_resolutions", &UMainGameInstance::GetAllSupportedResolutions) //@field EngineData
       .addProperty("localization", &UMainGameInstance::GetLocalization, &UMainGameInstance::SetLocalization) //@field string
       .addProperty("build_string", &UMainGameInstance::GetBuildLuaString) //@field string
+      .addProperty(
+        "tick_rate",
+        [](const UMainGameInstance *self) -> int32 {
+          check(self);
+          auto *session = self->GetSubsystem<UGameSessionSubsystem>();
+          check(session);
+          return session->GetTickRate();
+        },
+        [](UMainGameInstance *self, int32 rate) {
+          check(self);
+          auto *session = self->GetSubsystem<UGameSessionSubsystem>();
+          check(session);
+          session->SetTickRate(rate);
+        }) //@field integer
       .endClass();
     lua_reg_detail(L);
   }

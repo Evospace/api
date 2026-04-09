@@ -51,6 +51,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   int32 GetTickRate() const;
 
+  UFUNCTION(BlueprintCallable)
+  void SetTickRate(int32 rate);
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   float GetTickDelta() const;
 

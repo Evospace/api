@@ -64,6 +64,7 @@ class UGameSessionData : public UInstance {
       .addProperty("cloud", &Self::GetCloud, &Self::SetCloud) //@field boolean
       .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number
       .addProperty("world_time_freeze", &Self::WorldTimeAutoAdvance) //@field boolean
+      .addProperty("tick_rate", &Self::TickRate) //@field integer
       .endClass();
   }
 

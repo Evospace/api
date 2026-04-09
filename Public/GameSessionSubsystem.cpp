@@ -119,6 +119,11 @@ int32 UGameSessionSubsystem::GetTickRate() const {
   return Data->TickRate;
 }
 
+void UGameSessionSubsystem::SetTickRate(int32 rate) {
+  check(Data);
+  Data->TickRate = rate;
+}
+
 int64 UGameSessionSubsystem::IncrementTicks() {
   check(Data);
   return ++Data->TotalGameTicks;
