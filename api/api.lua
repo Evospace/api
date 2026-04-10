@@ -726,7 +726,8 @@ DB = {}
 ---@return boolean was Prototype removed
  function DB:remove(proto) end
 
----Register object with class "class" and name "name" from table, filling all other properties from from table too
+---Register object with class "class" and name "name" from table, filling all other properties from from
+table too
 ---@param table table Object table
  function DB:from_table(table) end
 
@@ -819,7 +820,7 @@ Dimension = {}
 ---@param quat Quat Rotation
 ---@param staticBlock StaticBlock Block type to spawn
 ---@return BlockLogic The spawned block logic instance
- function Dimension:spawn_block(bpos, quat, staticBlock) end
+function Dimension:spawn_block(bpos, quat, staticBlock) end
 
 ---Spawn a block with full identity at the given position
 ---@param bpos Vec3i Block position
@@ -834,13 +835,13 @@ Dimension = {}
 
 ---Clear all props at the given position
 ---@param bpos Vec3i Block position
- function Dimension:clear_props(bpos) end
+function Dimension:clear_props(bpos) end
 
 ---Sample terrain height at XY in world-cell coordinates
 ---@param x number X coordinate (world cells)
 ---@param y number Y coordinate (world cells)
 ---@return number Height in cells
- function Dimension:sample_height(x, y) end
+function Dimension:sample_height(x, y) end
 
 --- 
 --- 
@@ -1436,7 +1437,7 @@ function LogicExportOption.cast(object) end
 
 --- 
 --- 
---- @class LogicNode : LogicNode
+--- @class LogicNode : Instance
 LogicNode = {}
 
 --- Creates a new LogicNode instance
@@ -2592,97 +2593,6 @@ function MapgenData.get_class() end
 --- @param object Object to cast
 --- @return MapgenData
 function MapgenData.cast(object) end
-
---- 
---- 
---- @class ModBorder : ModWidget
---- @field content ModWidget child widget
---- @field padding number Uniform padding in slate units (all sides)
-ModBorder = {}
-
---- Create a border with empty content
---- @return ModBorder
- function ModBorder.new() end
-
---- 
---- 
---- @class ModButton : ModWidget
---- @field content ModWidget child widget
-ModButton = {}
-
---- Create a button with content slot; OnClick must be a Lua function
---- @param on_click function Invoked on click
---- @return ModButton
- function ModButton.new(on_click) end
-
---- 
---- 
---- @class ModHorizontalBox : ModWidget
-ModHorizontalBox = {}
-
---- Create an empty horizontal box
---- @return ModHorizontalBox
- function ModHorizontalBox.new() end
-
---- Append a child widget (must not already be parented)
---- @param child ModWidget
- function ModHorizontalBox:add(child) end
-
---- 
---- 
---- @class ModTextBlock : ModWidget
---- @field text string Displayed UTF-8 text
-ModTextBlock = {}
-
---- Create a text label with initial UTF-8 string
---- @param text string
---- @return ModTextBlock
- function ModTextBlock.new(text) end
-
---- Set font size in slate units
---- @param size number
- function ModTextBlock:set_font_size(size) end
-
---- 
---- 
---- @class ModVerticalBox : ModWidget
-ModVerticalBox = {}
-
---- Create an empty vertical box
---- @return ModVerticalBox
- function ModVerticalBox.new() end
-
---- Append a child widget (must not already be parented)
---- @param child ModWidget
- function ModVerticalBox:add(child) end
-
---- 
---- 
---- @class ModWidget : Object
-ModWidget = {}
-
---- Debug string for print/tostring
---- @return string
- function ModWidget:__tostring() end
-
---- 
---- 
---- @class ModWindow : ModWidget
---- @field content ModWidget Single child (replaces previous when set)
---- Callable: ModWindow "title" or ModWindow { title, anchor_x?, anchor_y?, offset_x?, offset_y?, [1] = content? }.
---- anchor_x: "left"|"center"|"right"; anchor_y: "top"|"center"|"bottom"; offsets in viewport pixels from anchor.
-ModWindow = {}
-
---- Create a window (title is for API/logging only)
---- @param title string UTF-8 title
---- @return ModWindow
- function ModWindow.new(title) end
-
---- Add to viewport at Z order 0
- function ModWindow:show() end
-
---- Remove from parent (hide)
- function ModWindow:close() end
 
 --- 
 --- 
@@ -3873,4 +3783,96 @@ function WorldGenerator.get_class() end
 --- @param object Object to cast
 --- @return WorldGenerator
 function WorldGenerator.cast(object) end
+
+--- @class ui
+ui = ui or {}
+
+--- 
+--- 
+--- @class ui.Widget : Object
+ui.Widget = {}
+
+--- Debug string for print/tostring
+--- @return string
+ function ui.Widget:__tostring() end
+
+--- 
+--- 
+--- @class ui.Border : ui.Widget
+--- @field content ui.Widget child widget
+--- @field padding number Uniform padding in slate units (all sides)
+ui.Border = {}
+
+--- Create a border with empty content
+--- @return ui.Border
+ function ui.Border.new() end
+
+--- 
+--- 
+--- @class ui.Button : ui.Widget
+--- @field content ui.Widget child widget
+ui.Button = {}
+
+--- Create a button with content slot; OnClick must be a Lua function
+--- @param on_click function Invoked on click
+--- @return ui.Button
+ function ui.Button.new(on_click) end
+
+--- 
+--- 
+--- @class ui.HBox : ui.Widget
+ui.HBox = {}
+
+--- Create an empty horizontal box
+--- @return ui.HBox
+ function ui.HBox.new() end
+
+--- Append a child widget (must not already be parented)
+--- @param child ui.Widget
+ function ui.HBox:add(child) end
+
+--- 
+--- 
+--- @class ui.Text : ui.Widget
+--- @field text string Displayed UTF-8 text
+ui.Text = {}
+
+--- Create a text label with initial UTF-8 string
+--- @param text string
+--- @return ui.Text
+ function ui.Text.new(text) end
+
+--- Set font size in slate units
+--- @param size number
+ function ui.Text:set_font_size(size) end
+
+--- 
+--- 
+--- @class ui.VBox : ui.Widget
+ui.VBox = {}
+
+--- Create an empty vertical box
+--- @return ui.VBox
+ function ui.VBox.new() end
+
+--- Append a child widget (must not already be parented)
+--- @param child ui.Widget
+ function ui.VBox:add(child) end
+
+--- 
+--- 
+--- @class ui.Window : ui.Widget
+--- @field content ui.Widget Single child (replaces previous when set)
+ui.Window = {}
+
+--- Create a window (title is for API/logging only)
+--- @param title string UTF-8 title
+--- @return ui.Window
+ function ui.Window.new(title) end
+
+--- Add to viewport at Z order 0
+ function ui.Window:show() end
+
+--- Remove from parent (hide)
+ function ui.Window:close() end
 
