@@ -363,20 +363,9 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 };
 
 UCLASS()
-class UHeatConductorBlockLogic : public UConductorBlockLogic {
-  GENERATED_BODY()
-  public:
-  UHeatConductorBlockLogic();
-
-  virtual int32 GetChannel() const override { return 3000; }
-};
-
-UCLASS()
 class UDataConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
   public:
-  UDataConductorBlockLogic();
-
   virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   virtual bool IsDataNetwork() const override { return true; }
@@ -385,23 +374,10 @@ class UDataConductorBlockLogic : public UConductorBlockLogic {
 };
 
 UCLASS()
-class UPlasmaConductorBlockLogic : public UHeatConductorBlockLogic {
-  GENERATED_BODY()
-  public:
-  UPlasmaConductorBlockLogic();
-
-  virtual int32 GetChannel() const override { return 5000; }
-};
-
-UCLASS()
 class UKineticConductorBlockLogic : public UConductorBlockLogic {
   GENERATED_BODY()
 
   public:
-  UKineticConductorBlockLogic();
-
-  virtual int32 GetChannel() const override { return 4000; }
-
   virtual bool IsBlockTicks() const override;
 };
 
