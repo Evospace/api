@@ -3789,15 +3789,6 @@ ui = ui or {}
 
 --- 
 --- 
---- @class ui.Widget : Object
-ui.Widget = {}
-
---- Debug string for print/tostring
---- @return string
- function ui.Widget:__tostring() end
-
---- 
---- 
 --- @class ui.Border : ui.Widget
 --- @field content ui.Widget child widget
 --- @field padding number Uniform padding in slate units (all sides)
@@ -3858,6 +3849,15 @@ ui.VBox = {}
 --- Append a child widget (must not already be parented)
 --- @param child ui.Widget
  function ui.VBox:add(child) end
+
+--- 
+--- 
+--- @class ui.Widget : Object
+ui.Widget = {}
+
+--- Debug string for print/tostring
+--- @return string
+ function ui.Widget:__tostring() end
 
 --- 
 --- 

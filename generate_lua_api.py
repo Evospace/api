@@ -136,29 +136,11 @@ def generate_lua_stub_file(output_file, annotations):
     print(f"Lua stub file written to: {output_file}")
 
 
-def _sorted_annotations(annotations):
-    """Mostly alphabetical; ui.* namespaced stubs last, with ui.Widget before derived types."""
-
-    def sort_key(item):
-        key, _val = item
-        ui_order = ("ui.Widget", "ui.Border", "ui.Button", "ui.HBox", "ui.Text", "ui.VBox", "ui.Window")
-        if key.startswith("ui."):
-            try:
-                idx = ui_order.index(key)
-            except ValueError:
-                idx = 99
-            # Sort after other keys (e.g. WorldGenerator): tuple compare uses Z-prefix.
-            return ("\uffff.ui", idx, key)
-        return (key,)
-
-    return dict(sorted(annotations.items(), key=sort_key))
-
-
 if __name__ == "__main__":
     api_folder = "./Source/Evospace/Shared/"
     output_file = "./Source/Evospace/Shared/api/api.lua"
     print("Starting Lua stub generation...")
     annotations = parse_api_files(api_folder)
-    annotations = _sorted_annotations(annotations)
+    annotations = dict(sorted(annotations.items()))
     generate_lua_stub_file(output_file, annotations)
     print(f"Lua stub file generated at: {output_file}")
