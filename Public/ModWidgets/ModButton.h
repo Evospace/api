@@ -6,16 +6,15 @@
 #include "ThirdParty/luabridge/LuaBridge.h"
 
 #include <optional>
-#include <string_view>
 
 #include "Components/Button.h"
 
 #include "ModButton.generated.h"
 
-class UTextBlock;
+class UTexture2D;
 
 /**
- * Simple text button that invokes a Lua function on click.
+ * Clickable button with a single mod-widget content slot.
  */
 UCLASS()
 class UModButton : public UModWidget {
@@ -25,14 +24,18 @@ class UModButton : public UModWidget {
   virtual void NativePreConstruct() override;
   virtual void BeginDestroy() override;
 
-  void SetLabelText(const FText &NewLabel);
+  UModWidget *GetModChild() const;
+  void SetModChild(UModWidget *Child);
 
   UFUNCTION()
   void HandleClicked();
 
   std::optional<luabridge::LuaRef> OnClick;
 
-  static UModButton *LuaNew(std::string_view LabelUtf8, const luabridge::LuaRef &OnClickRef);
+  static UModButton *LuaNew(const luabridge::LuaRef &OnClickRef);
+
+  /** @callstyle ModButton(fn) or ModButton { on_click = fn, ModWidget child at [1] } */
+  static int LuaBuildFromTable(lua_State *L);
 
   static void LuaRegister(lua_State *L) {
     using namespace luabridge;
@@ -40,12 +43,12 @@ class UModButton : public UModWidget {
     getGlobalNamespace(L)
       .deriveClass<UModButton, UModWidget>("ModButton") //@class ModButton : ModWidget
       // direct:
-      //--- Create a label button; OnClick must be a Lua function
-      //--- @param label string UTF-8 label text
+      //--- Create a button with content slot; OnClick must be a Lua function
       //--- @param on_click function Invoked on click
       //--- @return ModButton
-      // function ModButton.new(label, on_click) end
+      // function ModButton.new(on_click) end
       .addStaticFunction("new", &UModButton::LuaNew)
+      .addProperty("content", &UModButton::GetModChild, &UModButton::SetModChild) //@field ModWidget child widget
       .endClass();
     // clang-format on
   }
@@ -54,8 +57,11 @@ class UModButton : public UModWidget {
   void EnsureWidgetTree();
 
   UPROPERTY()
-  TObjectPtr<UTextBlock> LabelTextBlock;
+  TObjectPtr<UButton> ButtonWidget;
 
   UPROPERTY()
-  TObjectPtr<UButton> ButtonWidget;
+  TObjectPtr<UTexture2D> DefaultButtonHighlightTexture;
+
+  UPROPERTY()
+  TObjectPtr<UTexture2D> DefaultButtonHighlightFillTexture;
 };

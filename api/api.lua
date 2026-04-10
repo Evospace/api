@@ -726,8 +726,7 @@ DB = {}
 ---@return boolean was Prototype removed
  function DB:remove(proto) end
 
----Register object with class "class" and name "name" from table, filling all other properties from from
-table too
+---Register object with class "class" and name "name" from table, filling all other properties from from table too
 ---@param table table Object table
  function DB:from_table(table) end
 
@@ -841,7 +840,7 @@ Dimension = {}
 ---@param x number X coordinate (world cells)
 ---@param y number Y coordinate (world cells)
 ---@return number Height in cells
-.function Dimension:sample_height(x, y) end
+ function Dimension:sample_height(x, y) end
 
 --- 
 --- 
@@ -2598,26 +2597,23 @@ function MapgenData.cast(object) end
 --- 
 --- @class ModBorder : ModWidget
 --- @field content ModWidget child widget
+--- @field padding number Uniform padding in slate units (all sides)
 ModBorder = {}
 
 --- Create a border with empty content
 --- @return ModBorder
  function ModBorder.new() end
 
---- Uniform padding on all sides
---- @param uniform number Padding in slate units
- function ModBorder:set_padding(uniform) end
-
 --- 
 --- 
 --- @class ModButton : ModWidget
+--- @field content ModWidget child widget
 ModButton = {}
 
---- Create a label button; OnClick must be a Lua function
---- @param label string UTF-8 label text
+--- Create a button with content slot; OnClick must be a Lua function
 --- @param on_click function Invoked on click
 --- @return ModButton
- function ModButton.new(label, on_click) end
+ function ModButton.new(on_click) end
 
 --- 
 --- 
@@ -2635,6 +2631,7 @@ ModHorizontalBox = {}
 --- 
 --- 
 --- @class ModTextBlock : ModWidget
+--- @field text string Displayed UTF-8 text
 ModTextBlock = {}
 
 --- Create a text label with initial UTF-8 string
@@ -2642,9 +2639,9 @@ ModTextBlock = {}
 --- @return ModTextBlock
  function ModTextBlock.new(text) end
 
---- Set displayed text (UTF-8)
---- @param text string
- function ModTextBlock:set_text(text) end
+--- Set font size in slate units
+--- @param size number
+ function ModTextBlock:set_font_size(size) end
 
 --- 
 --- 
@@ -2671,16 +2668,15 @@ ModWidget = {}
 --- 
 --- 
 --- @class ModWindow : ModWidget
+--- @field content ModWidget Single child (replaces previous when set)
+--- Callable: ModWindow "title" or ModWindow { title, anchor_x?, anchor_y?, offset_x?, offset_y?, [1] = content? }.
+--- anchor_x: "left"|"center"|"right"; anchor_y: "top"|"center"|"bottom"; offsets in viewport pixels from anchor.
 ModWindow = {}
 
 --- Create a window (title is for API/logging only)
 --- @param title string UTF-8 title
 --- @return ModWindow
  function ModWindow.new(title) end
-
---- Set single child content (replaces previous)
---- @param content ModWidget
- function ModWindow:set_content(content) end
 
 --- Add to viewport at Z order 0
  function ModWindow:show() end

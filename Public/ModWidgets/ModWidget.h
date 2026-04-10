@@ -19,6 +19,9 @@ class UModWidget : public UUserWidget {
   public:
   std::string ToString() const { return TCHAR_TO_UTF8(*("(ModWidget: " + GetName() + ")")); }
 
+  /** Expects a Lua stack index pointing to a userdata bound as ModWidget; errors if wrong type. */
+  static UModWidget *GetChildFromStack(lua_State *L, int Idx);
+
   static void LuaRegister(lua_State *L) {
     using namespace luabridge;
     // clang-format off

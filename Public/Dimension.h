@@ -66,7 +66,7 @@ class ADimension : public AActor {
       //---@param quat Quat Rotation
       //---@param staticBlock StaticBlock Block type to spawn
       //---@return BlockLogic The spawned block logic instance
-      // function Dimension:spawn_block(bpos, quat, staticBlock) end
+      //function Dimension:spawn_block(bpos, quat, staticBlock) end
       .addFunction("spawn_block", &ADimension::LuaSpawnBlockLogic)
       // direct:
       //---Spawn a block with full identity at the given position
@@ -84,14 +84,14 @@ class ADimension : public AActor {
       // direct:
       //---Clear all props at the given position
       //---@param bpos Vec3i Block position
-      // function Dimension:clear_props(bpos) end
+      //function Dimension:clear_props(bpos) end
       .addFunction("clear_props", &ADimension::LuaCleanProps)
       // direct:
       //---Sample terrain height at XY in world-cell coordinates
       //---@param x number X coordinate (world cells)
       //---@param y number Y coordinate (world cells)
       //---@return number Height in cells
-      //.function Dimension:sample_height(x, y) end
+      //function Dimension:sample_height(x, y) end
       .addFunction("sample_height", &ADimension::LuaSampleHeight)
       .endClass();
   }

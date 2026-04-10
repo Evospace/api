@@ -16,13 +16,5 @@ struct lua_State;
  */
 class UModWidgetLibrary {
   public:
-  static void lua_reg(lua_State *L) {
-    UModWidget::LuaRegister(L);
-    UModButton::LuaRegister(L);
-    UModHorizontalBox::LuaRegister(L);
-    UModBorder::LuaRegister(L);
-    UModTextBlock::LuaRegister(L);
-    UModVerticalBox::LuaRegister(L);
-    UModWindow::LuaRegister(L);
-  }
+  static void lua_reg(lua_State *L);
 };

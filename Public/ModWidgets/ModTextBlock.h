@@ -5,6 +5,7 @@
 #include "Public/ModWidgets/ModWidget.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
 
+#include <string>
 #include <string_view>
 
 #include "ModTextBlock.generated.h"
@@ -12,7 +13,7 @@
 class UTextBlock;
 
 /**
- * Read-only text label for mod UI.
+ * Text label for mod UI.
  */
 UCLASS()
 class UModTextBlock : public UModWidget {
@@ -21,9 +22,14 @@ class UModTextBlock : public UModWidget {
   public:
   virtual void NativePreConstruct() override;
 
+  std::string GetTextUtf8() const;
   void SetTextUtf8(std::string_view TextUtf8);
+  void SetFontSize(float NewSize);
 
   static UModTextBlock *LuaNew(std::string_view InitialUtf8);
+
+  /** @callstyle ModTextBlock "text" or ModTextBlock { text = "...", font_size = n? } */
+  static int LuaBuildFromTable(lua_State *L);
 
   static void LuaRegister(lua_State *L) {
     using namespace luabridge;
@@ -36,11 +42,12 @@ class UModTextBlock : public UModWidget {
       //--- @return ModTextBlock
       // function ModTextBlock.new(text) end
       .addStaticFunction("new", &UModTextBlock::LuaNew)
+      .addProperty("text", &UModTextBlock::GetTextUtf8, &UModTextBlock::SetTextUtf8) //@field string Displayed UTF-8 text
       // direct:
-      //--- Set displayed text (UTF-8)
-      //--- @param text string
-      // function ModTextBlock:set_text(text) end
-      .addFunction("set_text", &UModTextBlock::SetTextUtf8)
+      //--- Set font size in slate units
+      //--- @param size number
+      // function ModTextBlock:set_font_size(size) end
+      .addFunction("set_font_size", &UModTextBlock::SetFontSize)
       .endClass();
     // clang-format on
   }
@@ -50,4 +57,7 @@ class UModTextBlock : public UModWidget {
 
   UPROPERTY()
   TObjectPtr<UTextBlock> TextWidget;
+
+  UPROPERTY()
+  float FontSize = 14.f;
 };

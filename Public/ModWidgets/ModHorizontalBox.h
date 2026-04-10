@@ -23,6 +23,9 @@ class UModHorizontalBox : public UModWidget {
 
   static UModHorizontalBox *LuaNew();
 
+  /** @callstyle ModHorizontalBox { child1, child2, ... } or ModHorizontalBox() */
+  static int LuaBuildFromTable(lua_State *L);
+
   static void LuaRegister(lua_State *L) {
     using namespace luabridge;
     // clang-format off

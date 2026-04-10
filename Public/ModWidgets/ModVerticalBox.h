@@ -23,6 +23,9 @@ class UModVerticalBox : public UModWidget {
 
   static UModVerticalBox *LuaNew();
 
+  /** @callstyle ModVerticalBox { child1, child2, ... } or ModVerticalBox() */
+  static int LuaBuildFromTable(lua_State *L);
+
   static void LuaRegister(lua_State *L) {
     using namespace luabridge;
     // clang-format off
