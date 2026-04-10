@@ -34,7 +34,7 @@ class UAutoCrafter : public USelectCrafter {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  void PrepareInventories() const;
+  void PrepareInventories();
 
   virtual void BlockBeginPlay() override;
 
