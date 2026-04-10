@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Evospace/World/BlockCell.h"
-#include "StaticLogger.h"
+#include "Qr/StaticLogger.h"
 #include "Evospace/World/SectorTools.h"
 #include "Evospace/World/Tesselator.h"
 #include "SectorProxy.generated.h"
@@ -35,8 +35,8 @@ class USectorProxy : public UObject {
 
   void SetRenderDirty(IndexType index);
 
-  FVector3i GetPivotPos() const { return PivotPos; }
-  void SetProxyData(FVector3i value, AColumn *actor) {
+  FQrVector3i GetPivotPos() const { return PivotPos; }
+  void SetProxyData(FQrVector3i value, AColumn *actor) {
     PivotPos = value;
     owner = actor;
   }
@@ -62,11 +62,11 @@ class USectorProxy : public UObject {
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 
-  virtual void ClearBlockProps(const FVector3i &bpos, bool only_small);
-  virtual void ClearBlockPropsDrop(const FVector3i &bpos, bool only_small);
+  virtual void ClearBlockProps(const FQrVector3i &bpos, bool only_small);
+  virtual void ClearBlockPropsDrop(const FQrVector3i &bpos, bool only_small);
 
   // New: clear near actor decorations by distance
-  virtual void ClearNearActors(const FVector3i &bpos, float radius);
+  virtual void ClearNearActors(const FQrVector3i &bpos, float radius);
 
   AColumn *GetColumn() const { return owner; }
 
@@ -74,7 +74,7 @@ class USectorProxy : public UObject {
   AColumn *owner = nullptr;
 
   UPROPERTY(VisibleAnywhere)
-  FVector3i PivotPos = {};
+  FQrVector3i PivotPos = {};
 
   UPROPERTY(VisibleAnywhere)
   bool Dirty = false;

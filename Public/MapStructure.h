@@ -10,7 +10,7 @@ struct FMapStructure {
   GENERATED_BODY()
 
   UPROPERTY(VisibleAnywhere)
-  FVector2i Offset;
+  FQrVector2i Offset;
 
   UPROPERTY(VisibleAnywhere)
   UStaticStructure *Structure;

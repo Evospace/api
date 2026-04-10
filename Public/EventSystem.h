@@ -52,8 +52,8 @@ class EventSystem {
   using EventHandler = TFunction<void(luabridge::LuaRef)>;
   using HandlerID = int;
 
-  static EventSystem &GetInstance();
-  void Release();
+  static EventSystem &get();
+  void lua_cleanup();
   lua_State *L() const;
 
   HandlerID Sub(int event, luabridge::LuaRef func);
@@ -95,8 +95,8 @@ class EventSystem {
         //direct:
         //--- Get global instance of EventSystem
         //--- @return EventSystem
-        //function EventSystem.get_instance() end
-        .addStaticFunction("get_instance", &EventSystem::GetInstance)
+        //function EventSystem.get() end
+        .addStaticFunction("get", &EventSystem::get)
         //direct:
         //--- Subscribe
         //--- @param event integer Event id

@@ -11,7 +11,7 @@ THIRD_PARTY_INCLUDES_START
 #pragma warning( disable : 4800 )
 #pragma warning( disable : 4083 )
 
-#include "../../StaticLogger.h"
+#include "../../Qr/StaticLogger.h"
 
 #include "../lua/lua.hpp"
 
@@ -324,7 +324,7 @@ void throw_or_assert(Args&&... args)
 #if LUABRIDGE_HAS_EXCEPTIONS
     throw T(std::forward<Args>(args)...);
 #else
-    ((LOG(ERROR_LL) << UTF8_TO_TCHAR(args)), ...);
+    ((LOG_ERROR() << UTF8_TO_TCHAR(args)), ...);
 #endif
 }
 

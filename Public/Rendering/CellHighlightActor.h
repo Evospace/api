@@ -25,10 +25,10 @@ class ACellHighlightActor : public AActor {
   ACellHighlightActor();
 
   UFUNCTION(BlueprintCallable, Category = "Cell Highlight")
-  void SetRelativeCells(const TArray<FVector3i> &Cells);
+  void SetRelativeCells(const TArray<FQrVector3i> &Cells);
 
   UFUNCTION(BlueprintCallable, Category = "Cell Highlight")
-  void SetAbsoluteCells(const TArray<FVector3i> &Cells);
+  void SetAbsoluteCells(const TArray<FQrVector3i> &Cells);
 
   UFUNCTION(BlueprintCallable, Category = "Cell Highlight")
   void UseAbsoluteCoordinates(bool bEnable);
@@ -55,8 +55,8 @@ class ACellHighlightActor : public AActor {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cell Highlight", meta = (AllowPrivateAccess = "true"))
   UInstancedStaticMeshComponent *CellInstances;
 
-  TArray<FVector3i> RelativeCells;
-  TArray<FVector3i> AbsoluteCells;
+  TArray<FQrVector3i> RelativeCells;
+  TArray<FQrVector3i> AbsoluteCells;
   bool UseAbsoluteCoordinatesFlag = false;
   FLinearColor HighlightColor = FLinearColor(0.0f, 1.0f, 0.0f, 1.0f);
 

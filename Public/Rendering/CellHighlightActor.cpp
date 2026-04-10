@@ -20,7 +20,7 @@ ACellHighlightActor::ACellHighlightActor() {
   SetRootComponent(CellInstances);
 
   SetActorEnableCollision(false);
-  RelativeCells.Add(FVector3i::Zero());
+  RelativeCells.Add(FQrVector3i::Zero());
 }
 
 void ACellHighlightActor::Tick(float DeltaSeconds) {
@@ -28,13 +28,13 @@ void ACellHighlightActor::Tick(float DeltaSeconds) {
   RebuildCells();
 }
 
-void ACellHighlightActor::SetRelativeCells(const TArray<FVector3i> &Cells) {
+void ACellHighlightActor::SetRelativeCells(const TArray<FQrVector3i> &Cells) {
   RelativeCells = Cells;
   UseAbsoluteCoordinatesFlag = false;
   ForceRebuild();
 }
 
-void ACellHighlightActor::SetAbsoluteCells(const TArray<FVector3i> &Cells) {
+void ACellHighlightActor::SetAbsoluteCells(const TArray<FQrVector3i> &Cells) {
   AbsoluteCells = Cells;
   UseAbsoluteCoordinatesFlag = true;
   ForceRebuild();
@@ -98,7 +98,7 @@ void ACellHighlightActor::RebuildCells() {
     return;
   }
 
-  const TArray<FVector3i> &SourceCells = UseAbsoluteCoordinatesFlag ? AbsoluteCells : RelativeCells;
+  const TArray<FQrVector3i> &SourceCells = UseAbsoluteCoordinatesFlag ? AbsoluteCells : RelativeCells;
   if (SourceCells.IsEmpty()) {
     if (NeedsFullRebuild && CellInstances->GetInstanceCount() > 0) {
       CellInstances->ClearInstances();
@@ -120,12 +120,12 @@ void ACellHighlightActor::RebuildCells() {
 
   const FQuat ReferenceRotation = ReferenceActor ? ReferenceActor->GetActorQuat() : FQuat::Identity;
   const FVector ReferenceLocation = ReferenceActor ? ReferenceActor->GetActorLocation() : FVector::ZeroVector;
-  const FVector3i PivotWB = UseAbsoluteCoordinatesFlag ? FVector3i::Zero() : cs::WtoWB(ReferenceLocation);
+  const FQrVector3i PivotWB = UseAbsoluteCoordinatesFlag ? FQrVector3i::Zero() : cs::WtoWB(ReferenceLocation);
 
   TArray<FTransform> InstanceTransforms;
   InstanceTransforms.Reserve(SourceCells.Num());
-  for (const FVector3i &Cell : SourceCells) {
-    FVector3i WorldCell = Cell;
+  for (const FQrVector3i &Cell : SourceCells) {
+    FQrVector3i WorldCell = Cell;
     if (!UseAbsoluteCoordinatesFlag) {
       const FVector Rotated = ReferenceRotation.RotateVector(Cell.vec());
       WorldCell = PivotWB + RoundToInt(Rotated);

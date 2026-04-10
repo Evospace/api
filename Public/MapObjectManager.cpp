@@ -50,8 +50,8 @@ void UMapObjectManager::ReportBuilt(UBlockLogic *Block) {
     return;
   auto sd = Block->GetDim()->SurfaceDefinition;
 
-  const FVector3i wb = Block->GetWorldPosition();
-  const FVector2i grid = URegionMap::WorldBlockToGrid(wb);
+  const FQrVector3i wb = Block->GetWorldPosition();
+  const FQrVector2i grid = URegionMap::WorldBlockToGrid(wb);
   UEvoRegion *region = sd->RegionMap->FindRegion(grid);
   if (!region)
     return;

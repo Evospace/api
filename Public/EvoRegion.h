@@ -50,7 +50,7 @@ class UEvoRegion : public UInstance {
   UMaterialInstanceDynamic *Material;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FVector2i Position;
+  FQrVector2i Position;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static UTexture2D *GetFastnoiseTexture(UPARAM(ref) const TArray<float> &array, bool smooth = false);

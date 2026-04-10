@@ -86,7 +86,7 @@ class UBlockLogic : public UInstance {
 
   // Rotation and placement
   virtual Vec3i GetRotationLocks() const;
-  virtual bool CheckPlaceable(ADimension *dim, FVector3i pos);
+  virtual bool CheckPlaceable(ADimension *dim, FQrVector3i pos);
   virtual void CopyOnReplace(UBlockLogic *from);
 
   // Recipe selection
@@ -109,7 +109,7 @@ class UBlockLogic : public UInstance {
   FTransform GetTransform() const;
   FVector GetLocation() const;
   UFUNCTION(BlueprintCallable)
-  FVector3i GetWorldPosition() const;
+  FQrVector3i GetWorldPosition() const;
 
   // Initialization and ownership
   void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, ADimension *dim);
@@ -121,7 +121,7 @@ class UBlockLogic : public UInstance {
   UAccessor *GetAccessor(const std::string &name);
   UAccessor *GetSideAccessor(UClass *type, Vec3i side, Vec3i pos);
   template <class Ty_>
-  Ty_ *GetSideAccessor(FVector3i side, FVector3i pos) {
+  Ty_ *GetSideAccessor(FQrVector3i side, FQrVector3i pos) {
     return Cast<Ty_>(GetSideAccessor(Ty_::StaticClass(), side, pos));
   }
   template <typename Ty_>
@@ -224,7 +224,7 @@ class UBlockLogic : public UInstance {
   TMap<const UStaticCover *, UHierarchicalInstancedStaticMeshComponent *> mAccessorCover;
 
   UPROPERTY(VisibleAnywhere)
-  FVector3i mPos = {};
+  FQrVector3i mPos = {};
 
   UPROPERTY(VisibleAnywhere)
   FQuat mQuat = FQuat(EForceInit::ForceInitToZero);

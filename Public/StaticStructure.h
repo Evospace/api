@@ -21,7 +21,7 @@ class UStaticStructure : public UPrototype {
   std::optional<luabridge::LuaRef> Generate;
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-  FVector2i mSize;
+  FQrVector2i mSize;
 
   virtual void Release() override;
 };

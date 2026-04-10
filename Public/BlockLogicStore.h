@@ -12,7 +12,7 @@ struct FBlockLogicStore {
   UPROPERTY(BlueprintType, VisibleAnywhere)
   TArray<UBlockLogic *> Blocks;
 
-  TMap<FVector3i, int32> IndexMap;
+  TMap<FQrVector3i, int32> IndexMap;
 
   bool Flip = false;
 
@@ -22,16 +22,16 @@ struct FBlockLogicStore {
     IndexMap.Empty();
   }
 
-  bool Contains(const FVector3i &Pos) const { return IndexMap.Contains(Pos); }
+  bool Contains(const FQrVector3i &Pos) const { return IndexMap.Contains(Pos); }
 
-  UBlockLogic *Find(const FVector3i &Pos) const {
+  UBlockLogic *Find(const FQrVector3i &Pos) const {
     if (const int32 *Index = IndexMap.Find(Pos)) {
       return Blocks.IsValidIndex(*Index) ? Blocks[*Index] : nullptr;
     }
     return nullptr;
   }
 
-  UBlockLogic *Add(const FVector3i &Pos, UBlockLogic *Logic) {
+  UBlockLogic *Add(const FQrVector3i &Pos, UBlockLogic *Logic) {
     if (!Logic || IndexMap.Contains(Pos)) {
       return nullptr;
     }
@@ -42,7 +42,7 @@ struct FBlockLogicStore {
     return Logic;
   }
 
-  bool Remove(const FVector3i &Pos) {
+  bool Remove(const FQrVector3i &Pos) {
     int32 *IndexPtr = IndexMap.Find(Pos);
     if (!IndexPtr)
       return false;
@@ -54,7 +54,7 @@ struct FBlockLogicStore {
       UBlockLogic *LastBlock = Blocks[LastIndex];
       Blocks[IndexToRemove] = LastBlock;
 
-      FVector3i LastPos;
+      FQrVector3i LastPos;
       for (const auto &Pair : IndexMap) {
         if (Pair.Value == LastIndex) {
           LastPos = Pair.Key;

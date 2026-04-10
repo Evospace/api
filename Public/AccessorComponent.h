@@ -71,10 +71,10 @@ class UAccessor : public UInstance {
 
   protected:
   UPROPERTY(VisibleAnywhere)
-  FVector3i Pos;
+  FQrVector3i Pos;
 
   UPROPERTY(VisibleAnywhere)
-  FVector3i Side;
+  FQrVector3i Side;
 
   private:
   // Cached neighbor accessor of the same class as this accessor

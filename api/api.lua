@@ -940,6 +940,11 @@ function ElectricityContainerBlockLogic.cast(object) end
 --- @field reflection_preset integer undocumented
 --- @field transparency_preset integer undocumented
 --- @field gi_preset integer undocumented
+--- @field limit_texture_pool_to_vram boolean undocumented
+--- @field texture_pool_size_mb integer undocumented
+--- @field texture_max_temp_memory_mb integer undocumented
+--- @field texture_mip_bias number undocumented
+--- @field render_target_pool_min_mb integer undocumented
 --- @field detail_shadows boolean undocumented
 --- @field fps integer undocumented
 --- @field res_x integer undocumented
@@ -1013,7 +1018,6 @@ function FluidContainerBlockLogic.cast(object) end
 --- @field mapgen_data MapgenData undocumented
 --- @field localization string undocumented
 --- @field build_string string undocumented
---- @field tick_rate integer target simulation ticks per second
 Game = {}
 
 --- 
@@ -1033,7 +1037,7 @@ Game = {}
 --- @field cloud boolean undocumented
 --- @field world_time number undocumented
 --- @field world_time_freeze boolean undocumented
---- @field tick_rate integer target simulation ticks per second
+--- @field tick_rate integer undocumented
 GameSessionData = {}
 
 --- Creates a new GameSessionData instance
@@ -2592,6 +2596,100 @@ function MapgenData.cast(object) end
 
 --- 
 --- 
+--- @class ModBorder : ModWidget
+--- @field content ModWidget child widget
+ModBorder = {}
+
+--- Create a border with empty content
+--- @return ModBorder
+ function ModBorder.new() end
+
+--- Uniform padding on all sides
+--- @param uniform number Padding in slate units
+ function ModBorder:set_padding(uniform) end
+
+--- 
+--- 
+--- @class ModButton : ModWidget
+ModButton = {}
+
+--- Create a label button; OnClick must be a Lua function
+--- @param label string UTF-8 label text
+--- @param on_click function Invoked on click
+--- @return ModButton
+ function ModButton.new(label, on_click) end
+
+--- 
+--- 
+--- @class ModHorizontalBox : ModWidget
+ModHorizontalBox = {}
+
+--- Create an empty horizontal box
+--- @return ModHorizontalBox
+ function ModHorizontalBox.new() end
+
+--- Append a child widget (must not already be parented)
+--- @param child ModWidget
+ function ModHorizontalBox:add(child) end
+
+--- 
+--- 
+--- @class ModTextBlock : ModWidget
+ModTextBlock = {}
+
+--- Create a text label with initial UTF-8 string
+--- @param text string
+--- @return ModTextBlock
+ function ModTextBlock.new(text) end
+
+--- Set displayed text (UTF-8)
+--- @param text string
+ function ModTextBlock:set_text(text) end
+
+--- 
+--- 
+--- @class ModVerticalBox : ModWidget
+ModVerticalBox = {}
+
+--- Create an empty vertical box
+--- @return ModVerticalBox
+ function ModVerticalBox.new() end
+
+--- Append a child widget (must not already be parented)
+--- @param child ModWidget
+ function ModVerticalBox:add(child) end
+
+--- 
+--- 
+--- @class ModWidget : Object
+ModWidget = {}
+
+--- Debug string for print/tostring
+--- @return string
+ function ModWidget:__tostring() end
+
+--- 
+--- 
+--- @class ModWindow : ModWidget
+ModWindow = {}
+
+--- Create a window (title is for API/logging only)
+--- @param title string UTF-8 title
+--- @return ModWindow
+ function ModWindow.new(title) end
+
+--- Set single child content (replaces previous)
+--- @param content ModWidget
+ function ModWindow:set_content(content) end
+
+--- Add to viewport at Z order 0
+ function ModWindow:show() end
+
+--- Remove from parent (hide)
+ function ModWindow:close() end
+
+--- 
+--- 
 --- @class NoiseGenerator : Prototype
 --- @field min number undocumented
 --- @field max number undocumented
@@ -2938,11 +3036,6 @@ RegionMap = {}
 ---@param spos Vec2i position in RegionMap grid
 ---@return Region
  function RegionMap:find_region(spos) end
-
----Looking for SourceData near given location in world blocks
----@param wbpos Vec3i position in Dimension grid
----@return SourceData
- function RegionMap:find_source(wbpos) end
 
 ---Is region exists
 ---@param pos Vec2i region position
@@ -3559,6 +3652,8 @@ function StaticResearchEfficiency.cast(object) end
 --- 
 --- 
 --- @class StaticResearchModifier : StaticResearch
+--- @field modifier StaticModifier undocumented
+--- @field bonus_value integer undocumented
 StaticResearchModifier = {}
 
 --- Register a new StaticResearchModifier static object

@@ -267,7 +267,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   int32 mIndex;
 
-  bool CheckPlaceable(ADimension *dim, FVector3i pos) override;
+  bool CheckPlaceable(ADimension *dim, FQrVector3i pos) override;
 
   protected:
   virtual void BlockBeginPlay() override;

@@ -28,7 +28,7 @@ class UUserMapMarker : public UObject {
 
   public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FVector2i Position;
+  FQrVector2i Position;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Label;
@@ -74,7 +74,7 @@ class URegionMap : public UInstance {
       //---@return boolean
       // function RegionMap:has_region(pos) end
       .addFunction("has_region",
-                   [](URegionMap &self, const FVector2i &pos) { return self.FindRegion(pos) != nullptr; })
+                   [](URegionMap &self, const FQrVector2i &pos) { return self.FindRegion(pos) != nullptr; })
       // direct:
       //---Convert Block World position to RegionMap grid cell that contains this position
       //---@param bpos Vec3i
@@ -88,7 +88,7 @@ class URegionMap : public UInstance {
   static constexpr int32 gridSize = 256;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TMap<FVector2i, UEvoRegion *> Regions;
+  TMap<FQrVector2i, UEvoRegion *> Regions;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UOreGenerator *OreGenerator;
@@ -115,25 +115,25 @@ class URegionMap : public UInstance {
   USourceData *WaterSource;
 
   UFUNCTION(BlueprintCallable)
-  static FVector2i SectorToGrid(const FVector2i &pos);
+  static FQrVector2i SectorToGrid(const FQrVector2i &pos);
 
   UFUNCTION(BlueprintCallable)
-  static FVector2i WorldBlockToGrid(const FVector3i &pos);
+  static FQrVector2i WorldBlockToGrid(const FQrVector3i &pos);
 
   UFUNCTION(BlueprintCallable)
-  static FVector2i WorldBlockToSubregion(const FVector3i &pos);
+  static FQrVector2i WorldBlockToSubregion(const FQrVector3i &pos);
 
   USourceData *FindSource(const Vec3i &wbpos, EStaticItemType AllowedItemType);
 
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *GetRegion(const FVector2i &region_pos);
+  UEvoRegion *GetRegion(const FQrVector2i &region_pos);
 
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *FindRegion(const FVector2i &grid);
+  UEvoRegion *FindRegion(const FQrVector2i &grid);
 
   UFUNCTION(BlueprintCallable)
-  UEvoRegion *FindRegionAt(const FVector3i &position);
-  UEvoRegion *GetRegionAt(const FVector3i &position);
+  UEvoRegion *FindRegionAt(const FQrVector3i &position);
+  UEvoRegion *GetRegionAt(const FQrVector3i &position);
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -142,14 +142,14 @@ class URegionMap : public UInstance {
 
   // User marker API
   UFUNCTION(BlueprintCallable)
-  UUserMapMarker *AddMarker(const FVector2i &Position, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem);
+  UUserMapMarker *AddMarker(const FQrVector2i &Position, const FString &Label, const FLinearColor &Color, UStaticItem *IconItem);
 
   UFUNCTION(BlueprintCallable)
   bool UpdateMarker(UUserMapMarker *Marker,
                     const FString &Label,
                     const FLinearColor &Color,
                     UStaticItem *IconItem,
-                    const FVector2i &Position);
+                    const FQrVector2i &Position);
 
   UFUNCTION(BlueprintCallable)
   bool RemoveMarker(UUserMapMarker *Marker);

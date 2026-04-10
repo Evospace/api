@@ -19,7 +19,7 @@ class UStaticResearchRecipe : public UStaticResearch {
   TArray<class URecipe *> RecipeUnlocks;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FVector2i LevelMinMax;
+  FQrVector2i LevelMinMax;
 
   virtual void ComputeSearchMetadata() const override;
 

@@ -72,7 +72,7 @@ class UStaticBlock : public UStaticObject {
   FLinearColor mColorTop = FLinearColor::White;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-  TArray<FVector3i> Positions;
+  TArray<FQrVector3i> Positions;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   FName ReplaceTag;
@@ -104,7 +104,7 @@ class UStaticBlock : public UStaticObject {
 
   virtual void Release() override;
 
-  const TArray<FVector3i> &GetPositions() const;
+  const TArray<FQrVector3i> &GetPositions() const;
 
   virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
 

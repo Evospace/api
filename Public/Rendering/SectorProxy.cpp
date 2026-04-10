@@ -377,7 +377,7 @@ void Drop(const UStaticProp *prop, UInventory *inv) {
 }
 } // namespace
 
-void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) {
+void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small) {
   const auto out_inventory = NewObject<UAutosizeInventory>();
 
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
@@ -413,7 +413,7 @@ void USectorProxy::ClearBlockPropsDrop(const FVector3i &_bpos, bool only_small) 
   }
 }
 
-void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool only_small) {
+void USectorProxy::ClearBlockProps(const FQrVector3i &_bpos, bool only_small) {
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
     auto bpos = _bpos + offset;
@@ -425,7 +425,7 @@ void USectorProxy::ClearBlockProps(const FVector3i &_bpos, bool only_small) {
   }
 }
 
-void USectorProxy::ClearNearActors(const FVector3i &_bpos, float radius) {
+void USectorProxy::ClearNearActors(const FQrVector3i &_bpos, float radius) {
   if (!owner)
     return;
   const FVector worldPos = cs::WBtoWd(_bpos) + FVector(gCubeSize * 0.5f);

@@ -14,7 +14,7 @@ void DestroyActor(TWeakObjectPtr<ACellHighlightActor> &ActorPtr) {
 
 } // namespace
 
-void FCellSelectionHighlighter::UpdateSelection(UWorld *World, const TArray<FVector3i> &Cells) {
+void FCellSelectionHighlighter::UpdateSelection(UWorld *World, const TArray<FQrVector3i> &Cells) {
   if (Cells.IsEmpty()) {
     if (ACellHighlightActor *Actor = HighlightActor.Get()) {
       Actor->SetAbsoluteCells({});

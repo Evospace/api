@@ -151,7 +151,7 @@ class ADimension : public AActor {
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
   virtual void Tick(float DeltaTime) override;
-  void AddBlockBuildCover(const TTuple<FVector3i, UBlockLogic *> &log) const;
+  void AddBlockBuildCover(const TTuple<FQrVector3i, UBlockLogic *> &log) const;
 
   bool mBuildModeBoxes = false;
 
@@ -253,7 +253,7 @@ class ADimension : public AActor {
   UDimensionLoadWidget *mLoadWidget;
 
   UPROPERTY()
-  TMap<FVector3i, UBlockLogic *> mDimensionLogics;
+  TMap<FQrVector3i, UBlockLogic *> mDimensionLogics;
 
   UPROPERTY()
   FBlockLogicStore mDimensionLogicsTick;
@@ -299,7 +299,7 @@ class ADimension : public AActor {
   std::unique_ptr<TThreadWorker<FColumnLoaderData>> mSectorSaverWorker;
 
   UPROPERTY(VisibleAnywhere)
-  TMap<FVector3i, AColumn *> mColumns;
+  TMap<FQrVector3i, AColumn *> mColumns;
 
   UPROPERTY(VisibleAnywhere)
   int32 mCountRemove = 0;
@@ -333,7 +333,7 @@ class ADimension : public AActor {
 
   void CacheSector(const Vec3i &pos, USectorProxy *sector);
 
-  void GetNearestColumns(TMap<FVector3i, AColumn *> &data, TArray<NearestColumn> &out);
+  void GetNearestColumns(TMap<FQrVector3i, AColumn *> &data, TArray<NearestColumn> &out);
 
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);

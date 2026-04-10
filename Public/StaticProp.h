@@ -47,7 +47,7 @@ class UStaticProp : public UStaticObject {
   void OnDamage(const Vec3i &pos) const;
   void OnSpawn(const Vec3i &pos) const;
 
-  virtual bool Create(USectorProxy *sector, const FTransform &transform, const FVector3i &bpos) const;
+  virtual bool Create(USectorProxy *sector, const FTransform &transform, const FQrVector3i &bpos) const;
 
   virtual void Release() override;
 

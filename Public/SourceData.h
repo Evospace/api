@@ -49,7 +49,7 @@ class USourceData : public UInstance {
   const UStaticProp *Prop = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FVector2i Position;
+  FQrVector2i Position;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool InfiniteOre = false;

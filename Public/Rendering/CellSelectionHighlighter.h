@@ -9,7 +9,7 @@ class ACellHighlightActor;
  * Helper that owns a transient highlight actor for visualizing arbitrary cell selections.
  */
 struct FCellSelectionHighlighter {
-  void UpdateSelection(UWorld *World, const TArray<FVector3i> &Cells);
+  void UpdateSelection(UWorld *World, const TArray<FQrVector3i> &Cells);
   void Shutdown();
   void SetSelectionColor(const FLinearColor &Color);
 
