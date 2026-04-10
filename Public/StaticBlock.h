@@ -9,6 +9,7 @@
 #include "Public/StaticObject.h"
 #include "Evospace/World/Tesselator.h"
 #include "Public/StaticCover.h"
+#include "Public/LogicExportOption.h"
 
 #include "StaticBlock.generated.h"
 
@@ -39,6 +40,7 @@ class UStaticBlock : public UStaticObject {
       .addProperty("half_cover", &Self::HalfCover) //@field StaticCover
       .addProperty("center_cover", &Self::CenterCover) //@field StaticCover
       .addProperty("body_cover", &Self::BodyCover) //@field StaticCover
+      .addProperty("export_options", QR_ARRAY_GET_SET(ExportOptions)) //@field LogicExportOption[]
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
@@ -94,6 +96,10 @@ class UStaticBlock : public UStaticObject {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UStaticCover *BodyCover = nullptr;
+
+  /** Prototype LogicExportOption entries for this block type (from content JSON). */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  TArray<ULogicExportOption *> ExportOptions;
 
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const;
 
