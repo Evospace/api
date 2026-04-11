@@ -33,6 +33,7 @@ class UStaticItem;
 class UAssetOwner;
 class UMapObjectManager;
 class UStaticMesh;
+class UEvoGuiProjectStyle;
 
 UENUM(BlueprintType)
 enum class EJoyImageFormats : uint8 {
@@ -112,6 +113,14 @@ class UMainGameInstance : public USteamGameInstance {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UMapWidgetData *MapWidgetData;
+
+  /** Loaded at startup from /Game/Gui/EvoGuiProjectStyle (see LoadObject path in MainGameInstance.cpp). */
+  UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Evospace|Gui")
+  TObjectPtr<UEvoGuiProjectStyle> GuiProjectStyle;
+
+  /** Project GUI style asset; null if missing or not loaded yet. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Gui")
+  static UEvoGuiProjectStyle *GetGuiProjectStyle();
 
   private:
   void HandlePostLoadMap(UWorld *NewWorld);
