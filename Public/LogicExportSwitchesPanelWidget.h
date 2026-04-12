@@ -10,7 +10,7 @@ class UScrollBox;
 
 /**
  * Scroll list of export toggles for one block. Spawns one ULogicExportSwitchWidget per entry in
- * LogicSettings::ExportSignals. Set DefaultExportSwitchRowClass on a Blueprint child, or pass RowClass to Setup.
+ * owning block StaticBlock.ExportOptions (via LogicSettings::GetExportSignals()). Set DefaultExportSwitchRowClass on a Blueprint child, or pass RowClass to Setup.
  */
 UCLASS(BlueprintType, meta = (DisplayName = "Logic Export Switches Panel"))
 class ULogicExportSwitchesPanelWidget : public UUserWidget {

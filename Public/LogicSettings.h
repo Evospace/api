@@ -2,7 +2,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Qr/CommonConverter.h"
 #include "Qr/Loc.h"
 #include "Condition.h"
 #include "LogicExportOption.h"
@@ -16,19 +15,24 @@ class ULogicSettings : public UInstance {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UInstance>("LogicSettings") //@class LogicSettings : Instance
-      .addProperty("export", QR_ARRAY_GET_SET(ExportSignals)) //@field LogicExportOption[]
       .endClass();
   }
 
   public:
-  // Signals available in UI for export/indication (metadata only)
-  UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  TArray<ULogicExportOption *> ExportSignals;
+  // Export option metadata comes from owning UBlockLogic::GetStaticBlock()->ExportOptions (see GetExportSignals).
 
-  // Per-instance export enabled flags; length matches ExportSignals
+  // Per-instance export enabled flags; length matches GetExportSignals()
   // Do not mutate ULogicExportOption::bEnabled at runtime – use these flags instead
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<bool> ExportEnabled;
+
+  // Per-instance import enabled flags; length matches GetExportSignals()
+  // Block logic may use these flags to decide which input signals are active
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  TArray<bool> ImportEnabled;
+
+  /** Prototype export list from the owning block's UStaticBlock (same as StaticBlock.export_options). */
+  const TArray<ULogicExportOption *> &GetExportSignals() const;
 
   // Initialize ExportEnabled from default options if sizes mismatch or empty
   UFUNCTION(BlueprintCallable)
@@ -39,6 +43,16 @@ class ULogicSettings : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   void SetExportEnabled(int32 Index, bool bEnabled);
+
+  // Initialize ImportEnabled from default options if sizes mismatch or empty
+  UFUNCTION(BlueprintCallable)
+  void EnsureImportFlagsInitialized();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  bool IsImportEnabled(int32 Index = 0) const;
+
+  UFUNCTION(BlueprintCallable)
+  void SetImportEnabled(int32 Index, bool bEnabled);
 
   // Serialization for saving per-block state
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;

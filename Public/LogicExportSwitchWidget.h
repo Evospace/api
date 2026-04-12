@@ -7,6 +7,8 @@
 
 class ULogicSettings;
 class UEvoTextWidget;
+class UBaseInventoryWidgetBase;
+class UNonSerializedSingleSlotInventory;
 
 /**
  * Single export toggle row: EvoText label + checkbox bound to ULogicSettings::ExportEnabled at OptionIndex.
@@ -23,7 +25,7 @@ class ULogicExportSwitchWidget : public UUserWidget {
   UFUNCTION(BlueprintCallable, Category = "Logic|Export")
   void Setup(ULogicSettings *LogicSettings, int32 OptionIndex);
 
-  /** Re-read label, tooltip, and checkbox state from BoundLogicSettings / ExportSignals. */
+  /** Re-read label, tooltip, and checkbox state from BoundLogicSettings / GetExportSignals(). */
   UFUNCTION(BlueprintCallable, Category = "Logic|Export")
   void RefreshFromSettings();
 
@@ -42,9 +44,18 @@ class ULogicExportSwitchWidget : public UUserWidget {
   UPROPERTY(meta = (BindWidget))
   TObjectPtr<UCheckBox> ExportCheck;
 
+  // Optional inventory-based UI element for showing export signal item.
+  UPROPERTY(meta = (BindWidgetOptional))
+  TObjectPtr<UBaseInventoryWidgetBase> ExportSignal;
+
   private:
   UFUNCTION()
   void OnExportCheckStateChanged(bool bIsChecked);
+
+  void EnsureSignalInventory();
+
+  UPROPERTY(Transient)
+  TObjectPtr<UNonSerializedSingleSlotInventory> SignalInventory;
 
   bool bSuppressExportCallback = false;
 };
