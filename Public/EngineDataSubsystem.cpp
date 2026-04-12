@@ -147,7 +147,6 @@ void UEngineDataSubsystem::ApplyData() const {
     const int32 renderTargetPoolMinMb = FMath::Max(Storage.RenderTargetPoolMinMb, 128);
 
     SetCVar(TEXT("r.AOGlobalDistanceField"), 0);
-    SetCVar(TEXT("r.Water.SingleLayer.Reflection"), 0);
     SetCVar(TEXT("r.Substrate"), 0);
     SetCVar(TEXT("r.GBufferFormat"), 1);
     SetCVar(TEXT("r.TextureStreaming"), 1);
