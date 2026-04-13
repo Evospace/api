@@ -20,6 +20,7 @@ class ULogicExportOption : public UPrototype {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UPrototype>("LogicExportOption") //@class LogicExportOption : Prototype
       .addProperty("signal", &Self::Signal) //@field StaticItem Signal
+      .addProperty("use_signal", &Self::bUseSignal) //@field bool UseSignal
       .addProperty("enabled", &Self::bEnabled) //@field bool Enabled
       .addProperty("label", &Self::Label) //@field FLoc Label
       .addProperty("tooltip", &Self::Tooltip) //@field FLoc Tooltip
@@ -30,6 +31,10 @@ class ULogicExportOption : public UPrototype {
   // Which signal to export
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UStaticItem *Signal = nullptr;
+
+  // When true, export row shows and uses signal slot in GUI
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool bUseSignal = false;
 
   // Default checkbox state in GUI (can be used as initial value)
   UPROPERTY(EditAnywhere, BlueprintReadWrite)

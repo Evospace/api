@@ -31,12 +31,23 @@ class ULogicSettings : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<bool> ImportEnabled;
 
+  // Per-instance inventory slots for export signal pointers in GUI
+  UPROPERTY(Transient)
+  TArray<TObjectPtr<class UNonSerializedSingleSlotInventory>> ExportSignalInventories;
+
   /** Prototype export list from the owning block's UStaticBlock (same as StaticBlock.export_options). */
   const TArray<ULogicExportOption *> &GetExportSignals() const;
 
   // Initialize ExportEnabled from default options if sizes mismatch or empty
   UFUNCTION(BlueprintCallable)
   void EnsureExportFlagsInitialized();
+
+  // Initialize and synchronize per-export signal pointer inventories from prototype options
+  UFUNCTION(BlueprintCallable)
+  void EnsureExportSignalInventoriesInitialized();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  class UNonSerializedSingleSlotInventory *GetExportSignalInventory(int32 Index) const;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsExportEnabled(int32 Index = 0) const;
