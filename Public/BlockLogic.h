@@ -171,7 +171,7 @@ class UBlockLogic : public UInstance {
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
   UFUNCTION(BlueprintCallable)
   virtual void ApplyLogicInput(const class ULogicContext *ctx);
-  
+
   UFUNCTION(BlueprintCallable)
   virtual ULogicSettings *GetLogicSettings();
   UFUNCTION(BlueprintCallable)
