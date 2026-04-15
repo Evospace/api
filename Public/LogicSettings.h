@@ -5,6 +5,7 @@
 #include "Qr/Loc.h"
 #include "Condition.h"
 #include "LogicExportOption.h"
+#include "LogicImportOption.h"
 #include "LogicSettings.generated.h"
 
 UCLASS(BlueprintType)
@@ -19,14 +20,15 @@ class ULogicSettings : public UInstance {
   }
 
   public:
-  // Export option metadata comes from owning UBlockLogic::GetStaticBlock()->ExportOptions (see GetExportSignals).
+  // Export/import option metadata comes from owning UBlockLogic::GetStaticBlock()
+  // (see GetExportSignals/GetImportSignals).
 
   // Per-instance export enabled flags; length matches GetExportSignals()
   // Do not mutate ULogicExportOption::bEnabled at runtime – use these flags instead
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<bool> ExportEnabled;
 
-  // Per-instance import enabled flags; length matches GetExportSignals()
+  // Per-instance import enabled flags; length matches GetImportSignals()
   // Block logic may use these flags to decide which input signals are active
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<bool> ImportEnabled;
@@ -35,8 +37,14 @@ class ULogicSettings : public UInstance {
   UPROPERTY(Transient)
   TArray<TObjectPtr<class UNonSerializedSingleSlotInventory>> ExportSignalInventories;
 
+  // Per-instance inventory slots for import signal pointers in GUI
+  UPROPERTY(Transient)
+  TArray<TObjectPtr<class UNonSerializedSingleSlotInventory>> ImportSignalInventories;
+
   /** Prototype export list from the owning block's UStaticBlock (same as StaticBlock.export_options). */
   const TArray<ULogicExportOption *> &GetExportSignals() const;
+  /** Prototype import list from the owning block's UStaticBlock (same as StaticBlock.import_options). */
+  const TArray<ULogicImportOption *> &GetImportSignals() const;
 
   // Initialize ExportEnabled from default options if sizes mismatch or empty
   UFUNCTION(BlueprintCallable)
@@ -46,8 +54,15 @@ class ULogicSettings : public UInstance {
   UFUNCTION(BlueprintCallable)
   void EnsureExportSignalInventoriesInitialized();
 
+  // Initialize and synchronize per-import signal pointer inventories from prototype options
+  UFUNCTION(BlueprintCallable)
+  void EnsureImportSignalInventoriesInitialized();
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   class UNonSerializedSingleSlotInventory *GetExportSignalInventory(int32 Index) const;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  class UNonSerializedSingleSlotInventory *GetImportSignalInventory(int32 Index) const;
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsExportEnabled(int32 Index = 0) const;

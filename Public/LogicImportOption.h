@@ -1,0 +1,51 @@
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Qr/JsonHelperCommon.h"
+#include "Qr/Prototype.h"
+#include "Qr/Loc.h"
+#include "LogicImportOption.generated.h"
+
+class UStaticItem;
+
+// Prototype describing a single importable signal option for GUI and logic filtering
+UCLASS(BlueprintType)
+class ULogicImportOption : public UPrototype {
+  GENERATED_BODY()
+  PROTOTYPE_CODEGEN(LogicImportOption, LogicImportOption)
+  virtual UClass *GetSuperProto() const override { return StaticClass(); }
+  virtual void lua_reg(lua_State *L) const override {
+    using Self = ULogicImportOption;
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<Self, UPrototype>("LogicImportOption") //@class LogicImportOption : Prototype
+      .addProperty("signal", &Self::Signal) //@field StaticItem Signal
+      .addProperty("use_signal", &Self::bUseSignal) //@field bool UseSignal
+      .addProperty("enabled", &Self::bEnabled) //@field bool Enabled
+      .addProperty("label", &Self::Label) //@field FLoc Label
+      .addProperty("tooltip", &Self::Tooltip) //@field FLoc Tooltip
+      .endClass();
+  }
+
+  public:
+  // Which signal to import
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *Signal = nullptr;
+
+  // When true, import row shows and uses signal slot in GUI
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool bUseSignal = false;
+
+  // Default checkbox state in GUI (can be used as initial value)
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool bEnabled = false;
+
+  // Localized name and tooltip for GUI
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FLoc Label;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FLoc Tooltip;
+
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+};

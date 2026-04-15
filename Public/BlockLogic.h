@@ -167,8 +167,11 @@ class UBlockLogic : public UInstance {
   void DeferredPaintApply() const;
 
   // Logic and signals
+  UFUNCTION(BlueprintCallable)
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const;
+  UFUNCTION(BlueprintCallable)
   virtual void ApplyLogicInput(const class ULogicContext *ctx);
+  
   UFUNCTION(BlueprintCallable)
   virtual ULogicSettings *GetLogicSettings();
   UFUNCTION(BlueprintCallable)
@@ -296,6 +299,11 @@ class UPartBlockLogic : public UBlockLogic {
 
   // Actions
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item);
+
+  // Logic I/O: parts do not own LogicSettings; delegate to the root block (same as accessors)
+  virtual ULogicSettings *GetLogicSettings() override;
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+  virtual void ApplyLogicInput(const class ULogicContext *ctx) override;
 
   // Variables
   UPROPERTY()

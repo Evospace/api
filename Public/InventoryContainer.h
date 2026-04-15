@@ -40,6 +40,11 @@ class UInventoryContainer : public UInventoryAccess {
 
   virtual int32 _Num() const override;
 
+  // GetSlots() / GetSlotsMut() are not overridden. The UInventoryReader base
+  // implementation returns a dummy array and triggers checkNoEntry() — calling
+  // them on UInventoryContainer is invalid. Iterate with _Num() and _SafeGet(i),
+  // or walk mList via GetList() / GetAccess().
+
   virtual void SortKeyAZ() override;
   virtual void SortByKeys(const TArray<FInventorySortRule> &keys) override;
 

@@ -34,7 +34,9 @@ void UItemMap::FromInventory(const UInventoryReader *reader) {
   if (!expect_once(reader, "ItemMap::FromInventory with nullptr InventoryReader"))
     return;
 
-  for (const auto &data : reader->GetSlots()) {
+  const int32 NumSlots = reader->_Num();
+  for (int32 i = 0; i < NumSlots; ++i) {
+    const auto &data = reader->_SafeGet(i);
     if (data.mItem != nullptr && data.mValue != 0) {
       Add(data.mItem, data.mValue);
     }
@@ -49,7 +51,9 @@ void UItemMap::FromInventoryOptimized(const UInventoryAccess *reader, int64 &Las
 
   if (CurrentVersion != LastInventoryVersion) {
     Clear();
-    for (const auto &data : reader->GetSlots()) {
+    const int32 NumSlots = reader->_Num();
+    for (int32 i = 0; i < NumSlots; ++i) {
+      const auto &data = reader->_SafeGet(i);
       if (data.mItem != nullptr && data.mValue != 0) {
         Add(data.mItem, data.mValue);
       }
