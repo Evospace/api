@@ -8,6 +8,8 @@
 
 #include "AbstractCrafter.generated.h"
 
+class UItemMap;
+
 class UResourceInventory;
 class UResourceComponent;
 class URecipe;
@@ -104,6 +106,9 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   virtual bool IsBlockTicks() const override;
 
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+  virtual ULogicSettings *GetLogicSettings() override;
+
   UFUNCTION(BlueprintCallable)
   virtual bool IsUniversalCrafter() const;
 
@@ -158,4 +163,13 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   const URecipe *CurrentRecipe = nullptr;
+
+  UPROPERTY()
+  UItemMap *CachedInputOutput = nullptr;
+
+  UPROPERTY()
+  UItemMap *CachedOutputOutput = nullptr;
+
+  mutable int64 LastKnownInputVersion = INDEX_NONE;
+  mutable int64 LastKnownOutputVersion = INDEX_NONE;
 };
