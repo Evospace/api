@@ -39,14 +39,14 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
     return;
   }
 
-  bool gameSessionFallback = false;
+  bool isPreGameSessionSave = false;
   UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionData(GameInstance, saveName);
   if (!loadedSession) {
     LOG(ERROR_LL) << "SaveMigrationManager: No GameSessionData found for save '" << saveName << "'";
     loadedSession = NewObject<UGameSessionData>(GameInstance, TEXT("GameSessionData"));
     loadedSession->Version = FVersionStruct{ 0, 19, 0, 0, TEXT("?") };
     loadedSession->Mods = {};
-    gameSessionFallback = true;
+    isPreGameSessionSave = true;
   }
 
   const FVersionStruct saveVersion = loadedSession->Version;
@@ -586,7 +586,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
     }
   }
 
-  if (gameSessionFallback) {
+  if (isPreGameSessionSave) {
     loadedSession->Initialize(GameInstance, saveName, true, true, true, "Default", FName("WorldGeneratorRivers"));
     UStaticSaveHelpers::SaveGameSessionData(saveName, loadedSession);
   }
