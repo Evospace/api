@@ -87,6 +87,10 @@ class UStaticItem : public UPrototype, public ISearchable {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UClass *mItemLogic;
 
+  /** If true, item is only used from equipment slots, not as a hand-held tool logic. */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool EquipmentItem = false;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticMesh *mMesh;
 
