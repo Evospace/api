@@ -238,6 +238,8 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   GENERATED_BODY()
 
   public:
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos) override;
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos) override;
 
@@ -426,6 +428,8 @@ class USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
 
   bool GetSwitch_Implementation() const override;
   virtual TArray<ConnectionInfo> GetConnectionInfo() const override;
+
+  virtual void ApplyLogicInput(const class ULogicContext *ctx) override;
 };
 
 UCLASS()

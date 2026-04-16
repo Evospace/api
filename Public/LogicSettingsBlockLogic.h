@@ -12,6 +12,8 @@ class ULogicSettingsBlockLogic : public UBlockLogic {
   GENERATED_BODY()
 
   public:
+  ULogicSettingsBlockLogic();
+
   virtual ULogicSettings *GetLogicSettings() override;
 
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
