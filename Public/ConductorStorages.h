@@ -25,3 +25,24 @@ class UElectricityContainerBlockLogic : public UConductorBlockLogic {
 
   virtual int32 GetChannel() const override;
 };
+
+UCLASS()
+class UHeatContainerBlockLogic : public UConductorBlockLogic {
+  GENERATED_BODY()
+
+  using Self = UHeatContainerBlockLogic;
+
+  EVO_CODEGEN_INSTANCE(HeatContainerBlockLogic)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<Self, UConductorBlockLogic>("HeatContainerBlockLogic") //@class HeatContainerBlockLogic : ConductorBlockLogic
+      .endClass();
+  }
+
+  public:
+  UHeatContainerBlockLogic();
+
+  virtual void BlockBeginPlay() override;
+
+  virtual int32 GetChannel() const override;
+};
