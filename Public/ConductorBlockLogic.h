@@ -299,7 +299,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   virtual void UpdateSides(UAccessor *except = nullptr);
 
   bool SupportsLocalNetworkStorage() const {
-    return bStoreNetworkChargeLocally && !bSkipLocalNetworkStorageSnapshot;
+    return !bSkipLocalNetworkStorageSnapshot;
   }
   void ResetStoredNetworkCharge();
   void AccumulateStoredNetworkCharge(UStaticItem *resource, int64 amount);
@@ -354,9 +354,6 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 Subnetwork = 0;
-
-  UPROPERTY(VisibleAnywhere)
-  bool bStoreNetworkChargeLocally = false;
 
   bool bSkipLocalNetworkStorageSnapshot = false;
 
