@@ -45,6 +45,7 @@ class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
 class UInstancedStaticMeshComponent;
+class ULogicContext;
 
 USTRUCT()
 struct EVOSPACE_API FStatictics {
@@ -52,6 +53,8 @@ struct EVOSPACE_API FStatictics {
 
   public:
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicInputDelivered, UBlockLogic *, Target, ULogicContext *, Context);
 
 UCLASS()
 class ADimension : public AActor {
@@ -341,6 +344,12 @@ class ADimension : public AActor {
                           AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
+
+  // Emits when logic input is delivered to a block via gameplay paths (network/direct/program).
+  void NotifyLogicInputDelivered(UBlockLogic *Target, ULogicContext *Context);
+
+  UPROPERTY(BlueprintAssignable, Category = "Logic")
+  FOnLogicInputDelivered OnLogicInputDelivered;
 
   private:
   UPROPERTY(VisibleAnywhere)

@@ -64,6 +64,13 @@ class ULogicSettings : public UInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   class UNonSerializedSingleSlotInventory *GetImportSignalInventory(int32 Index) const;
 
+  // Effective signal: inventory slot override > prototype option fallback
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  const UStaticItem *GetResolvedExportSignal(int32 Index) const;
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  const UStaticItem *GetResolvedImportSignal(int32 Index) const;
+
   UFUNCTION(BlueprintCallable, BlueprintPure)
   bool IsExportEnabled(int32 Index = 0) const;
 

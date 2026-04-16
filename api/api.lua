@@ -927,6 +927,25 @@ function ElectricityContainerBlockLogic.get_class() end
 --- @return ElectricityContainerBlockLogic
 function ElectricityContainerBlockLogic.cast(object) end
 
+--- Creates a new HeatContainerBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.new(parent, name) end
+
+--- Creates a new HeatContainerBlockLogic instance
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.new_simple() end
+
+--- Return HeatContainerBlockLogic class object
+--- @return Class
+function HeatContainerBlockLogic.get_class() end
+
+--- Trying to cast Object into HeatContainerBlockLogic
+--- @param object Object to cast
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.cast(object) end
+
 --- 
 --- 
 --- @class EngineData : Object
@@ -1082,6 +1101,49 @@ function GlobalBiomeFamily.get_class() end
 --- @param object Object to cast
 --- @return GlobalBiomeFamily
 function GlobalBiomeFamily.cast(object) end
+
+--- 
+--- 
+--- @class HeatContainerBlockLogic : ConductorBlockLogic
+HeatContainerBlockLogic = {}
+
+--- Creates a new ElectricityContainerBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.new(parent, name) end
+
+--- Creates a new ElectricityContainerBlockLogic instance
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.new_simple() end
+
+--- Return ElectricityContainerBlockLogic class object
+--- @return Class
+function ElectricityContainerBlockLogic.get_class() end
+
+--- Trying to cast Object into ElectricityContainerBlockLogic
+--- @param object Object to cast
+--- @return ElectricityContainerBlockLogic
+function ElectricityContainerBlockLogic.cast(object) end
+
+--- Creates a new HeatContainerBlockLogic instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.new(parent, name) end
+
+--- Creates a new HeatContainerBlockLogic instance
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.new_simple() end
+
+--- Return HeatContainerBlockLogic class object
+--- @return Class
+function HeatContainerBlockLogic.get_class() end
+
+--- Trying to cast Object into HeatContainerBlockLogic
+--- @param object Object to cast
+--- @return HeatContainerBlockLogic
+function HeatContainerBlockLogic.cast(object) end
 
 --- 
 --- 
@@ -1411,6 +1473,7 @@ function ChancedLayeringGenerator.cast(object) end
 --- 
 --- @class LogicExportOption : Prototype
 --- @field signal StaticItem Signal
+--- @field use_signal bool UseSignal
 --- @field enabled bool Enabled
 --- @field label FLoc Label
 --- @field tooltip FLoc Tooltip
@@ -1434,6 +1497,35 @@ function LogicExportOption.get_class() end
 --- @param object Object to cast
 --- @return LogicExportOption
 function LogicExportOption.cast(object) end
+
+--- 
+--- 
+--- @class LogicImportOption : Prototype
+--- @field signal StaticItem Signal
+--- @field use_signal bool UseSignal
+--- @field enabled bool Enabled
+--- @field label FLoc Label
+--- @field tooltip FLoc Tooltip
+LogicImportOption = {}
+
+--- Register a new LogicImportOption static object
+--- @param name string The name of the object
+--- @return LogicImportOption
+function LogicImportOption.reg(name) end
+
+--- Searching for LogicImportOption in db
+--- @param name string The name of the object
+--- @return LogicImportOption
+function LogicImportOption.find(name) end
+
+--- Return LogicImportOption class object
+--- @return Class
+function LogicImportOption.get_class() end
+
+--- Trying to cast Object into LogicImportOption
+--- @param object Object to cast
+--- @return LogicImportOption
+function LogicImportOption.cast(object) end
 
 --- 
 --- 
@@ -2537,7 +2629,6 @@ function LogicProgram.cast(object) end
 --- 
 --- 
 --- @class LogicSettings : Instance
---- @field export LogicExportOption[] undocumented
 LogicSettings = {}
 
 --- Creates a new LogicSettings instance
@@ -3261,6 +3352,8 @@ function SourceData.cast(object) end
 --- @field half_cover StaticCover undocumented
 --- @field center_cover StaticCover undocumented
 --- @field body_cover StaticCover undocumented
+--- @field export_options LogicExportOption[] undocumented
+--- @field import_options LogicImportOption[] undocumented
 StaticBlock = {}
 
 --- Register a new StaticBlock static object

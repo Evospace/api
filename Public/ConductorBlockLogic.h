@@ -29,6 +29,7 @@ class AItemLogic;
 class UGameSessionData;
 class UResourceInventory;
 class UCoreAccessor;
+class ULogicContext;
 
 UCLASS(BlueprintType)
 class USubnetwork : public UObject {
@@ -191,6 +192,12 @@ class UBlockNetwork : public UObject {
   TArray<TArray<UResourceAccessor *>> AllCollectedOutputs;
   TArray<TArray<UResourceAccessor *>> AllCollectedInputs;
   TArray<TArray<int32>> AllCollectedSubnetworks;
+
+  UPROPERTY()
+  ULogicContext *ReusableTempCtx = nullptr;
+
+  UPROPERTY()
+  ULogicContext *ReusableInCtx = nullptr;
 
   public:
   UFUNCTION(BlueprintCosmetic, BlueprintCallable)
