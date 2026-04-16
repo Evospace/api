@@ -107,6 +107,7 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
   virtual bool IsBlockTicks() const override;
 
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+  virtual void ApplyLogicInput(const class ULogicContext *ctx) override;
   virtual ULogicSettings *GetLogicSettings() override;
 
   UFUNCTION(BlueprintCallable)
