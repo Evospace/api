@@ -77,14 +77,20 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
     case ECompareOp::Less:
       if (actual < value)
         return 1.f;
-      return value == 0.f ? 0.f : FMath::Clamp(1.f - (actual / value), 0.f, 1.f);
+      // Strict <: when actual >= value, show progress toward dropping below value (boundary at actual == value).
+      if (value == 0.f)
+        return 0.f;
+      return FMath::Clamp(value / (actual + 1.f), 0.f, 1.f);
 
     case ECompareOp::Greater:
       if (actual > value)
         return 1.f;
-      if (actual == value)
+      // Strict >: at actual == value the condition is still false, but the bar must stay
+      // nearly full (next step may satisfy). Using actual/value would hit 1.0 at equality;
+      // (actual+1)/(value+2) stays below 1 until actual > value, avoiding a false "full" read.
+      if (value == 0.f)
         return 0.f;
-      return value == 0.f ? 0.f : FMath::Clamp(actual / value, 0.f, 1.f);
+      return FMath::Clamp((actual + 1.f) / (value + 2.f), 0.f, 1.f);
 
     case ECompareOp::Equal: {
       float eps = FMath::Max(1.f, FMath::Abs(value) * 0.01f);
