@@ -329,8 +329,8 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   virtual void SetRenderable(AColumn *sector) override;
 
-  // Use virtual network inventory as primary core accessor for GUI/logic
-  virtual UCoreAccessor *CoreInit() override;
+  // Virtual network inventory for diagnostics / monitor; not exposed as Core (no item I/O on conductors).
+  virtual UCoreAccessor *MonitorInit() override;
 
   virtual void RemoveActorOrRenderable() override;
 
