@@ -83,10 +83,6 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Weather")
   const FWeatherState &GetTarget() const { return Target; }
 
-  // Immediately align Current with Target and broadcast
-  UFUNCTION(BlueprintCallable, Category = "Weather")
-  void SnapCurrentToTarget();
-
   // Get a random weather asset from available weathers (or from current biome if set)
   UFUNCTION(BlueprintCallable, Category = "Weather")
   UStaticWeather *GetRandomWeatherAsset() const;
@@ -138,4 +134,20 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   // Scale of wetting speed when raining above threshold
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0"))
   float WettingRate = 1.0f;
+
+  // Minimum seconds between random wind heading target updates.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.1"))
+  float WindDirectionRetargetMinSeconds = 200.0f;
+
+  // Maximum seconds between random wind heading target updates.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.1"))
+  float WindDirectionRetargetMaxSeconds = 1000.0f;
+
+  // Max absolute angle step (degrees) for every random wind heading retarget.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.0", ClampMax = "180.0"))
+  float WindDirectionRetargetStepDegrees = 70.0f;
+
+  private:
+  float WindDirectionTargetDeg = 0.0f;
+  float WindDirectionRetargetRemainingSeconds = 0.0f;
 };

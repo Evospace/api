@@ -25,4 +25,12 @@ struct FWeatherState {
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float WindSpeed = 0.0f;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+  float GustAmount01 = 0.0f;
+
+  // Wind heading angle in degrees around world Z axis.
+  // 0 = +X direction, 90 = +Y direction.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather")
+  float WindDirection = 0.0f;
 };
