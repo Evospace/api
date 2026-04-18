@@ -118,9 +118,13 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   static constexpr float MinTimeBetweenWeatherChanges = 10.0f; // seconds
 
   public:
-  // Normalized surface wetness for world surfaces (0=dry, 1=fully wet)
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Wetness")
+  // Surface / world state (not preset weather scalars): wetness and horizontal wind heading evolve independently of weather assets.
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Surface")
   float SurfaceWetness01 = 0.0f;
+
+  /** Horizontal wind heading in degrees around +Z (0 = +X, 90 = +Y). Random walk; strength comes from Current.WindSpeed. */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Surface")
+  float WindHeadingDegrees = 0.0f;
 
   // Precipitation threshold above which wetness increases
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0", ClampMax = "1.0"))
@@ -136,16 +140,19 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
 
   // Minimum seconds between random wind heading target updates.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.1"))
-  float WindDirectionRetargetMinSeconds = 200.0f;
+  float WindDirectionRetargetMinSeconds = 30.0f;
 
   // Maximum seconds between random wind heading target updates.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.1"))
-  float WindDirectionRetargetMaxSeconds = 1000.0f;
+  float WindDirectionRetargetMaxSeconds = 200.0f;
 
   // Max absolute angle step (degrees) for every random wind heading retarget.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind", meta = (ClampMin = "0.0", ClampMax = "180.0"))
   float WindDirectionRetargetStepDegrees = 70.0f;
 
   private:
+  /** Smooth interpolation target for WindHeadingDegrees (random retarget). */
+  float WindHeadingTargetDegrees = 0.0f;
+
   float WindDirectionRetargetRemainingSeconds = 0.0f;
 };
