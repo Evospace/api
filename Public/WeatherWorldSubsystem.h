@@ -9,7 +9,7 @@
 class UStaticWeather;
 class UBiome;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeatherChanged, const FWeatherState &, State);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeatherChangedNative, const FWeatherState &);
 
 /**
  * Weather world subsystem.
@@ -19,14 +19,13 @@ UCLASS()
 class UWeatherWorldSubsystem : public UWorldSubsystem {
   GENERATED_BODY()
   public:
-  UPROPERTY(BlueprintReadOnly, Category = "Weather")
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather")
   FWeatherState Current;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ToolTip = "Optional default weather for initialization. If not set, will use first available weather after content load."))
   UStaticWeather *DefaultWeather = nullptr;
 
-  UPROPERTY(BlueprintAssignable, Category = "Weather")
-  FOnWeatherChanged OnWeatherChanged;
+  FOnWeatherChangedNative OnWeatherChangedNative;
 
   // Display current weather asset in editor
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current active weather asset"))
@@ -59,7 +58,7 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather")
   FWeatherState Target;
 
-  // Duration of weather transition in seconds (how long it takes to transition from current to target)
+  // Approximate time scale for Current approaching Target each tick (larger = slower).
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.1"))
   float TransitionDurationSeconds = 120.0f;
 
@@ -79,6 +78,10 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
 
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SetTransitionDurationSeconds(float DurationSeconds);
+
+  /** No-op; kept for Blueprint compatibility. Current always steps toward Target in TickWeather. */
+  UFUNCTION(BlueprintCallable, Category = "Weather")
+  void BeginWeatherTransition();
 
   UFUNCTION(BlueprintCallable, Category = "Weather")
   const FWeatherState &GetTarget() const { return Target; }
@@ -148,6 +151,5 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   float WindDirectionRetargetStepDegrees = 70.0f;
 
   private:
-  float WindDirectionTargetDeg = 0.0f;
   float WindDirectionRetargetRemainingSeconds = 0.0f;
 };
