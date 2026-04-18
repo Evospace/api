@@ -1,5 +1,6 @@
 #pragma once
 #include "Evospace/Common.h"
+#include "Qr/Loc.h"
 
 #include "BlockState.generated.h"
 
