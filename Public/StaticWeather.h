@@ -25,7 +25,6 @@ class UStaticWeather : public UPrototype {
       .addProperty("storminess01", &Self::Storminess01) //@field number 0..1
       .addProperty("wind_speed", &Self::WindSpeed) //@field number >=0
       .addProperty("gust_amount01", &Self::GustAmount01) //@field number 0..1
-      .addProperty("selection_weight", &Self::SelectionWeight) //@field integer >=0
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
@@ -52,10 +51,6 @@ class UStaticWeather : public UPrototype {
   /** Per-weather gust amount (0..1). Scales gust modulation in controller simulation. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float GustAmount01 = 0.0f;
-
-  /** Base selection weight for random weather picking. Higher values make this preset more likely. Integer. */
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0"))
-  int32 SelectionWeight = 1;
 
   /** Minimum duration this weather lasts (seconds) */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ToolTip = "Minimum duration this weather lasts in seconds"))

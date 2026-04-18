@@ -46,7 +46,7 @@ class UBiomeFamily : public UBiome {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<UStaticWeather *> AvailableWeather;
 
-  // Optional per-biome weather selection weights. If provided, must match AvailableWeather size.
+  /** Must have the same length as AvailableWeather when that list is non-empty; sums to positive weights for random pick. */
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<int32> WeatherWeights;
 

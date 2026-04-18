@@ -11,6 +11,7 @@ struct FWeatherState {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float Cloudiness01 = 0.0f;
 
+  /** Rain / precipitation intensity from weather (0..1). Not surface wetness; wetness is tracked separately. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float Precipitation01 = 0.0f;
 

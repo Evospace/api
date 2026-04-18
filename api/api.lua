@@ -3781,7 +3781,6 @@ function StaticTip.cast(object) end
 --- @field second_fog01 number 0..1
 --- @field storminess01 number 0..1
 --- @field wind_speed number >=0
---- @field selection_weight integer >=0
 StaticWeather = {}
 
 --- Register a new StaticWeather static object

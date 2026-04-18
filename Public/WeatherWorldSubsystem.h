@@ -28,7 +28,7 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   FOnWeatherChangedNative OnWeatherChangedNative;
 
   // Display current weather asset in editor
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current active weather asset"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current active weather asset"))
   UStaticWeather *CurrentWeatherAsset = nullptr;
 
   // Display remaining time until next weather change (seconds)
@@ -40,7 +40,7 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   TArray<UStaticWeather *> AvailableWeatherAssets;
 
   // Current biome for weather selection
-  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current biome that determines available weather"))
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weather", meta = (ToolTip = "Current biome that determines available weather"))
   const UBiome *CurrentBiome = nullptr;
 
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
@@ -65,10 +65,6 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   // Epsilon for deciding if change is worth broadcasting
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float BroadcastTolerance = 0.0005f;
-
-  // Minimum precipitation intensity reported to subscribers (values below are treated as dry)
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0", ClampMax = "1.0"))
-  float MinVisiblePrecipitation01 = 0.1f;
 
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SetTargetWeatherFromAsset(UStaticWeather *Asset);
