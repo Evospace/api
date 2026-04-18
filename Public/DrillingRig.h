@@ -24,8 +24,6 @@ class UDrillingRig : public UDrillingMachineBase {
       .endClass();
   }
 
-  UDrillingRig();
-
   public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Resource")
   USourceData *Source = nullptr;
