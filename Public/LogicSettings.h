@@ -46,7 +46,7 @@ class ULogicSettings : public UInstance {
   /** Prototype import list from the owning block's UStaticBlock (same as StaticBlock.import_options). */
   const TArray<ULogicImportOption *> &GetImportSignals() const;
 
-  // Initialize ExportEnabled from default options if sizes mismatch or empty
+  // Resize ExportEnabled to match export signals: keep existing prefix, new indices from prototype defaults
   UFUNCTION(BlueprintCallable)
   void EnsureExportFlagsInitialized();
 
@@ -77,7 +77,7 @@ class ULogicSettings : public UInstance {
   UFUNCTION(BlueprintCallable)
   void SetExportEnabled(int32 Index, bool bEnabled);
 
-  // Initialize ImportEnabled from default options if sizes mismatch or empty
+  // Resize ImportEnabled to match import signals: keep existing prefix, new indices from prototype defaults
   UFUNCTION(BlueprintCallable)
   void EnsureImportFlagsInitialized();
 
