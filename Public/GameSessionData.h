@@ -64,6 +64,8 @@ class UGameSessionData : public UInstance {
       .addProperty("cloud", &Self::GetCloud, &Self::SetCloud) //@field boolean
       .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number
       .addProperty("world_time_freeze", &Self::WorldTimeAutoAdvance) //@field boolean
+      .addProperty("day_length_seconds", &Self::DayLengthSeconds) //@field number
+      .addProperty("start_time_of_day_hours", &Self::StartTimeOfDayHours) //@field number
       .addProperty("tick_rate", &Self::TickRate) //@field integer
       .endClass();
   }
@@ -130,12 +132,23 @@ class UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 TickRate = 20;
 
-  // Время суток и автопрогон теперь хранятся в данных игровой сессии
+  // Время суток и автопрогон теперь хранятся в данных игровой сессии.
+  // Когда WorldTimeAutoAdvance = true, текущее время выводится из TotalGameTicks
+  // по формуле в UGameSessionSubsystem::GetWorldTimeOfDayHours().
+  // Сохранённое значение WorldTimeOfDayHours используется только в замороженном режиме.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   double WorldTimeOfDayHours = 8.0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool WorldTimeAutoAdvance = true;
+
+  /** Length of an in-game day in real seconds (drives tick-based time of day). */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1.0"))
+  double DayLengthSeconds = 3600.0;
+
+  /** Hour of day that corresponds to TotalGameTicks = 0. */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.0", ClampMax = "24.0"))
+  double StartTimeOfDayHours = 8.0;
 
   private:
   friend class UGameSessionSubsystem;

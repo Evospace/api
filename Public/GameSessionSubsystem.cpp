@@ -136,7 +136,16 @@ void UGameSessionSubsystem::IncrementTime(double delta) {
 
 double UGameSessionSubsystem::GetWorldTimeOfDayHours() const {
   check(Data);
-  return Data->WorldTimeOfDayHours;
+  if (!Data->WorldTimeAutoAdvance) {
+    return Data->WorldTimeOfDayHours;
+  }
+  // World time runs on a fixed 20 ticks per second irrespective of Data->TickRate,
+  // so changing TPS does not shift the time of day.
+  constexpr int64 WorldTimeTicksPerSecond = 20;
+  const int64 TicksPerDay = FMath::Max<int64>(1, static_cast<int64>(Data->DayLengthSeconds * WorldTimeTicksPerSecond));
+  const int64 Wrapped = ((Data->TotalGameTicks % TicksPerDay) + TicksPerDay) % TicksPerDay;
+  const double Frac = static_cast<double>(Wrapped) / static_cast<double>(TicksPerDay);
+  return FMath::Fmod(FMath::Fmod(Data->StartTimeOfDayHours + Frac * 24.0, 24.0) + 24.0, 24.0);
 }
 
 void UGameSessionSubsystem::SetWorldTimeOfDayHours(double Hours) {
@@ -144,6 +153,11 @@ void UGameSessionSubsystem::SetWorldTimeOfDayHours(double Hours) {
   // clamp and wrap within [0,24)
   const double clamped = FMath::Fmod(FMath::Max(0.0, Hours), 24.0);
   Data->WorldTimeOfDayHours = clamped;
+}
+
+void UGameSessionSubsystem::SetLockedWorldTimeOfDayHours(double Hours) {
+  SetWorldTimeOfDayHours(Hours);
+  SetWorldTimeAutoAdvance(false);
 }
 
 bool UGameSessionSubsystem::GetWorldTimeAutoAdvance() const {

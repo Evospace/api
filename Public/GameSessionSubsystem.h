@@ -76,6 +76,10 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void SetWorldTimeOfDayHours(double Hours);
 
+  /** Sets time of day and freezes it (disables tick-based advance). Use for creative / UI lock. */
+  UFUNCTION(BlueprintCallable, Category = "World Time")
+  void SetLockedWorldTimeOfDayHours(double Hours);
+
   UFUNCTION(BlueprintCallable)
   bool GetWorldTimeAutoAdvance() const;
 
