@@ -62,6 +62,9 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.1"))
   float TransitionDurationSeconds = 120.0f;
 
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
+  float TransitionMinAbsStepPerTick = 0.002f;
+
   // Epsilon for deciding if change is worth broadcasting
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
   float BroadcastTolerance = 0.0005f;
