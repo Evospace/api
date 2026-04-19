@@ -58,12 +58,22 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather")
   FWeatherState Target;
 
-  // Approximate time scale for Current approaching Target each tick (larger = slower).
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.1"))
-  float TransitionDurationSeconds = 120.0f;
+  /** Fixed interval between weather-subsystem ticks (must match AddTicker delay in WeatherWorldSubsystem.cpp). */
+  static constexpr float WeatherSubsystemTickIntervalSeconds = 0.5f;
 
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
-  float TransitionMinAbsStepPerTick = 0.002f;
+  /**
+   * How many weather ticks it takes to move normalized scalars across a full 0→1 span (constant |Δ| per tick).
+   * Smaller = faster transitions.
+   */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "1"))
+  int32 TransitionTicks = 240;
+
+  /**
+   * Wind speed range that TransitionTicks covers (same per-tick step rate as 0→1 on cloudiness).
+   * Raise if your weather assets use larger WindSpeed values.
+   */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.01"))
+  float WindSpeedTransitionReferenceSpan = 20.0f;
 
   // Epsilon for deciding if change is worth broadcasting
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather", meta = (ClampMin = "0.0"))
@@ -75,6 +85,10 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SetTargetWeatherValues(float Cloudiness01, float Precipitation01, float Fog01, float Storminess01, float WindSpeed);
 
+  UFUNCTION(BlueprintCallable, Category = "Weather")
+  void SetTransitionTicks(int32 Ticks) { TransitionTicks = FMath::Max(1, Ticks); }
+
+  /** Sets TransitionTicks from an approximate wall duration (seconds / WeatherSubsystemTickIntervalSeconds). */
   UFUNCTION(BlueprintCallable, Category = "Weather")
   void SetTransitionDurationSeconds(float DurationSeconds);
 
