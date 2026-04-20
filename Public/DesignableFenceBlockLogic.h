@@ -48,6 +48,8 @@ class UDesignableFenceBlockLogic : public UBlockLogic, public IDesignToolSupport
   virtual bool HasAction() const override { return true; }
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
 
+  virtual EBlockWidgetType GetWidgetType() const override;
+
   // Neighbor changes
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos) override;
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos) override;

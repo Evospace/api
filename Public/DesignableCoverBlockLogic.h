@@ -56,6 +56,8 @@ class UDesignableCoverBlockLogic : public UBlockLogic, public IDesignToolSupport
 
   virtual void BlockBeginPlay() override;
 
+  virtual EBlockWidgetType GetWidgetType() const override;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Covers")
   UStaticCoverSet *CoverSet = nullptr;
 
