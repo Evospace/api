@@ -67,7 +67,6 @@ class UBlockLogic : public UInstance {
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
-  virtual void BlockDestruction();
 
   // Neighbor and accessor events
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);

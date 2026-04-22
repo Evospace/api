@@ -41,6 +41,8 @@ class USectorCompiler;
 class APlayerController;
 class UResourceNetworkManager;
 class UDroneManager;
+class URailNetwork;
+class URailwayManager;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
@@ -181,6 +183,8 @@ class ADimension : public AActor {
 
   UBlockNetwork *GetNewNetwork();
   UDroneManager *GetDroneManager();
+  URailNetwork *GetRailNetwork();
+  URailwayManager *GetRailwayManager();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
@@ -266,6 +270,12 @@ class ADimension : public AActor {
 
   UPROPERTY(VisibleAnywhere)
   UDroneManager *DroneManager;
+
+  UPROPERTY(VisibleAnywhere)
+  URailNetwork *RailNetwork;
+
+  UPROPERTY(VisibleAnywhere)
+  URailwayManager *RailwayManager;
 
   UPROPERTY(VisibleAnywhere)
   UInstancedStaticMeshComponent *DroneMeshComponent;

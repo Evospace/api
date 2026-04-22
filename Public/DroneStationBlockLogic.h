@@ -39,7 +39,7 @@ class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider
   TWeakObjectPtr<UDroneManager> DroneManager;
 
   virtual void BlockBeginPlay() override;
-  virtual void BlockDestruction() override;
+  virtual void BlockEndPlay() override;
 
   virtual bool IsBlockTicks() const override { return true; }
   virtual void Tick() override;
