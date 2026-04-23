@@ -8,6 +8,7 @@
 class UInventory;
 class UCoreAccessor;
 class URailwayManager;
+class UBlockWidget;
 
 UCLASS()
 class URailStationBlockLogic : public URailNodeBlockLogic {
@@ -33,10 +34,16 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
   virtual void BlockBeginPlay() override;
   virtual void BlockEndPlay() override;
 
-  virtual bool IsBlockTicks() const override { return false; }
+  virtual bool IsBlockTicks() const override { return true; }
+  virtual void Tick() override;
   virtual bool IsStation() const override { return true; }
+
+  virtual TSubclassOf<UBlockWidget> GetWidgetClass() const override;
 
   /** Tries to send one train to the first other registered station; no-op if there is no second station or no path. */
   UFUNCTION(BlueprintCallable, Category = "Rail")
   void MakeRouteTest();
+
+  /** If auto-dispatch is enabled and input is non-empty, launches one train to the first other station with a valid path (one attempt per tick). */
+  void DispatchTrainIfReady();
 };

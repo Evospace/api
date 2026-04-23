@@ -28,15 +28,9 @@ void URailwayManager::RegisterStation(URailStationBlockLogic *Station) {
     NextStationId = FMath::Max(NextStationId, Station->StationID + 1);
   }
   Stations.Add(Station->StationID, Station);
-  if (Stations.Num() >= 2 && bEnableAutoLaunch && AutoLaunchIntervalSeconds > 0.f) {
-    AutoLaunchAccumulator = AutoLaunchIntervalSeconds;
-  }
 }
 
 void URailwayManager::OnRailGraphChanged() {
-  if (bEnableAutoLaunch && AutoLaunchIntervalSeconds > 0.f) {
-    AutoLaunchAccumulator = AutoLaunchIntervalSeconds;
-  }
 }
 
 void URailwayManager::UnregisterStation(URailStationBlockLogic *Station) {
@@ -206,38 +200,6 @@ void URailwayManager::Tick(float SimStepSeconds) {
   }
 }
 
-void URailwayManager::MaybeAutoLaunchFrame(float DeltaTime) {
-  if (!bEnableAutoLaunch || AutoLaunchIntervalSeconds <= 0.f) {
-    return;
-  }
-  if (Stations.Num() < 2) {
-    return;
-  }
-  for (const FTrainInstanceData &E : Trains) {
-    if (E.SimState == ETrainSimState::Moving) {
-      return;
-    }
-  }
-  // Once per game frame (TickVisual from ADimension::Tick), not per TickBlocks substep.
-  // Running LaunchTrain/FindPath from the FTSTicker substep loop is wrong tick context and
-  // can fire many pathfinds per frame; keep policy dispatch on the frame clock.
-  AutoLaunchAccumulator += DeltaTime;
-  if (AutoLaunchAccumulator < AutoLaunchIntervalSeconds) {
-    return;
-  }
-  AutoLaunchAccumulator = 0.f;
-  TArray<URailStationBlockLogic *> List;
-  for (const TPair<int32, URailStationBlockLogic *> &K : Stations) {
-    if (K.Value) {
-      List.Add(K.Value);
-    }
-  }
-  if (List.Num() < 2) {
-    return;
-  }
-  std::ignore = LaunchTrain(List[0], List[1]->StationID);
-}
-
 void URailwayManager::EnsureVisual(int32 Index) {
   if (!Trains.IsValidIndex(Index)) {
     return;
@@ -282,10 +244,10 @@ void URailwayManager::ReleaseVisual(int32 Index) {
 }
 
 void URailwayManager::TickVisual(float DeltaTime) {
+  (void)DeltaTime;
   if (!ownerDimension.IsValid() || !railNetwork.IsValid()) {
     return;
   }
-  MaybeAutoLaunchFrame(DeltaTime);
   for (int i = 0; i < Trains.Num(); ++i) {
     FTrainInstanceData &T = Trains[i];
     if (T.SimState != ETrainSimState::Moving) {

@@ -29,15 +29,12 @@ class URailwayManager : public UObject {
 
   bool LaunchTrain(URailStationBlockLogic *From, int32 TargetStationId);
 
-  /** Nudge auto-launch to retry (e.g. right after a new segment is linked). */
+  /** Reserved for graph-dependent behavior (e.g. UI refresh); dispatch is inventory-driven. */
   void OnRailGraphChanged();
 
-  /** When bEnableAutoLaunch, periodically sends a train between the first two registered stations if nothing is moving and a path exists. */
+  /** When true, each rail station with tick tries to launch a train while input has items (first reachable other station), similar to drone stations. */
   UPROPERTY(EditAnywhere, Category = "Rail|Auto")
   bool bEnableAutoLaunch = true;
-
-  UPROPERTY(EditAnywhere, Category = "Rail|Auto", meta = (ClampMin = "0.0"))
-  float AutoLaunchIntervalSeconds = 8.f;
 
   // When true, draws rail segment polylines in the world (URailwayManager on ADimension in PIE / game).
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug|Rail")
@@ -58,7 +55,6 @@ class URailwayManager : public UObject {
   void EnsureVisual(int32 Index);
   void ReleaseVisual(int32 Index);
   void DebugDrawRailGraph() const;
-  void MaybeAutoLaunchFrame(float DeltaTime);
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TWeakObjectPtr<ADimension> ownerDimension;
@@ -71,6 +67,4 @@ class URailwayManager : public UObject {
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   int32 NextStationId = 1;
-
-  float AutoLaunchAccumulator = 0.f;
 };
