@@ -72,14 +72,16 @@ class URailNetwork : public UNetworkBase {
   private:
   FQrVector3i RootKey(URailNodeBlockLogic *Node) const;
   FVector ComputeNodeRenderTangent(URailNodeBlockLogic *Node, const FVector &ReferenceDirection) const;
-  void InvalidateRenderCache();
-  const FRailEdgeArcSampleCache *GetOrBuildEdgeArcSampleCache(const FQrVector3i &From, const FQrVector3i &To) const;
+  bool BuildEdgePolyline(
+    const FQrVector3i &From,
+    const FQrVector3i &To,
+    TArray<FVector> &OutPoints,
+    TArray<float> *OutPrefixDistances,
+    float *OutTotalLength) const;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TWeakObjectPtr<ADimension> OwnerWorld;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TMap<FQrVector3i, URailNodeBlockLogic *> Nodes;
-
-  mutable TMap<FRailDirectedEdgeKey, FRailEdgeArcSampleCache> EdgeArcSampleCache;
 };
