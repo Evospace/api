@@ -3,15 +3,30 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/StaticMeshComponent.h"
+#include "RailTypes.h"
 #include "TrainActor.generated.h"
 
-class UStaticMeshComponent;
 class USceneComponent;
 class URailwayManager;
 class UTrainHoverWidgetBase;
 class UTrainWidgetBase;
 class UHudWidget;
 class UTrainInstance;
+
+USTRUCT()
+struct FEvospaceTrainCarMeshGroup {
+  GENERATED_BODY()
+
+  UPROPERTY(VisibleAnywhere)
+  UStaticMeshComponent *CarBody = nullptr;
+
+  UPROPERTY(VisibleAnywhere)
+  UStaticMeshComponent *FrontWheel = nullptr;
+
+  UPROPERTY(VisibleAnywhere)
+  UStaticMeshComponent *RearWheel = nullptr;
+};
 
 UCLASS()
 class ATrainActor : public AActor {
@@ -21,13 +36,8 @@ class ATrainActor : public AActor {
   ATrainActor();
   virtual void BeginPlay() override;
   void BindToTrain(URailwayManager *InRailwayManager, int32 InTrainIndex);
-  void ApplyRailPose(
-    const FVector &CenterLocation,
-    const FVector &CenterTangent,
-    const FVector &FrontBogieLocation,
-    const FVector &FrontBogieTangent,
-    const FVector &RearBogieLocation,
-    const FVector &RearBogieTangent);
+  void SyncCarVisuals(const UTrainInstance *TrainData);
+  void ApplyConsistPose(const TArray<FTrainCarWorldPose> &CarPoses);
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   UTrainInstance *GetTrainSimulation() const;
   TSubclassOf<UTrainHoverWidgetBase> GetHoverWidgetClass() const;
@@ -37,15 +47,19 @@ class ATrainActor : public AActor {
   UPROPERTY(VisibleAnywhere)
   USceneComponent *Root = nullptr;
 
+  // First car body; kept for direct BP references. Updated by SyncCarVisuals.
   UPROPERTY(VisibleAnywhere)
   UStaticMeshComponent *Body = nullptr;
 
   private:
-  UPROPERTY(VisibleAnywhere)
-  UStaticMeshComponent *FrontWheelGroup = nullptr;
+  void EnsureCarCount(int32 NumCars);
+  UStaticMeshComponent *AddMeshComponent(
+    FName Suffix, UStaticMesh *Mesh, bool bQueryCollision);
+  UStaticMesh *ResolveWagonMesh() const;
+  UStaticMesh *ResolveWheelMesh() const;
 
   UPROPERTY(VisibleAnywhere)
-  UStaticMeshComponent *RearWheelGroup = nullptr;
+  TArray<FEvospaceTrainCarMeshGroup> CarMeshGroups;
 
   UPROPERTY(EditAnywhere, Category = "Train|Visual")
   float WagonBodyZOffset = 10.0f;

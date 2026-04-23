@@ -15,6 +15,12 @@ class ULogicContext;
 // Shared fixed-point scale for rail distances and train kinematics.
 static constexpr int64 RailDistanceFixedScale = 1000;
 
+/** Centre-to-centre distance along the track for consecutive cars in a consist. */
+static constexpr float RailTrainCarLengthUu = 350.0f;
+
+/** Wheelbase: distance between the two bogies of one car. */
+static constexpr float RailTrainCarBogieSpacingUu = 220.0f;
+
 UENUM()
 enum class ETrainSimState : uint8 {
   Idle,
@@ -33,6 +39,44 @@ struct FRailPathStep {
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
   FQrVector3i To = FQrVector3i::Zero();
+};
+
+// World pose for one car (centre + two bogies), used for rendering and path debugging.
+USTRUCT(BlueprintType)
+struct FTrainCarWorldPose {
+  GENERATED_BODY()
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector CenterLocation = FVector::ZeroVector;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector CenterTangent = FVector::ForwardVector;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector FrontBogieLocation = FVector::ZeroVector;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector FrontBogieTangent = FVector::ForwardVector;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector RearBogieLocation = FVector::ZeroVector;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Visual")
+  FVector RearBogieTangent = FVector::ForwardVector;
+};
+
+// Basis for future path occupancy: longitudinal span from the lead car centre (sim anchor at path offset 0) along the last edge direction.
+USTRUCT(BlueprintType)
+struct FTrainConsistPathSpan {
+  GENERATED_BODY()
+
+  /** How far the front of the lead car is ahead of the sim anchor, along the track, fixed units. */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Physics")
+  int64 LeadHeadForwardFromAnchorFixed = 0;
+
+  /** How far the rear of the last car is behind the sim anchor, along the track, fixed units (non-negative). */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Physics")
+  int64 LastTailAftFromAnchorFixed = 0;
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -85,6 +129,16 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   ULogicContext *DepartureContext = nullptr;
+
+  // --- Consist / physical layout (single shared Cargo; per-car only for display & future path blocking)
+  // Sim anchor: path offset 0 = centre of the lead (front) car, matching the previous single-wagon model.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Consist", meta = (ClampMin = "1", UIMin = "1"))
+  int32 NumCars = 4;
+
+  int64 GetHeadHalfLengthFixed() const;
+  int64 GetCarLengthFixed() const;
+  int64 GetConsistLengthFromAnchorAftFixed() const;
+  FTrainConsistPathSpan ComputePathSpan() const;
 
   virtual ULogicContext *GetContext_Implementation() const override { return DepartureContext; }
 };

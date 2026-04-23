@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Qr/CoordinameMinimal.h"
+#include "RailTypes.h"
 #include "RailwayManager.generated.h"
 
 class ADimension;
@@ -12,7 +13,6 @@ class ATrainActor;
 class UTrainSchedule;
 class UTrainInstance;
 class FJsonObject;
-struct FRailPathStep;
 class ARailSplineRenderManagerActor;
 
 UCLASS()
@@ -43,6 +43,9 @@ class URailwayManager : public UObject {
   UTrainInstance *GetTrainDataMutable(int32 Index);
   const UTrainInstance *GetTrainData(int32 Index) const;
   UTrainInstance *GetDockedTrainAtStation(const FString &StationIdentifier) const;
+
+  /** Centre + bogie poses for each car; anchor at path offset 0 = lead car centre (same as legacy single wagon). */
+  bool TryGetTrainConsistWorldPoses(const UTrainInstance *Train, TArray<FTrainCarWorldPose> &OutPoses) const;
 
   /** Removes every train instance and its visual actor; clears station docking. */
   void ClearAllTrains();
