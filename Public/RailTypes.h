@@ -3,10 +3,13 @@
 
 #include "CoreMinimal.h"
 #include "Qr/CoordinameMinimal.h"
+#include "Qr/Prototype.h"
 #include "RailTypes.generated.h"
 
 class URailStationBlockLogic;
 class UInventory;
+class UTrainSchedule;
+class ULogicContext;
 
 UENUM()
 enum class ETrainSimState : uint8 {
@@ -17,7 +20,7 @@ enum class ETrainSimState : uint8 {
   NoPath,
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FRailPathStep {
   GENERATED_BODY()
 
@@ -28,37 +31,50 @@ struct FRailPathStep {
   FQrVector3i To = FQrVector3i::Zero();
 };
 
-USTRUCT()
-struct FTrainInstanceData {
+UCLASS(BlueprintType, Blueprintable)
+class UTrainInstance : public UInstance {
   GENERATED_BODY()
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  public:
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   TArray<FRailPathStep> Path;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int32 PathIndex = 0;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   float DistanceAlongSegment = 0.f;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   float Speed = 800.f;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   ETrainSimState SimState = ETrainSimState::Idle;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int32 TargetStationId = 0;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   TWeakObjectPtr<URailStationBlockLogic> SourceStation;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   TWeakObjectPtr<URailStationBlockLogic> TargetStation;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   UInventory *Cargo = nullptr;
 
-  UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int32 InstanceRandom = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
+  UTrainSchedule *Schedule = nullptr;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
+  int32 CurrentStopIndex = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
+  int32 CurrentStationId = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
+  ULogicContext *DepartureContext = nullptr;
 };

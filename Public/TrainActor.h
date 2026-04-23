@@ -7,6 +7,11 @@
 
 class UStaticMeshComponent;
 class USceneComponent;
+class URailwayManager;
+class UTrainHoverWidgetBase;
+class UTrainWidgetBase;
+class UHudWidget;
+class UTrainInstance;
 
 UCLASS()
 class ATrainActor : public AActor {
@@ -15,9 +20,23 @@ class ATrainActor : public AActor {
   public:
   ATrainActor();
   virtual void BeginPlay() override;
+  void BindToTrain(URailwayManager *InRailwayManager, int32 InTrainIndex);
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  UTrainInstance *GetTrainSimulation() const;
+  TSubclassOf<UTrainHoverWidgetBase> GetHoverWidgetClass() const;
+  TSubclassOf<UTrainWidgetBase> GetWidgetClass() const;
+  void OpenWidget(UHudWidget *HudWidget);
+
   UPROPERTY(VisibleAnywhere)
   USceneComponent *Root = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   UStaticMeshComponent *Body = nullptr;
+
+  private:
+  UPROPERTY()
+  URailwayManager *RailwayManager = nullptr;
+
+  UPROPERTY()
+  int32 TrainIndex = INDEX_NONE;
 };
