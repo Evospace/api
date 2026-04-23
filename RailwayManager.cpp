@@ -6,43 +6,311 @@
 #include "Public/Inventory.h"
 #include "Public/RailNetwork.h"
 #include "Public/RailNodeBlockLogic.h"
+#include "Public/RailTypes.h"
 #include "Public/RailStationBlockLogic.h"
 #include "Public/TrainSchedule.h"
 #include "Public/TrainActor.h"
+#include "Public/RailSplineRenderManagerActor.h"
 #include "Public/Condition.h"
 #include "Public/LogicContext.h"
-#include "Evospace/Item/InventoryLibrary.h"
+#include "Evospace/JsonHelper.h"
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 #include "HAL/IConsoleManager.h"
 #include "Qr/StaticLogger.h"
 #include <tuple>
 
+namespace {
+
+uint64 IntSqrtFloor(uint64 Value) {
+  uint64 low = 0;
+  uint64 high = Value;
+  uint64 answer = 0;
+  while (low <= high) {
+    const uint64 mid = low + (high - low) / 2;
+    if (mid == 0 || mid <= Value / mid) {
+      answer = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return answer;
+}
+
+} // namespace
+
 void URailwayManager::Initialize(ADimension *Owner, URailNetwork *Network) {
   ownerDimension = Owner;
   railNetwork = Network;
+  bRailSplineVisualDirty = true;
+}
+
+void URailwayManager::BeginDestroy() {
+  ReleaseRailSplineRenderer();
+  Super::BeginDestroy();
+}
+
+bool URailwayManager::SerializeJson(TSharedPtr<FJsonObject> Json) const {
+  if (!Json.IsValid()) {
+    return false;
+  }
+
+  TArray<TSharedPtr<FJsonValue>> TrainArray;
+  for (const UTrainInstance *Train : Trains) {
+    if (!Train || !Train->Schedule) {
+      continue;
+    }
+
+    TSharedPtr<FJsonObject> TrainJson = MakeShareable(new FJsonObject());
+    TrainJson->SetNumberField(TEXT("CurrentStopIndex"), Train->CurrentStopIndex);
+    TrainJson->SetStringField(TEXT("CurrentStationIdentifier"), Train->CurrentStationIdentifier);
+    TrainJson->SetStringField(TEXT("TargetStationIdentifier"), Train->TargetStationIdentifier);
+    TrainJson->SetNumberField(TEXT("PathIndex"), Train->PathIndex);
+    TrainJson->SetNumberField(TEXT("SimState"), static_cast<int32>(Train->SimState));
+    TrainJson->SetNumberField(TEXT("SimTick"), Train->SimTick);
+    TrainJson->SetNumberField(TEXT("InstanceRandom"), Train->InstanceRandom);
+    TrainJson->SetNumberField(TEXT("Speed"), Train->Speed);
+    TrainJson->SetNumberField(TEXT("DistanceAlongSegment"), Train->DistanceAlongSegment);
+
+    if (Train->Cargo) {
+      TSharedPtr<FJsonObject> CargoJson = MakeShareable(new FJsonObject());
+      if (Train->Cargo->SerializeJson(CargoJson)) {
+        TrainJson->SetObjectField(TEXT("Cargo"), CargoJson);
+      }
+    }
+
+    TSharedPtr<FJsonObject> ScheduleJson = MakeShareable(new FJsonObject());
+    ScheduleJson->SetBoolField(TEXT("Loop"), Train->Schedule->bLoop);
+    TArray<TSharedPtr<FJsonValue>> StopsJson;
+    for (UTrainScheduleStop *Stop : Train->Schedule->Stops) {
+      if (!Stop) {
+        continue;
+      }
+      TSharedPtr<FJsonObject> StopJson = MakeShareable(new FJsonObject());
+      StopJson->SetStringField(TEXT("StationIdentifier"), Stop->StationIdentifier);
+      if (Stop->DepartureCondition) {
+        json_helper::TrySerialize(StopJson, TEXT("DepartureCondition"), Stop->DepartureCondition);
+      }
+      StopsJson.Add(MakeShareable(new FJsonValueObject(StopJson)));
+    }
+    ScheduleJson->SetArrayField(TEXT("Stops"), StopsJson);
+    TrainJson->SetObjectField(TEXT("Schedule"), ScheduleJson);
+
+    TArray<TSharedPtr<FJsonValue>> PathArray;
+    for (const FRailPathStep &Step : Train->Path) {
+      TSharedPtr<FJsonObject> StepJson = MakeShareable(new FJsonObject());
+      json_helper::TrySet(StepJson, TEXT("From"), Step.From);
+      json_helper::TrySet(StepJson, TEXT("To"), Step.To);
+      PathArray.Add(MakeShareable(new FJsonValueObject(StepJson)));
+    }
+    if (PathArray.Num() > 0) {
+      TrainJson->SetArrayField(TEXT("Path"), PathArray);
+    }
+
+    TrainArray.Add(MakeShareable(new FJsonValueObject(TrainJson)));
+  }
+
+  Json->SetArrayField(TEXT("Trains"), TrainArray);
+  return true;
+}
+
+bool URailwayManager::DeserializeJson(TSharedPtr<FJsonObject> Json) {
+  if (!Json.IsValid()) {
+    return false;
+  }
+
+  ClearAllTrains();
+
+  const TArray<TSharedPtr<FJsonValue>> *TrainsJson = nullptr;
+  if (!Json->TryGetArrayField(TEXT("Trains"), TrainsJson) || !TrainsJson) {
+    return true;
+  }
+
+  for (const TSharedPtr<FJsonValue> &TrainValue : *TrainsJson) {
+    TSharedPtr<FJsonObject> TrainJson = TrainValue.IsValid() ? TrainValue->AsObject() : nullptr;
+    if (!TrainJson.IsValid()) {
+      continue;
+    }
+
+    TSharedPtr<FJsonObject> ScheduleJson;
+    if (!json_helper::TryGet(TrainJson, TEXT("Schedule"), ScheduleJson) || !ScheduleJson.IsValid()) {
+      continue;
+    }
+
+    UTrainSchedule *Schedule = NewObject<UTrainSchedule>(this);
+    if (!Schedule) {
+      continue;
+    }
+    bool bLoop = true;
+    if (ScheduleJson->TryGetBoolField(TEXT("Loop"), bLoop)) {
+      Schedule->bLoop = bLoop;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>> *StopsArray = nullptr;
+    if (!ScheduleJson->TryGetArrayField(TEXT("Stops"), StopsArray) || !StopsArray || StopsArray->Num() == 0) {
+      continue;
+    }
+
+    for (const TSharedPtr<FJsonValue> &StopValue : *StopsArray) {
+      TSharedPtr<FJsonObject> StopJson = StopValue.IsValid() ? StopValue->AsObject() : nullptr;
+      if (!StopJson.IsValid()) {
+        continue;
+      }
+
+      UTrainScheduleStop *Stop = NewObject<UTrainScheduleStop>(Schedule);
+      if (!Stop) {
+        continue;
+      }
+
+      StopJson->TryGetStringField(TEXT("StationIdentifier"), Stop->StationIdentifier);
+      if (!FindStationByIdentifier(Stop->StationIdentifier)) {
+        LOG(WARN_LL) << "RailLoad: train stop station not found identifier=" << Stop->StationIdentifier;
+      }
+
+      TSharedPtr<FJsonObject> ConditionJson;
+      if (json_helper::TryGet(StopJson, TEXT("DepartureCondition"), ConditionJson) && ConditionJson.IsValid()) {
+        Stop->DepartureCondition = NewObject<UCondition>(Stop);
+        if (Stop->DepartureCondition) {
+          Stop->DepartureCondition->DeserializeJson(ConditionJson);
+        }
+      } else {
+        Stop->DepartureCondition = NewObject<UCondition>(Stop);
+        if (Stop->DepartureCondition) {
+          Stop->DepartureCondition->Mode = EConditionMode::Always;
+        }
+      }
+
+      Schedule->Stops.Add(Stop);
+    }
+
+    if (Schedule->Stops.Num() == 0) {
+      continue;
+    }
+
+    UTrainInstance *Train = NewObject<UTrainInstance>(this);
+    if (!Train) {
+      continue;
+    }
+
+    Train->Schedule = Schedule;
+    Train->Cargo = NewObject<UInventory>(this);
+    if (Train->Cargo) {
+      Train->Cargo->Resize(10);
+      json_helper::TryDeserialize(TrainJson, TEXT("Cargo"), Train->Cargo);
+    }
+    Train->DepartureContext = NewObject<ULogicContext>(this);
+    if (Train->DepartureContext && Train->DepartureContext->Input) {
+      Train->DepartureContext->Input->Clear();
+    }
+
+    int32 SavedCurrentStopIndex = 0;
+    TrainJson->TryGetNumberField(TEXT("CurrentStopIndex"), SavedCurrentStopIndex);
+    Train->CurrentStopIndex = Schedule->Stops.IsValidIndex(SavedCurrentStopIndex) ? SavedCurrentStopIndex : 0;
+
+    TrainJson->TryGetStringField(TEXT("CurrentStationIdentifier"), Train->CurrentStationIdentifier);
+    TrainJson->TryGetStringField(TEXT("TargetStationIdentifier"), Train->TargetStationIdentifier);
+    TrainJson->TryGetNumberField(TEXT("PathIndex"), Train->PathIndex);
+    TrainJson->TryGetNumberField(TEXT("InstanceRandom"), Train->InstanceRandom);
+    json_helper::TryGet(TrainJson, TEXT("SimTick"), Train->SimTick);
+    double SavedSpeedRaw = 0.0;
+    if (TrainJson->TryGetNumberField(TEXT("Speed"), SavedSpeedRaw)) {
+      const bool bLegacyFloatSpeed = FMath::Abs(SavedSpeedRaw) < 10000.0;
+      const double Scaled = bLegacyFloatSpeed ? SavedSpeedRaw * static_cast<double>(RailDistanceFixedScale) : SavedSpeedRaw;
+      Train->Speed = FMath::Max<int64>(0, FMath::RoundToInt64(Scaled));
+    } else {
+      Train->Speed = 0;
+    }
+
+    double SavedDistanceRaw = 0.0;
+    if (TrainJson->TryGetNumberField(TEXT("DistanceAlongSegment"), SavedDistanceRaw)) {
+      const bool bLegacyFloatDistance = FMath::Abs(SavedDistanceRaw) < 100000.0;
+      const double Scaled = bLegacyFloatDistance ? SavedDistanceRaw * static_cast<double>(RailDistanceFixedScale) : SavedDistanceRaw;
+      Train->DistanceAlongSegment = FMath::Max<int64>(0, FMath::RoundToInt64(Scaled));
+    } else {
+      Train->DistanceAlongSegment = 0;
+    }
+
+    int32 SavedState = static_cast<int32>(ETrainSimState::Idle);
+    TrainJson->TryGetNumberField(TEXT("SimState"), SavedState);
+    Train->SimState = static_cast<ETrainSimState>(SavedState);
+
+    const TArray<TSharedPtr<FJsonValue>> *PathArray = nullptr;
+    if (TrainJson->TryGetArrayField(TEXT("Path"), PathArray) && PathArray) {
+      for (const TSharedPtr<FJsonValue> &StepValue : *PathArray) {
+        TSharedPtr<FJsonObject> StepJson = StepValue.IsValid() ? StepValue->AsObject() : nullptr;
+        if (!StepJson.IsValid()) {
+          continue;
+        }
+        FRailPathStep Step;
+        json_helper::TryGet(StepJson, TEXT("From"), Step.From);
+        json_helper::TryGet(StepJson, TEXT("To"), Step.To);
+        Train->Path.Add(Step);
+      }
+    }
+
+    if (!Train->CurrentStationIdentifier.IsEmpty()) {
+      Train->SourceStation = FindStationByIdentifier(Train->CurrentStationIdentifier);
+    }
+    if (!Train->TargetStationIdentifier.IsEmpty()) {
+      Train->TargetStation = FindStationByIdentifier(Train->TargetStationIdentifier);
+    }
+
+    if (Train->SimState == ETrainSimState::Moving && Train->Path.Num() == 0) {
+      LOG(WARN_LL) << "RailLoad: moving train has empty path, forcing Arrived state";
+      Train->SimState = ETrainSimState::Arrived;
+      Train->TargetStationIdentifier.Empty();
+      Train->TargetStation = nullptr;
+      Train->PathIndex = 0;
+      Train->DistanceAlongSegment = 0;
+    }
+
+    if (Train->PathIndex < 0 || Train->PathIndex >= Train->Path.Num()) {
+      Train->PathIndex = 0;
+      if (Train->SimState == ETrainSimState::Moving && Train->Path.Num() > 0) {
+        Train->DistanceAlongSegment = 0;
+      }
+    }
+
+    Trains.Add(Train);
+    TrainVisuals.Add(nullptr);
+    EnsureVisual(Trains.Num() - 1);
+  }
+
+  RefreshStationDocking();
+  return true;
 }
 
 void URailwayManager::RegisterStation(URailStationBlockLogic *Station) {
   if (!Station) {
     return;
   }
-  if (Station->StationID == 0) {
+  if (Station->StationID.IsEmpty()) {
     Station->StationID = GenerateStationID();
-  } else {
-    NextStationId = FMath::Max(NextStationId, Station->StationID + 1);
   }
+  FString UniqueStationId = Station->StationID;
+  int32 CollisionIndex = 1;
+  while (URailStationBlockLogic *const *Found = Stations.Find(UniqueStationId)) {
+    if (*Found == Station) {
+      break;
+    }
+    UniqueStationId = FString::Printf(TEXT("%s_%03d"), *Station->StationID, CollisionIndex);
+    ++CollisionIndex;
+  }
+  Station->StationID = UniqueStationId;
   Stations.Add(Station->StationID, Station);
 }
 
 void URailwayManager::OnRailGraphChanged() {
+  bRailSplineVisualDirty = true;
+  RefreshRailSplineVisuals();
 }
 
 void URailwayManager::UnregisterStation(URailStationBlockLogic *Station) {
   if (!Station) {
     return;
   }
-  if (Station->StationID == 0) {
+  if (Station->StationID.IsEmpty()) {
     return;
   }
   if (URailStationBlockLogic *const *FoundStation = Stations.Find(Station->StationID)) {
@@ -52,14 +320,25 @@ void URailwayManager::UnregisterStation(URailStationBlockLogic *Station) {
   }
 }
 
-URailStationBlockLogic *URailwayManager::FindStationByID(int32 ID) const {
-  if (ID == 0) {
+URailStationBlockLogic *URailwayManager::FindStationByID(const FString &ID) const {
+  if (ID.IsEmpty()) {
     return nullptr;
   }
   if (URailStationBlockLogic *const *FoundStation = Stations.Find(ID)) {
     return *FoundStation;
   }
   return nullptr;
+}
+
+FString URailwayManager::GetStationIdentifier(const URailStationBlockLogic *Station) const {
+  if (!Station) {
+    return FString();
+  }
+  return Station->StationID;
+}
+
+URailStationBlockLogic *URailwayManager::FindStationByIdentifier(const FString &StationIdentifier) const {
+  return FindStationByID(StationIdentifier);
 }
 
 FQrVector3i URailwayManager::StationRootKey(URailStationBlockLogic *S) const {
@@ -73,32 +352,33 @@ FQrVector3i URailwayManager::StationRootKey(URailStationBlockLogic *S) const {
   return Base->GetBlockPos();
 }
 
-bool URailwayManager::LaunchTrain(URailStationBlockLogic *From, int32 TargetStationId) {
-  if (!From || TargetStationId == 0) {
+bool URailwayManager::LaunchTrain(URailStationBlockLogic *From, const FString &TargetStationIdentifier) {
+  if (!From || TargetStationIdentifier.IsEmpty()) {
     return false;
   }
   UTrainSchedule *Schedule = NewObject<UTrainSchedule>(this);
   if (!Schedule) {
     return false;
   }
-  Schedule->AddStopAlways(From->StationID);
-  Schedule->AddStopAlways(TargetStationId);
-  if (!Schedule->HasEnoughStops()) {
-    return false;
-  }
+  Schedule->AddStopAlways(GetStationIdentifier(From));
+  Schedule->AddStopAlways(TargetStationIdentifier);
   return SpawnTrainWithSchedule(Schedule, 0);
 }
 
 bool URailwayManager::SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex) {
-  if (!Schedule || !Schedule->HasEnoughStops()) {
+  if (!Schedule || Schedule->Stops.Num() == 0) {
     return false;
   }
   if (!Schedule->Stops.IsValidIndex(InitialStopIndex)) {
     return false;
   }
-  const int32 InitialStationId = Schedule->Stops[InitialStopIndex].StationId;
-  if (!FindStationByID(InitialStationId)) {
-    LOG(ERROR_LL) << "RailSpawn: initial stop station not found id=" << InitialStationId;
+  UTrainScheduleStop *InitialStop = Schedule->Stops[InitialStopIndex];
+  if (!InitialStop) {
+    return false;
+  }
+  const FString InitialStationIdentifier = InitialStop->StationIdentifier;
+  if (!FindStationByIdentifier(InitialStationIdentifier)) {
+    LOG(ERROR_LL) << "RailSpawn: initial stop station not found identifier=" << InitialStationIdentifier;
     return false;
   }
 
@@ -108,14 +388,17 @@ bool URailwayManager::SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 Ini
   }
   Train->Schedule = Schedule;
   Train->CurrentStopIndex = InitialStopIndex;
-  Train->CurrentStationId = InitialStationId;
+  Train->CurrentStationIdentifier = InitialStationIdentifier;
   Train->SimState = ETrainSimState::Arrived;
-  Train->Speed = 1200.f;
+  Train->Speed = 0;
   Train->InstanceRandom = FMath::Rand();
   Train->Cargo = NewObject<UInventory>(this);
   Train->DepartureContext = NewObject<ULogicContext>(this);
   if (Train->Cargo) {
-    Train->Cargo->Resize(1);
+    Train->Cargo->Resize(10);
+  }
+  if (Train->DepartureContext && Train->DepartureContext->Input) {
+    Train->DepartureContext->Input->Clear();
   }
   Trains.Add(Train);
   TrainVisuals.Add(nullptr);
@@ -137,13 +420,43 @@ const UTrainInstance *URailwayManager::GetTrainData(int32 Index) const {
   return Trains[Index];
 }
 
-bool URailwayManager::BuildPathBetweenStations(int32 SourceStationId, int32 TargetStationId, TArray<FRailPathStep> &OutPath) const {
+UTrainInstance *URailwayManager::GetDockedTrainAtStation(const FString &StationIdentifier) const {
+  if (StationIdentifier.IsEmpty()) {
+    return nullptr;
+  }
+  for (UTrainInstance *Train : Trains) {
+    if (!Train) {
+      continue;
+    }
+    if (Train->SimState == ETrainSimState::Arrived && Train->CurrentStationIdentifier == StationIdentifier) {
+      return Train;
+    }
+  }
+  return nullptr;
+}
+
+void URailwayManager::ClearAllTrains() {
+  for (int32 i = 0; i < TrainVisuals.Num(); ++i) {
+    ReleaseVisual(i);
+  }
+  TrainVisuals.Reset();
+  Trains.Reset();
+  RefreshStationDocking();
+}
+
+#if WITH_EDITOR
+void URailwayManager::EditorDeleteAllTrains() {
+  ClearAllTrains();
+}
+#endif
+
+bool URailwayManager::BuildPathBetweenStations(const FString &SourceStationIdentifier, const FString &TargetStationIdentifier, TArray<FRailPathStep> &OutPath) const {
   OutPath.Empty();
-  if (!railNetwork.IsValid() || SourceStationId == 0 || TargetStationId == 0 || SourceStationId == TargetStationId) {
+  if (!railNetwork.IsValid() || SourceStationIdentifier.IsEmpty() || TargetStationIdentifier.IsEmpty() || SourceStationIdentifier == TargetStationIdentifier) {
     return false;
   }
-  URailStationBlockLogic *From = FindStationByID(SourceStationId);
-  URailStationBlockLogic *To = FindStationByID(TargetStationId);
+  URailStationBlockLogic *From = FindStationByIdentifier(SourceStationIdentifier);
+  URailStationBlockLogic *To = FindStationByIdentifier(TargetStationIdentifier);
   if (!From || !To) {
     return false;
   }
@@ -162,27 +475,21 @@ bool URailwayManager::IsDepartureConditionMet(const UTrainInstance *Train) const
   if (!Train || !Train->Schedule || !Train->Schedule->Stops.IsValidIndex(Train->CurrentStopIndex)) {
     return false;
   }
-  URailStationBlockLogic *Station = FindStationByID(Train->CurrentStationId);
+  UTrainScheduleStop *CurrentStop = Train->Schedule->Stops[Train->CurrentStopIndex];
+  if (!CurrentStop) {
+    return false;
+  }
+  URailStationBlockLogic *Station = FindStationByIdentifier(Train->CurrentStationIdentifier);
   if (!Station) {
     return false;
   }
-  UCondition *Condition = Train->Schedule->Stops[Train->CurrentStopIndex].DepartureCondition;
+  UCondition *Condition = CurrentStop->DepartureCondition;
   if (!Condition) {
     return true;
   }
-  ULogicContext *Context = Train->DepartureContext;
+  ULogicContext *Context = Train->GetContext_Implementation();
   if (!Context || !Context->Input) {
     return false;
-  }
-  Context->Input->Clear();
-  if (Station->InputInventory) {
-    Context->Input->FromInventory(Station->InputInventory);
-  }
-  if (Station->OutputInventory) {
-    Context->Input->FromInventory(Station->OutputInventory);
-  }
-  if (Train->Cargo) {
-    Context->Input->FromInventory(Train->Cargo);
   }
   return Condition->Evaluate(Context) != 0;
 }
@@ -198,6 +505,15 @@ bool URailwayManager::TryDispatchTrainFromSchedule(int32 Index) {
   if (!T->Schedule->Stops.IsValidIndex(T->CurrentStopIndex)) {
     return false;
   }
+  UTrainScheduleStop *FromStop = T->Schedule->Stops[T->CurrentStopIndex];
+  if (!FromStop) {
+    return false;
+  }
+  if (URailStationBlockLogic *Station = FindStationByIdentifier(T->CurrentStationIdentifier)) {
+    if (Station->GetDockedTrain() == T) {
+      Station->SyncDepartureContextForDockedTrain();
+    }
+  }
   if (!IsDepartureConditionMet(T)) {
     return false;
   }
@@ -206,28 +522,30 @@ bool URailwayManager::TryDispatchTrainFromSchedule(int32 Index) {
   if (!T->Schedule->Stops.IsValidIndex(NextStopIndex)) {
     return false;
   }
-  const int32 SourceStationId = T->Schedule->Stops[T->CurrentStopIndex].StationId;
-  const int32 TargetStationId = T->Schedule->Stops[NextStopIndex].StationId;
-  URailStationBlockLogic *From = FindStationByID(SourceStationId);
-  URailStationBlockLogic *To = FindStationByID(TargetStationId);
+  UTrainScheduleStop *ToStop = T->Schedule->Stops[NextStopIndex];
+  if (!ToStop) {
+    return false;
+  }
+  const FString SourceStationIdentifier = FromStop->StationIdentifier;
+  const FString TargetStationIdentifier = ToStop->StationIdentifier;
+  URailStationBlockLogic *From = FindStationByIdentifier(SourceStationIdentifier);
+  URailStationBlockLogic *To = FindStationByIdentifier(TargetStationIdentifier);
   if (!From || !To) {
     return false;
   }
 
   TArray<FRailPathStep> path;
-  if (!BuildPathBetweenStations(SourceStationId, TargetStationId, path)) {
+  if (!BuildPathBetweenStations(SourceStationIdentifier, TargetStationIdentifier, path)) {
     return false;
   }
   T->Path = MoveTemp(path);
   T->PathIndex = 0;
-  T->DistanceAlongSegment = 0.f;
-  T->TargetStationId = TargetStationId;
+  T->DistanceAlongSegment = 0;
+  T->TargetStationIdentifier = TargetStationIdentifier;
   T->SourceStation = From;
   T->TargetStation = To;
   T->SimState = ETrainSimState::Moving;
-  if (T->Cargo && From->InputInventory) {
-    std::ignore = UInventoryLibrary::TryMoveFromAny(T->Cargo, From->InputInventory);
-  }
+  T->Speed = FMath::Clamp<int64>(T->Speed, 0, static_cast<int64>(TrainMaxSpeedPerTick));
   EnsureVisual(Index);
   return true;
 }
@@ -241,27 +559,119 @@ void URailwayManager::ArriveAtTarget(int32 Index, int32 ArrivedStopIndex) {
     return;
   }
   URailStationBlockLogic *ArrivedStation = T->TargetStation.Get();
-  if (ArrivedStation) {
-    if (T->Cargo && ArrivedStation->OutputInventory) {
-      std::ignore = UInventoryLibrary::TryMoveFromAny(ArrivedStation->OutputInventory, T->Cargo);
-    }
-  }
   if (T->Schedule && T->Schedule->Stops.IsValidIndex(ArrivedStopIndex)) {
-    T->CurrentStopIndex = ArrivedStopIndex;
-    T->CurrentStationId = T->Schedule->Stops[ArrivedStopIndex].StationId;
-    T->SimState = ETrainSimState::Arrived;
+    if (UTrainScheduleStop *ArrivedStop = T->Schedule->Stops[ArrivedStopIndex]) {
+      T->CurrentStopIndex = ArrivedStopIndex;
+      T->CurrentStationIdentifier = ArrivedStop->StationIdentifier;
+      T->SimState = ETrainSimState::Arrived;
+    } else {
+      T->SimState = ETrainSimState::Idle;
+    }
   } else {
     T->SimState = ETrainSimState::Idle;
   }
   T->Path.Empty();
   T->PathIndex = 0;
-  T->DistanceAlongSegment = 0.f;
+  T->DistanceAlongSegment = 0;
+  T->Speed = 0;
   T->SourceStation = ArrivedStation;
   T->TargetStation = nullptr;
-  T->TargetStationId = 0;
+  T->TargetStationIdentifier.Empty();
+  if (T->DepartureContext && T->DepartureContext->Input) {
+    T->DepartureContext->Input->Clear();
+  }
 }
 
-void URailwayManager::UpdateTrainMovement(int32 Index, float Dt) {
+int64 URailwayManager::ComputeRemainingPathDistance(const UTrainInstance *Train) const {
+  if (!Train || !railNetwork.IsValid() || Train->Path.Num() == 0 || Train->PathIndex >= Train->Path.Num()) {
+    return 0;
+  }
+
+  int64 remainingDistance = 0;
+  for (int32 pathIdx = Train->PathIndex; pathIdx < Train->Path.Num(); ++pathIdx) {
+    const FRailPathStep &Step = Train->Path[pathIdx];
+    if (Step.From == Step.To) {
+      continue;
+    }
+
+    const int64 edgeLen = railNetwork->GetEdgeLength(Step.From, Step.To);
+    if (edgeLen <= 0) {
+      continue;
+    }
+
+    if (pathIdx == Train->PathIndex) {
+      remainingDistance += FMath::Max<int64>(0, edgeLen - Train->DistanceAlongSegment);
+    } else {
+      remainingDistance += edgeLen;
+    }
+  }
+  return remainingDistance;
+}
+
+bool URailwayManager::TrySampleTrainPathAtOffset(
+  const UTrainInstance *Train,
+  int64 OffsetFixed,
+  FVector &OutWorldLocation,
+  FVector &OutWorldTangent) const {
+  if (!Train || !railNetwork.IsValid() || Train->Path.Num() == 0) {
+    return false;
+  }
+
+  int32 SamplePathIndex = FMath::Clamp(Train->PathIndex, 0, Train->Path.Num() - 1);
+  int64 SampleDistance = Train->DistanceAlongSegment + OffsetFixed;
+  const int32 LastPathIndex = Train->Path.Num() - 1;
+  constexpr int32 MaxTraverseIterations = 256;
+
+  for (int32 Iteration = 0; Iteration < MaxTraverseIterations; ++Iteration) {
+    if (!Train->Path.IsValidIndex(SamplePathIndex)) {
+      return false;
+    }
+
+    const FRailPathStep &Step = Train->Path[SamplePathIndex];
+    const int64 StepLength = railNetwork->GetEdgeLength(Step.From, Step.To);
+    if (StepLength <= 0) {
+      if (SamplePathIndex >= LastPathIndex) {
+        OutWorldLocation = FVector::ZeroVector;
+        OutWorldTangent = FVector::ForwardVector;
+        return false;
+      }
+      ++SamplePathIndex;
+      SampleDistance = 0;
+      continue;
+    }
+
+    if (SampleDistance < 0) {
+      if (SamplePathIndex <= 0) {
+        SampleDistance = 0;
+        railNetwork->SampleEdgeWorld(Step.From, Step.To, SampleDistance, OutWorldLocation, OutWorldTangent);
+        return true;
+      }
+      --SamplePathIndex;
+      const FRailPathStep &PrevStep = Train->Path[SamplePathIndex];
+      const int64 PrevLength = railNetwork->GetEdgeLength(PrevStep.From, PrevStep.To);
+      SampleDistance += FMath::Max<int64>(0, PrevLength);
+      continue;
+    }
+
+    if (SampleDistance > StepLength) {
+      if (SamplePathIndex >= LastPathIndex) {
+        SampleDistance = StepLength;
+        railNetwork->SampleEdgeWorld(Step.From, Step.To, SampleDistance, OutWorldLocation, OutWorldTangent);
+        return true;
+      }
+      SampleDistance -= StepLength;
+      ++SamplePathIndex;
+      continue;
+    }
+
+    railNetwork->SampleEdgeWorld(Step.From, Step.To, SampleDistance, OutWorldLocation, OutWorldTangent);
+    return true;
+  }
+
+  return false;
+}
+
+void URailwayManager::UpdateTrainMovement(int32 Index) {
   if (!Trains.IsValidIndex(Index) || !railNetwork.IsValid()) {
     return;
   }
@@ -283,31 +693,93 @@ void URailwayManager::UpdateTrainMovement(int32 Index, float Dt) {
     T->SimState = ETrainSimState::NoPath;
     return;
   }
-  float len = railNetwork->GetEdgeLength(Step.From, Step.To);
-  if (len < KINDA_SMALL_NUMBER) {
+  const int64 len = railNetwork->GetEdgeLength(Step.From, Step.To);
+  if (len <= 0) {
     T->PathIndex++;
-    T->DistanceAlongSegment = 0.f;
+    T->DistanceAlongSegment = 0;
     if (T->PathIndex >= T->Path.Num()) {
       ArriveAtTarget(Index, ArrivedStopIndex);
     }
     return;
   }
-  T->DistanceAlongSegment += T->Speed * Dt;
-  while (T->DistanceAlongSegment >= len - KINDA_SMALL_NUMBER) {
-    T->DistanceAlongSegment -= len;
-    T->PathIndex++;
+
+  const int64 remainingDistance = ComputeRemainingPathDistance(T);
+  if (remainingDistance <= TrainStopDistanceTolerance) {
+    ArriveAtTarget(Index, ArrivedStopIndex);
+    return;
+  }
+
+  const int64 accelerationPerTick = FMath::Max<int64>(0, TrainAccelerationPerTick);
+  const int64 brakingPerTick = FMath::Max<int64>(1, TrainBrakingPerTick);
+  const int64 maxSpeedPerTick = FMath::Max<int64>(0, TrainMaxSpeedPerTick);
+
+  const int64 stopDistance = FMath::Max<int64>(0, remainingDistance - TrainStopDistanceTolerance);
+  const uint64 stopDistanceU = static_cast<uint64>(stopDistance);
+  const uint64 brakingU = static_cast<uint64>(brakingPerTick);
+  const uint64 maxSafeSpeedToStop = IntSqrtFloor(2ull * brakingU * stopDistanceU);
+  const int64 desiredSpeed = FMath::Min<int64>(maxSpeedPerTick, static_cast<int64>(maxSafeSpeedToStop));
+
+  if (T->Speed < desiredSpeed) {
+    T->Speed = FMath::Min<int64>(desiredSpeed, T->Speed + accelerationPerTick);
+  } else {
+    T->Speed = FMath::Max<int64>(desiredSpeed, T->Speed - brakingPerTick);
+  }
+  T->Speed = FMath::Clamp<int64>(T->Speed, 0, maxSpeedPerTick);
+
+  int64 travelDistance = T->Speed;
+  while (travelDistance > 0) {
     if (T->PathIndex >= T->Path.Num()) {
-      T->DistanceAlongSegment = 0.f;
+      T->DistanceAlongSegment = 0;
       ArriveAtTarget(Index, ArrivedStopIndex);
       return;
     }
-    const FRailPathStep &Next = T->Path[T->PathIndex];
-    len = railNetwork->GetEdgeLength(Next.From, Next.To);
-    if (len < KINDA_SMALL_NUMBER) {
-      if (Next.From == Next.To) {
-        T->SimState = ETrainSimState::NoPath;
-        return;
-      }
+
+    const FRailPathStep &CurrentStep = T->Path[T->PathIndex];
+    if (CurrentStep.From == CurrentStep.To) {
+      T->SimState = ETrainSimState::NoPath;
+      return;
+    }
+
+    const int64 currentLen = railNetwork->GetEdgeLength(CurrentStep.From, CurrentStep.To);
+    if (currentLen <= 0) {
+      ++T->PathIndex;
+      T->DistanceAlongSegment = 0;
+      continue;
+    }
+
+    const int64 segmentRemaining = FMath::Max<int64>(0, currentLen - T->DistanceAlongSegment);
+    if (travelDistance < segmentRemaining) {
+      T->DistanceAlongSegment += travelDistance;
+      break;
+    }
+
+    travelDistance -= segmentRemaining;
+    ++T->PathIndex;
+    T->DistanceAlongSegment = 0;
+    if (T->PathIndex >= T->Path.Num()) {
+      ArriveAtTarget(Index, ArrivedStopIndex);
+      return;
+    }
+  }
+}
+
+void URailwayManager::RefreshStationDocking() {
+  TMap<FString, UTrainInstance *> StationIdentifierToTrain;
+  for (UTrainInstance *Train : Trains) {
+    if (!Train || Train->SimState != ETrainSimState::Arrived || Train->CurrentStationIdentifier.IsEmpty()) {
+      continue;
+    }
+    StationIdentifierToTrain.FindOrAdd(Train->CurrentStationIdentifier) = Train;
+  }
+
+  for (const TPair<FString, URailStationBlockLogic *> &Pair : Stations) {
+    URailStationBlockLogic *Station = Pair.Value;
+    if (!Station) {
+      continue;
+    }
+    UTrainInstance *WantTrain = StationIdentifierToTrain.FindRef(GetStationIdentifier(Station));
+    if (Station->GetDockedTrain() != WantTrain) {
+      Station->SetDockedTrain(WantTrain);
     }
   }
 }
@@ -316,17 +788,22 @@ bool URailwayManager::TryGetTrainTransform(const UTrainInstance *T, FVector &Out
   if (!T) {
     return false;
   }
-  static constexpr float kVisualZOffsetUu = 80.f;
-  if (railNetwork.IsValid() && T->Path.Num() > 0 && T->PathIndex < T->Path.Num()) {
-    const FRailPathStep &S = T->Path[T->PathIndex];
-    FVector p, tan;
-    railNetwork->SampleEdgeWorld(S.From, S.To, T->DistanceAlongSegment, p, tan);
-    OutWorldLocation = p + FVector(0.f, 0.f, kVisualZOffsetUu);
-    OutWorldRotation = tan.Rotation();
+
+  FVector FrontBogieLocation;
+  FVector FrontBogieTangent;
+  FVector RearBogieLocation;
+  FVector RearBogieTangent;
+  if (TryGetTrainVisualPose(T, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent)) {
+    OutWorldLocation = (FrontBogieLocation + RearBogieLocation) * 0.5f;
+    FVector Forward = (FrontBogieLocation - RearBogieLocation).GetSafeNormal();
+    if (Forward.IsNearlyZero()) {
+      Forward = (FrontBogieTangent + RearBogieTangent).GetSafeNormal();
+    }
+    OutWorldRotation = Forward.IsNearlyZero() ? FRotator::ZeroRotator : Forward.Rotation();
     return true;
   }
 
-  URailStationBlockLogic *Station = FindStationByID(T->CurrentStationId);
+  URailStationBlockLogic *Station = FindStationByIdentifier(T->CurrentStationIdentifier);
   if (!Station) {
     return false;
   }
@@ -335,21 +812,68 @@ bool URailwayManager::TryGetTrainTransform(const UTrainInstance *T, FVector &Out
   if (!StationRoot) {
     StationRoot = Station;
   }
-  OutWorldLocation = StationRoot->GetLocation() + FVector(0.f, 0.f, kVisualZOffsetUu);
+  OutWorldLocation = StationRoot->GetLocation() + FVector(0.f, 0.f, TrainBogieZOffsetUu);
   OutWorldRotation = StationRoot->GetBlockQuat().Rotator();
   return true;
 }
 
+bool URailwayManager::TryGetTrainVisualPose(
+  const UTrainInstance *Train,
+  FVector &OutFrontBogieLocation,
+  FVector &OutFrontBogieTangent,
+  FVector &OutRearBogieLocation,
+  FVector &OutRearBogieTangent) const {
+  if (!Train) {
+    return false;
+  }
+
+  const float HalfSpacingUu = FMath::Max(1.0f, TrainBogieSpacingUu * 0.5f);
+  const int64 HalfSpacingFixed = FMath::RoundToInt64(static_cast<double>(HalfSpacingUu) * static_cast<double>(RailDistanceFixedScale));
+
+  if (TrySampleTrainPathAtOffset(Train, HalfSpacingFixed, OutFrontBogieLocation, OutFrontBogieTangent) &&
+      TrySampleTrainPathAtOffset(Train, -HalfSpacingFixed, OutRearBogieLocation, OutRearBogieTangent)) {
+    const FVector VerticalOffset(0.0f, 0.0f, TrainBogieZOffsetUu);
+    OutFrontBogieLocation += VerticalOffset;
+    OutRearBogieLocation += VerticalOffset;
+    return true;
+  }
+
+  URailStationBlockLogic *Station = FindStationByIdentifier(Train->CurrentStationIdentifier);
+  if (!Station) {
+    return false;
+  }
+  UBlockLogic *StationRoot = Station->GetPartRootBlock();
+  if (!StationRoot) {
+    StationRoot = Station;
+  }
+  const FVector Center = StationRoot->GetLocation() + FVector(0.0f, 0.0f, TrainBogieZOffsetUu);
+  const FVector Forward = StationRoot->GetBlockQuat().GetForwardVector().GetSafeNormal();
+  const FVector Direction = Forward.IsNearlyZero() ? FVector::ForwardVector : Forward;
+  OutFrontBogieLocation = Center + Direction * HalfSpacingUu;
+  OutRearBogieLocation = Center - Direction * HalfSpacingUu;
+  OutFrontBogieTangent = Direction;
+  OutRearBogieTangent = Direction;
+  return true;
+}
+
 void URailwayManager::Tick(float SimStepSeconds) {
+  (void)SimStepSeconds;
   if (!ownerDimension.IsValid() || !railNetwork.IsValid()) {
     return;
   }
+  // Before dispatch: stations must have DockedTrain / WagonStorageProxy in sync with simulation (Arrived + CurrentStationIdentifier).
+  RefreshStationDocking();
   for (int i = 0; i < Trains.Num(); ++i) {
-    if (Trains[i] && Trains[i]->SimState == ETrainSimState::Moving) {
-      UpdateTrainMovement(i, SimStepSeconds);
-    } else {
-      std::ignore = TryDispatchTrainFromSchedule(i);
+    UTrainInstance *Train = Trains[i];
+    if (!Train) {
+      continue;
     }
+    ++Train->SimTick;
+    if (Train->SimState == ETrainSimState::Moving) {
+      UpdateTrainMovement(i);
+      continue;
+    }
+    std::ignore = TryDispatchTrainFromSchedule(i);
   }
 }
 
@@ -401,6 +925,7 @@ void URailwayManager::TickVisual(float DeltaTime) {
   if (!ownerDimension.IsValid() || !railNetwork.IsValid()) {
     return;
   }
+  RefreshRailSplineVisuals();
   for (int i = 0; i < Trains.Num(); ++i) {
     UTrainInstance *T = Trains[i];
     if (!T) {
@@ -409,14 +934,77 @@ void URailwayManager::TickVisual(float DeltaTime) {
     EnsureVisual(i);
     if (ATrainActor *Vis = TrainVisuals[i]) {
       Vis->BindToTrain(this, i);
-      FVector at;
-      FRotator r;
-      if (TryGetTrainTransform(T, at, r)) {
-        Vis->SetActorLocationAndRotation(at, r);
+      FVector FrontBogieLocation;
+      FVector FrontBogieTangent;
+      FVector RearBogieLocation;
+      FVector RearBogieTangent;
+      if (TryGetTrainVisualPose(T, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent)) {
+        Vis->ApplyRailPose(FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent);
+      } else {
+        FVector at;
+        FRotator r;
+        if (TryGetTrainTransform(T, at, r)) {
+          Vis->SetActorLocationAndRotation(at, r);
+        }
       }
     }
   }
   DebugDrawRailGraph();
+}
+
+void URailwayManager::EnsureRailSplineRenderer() {
+  if (RailSplineRenderer.IsValid()) {
+    return;
+  }
+  ADimension *Dimension = ownerDimension.Get();
+  if (!Dimension) {
+    return;
+  }
+  UWorld *World = Dimension->GetWorld();
+  if (!World) {
+    return;
+  }
+
+  FActorSpawnParameters SpawnParams;
+  SpawnParams.Owner = Dimension;
+  SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+  SpawnParams.ObjectFlags |= RF_Transient;
+
+  ARailSplineRenderManagerActor *SpawnedActor = World->SpawnActor<ARailSplineRenderManagerActor>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+  if (!SpawnedActor) {
+    return;
+  }
+  SpawnedActor->AttachToActor(Dimension, FAttachmentTransformRules::KeepWorldTransform);
+  RailSplineRenderer = SpawnedActor;
+}
+
+void URailwayManager::ReleaseRailSplineRenderer() {
+  if (!RailSplineRenderer.IsValid()) {
+    return;
+  }
+  RailSplineRenderer->Destroy();
+  RailSplineRenderer = nullptr;
+}
+
+void URailwayManager::RefreshRailSplineVisuals() {
+  if (!RailSplineRenderer.IsValid()) {
+    bRailSplineVisualDirty = true;
+  }
+  if (!bRailSplineVisualDirty) {
+    return;
+  }
+  if (!ownerDimension.IsValid() || !railNetwork.IsValid()) {
+    return;
+  }
+  EnsureRailSplineRenderer();
+  if (!RailSplineRenderer.IsValid()) {
+    return;
+  }
+
+  TArray<FRailRenderSegmentData> Segments;
+  railNetwork->CollectRenderSegments(Segments);
+  RailSplineRenderer->RebuildRailSegments(Segments);
+  bRailSplineVisualDirty = false;
 }
 
 void URailwayManager::DebugDrawRailGraph() const {
@@ -432,16 +1020,12 @@ void URailwayManager::DebugDrawRailGraph() const {
   railNetwork->DebugDrawGraphEdges(W, LineColor, LineLife);
 }
 
-int32 URailwayManager::GenerateStationID() {
-  if (NextStationId <= 0) {
-    NextStationId = 1;
-  }
-  while (Stations.Contains(NextStationId)) {
-    ++NextStationId;
-  }
-  const int32 id = NextStationId;
-  ++NextStationId;
-  return id;
+FString URailwayManager::GenerateStationID() const {
+  FString GeneratedId;
+  do {
+    GeneratedId = FString::Printf(TEXT("RailStation_%08X"), FMath::Rand());
+  } while (Stations.Contains(GeneratedId));
+  return GeneratedId;
 }
 
 namespace {
@@ -456,18 +1040,18 @@ static ADimension *FindDimensionForRailCommand(UWorld *World) {
   return nullptr;
 }
 
-static bool ParseStationIdArg(const TArray<FString> &Args, int32 ArgIndex, int32 &OutStationId) {
+static bool ParseStationIdArg(const TArray<FString> &Args, int32 ArgIndex, FString &OutStationId) {
   if (!Args.IsValidIndex(ArgIndex)) {
     return false;
   }
-  OutStationId = FCString::Atoi(*Args[ArgIndex]);
-  return OutStationId > 0;
+  OutStationId = Args[ArgIndex];
+  return !OutStationId.IsEmpty();
 }
 
-static bool BuildScheduleStopIds(const TArray<FString> &Args, const TMap<int32, URailStationBlockLogic *> &Stations, TArray<int32> &OutStopIds) {
+static bool BuildScheduleStopIds(const TArray<FString> &Args, const TMap<FString, URailStationBlockLogic *> &Stations, TArray<FString> &OutStopIds) {
   OutStopIds.Empty();
   if (Args.Num() == 0) {
-    for (const TPair<int32, URailStationBlockLogic *> &Pair : Stations) {
+    for (const TPair<FString, URailStationBlockLogic *> &Pair : Stations) {
       if (!Pair.Value) {
         continue;
       }
@@ -476,22 +1060,22 @@ static bool BuildScheduleStopIds(const TArray<FString> &Args, const TMap<int32, 
         return true;
       }
     }
-    return false;
+    return OutStopIds.Num() >= 1;
   }
 
   for (int32 i = 0; i < Args.Num(); ++i) {
-    int32 StationId = 0;
+    FString StationId;
     if (!ParseStationIdArg(Args, i, StationId)) {
       return false;
     }
     OutStopIds.Add(StationId);
   }
-  return OutStopIds.Num() >= 2;
+  return OutStopIds.Num() >= 1;
 }
 
 static FAutoConsoleCommandWithWorldAndArgs RailSpawnTrainCmd(
   TEXT("Evospace.Rail.SpawnTrain"),
-  TEXT("Spawn one train with schedule. Usage: Evospace.Rail.SpawnTrain [stationId1 stationId2 ...]"),
+  TEXT("Spawn one train with schedule. Usage: Evospace.Rail.SpawnTrain [stationName ...] (one or more)"),
   FConsoleCommandWithWorldAndArgsDelegate::CreateStatic([](const TArray<FString> &Args, UWorld *World) {
     ADimension *Dimension = FindDimensionForRailCommand(World);
     if (!Dimension) {
@@ -505,15 +1089,15 @@ static FAutoConsoleCommandWithWorldAndArgs RailSpawnTrainCmd(
       return;
     }
 
-    const TMap<int32, URailStationBlockLogic *> &Stations = RailwayManager->GetStations();
-    if (Stations.Num() < 2) {
-      LOG(ERROR_LL) << "RailSpawnTrain: requires at least two registered stations, current=" << Stations.Num();
+    const TMap<FString, URailStationBlockLogic *> &Stations = RailwayManager->GetStations();
+    if (Stations.Num() < 1) {
+      LOG(ERROR_LL) << "RailSpawnTrain: no registered stations, current=" << Stations.Num();
       return;
     }
 
-    TArray<int32> StopIds;
+    TArray<FString> StopIds;
     if (!BuildScheduleStopIds(Args, Stations, StopIds)) {
-      LOG(ERROR_LL) << "RailSpawnTrain: usage Evospace.Rail.SpawnTrain [stationId1 stationId2 ...]";
+      LOG(ERROR_LL) << "RailSpawnTrain: usage Evospace.Rail.SpawnTrain [stationName1 stationName2 ...]";
       return;
     }
 
@@ -522,15 +1106,16 @@ static FAutoConsoleCommandWithWorldAndArgs RailSpawnTrainCmd(
       LOG(ERROR_LL) << "RailSpawnTrain: failed to create schedule";
       return;
     }
-    for (const int32 StationId : StopIds) {
-      if (!RailwayManager->FindStationByID(StationId)) {
+    for (const FString &StationId : StopIds) {
+      URailStationBlockLogic *Station = RailwayManager->FindStationByID(StationId);
+      if (!Station) {
         LOG(ERROR_LL) << "RailSpawnTrain: station not found id=" << StationId;
         return;
       }
-      Schedule->AddStopAlways(StationId);
+      Schedule->AddStopAlways(RailwayManager->GetStationIdentifier(Station));
     }
-    if (!Schedule->HasEnoughStops()) {
-      LOG(ERROR_LL) << "RailSpawnTrain: schedule requires at least two valid stops";
+    if (Schedule->Stops.Num() == 0) {
+      LOG(ERROR_LL) << "RailSpawnTrain: schedule has no stops";
       return;
     }
     if (!RailwayManager->SpawnTrainWithSchedule(Schedule, 0)) {

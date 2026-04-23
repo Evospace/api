@@ -21,6 +21,7 @@ class ATrainActor : public AActor {
   ATrainActor();
   virtual void BeginPlay() override;
   void BindToTrain(URailwayManager *InRailwayManager, int32 InTrainIndex);
+  void ApplyRailPose(const FVector &FrontBogieLocation, const FVector &FrontBogieTangent, const FVector &RearBogieLocation, const FVector &RearBogieTangent);
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   UTrainInstance *GetTrainSimulation() const;
   TSubclassOf<UTrainHoverWidgetBase> GetHoverWidgetClass() const;
@@ -34,6 +35,15 @@ class ATrainActor : public AActor {
   UStaticMeshComponent *Body = nullptr;
 
   private:
+  UPROPERTY(VisibleAnywhere)
+  UStaticMeshComponent *FrontWheelGroup = nullptr;
+
+  UPROPERTY(VisibleAnywhere)
+  UStaticMeshComponent *RearWheelGroup = nullptr;
+
+  UPROPERTY(EditAnywhere, Category = "Train|Visual")
+  float WagonBodyZOffset = 10.0f;
+
   UPROPERTY()
   URailwayManager *RailwayManager = nullptr;
 

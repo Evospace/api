@@ -7,7 +7,7 @@
 
 class URailNetwork;
 class UBlockLogic;
-
+class ABlockActor;
 UCLASS()
 class URailNodeBlockLogic : public UBlockLogic {
   GENERATED_BODY()
@@ -17,6 +17,8 @@ class URailNodeBlockLogic : public UBlockLogic {
 
   virtual void BlockBeginPlay() override;
   virtual void BlockEndPlay() override;
+  virtual void SetActor(ABlockActor *actor) override;
+  virtual void RemoveActorOrRenderable() override;
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos) override;
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos) override;
 

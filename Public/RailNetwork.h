@@ -10,6 +10,15 @@
 class URailNodeBlockLogic;
 class ADimension;
 
+struct FRailRenderSegmentData {
+  FQrVector3i From = FQrVector3i::Zero();
+  FQrVector3i To = FQrVector3i::Zero();
+  FVector StartWorld = FVector::ZeroVector;
+  FVector EndWorld = FVector::ZeroVector;
+  FVector StartTangentWorld = FVector::ForwardVector;
+  FVector EndTangentWorld = FVector::ForwardVector;
+};
+
 UCLASS()
 class URailNetwork : public UNetworkBase {
   GENERATED_BODY()
@@ -28,13 +37,18 @@ class URailNetwork : public UNetworkBase {
   bool FindPathBlockToBlock(const FQrVector3i &Start, const FQrVector3i &End, TArray<FQrVector3i> &OutKeyPath) const;
   void BuildPathStepsFromKeyPath(const TArray<FQrVector3i> &KeyPath, TArray<FRailPathStep> &Out) const;
 
-  void SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &To, float DistanceAlong, FVector &OutPos, FVector &OutTangent) const;
-  float GetEdgeLength(const FQrVector3i &From, const FQrVector3i &To) const;
+  void SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &To, int64 DistanceAlongFixed, FVector &OutPos, FVector &OutTangent) const;
+  int64 GetEdgeLength(const FQrVector3i &From, const FQrVector3i &To) const;
+  void CollectRenderSegments(TArray<FRailRenderSegmentData> &OutSegments) const;
 
   void DebugDrawGraphEdges(class UWorld *World, const FColor &Color, float LineLife) const;
 
+  bool SerializeJson(TSharedPtr<FJsonObject> Json) const;
+  bool DeserializeJson(TSharedPtr<FJsonObject> Json);
+
   private:
   FQrVector3i RootKey(URailNodeBlockLogic *Node) const;
+  FVector ComputeNodeRenderTangent(URailNodeBlockLogic *Node, const FVector &ReferenceDirection) const;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TWeakObjectPtr<ADimension> OwnerWorld;

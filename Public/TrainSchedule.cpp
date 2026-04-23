@@ -1,17 +1,20 @@
 #include "Public/TrainSchedule.h"
 #include "Public/Condition.h"
 
-void UTrainSchedule::AddStopAlways(int32 StationId) {
-  if (StationId <= 0) {
+void UTrainSchedule::AddStopAlways(const FString &StationIdentifier) {
+  if (StationIdentifier.IsEmpty()) {
     return;
   }
-  FTrainScheduleStop stop;
-  stop.StationId = StationId;
-  stop.DepartureCondition = NewObject<UCondition>(this);
-  if (stop.DepartureCondition) {
-    stop.DepartureCondition->Mode = EConditionMode::Always;
+  UTrainScheduleStop *const Stop = NewObject<UTrainScheduleStop>(this);
+  if (!Stop) {
+    return;
   }
-  Stops.Add(MoveTemp(stop));
+  Stop->StationIdentifier = StationIdentifier;
+  Stop->DepartureCondition = NewObject<UCondition>(Stop);
+  if (Stop->DepartureCondition) {
+    Stop->DepartureCondition->Mode = EConditionMode::Always;
+  }
+  Stops.Add(Stop);
 }
 
 int32 UTrainSchedule::ResolveNextStopIndex(int32 CurrentStopIndex) const {

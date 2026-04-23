@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ContextProvider.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "RailTypes.generated.h"
@@ -10,6 +11,9 @@ class URailStationBlockLogic;
 class UInventory;
 class UTrainSchedule;
 class ULogicContext;
+
+// Shared fixed-point scale for rail distances and train kinematics.
+static constexpr int64 RailDistanceFixedScale = 1000;
 
 UENUM()
 enum class ETrainSimState : uint8 {
@@ -32,7 +36,7 @@ struct FRailPathStep {
 };
 
 UCLASS(BlueprintType, Blueprintable)
-class UTrainInstance : public UInstance {
+class UTrainInstance : public UInstance, public ILogicContextProvider {
   GENERATED_BODY()
 
   public:
@@ -43,16 +47,20 @@ class UTrainInstance : public UInstance {
   int32 PathIndex = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
-  float DistanceAlongSegment = 0.f;
+  int64 DistanceAlongSegment = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
-  float Speed = 800.f;
+  int64 Speed = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   ETrainSimState SimState = ETrainSimState::Idle;
 
+  // Last simulation tick when SimState was updated.
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
-  int32 TargetStationId = 0;
+  int64 SimTick = 0;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FString TargetStationIdentifier;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   TWeakObjectPtr<URailStationBlockLogic> SourceStation;
@@ -73,8 +81,10 @@ class UTrainInstance : public UInstance {
   int32 CurrentStopIndex = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
-  int32 CurrentStationId = 0;
+  FString CurrentStationIdentifier;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   ULogicContext *DepartureContext = nullptr;
+
+  virtual ULogicContext *GetContext_Implementation() const override { return DepartureContext; }
 };

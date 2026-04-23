@@ -5,10 +5,34 @@
 #include "Public/Dimension.h"
 #include "Public/RailNodeBlockLogic.h"
 #include "Public/RailwayManager.h"
+#include "Evospace/JsonHelper.h"
 #include "Qr/StaticLogger.h"
 #include "Math/NumericLimits.h"
 #include "DrawDebugHelpers.h"
 #include <algorithm>
+
+namespace {
+
+FVector EvaluateRailEdgeHermitePosition(const float T, const FVector &P0, const FVector &T0, const FVector &P1, const FVector &T1) {
+  const float T2 = T * T;
+  const float T3 = T2 * T;
+  const float H00 = (2.0f * T3) - (3.0f * T2) + 1.0f;
+  const float H10 = T3 - (2.0f * T2) + T;
+  const float H01 = (-2.0f * T3) + (3.0f * T2);
+  const float H11 = T3 - T2;
+  return (H00 * P0) + (H10 * T0) + (H01 * P1) + (H11 * T1);
+}
+
+FVector EvaluateRailEdgeHermiteDerivative(const float T, const FVector &P0, const FVector &T0, const FVector &P1, const FVector &T1) {
+  const float T2 = T * T;
+  const float DH00 = (6.0f * T2) - (6.0f * T);
+  const float DH10 = (3.0f * T2) - (4.0f * T) + 1.0f;
+  const float DH01 = (-6.0f * T2) + (6.0f * T);
+  const float DH11 = (3.0f * T2) - (2.0f * T);
+  return (DH00 * P0) + (DH10 * T0) + (DH01 * P1) + (DH11 * T1);
+}
+
+} // namespace
 
 void URailNetwork::Initialize(ADimension *InOwner) {
   OwnerWorld = InOwner;
@@ -111,23 +135,23 @@ bool URailNetwork::FindPathBlockToBlock(const FQrVector3i &Start, const FQrVecto
       all.Add(P.Value);
     }
   }
-  TMap<URailNodeBlockLogic *, float> dist;
+  TMap<URailNodeBlockLogic *, int64> dist;
   TMap<URailNodeBlockLogic *, URailNodeBlockLogic *> parent;
   TSet<URailNodeBlockLogic *> done;
-  constexpr float kInf = TNumericLimits<float>::Max() * 0.5f;
+  constexpr int64 kInf = TNumericLimits<int64>::Max() / 4;
   for (URailNodeBlockLogic *K : all) {
-    dist.Add(K, TNumericLimits<float>::Max());
+    dist.Add(K, TNumericLimits<int64>::Max());
   }
-  dist[*pStart] = 0.f;
+  dist[*pStart] = 0;
   while (done.Num() < all.Num()) {
     URailNodeBlockLogic *u = nullptr;
-    float bestD = TNumericLimits<float>::Max();
+    int64 bestD = TNumericLimits<int64>::Max();
     bool foundU = false;
     for (URailNodeBlockLogic *K : all) {
       if (done.Contains(K)) {
         continue;
       }
-      if (const float *D = dist.Find(K)) {
+      if (const int64 *D = dist.Find(K)) {
         if (*D < bestD) {
           bestD = *D;
           u = K;
@@ -148,11 +172,11 @@ bool URailNetwork::FindPathBlockToBlock(const FQrVector3i &Start, const FQrVecto
         continue;
       }
       if (!dist.Contains(v)) {
-        dist.Add(v, TNumericLimits<float>::Max());
+        dist.Add(v, TNumericLimits<int64>::Max());
       }
-      const float w = FVector::Dist(u->GetLocation(), v->GetLocation());
-      const float alt = bestD + w;
-      if (const float *OldD = dist.Find(v)) {
+      const int64 w = GetEdgeLength(RootKey(u), RootKey(v));
+      const int64 alt = bestD + w;
+      if (const int64 *OldD = dist.Find(v)) {
         if (alt < *OldD) {
           dist[v] = alt;
           parent.FindOrAdd(v) = u;
@@ -160,7 +184,7 @@ bool URailNetwork::FindPathBlockToBlock(const FQrVector3i &Start, const FQrVecto
       }
     }
   }
-  if (const float *EndD = dist.Find(*pEnd)) {
+  if (const int64 *EndD = dist.Find(*pEnd)) {
     if (*EndD >= kInf) {
       LOG(ERROR_LL) << "RailPath end_inf end=" << End.ToString() << " d=" << *EndD;
       return false;
@@ -208,16 +232,83 @@ void URailNetwork::BuildPathStepsFromKeyPath(const TArray<FQrVector3i> &KeyPath,
   }
 }
 
-float URailNetwork::GetEdgeLength(const FQrVector3i &From, const FQrVector3i &To) const {
+int64 URailNetwork::GetEdgeLength(const FQrVector3i &From, const FQrVector3i &To) const {
   URailNodeBlockLogic *const *Na = Nodes.Find(From);
   URailNodeBlockLogic *const *Nb = Nodes.Find(To);
   if (!Na || !*Na || !Nb || !*Nb) {
-    return 0.f;
+    return 0;
   }
-  return FVector::Dist((*Na)->GetLocation(), (*Nb)->GetLocation());
+  const float worldLen = FVector::Dist((*Na)->GetLocation(), (*Nb)->GetLocation());
+  return FMath::RoundToInt64(static_cast<double>(worldLen) * static_cast<double>(RailDistanceFixedScale));
 }
 
-void URailNetwork::SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &To, float DistanceAlong, FVector &OutPos, FVector &OutTangent) const {
+void URailNetwork::CollectRenderSegments(TArray<FRailRenderSegmentData> &OutSegments) const {
+  OutSegments.Empty();
+  for (const TPair<FQrVector3i, URailNodeBlockLogic *> &Kvp : Nodes) {
+    URailNodeBlockLogic *Node = Kvp.Value;
+    if (!Node) {
+      continue;
+    }
+    for (URailNodeBlockLogic *LinkedNode : Node->GetLinkedRailNodes()) {
+      if (!LinkedNode || Node >= LinkedNode) {
+        continue;
+      }
+      FRailRenderSegmentData Segment;
+      Segment.From = RootKey(Node);
+      Segment.To = RootKey(LinkedNode);
+      Segment.StartWorld = Node->GetLocation();
+      Segment.EndWorld = LinkedNode->GetLocation();
+      const FVector SegmentDirection = (Segment.EndWorld - Segment.StartWorld).GetSafeNormal();
+      Segment.StartTangentWorld = ComputeNodeRenderTangent(Node, SegmentDirection);
+      Segment.EndTangentWorld = ComputeNodeRenderTangent(LinkedNode, SegmentDirection);
+      OutSegments.Add(Segment);
+    }
+  }
+}
+
+FVector URailNetwork::ComputeNodeRenderTangent(URailNodeBlockLogic *Node, const FVector &ReferenceDirection) const {
+  if (!Node) {
+    return FVector::ForwardVector;
+  }
+  FVector RefDir = ReferenceDirection.GetSafeNormal();
+  if (RefDir.IsNearlyZero()) {
+    return FVector::ForwardVector;
+  }
+
+  const FVector NodePosition = Node->GetLocation();
+  FVector AccumulatedDirection = RefDir;
+  float TotalWeight = 1.0f;
+
+  for (URailNodeBlockLogic *Neighbor : Node->GetLinkedRailNodes()) {
+    if (!Neighbor) {
+      continue;
+    }
+    FVector NeighborDirection = (Neighbor->GetLocation() - NodePosition).GetSafeNormal();
+    if (NeighborDirection.IsNearlyZero()) {
+      continue;
+    }
+
+    const float Alignment = FVector::DotProduct(NeighborDirection, RefDir);
+    if (Alignment < 0.0f) {
+      NeighborDirection *= -1.0f;
+    }
+    const float Weight = FMath::Abs(Alignment);
+    AccumulatedDirection += NeighborDirection * Weight;
+    TotalWeight += Weight;
+  }
+
+  if (TotalWeight <= KINDA_SMALL_NUMBER) {
+    return RefDir;
+  }
+
+  const FVector AveragedDirection = AccumulatedDirection / TotalWeight;
+  if (AveragedDirection.IsNearlyZero()) {
+    return RefDir;
+  }
+  return AveragedDirection.GetSafeNormal();
+}
+
+void URailNetwork::SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &To, int64 DistanceAlongFixed, FVector &OutPos, FVector &OutTangent) const {
   URailNodeBlockLogic *const *Na = Nodes.Find(From);
   URailNodeBlockLogic *const *Nb = Nodes.Find(To);
   if (!Na || !*Na || !Nb || !*Nb) {
@@ -227,15 +318,48 @@ void URailNetwork::SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &T
   }
   const FVector Pa = (*Na)->GetLocation();
   const FVector Pb = (*Nb)->GetLocation();
-  const float len = FVector::Dist(Pa, Pb);
-  if (len < KINDA_SMALL_NUMBER) {
+  const int64 lenFixed = GetEdgeLength(From, To);
+  if (lenFixed <= 0) {
     OutPos = Pa;
     OutTangent = FVector::ForwardVector;
     return;
   }
-  const float t = FMath::Clamp(DistanceAlong / len, 0.f, 1.f);
-  OutPos = FMath::Lerp(Pa, Pb, t);
-  OutTangent = (Pb - Pa).GetSafeNormal();
+
+  const FVector SegmentDirection = (Pb - Pa).GetSafeNormal();
+  if (SegmentDirection.IsNearlyZero()) {
+    OutPos = Pa;
+    OutTangent = FVector::ForwardVector;
+    return;
+  }
+
+  FVector StartDirection = ComputeNodeRenderTangent(*Na, SegmentDirection).GetSafeNormal();
+  if (StartDirection.IsNearlyZero()) {
+    StartDirection = SegmentDirection;
+  }
+  if (FVector::DotProduct(StartDirection, SegmentDirection) < 0.0f) {
+    StartDirection *= -1.0f;
+  }
+
+  FVector EndDirection = ComputeNodeRenderTangent(*Nb, SegmentDirection).GetSafeNormal();
+  if (EndDirection.IsNearlyZero()) {
+    EndDirection = SegmentDirection;
+  }
+  if (FVector::DotProduct(EndDirection, SegmentDirection) < 0.0f) {
+    EndDirection *= -1.0f;
+  }
+
+  const float SegmentLength = FVector::Dist(Pa, Pb);
+  const float TangentScale = SegmentLength * 0.5f;
+  const FVector StartHermiteTangent = StartDirection * TangentScale;
+  const FVector EndHermiteTangent = EndDirection * TangentScale;
+
+  const double tRaw = static_cast<double>(DistanceAlongFixed) / static_cast<double>(lenFixed);
+  const float t = FMath::Clamp(static_cast<float>(tRaw), 0.0f, 1.0f);
+  OutPos = EvaluateRailEdgeHermitePosition(t, Pa, StartHermiteTangent, Pb, EndHermiteTangent);
+  OutTangent = EvaluateRailEdgeHermiteDerivative(t, Pa, StartHermiteTangent, Pb, EndHermiteTangent).GetSafeNormal();
+  if (OutTangent.IsNearlyZero()) {
+    OutTangent = SegmentDirection;
+  }
 }
 
 void URailNetwork::DebugDrawGraphEdges(UWorld *World, const FColor &Color, float LineLife) const {
@@ -254,4 +378,87 @@ void URailNetwork::DebugDrawGraphEdges(UWorld *World, const FColor &Color, float
       }
     }
   }
+}
+
+bool URailNetwork::SerializeJson(TSharedPtr<FJsonObject> Json) const {
+  if (!Json.IsValid()) {
+    return false;
+  }
+
+  TArray<TSharedPtr<FJsonValue>> Links;
+  for (const auto &Kvp : Nodes) {
+    URailNodeBlockLogic *A = Kvp.Value;
+    if (!A) {
+      continue;
+    }
+    const FQrVector3i AKey = RootKey(A);
+    for (URailNodeBlockLogic *B : A->GetLinkedRailNodes()) {
+      if (!B) {
+        continue;
+      }
+      const FQrVector3i BKey = RootKey(B);
+      if (BKey == AKey) {
+        continue;
+      }
+      // Save each undirected edge once (lexicographic key order).
+      const bool bBIsBeforeA = (BKey.X < AKey.X) ||
+                               (BKey.X == AKey.X && BKey.Y < AKey.Y) ||
+                               (BKey.X == AKey.X && BKey.Y == AKey.Y && BKey.Z < AKey.Z);
+      if (bBIsBeforeA) {
+        continue;
+      }
+      TSharedPtr<FJsonObject> LinkJson = MakeShareable(new FJsonObject());
+      json_helper::TrySet(LinkJson, TEXT("A"), AKey);
+      json_helper::TrySet(LinkJson, TEXT("B"), BKey);
+      Links.Add(MakeShareable(new FJsonValueObject(LinkJson)));
+    }
+  }
+
+  Json->SetArrayField(TEXT("Links"), Links);
+  return true;
+}
+
+bool URailNetwork::DeserializeJson(TSharedPtr<FJsonObject> Json) {
+  if (!Json.IsValid()) {
+    return false;
+  }
+
+  const TArray<TSharedPtr<FJsonValue>> *Links = nullptr;
+  if (!Json->TryGetArrayField(TEXT("Links"), Links) || !Links) {
+    return true;
+  }
+
+  int32 RestoredLinks = 0;
+  for (const TSharedPtr<FJsonValue> &LinkValue : *Links) {
+    TSharedPtr<FJsonObject> LinkJson = LinkValue.IsValid() ? LinkValue->AsObject() : nullptr;
+    if (!LinkJson.IsValid()) {
+      LOG(ERROR_LL) << "RailLoad: invalid link entry json";
+      return false;
+    }
+
+    FQrVector3i AKey = FQrVector3i::Zero();
+    FQrVector3i BKey = FQrVector3i::Zero();
+    const bool bHasA = json_helper::TryGet(LinkJson, TEXT("A"), AKey);
+    const bool bHasB = json_helper::TryGet(LinkJson, TEXT("B"), BKey);
+    if (!bHasA || !bHasB) {
+      LOG(ERROR_LL) << "RailLoad: link entry missing A/B";
+      return false;
+    }
+
+    URailNodeBlockLogic *const *A = Nodes.Find(AKey);
+    URailNodeBlockLogic *const *B = Nodes.Find(BKey);
+    if (!A || !*A || !B || !*B) {
+      LOG(ERROR_LL) << "RailLoad: missing node for link A=" << AKey.ToString() << " B=" << BKey.ToString();
+      return false;
+    }
+    if (TryAddSegment(*A, *B)) {
+      ++RestoredLinks;
+    }
+  }
+
+  LOG(INFO_LL) << "RailLoad: links_total=" << Links->Num()
+               << " restored=" << RestoredLinks
+               << " nodes_registered=" << Nodes.Num();
+
+  return true;
 }

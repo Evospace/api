@@ -1,18 +1,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Qr/Prototype.h"
 #include "TrainSchedule.generated.h"
 
 class UCondition;
 
-USTRUCT(BlueprintType)
-struct FTrainScheduleStop {
+UCLASS(BlueprintType)
+class UTrainScheduleStop : public UInstance {
   GENERATED_BODY()
+  EVO_CODEGEN_INSTANCE(TrainScheduleStop)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<UTrainScheduleStop, UInstance>("TrainScheduleStop") //@class TrainScheduleStop : Instance
+      .endClass();
+  }
+
+  public:
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
+  FString StationIdentifier;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
-  int32 StationId = 0;
-
-  UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category = "Rail|Schedule")
   UCondition *DepartureCondition = nullptr;
 };
 
@@ -25,9 +33,8 @@ class UTrainSchedule : public UObject {
   bool bLoop = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
-  TArray<FTrainScheduleStop> Stops;
+  TArray<UTrainScheduleStop *> Stops;
 
-  void AddStopAlways(int32 StationId);
-  bool HasEnoughStops() const { return Stops.Num() >= 2; }
+  void AddStopAlways(const FString &StationIdentifier);
   int32 ResolveNextStopIndex(int32 CurrentStopIndex) const;
 };
