@@ -21,7 +21,13 @@ class ATrainActor : public AActor {
   ATrainActor();
   virtual void BeginPlay() override;
   void BindToTrain(URailwayManager *InRailwayManager, int32 InTrainIndex);
-  void ApplyRailPose(const FVector &FrontBogieLocation, const FVector &FrontBogieTangent, const FVector &RearBogieLocation, const FVector &RearBogieTangent);
+  void ApplyRailPose(
+    const FVector &CenterLocation,
+    const FVector &CenterTangent,
+    const FVector &FrontBogieLocation,
+    const FVector &FrontBogieTangent,
+    const FVector &RearBogieLocation,
+    const FVector &RearBogieTangent);
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   UTrainInstance *GetTrainSimulation() const;
   TSubclassOf<UTrainHoverWidgetBase> GetHoverWidgetClass() const;

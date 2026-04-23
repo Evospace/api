@@ -92,6 +92,7 @@ class URailwayManager : public UObject {
   void UpdateTrainMovement(int32 Index);
   void ArriveAtTarget(int32 Index, int32 ArrivedStopIndex);
   bool TryGetTrainTransform(const UTrainInstance *Train, FVector &OutWorldLocation, FRotator &OutWorldRotation) const;
+  bool TryGetTrainCenterPose(const UTrainInstance *Train, FVector &OutCenterLocation, FVector &OutCenterTangent) const;
   bool TryGetTrainVisualPose(const UTrainInstance *Train, FVector &OutFrontBogieLocation, FVector &OutFrontBogieTangent, FVector &OutRearBogieLocation, FVector &OutRearBogieTangent) const;
   bool TrySampleTrainPathAtOffset(const UTrainInstance *Train, int64 OffsetFixed, FVector &OutWorldLocation, FVector &OutWorldTangent) const;
   void EnsureVisual(int32 Index);

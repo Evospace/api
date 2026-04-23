@@ -12,6 +12,7 @@
 #include <algorithm>
 
 namespace {
+constexpr int32 RailArcSampleCount = 16;
 
 FVector EvaluateRailEdgeHermitePosition(const float T, const FVector &P0, const FVector &T0, const FVector &P1, const FVector &T1) {
   const float T2 = T * T;
@@ -55,6 +56,7 @@ void URailNetwork::RegisterNode(URailNodeBlockLogic *Node) {
   }
   const FQrVector3i k = RootKey(Node);
   Nodes.Add(k, Node);
+  InvalidateRenderCache();
   MarkDirty();
 }
 
@@ -65,6 +67,7 @@ void URailNetwork::UnregisterNode(URailNodeBlockLogic *Node) {
   Node->UnlinkAllRail();
   const FQrVector3i k = RootKey(Node);
   Nodes.Remove(k);
+  InvalidateRenderCache();
   MarkDirty();
   if (ADimension *D = OwnerWorld.Get()) {
     if (URailwayManager *Rm = D->GetRailwayManager()) {
@@ -108,6 +111,7 @@ bool URailNetwork::TryAddSegment(URailNodeBlockLogic *A, URailNodeBlockLogic *B)
   }
   Ra->RailLink(Rb);
   Rb->RailLink(Ra);
+  InvalidateRenderCache();
   MarkDirty();
   if (ADimension *D = OwnerWorld.Get()) {
     if (URailwayManager *Rm = D->GetRailwayManager()) {
@@ -309,27 +313,64 @@ FVector URailNetwork::ComputeNodeRenderTangent(URailNodeBlockLogic *Node, const 
 }
 
 void URailNetwork::SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &To, int64 DistanceAlongFixed, FVector &OutPos, FVector &OutTangent) const {
-  URailNodeBlockLogic *const *Na = Nodes.Find(From);
-  URailNodeBlockLogic *const *Nb = Nodes.Find(To);
-  if (!Na || !*Na || !Nb || !*Nb) {
+  const FRailEdgeArcSampleCache *Cache = GetOrBuildEdgeArcSampleCache(From, To);
+  if (!Cache) {
     OutPos = FVector::ZeroVector;
     OutTangent = FVector::ForwardVector;
     return;
   }
-  const FVector Pa = (*Na)->GetLocation();
-  const FVector Pb = (*Nb)->GetLocation();
-  const int64 lenFixed = GetEdgeLength(From, To);
-  if (lenFixed <= 0) {
-    OutPos = Pa;
-    OutTangent = FVector::ForwardVector;
-    return;
+  const double alphaRaw = static_cast<double>(DistanceAlongFixed) / static_cast<double>(Cache->LengthFixed);
+  const float alpha = FMath::Clamp(static_cast<float>(alphaRaw), 0.0f, 1.0f);
+  float t = alpha;
+  if (Cache->TotalArcLength > KINDA_SMALL_NUMBER && Cache->ArcPrefixLengths.Num() == RailArcSampleCount + 1) {
+    const float TargetArcLength = alpha * Cache->TotalArcLength;
+    for (int32 SampleIdx = 1; SampleIdx <= RailArcSampleCount; ++SampleIdx) {
+      if (Cache->ArcPrefixLengths[SampleIdx] < TargetArcLength) {
+        continue;
+      }
+      const float SegmentStartArc = Cache->ArcPrefixLengths[SampleIdx - 1];
+      const float SegmentArcLength = Cache->ArcPrefixLengths[SampleIdx] - SegmentStartArc;
+      const float LocalAlpha = (SegmentArcLength > KINDA_SMALL_NUMBER)
+                                 ? (TargetArcLength - SegmentStartArc) / SegmentArcLength
+                                 : 0.0f;
+      const float SegmentStartT = static_cast<float>(SampleIdx - 1) / static_cast<float>(RailArcSampleCount);
+      const float SegmentEndT = static_cast<float>(SampleIdx) / static_cast<float>(RailArcSampleCount);
+      t = FMath::Lerp(SegmentStartT, SegmentEndT, FMath::Clamp(LocalAlpha, 0.0f, 1.0f));
+      break;
+    }
+  }
+  OutPos = EvaluateRailEdgeHermitePosition(t, Cache->StartPoint, Cache->StartHermiteTangent, Cache->EndPoint, Cache->EndHermiteTangent);
+  OutTangent = EvaluateRailEdgeHermiteDerivative(t, Cache->StartPoint, Cache->StartHermiteTangent, Cache->EndPoint, Cache->EndHermiteTangent).GetSafeNormal();
+  if (OutTangent.IsNearlyZero()) {
+    OutTangent = (Cache->EndPoint - Cache->StartPoint).GetSafeNormal();
+    if (OutTangent.IsNearlyZero()) {
+      OutTangent = FVector::ForwardVector;
+    }
+  }
+}
+
+void URailNetwork::InvalidateRenderCache() {
+  EdgeArcSampleCache.Reset();
+}
+
+const FRailEdgeArcSampleCache *URailNetwork::GetOrBuildEdgeArcSampleCache(const FQrVector3i &From, const FQrVector3i &To) const {
+  const FRailDirectedEdgeKey CacheKey{ From, To };
+  if (const FRailEdgeArcSampleCache *Found = EdgeArcSampleCache.Find(CacheKey)) {
+    return Found;
   }
 
+  URailNodeBlockLogic *const *Na = Nodes.Find(From);
+  URailNodeBlockLogic *const *Nb = Nodes.Find(To);
+  if (!Na || !*Na || !Nb || !*Nb) {
+    return nullptr;
+  }
+
+  const FVector Pa = (*Na)->GetLocation();
+  const FVector Pb = (*Nb)->GetLocation();
+  const int64 LenFixed = GetEdgeLength(From, To);
   const FVector SegmentDirection = (Pb - Pa).GetSafeNormal();
-  if (SegmentDirection.IsNearlyZero()) {
-    OutPos = Pa;
-    OutTangent = FVector::ForwardVector;
-    return;
+  if (LenFixed <= 0 || SegmentDirection.IsNearlyZero()) {
+    return nullptr;
   }
 
   FVector StartDirection = ComputeNodeRenderTangent(*Na, SegmentDirection).GetSafeNormal();
@@ -348,18 +389,26 @@ void URailNetwork::SampleEdgeWorld(const FQrVector3i &From, const FQrVector3i &T
     EndDirection *= -1.0f;
   }
 
+  FRailEdgeArcSampleCache CacheEntry;
+  CacheEntry.LengthFixed = LenFixed;
+  CacheEntry.StartPoint = Pa;
+  CacheEntry.EndPoint = Pb;
   const float SegmentLength = FVector::Dist(Pa, Pb);
   const float TangentScale = SegmentLength * 0.5f;
-  const FVector StartHermiteTangent = StartDirection * TangentScale;
-  const FVector EndHermiteTangent = EndDirection * TangentScale;
-
-  const double tRaw = static_cast<double>(DistanceAlongFixed) / static_cast<double>(lenFixed);
-  const float t = FMath::Clamp(static_cast<float>(tRaw), 0.0f, 1.0f);
-  OutPos = EvaluateRailEdgeHermitePosition(t, Pa, StartHermiteTangent, Pb, EndHermiteTangent);
-  OutTangent = EvaluateRailEdgeHermiteDerivative(t, Pa, StartHermiteTangent, Pb, EndHermiteTangent).GetSafeNormal();
-  if (OutTangent.IsNearlyZero()) {
-    OutTangent = SegmentDirection;
+  CacheEntry.StartHermiteTangent = StartDirection * TangentScale;
+  CacheEntry.EndHermiteTangent = EndDirection * TangentScale;
+  CacheEntry.ArcPrefixLengths.SetNumUninitialized(RailArcSampleCount + 1);
+  CacheEntry.ArcPrefixLengths[0] = 0.0f;
+  FVector PrevPoint = EvaluateRailEdgeHermitePosition(0.0f, Pa, CacheEntry.StartHermiteTangent, Pb, CacheEntry.EndHermiteTangent);
+  for (int32 SampleIdx = 1; SampleIdx <= RailArcSampleCount; ++SampleIdx) {
+    const float SampleT = static_cast<float>(SampleIdx) / static_cast<float>(RailArcSampleCount);
+    const FVector Point = EvaluateRailEdgeHermitePosition(SampleT, Pa, CacheEntry.StartHermiteTangent, Pb, CacheEntry.EndHermiteTangent);
+    CacheEntry.TotalArcLength += FVector::Dist(PrevPoint, Point);
+    CacheEntry.ArcPrefixLengths[SampleIdx] = CacheEntry.TotalArcLength;
+    PrevPoint = Point;
   }
+
+  return &EdgeArcSampleCache.Add(CacheKey, MoveTemp(CacheEntry));
 }
 
 void URailNetwork::DebugDrawGraphEdges(UWorld *World, const FColor &Color, float LineLife) const {

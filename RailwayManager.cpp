@@ -713,11 +713,18 @@ void URailwayManager::UpdateTrainMovement(int32 Index) {
   const int64 brakingPerTick = FMath::Max<int64>(1, TrainBrakingPerTick);
   const int64 maxSpeedPerTick = FMath::Max<int64>(0, TrainMaxSpeedPerTick);
 
-  const int64 stopDistance = FMath::Max<int64>(0, remainingDistance - TrainStopDistanceTolerance);
-  const uint64 stopDistanceU = static_cast<uint64>(stopDistance);
-  const uint64 brakingU = static_cast<uint64>(brakingPerTick);
-  const uint64 maxSafeSpeedToStop = IntSqrtFloor(2ull * brakingU * stopDistanceU);
-  const int64 desiredSpeed = FMath::Min<int64>(maxSpeedPerTick, static_cast<int64>(maxSafeSpeedToStop));
+  int64 desiredSpeed = maxSpeedPerTick;
+  const int64 brakingDistanceAtMaxSpeed = (maxSpeedPerTick <= 0 || brakingPerTick <= 0)
+                                            ? 0
+                                            : (maxSpeedPerTick * maxSpeedPerTick) / (2 * brakingPerTick);
+  const int64 brakingZoneStartDistance = TrainStopDistanceTolerance + brakingDistanceAtMaxSpeed;
+  if (remainingDistance <= brakingZoneStartDistance) {
+    const int64 stopDistance = FMath::Max<int64>(0, remainingDistance - TrainStopDistanceTolerance);
+    const uint64 stopDistanceU = static_cast<uint64>(stopDistance);
+    const uint64 brakingU = static_cast<uint64>(brakingPerTick);
+    const uint64 maxSafeSpeedToStop = IntSqrtFloor(2ull * brakingU * stopDistanceU);
+    desiredSpeed = FMath::Min<int64>(maxSpeedPerTick, static_cast<int64>(maxSafeSpeedToStop));
+  }
 
   if (T->Speed < desiredSpeed) {
     T->Speed = FMath::Min<int64>(desiredSpeed, T->Speed + accelerationPerTick);
@@ -789,16 +796,11 @@ bool URailwayManager::TryGetTrainTransform(const UTrainInstance *T, FVector &Out
     return false;
   }
 
-  FVector FrontBogieLocation;
-  FVector FrontBogieTangent;
-  FVector RearBogieLocation;
-  FVector RearBogieTangent;
-  if (TryGetTrainVisualPose(T, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent)) {
-    OutWorldLocation = (FrontBogieLocation + RearBogieLocation) * 0.5f;
-    FVector Forward = (FrontBogieLocation - RearBogieLocation).GetSafeNormal();
-    if (Forward.IsNearlyZero()) {
-      Forward = (FrontBogieTangent + RearBogieTangent).GetSafeNormal();
-    }
+  FVector CenterLocation;
+  FVector CenterTangent;
+  if (TryGetTrainCenterPose(T, CenterLocation, CenterTangent)) {
+    OutWorldLocation = CenterLocation;
+    const FVector Forward = CenterTangent.GetSafeNormal();
     OutWorldRotation = Forward.IsNearlyZero() ? FRotator::ZeroRotator : Forward.Rotation();
     return true;
   }
@@ -817,6 +819,33 @@ bool URailwayManager::TryGetTrainTransform(const UTrainInstance *T, FVector &Out
   return true;
 }
 
+bool URailwayManager::TryGetTrainCenterPose(
+  const UTrainInstance *Train,
+  FVector &OutCenterLocation,
+  FVector &OutCenterTangent) const {
+  if (!Train) {
+    return false;
+  }
+
+  if (TrySampleTrainPathAtOffset(Train, 0, OutCenterLocation, OutCenterTangent)) {
+    OutCenterLocation += FVector(0.0f, 0.0f, TrainBogieZOffsetUu);
+    return true;
+  }
+
+  URailStationBlockLogic *Station = FindStationByIdentifier(Train->CurrentStationIdentifier);
+  if (!Station) {
+    return false;
+  }
+  UBlockLogic *StationRoot = Station->GetPartRootBlock();
+  if (!StationRoot) {
+    StationRoot = Station;
+  }
+  OutCenterLocation = StationRoot->GetLocation() + FVector(0.0f, 0.0f, TrainBogieZOffsetUu);
+  const FVector Forward = StationRoot->GetBlockQuat().GetForwardVector().GetSafeNormal();
+  OutCenterTangent = Forward.IsNearlyZero() ? FVector::ForwardVector : Forward;
+  return true;
+}
+
 bool URailwayManager::TryGetTrainVisualPose(
   const UTrainInstance *Train,
   FVector &OutFrontBogieLocation,
@@ -829,30 +858,49 @@ bool URailwayManager::TryGetTrainVisualPose(
 
   const float HalfSpacingUu = FMath::Max(1.0f, TrainBogieSpacingUu * 0.5f);
   const int64 HalfSpacingFixed = FMath::RoundToInt64(static_cast<double>(HalfSpacingUu) * static_cast<double>(RailDistanceFixedScale));
-
-  if (TrySampleTrainPathAtOffset(Train, HalfSpacingFixed, OutFrontBogieLocation, OutFrontBogieTangent) &&
-      TrySampleTrainPathAtOffset(Train, -HalfSpacingFixed, OutRearBogieLocation, OutRearBogieTangent)) {
-    const FVector VerticalOffset(0.0f, 0.0f, TrainBogieZOffsetUu);
-    OutFrontBogieLocation += VerticalOffset;
-    OutRearBogieLocation += VerticalOffset;
-    return true;
-  }
-
-  URailStationBlockLogic *Station = FindStationByIdentifier(Train->CurrentStationIdentifier);
-  if (!Station) {
+  FVector CenterLocation;
+  FVector CenterTangent;
+  if (!TryGetTrainCenterPose(Train, CenterLocation, CenterTangent)) {
     return false;
   }
-  UBlockLogic *StationRoot = Station->GetPartRootBlock();
-  if (!StationRoot) {
-    StationRoot = Station;
+
+  FVector BogieAxis = CenterTangent.GetSafeNormal();
+  if (BogieAxis.IsNearlyZero()) {
+    BogieAxis = FVector::ForwardVector;
   }
-  const FVector Center = StationRoot->GetLocation() + FVector(0.0f, 0.0f, TrainBogieZOffsetUu);
-  const FVector Forward = StationRoot->GetBlockQuat().GetForwardVector().GetSafeNormal();
-  const FVector Direction = Forward.IsNearlyZero() ? FVector::ForwardVector : Forward;
-  OutFrontBogieLocation = Center + Direction * HalfSpacingUu;
-  OutRearBogieLocation = Center - Direction * HalfSpacingUu;
-  OutFrontBogieTangent = Direction;
-  OutRearBogieTangent = Direction;
+
+  FVector SampledFrontLocation;
+  FVector SampledFrontTangent;
+  FVector SampledRearLocation;
+  FVector SampledRearTangent;
+  const bool bHasRailSamples = TrySampleTrainPathAtOffset(Train, HalfSpacingFixed, SampledFrontLocation, SampledFrontTangent) &&
+                               TrySampleTrainPathAtOffset(Train, -HalfSpacingFixed, SampledRearLocation, SampledRearTangent);
+  if (bHasRailSamples) {
+    const FVector VerticalOffset(0.0f, 0.0f, TrainBogieZOffsetUu);
+    SampledFrontLocation += VerticalOffset;
+    SampledRearLocation += VerticalOffset;
+
+    const FVector SampledAxis = (SampledFrontLocation - SampledRearLocation).GetSafeNormal();
+    if (!SampledAxis.IsNearlyZero()) {
+      BogieAxis = SampledAxis;
+    }
+
+    OutFrontBogieTangent = SampledFrontTangent.GetSafeNormal();
+    OutRearBogieTangent = SampledRearTangent.GetSafeNormal();
+  } else {
+    OutFrontBogieTangent = BogieAxis;
+    OutRearBogieTangent = BogieAxis;
+  }
+
+  if (OutFrontBogieTangent.IsNearlyZero()) {
+    OutFrontBogieTangent = BogieAxis;
+  }
+  if (OutRearBogieTangent.IsNearlyZero()) {
+    OutRearBogieTangent = BogieAxis;
+  }
+
+  OutFrontBogieLocation = CenterLocation + BogieAxis * HalfSpacingUu;
+  OutRearBogieLocation = CenterLocation - BogieAxis * HalfSpacingUu;
   return true;
 }
 
@@ -934,12 +982,15 @@ void URailwayManager::TickVisual(float DeltaTime) {
     EnsureVisual(i);
     if (ATrainActor *Vis = TrainVisuals[i]) {
       Vis->BindToTrain(this, i);
+      FVector CenterLocation;
+      FVector CenterTangent;
       FVector FrontBogieLocation;
       FVector FrontBogieTangent;
       FVector RearBogieLocation;
       FVector RearBogieTangent;
-      if (TryGetTrainVisualPose(T, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent)) {
-        Vis->ApplyRailPose(FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent);
+      if (TryGetTrainCenterPose(T, CenterLocation, CenterTangent) &&
+          TryGetTrainVisualPose(T, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent)) {
+        Vis->ApplyRailPose(CenterLocation, CenterTangent, FrontBogieLocation, FrontBogieTangent, RearBogieLocation, RearBogieTangent);
       } else {
         FVector at;
         FRotator r;

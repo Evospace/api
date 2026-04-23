@@ -10,6 +10,29 @@
 class URailNodeBlockLogic;
 class ADimension;
 
+struct FRailDirectedEdgeKey {
+  FQrVector3i From = FQrVector3i::Zero();
+  FQrVector3i To = FQrVector3i::Zero();
+
+  bool operator==(const FRailDirectedEdgeKey &Other) const {
+    return From == Other.From && To == Other.To;
+  }
+};
+
+FORCEINLINE uint32 GetTypeHash(const FRailDirectedEdgeKey &Key) {
+  return HashCombine(GetTypeHash(Key.From), GetTypeHash(Key.To));
+}
+
+struct FRailEdgeArcSampleCache {
+  int64 LengthFixed = 0;
+  FVector StartPoint = FVector::ZeroVector;
+  FVector EndPoint = FVector::ZeroVector;
+  FVector StartHermiteTangent = FVector::ForwardVector;
+  FVector EndHermiteTangent = FVector::ForwardVector;
+  float TotalArcLength = 0.0f;
+  TArray<float> ArcPrefixLengths;
+};
+
 struct FRailRenderSegmentData {
   FQrVector3i From = FQrVector3i::Zero();
   FQrVector3i To = FQrVector3i::Zero();
@@ -49,10 +72,14 @@ class URailNetwork : public UNetworkBase {
   private:
   FQrVector3i RootKey(URailNodeBlockLogic *Node) const;
   FVector ComputeNodeRenderTangent(URailNodeBlockLogic *Node, const FVector &ReferenceDirection) const;
+  void InvalidateRenderCache();
+  const FRailEdgeArcSampleCache *GetOrBuildEdgeArcSampleCache(const FQrVector3i &From, const FQrVector3i &To) const;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TWeakObjectPtr<ADimension> OwnerWorld;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TMap<FQrVector3i, URailNodeBlockLogic *> Nodes;
+
+  mutable TMap<FRailDirectedEdgeKey, FRailEdgeArcSampleCache> EdgeArcSampleCache;
 };
