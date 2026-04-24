@@ -149,7 +149,7 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
 
   // Time (seconds) to dry fully from 1.0 to 0.0 when below threshold
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.1"))
-  float DryingTimeSeconds = 300.0f;
+  float DryingTimeSeconds = 60.0f;
 
   // Scale of wetting speed when raining above threshold
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wetness", meta = (ClampMin = "0.0"))
@@ -172,4 +172,7 @@ class UWeatherWorldSubsystem : public UWorldSubsystem {
   float WindHeadingTargetDegrees = 0.0f;
 
   float WindDirectionRetargetRemainingSeconds = 0.0f;
+
+  /** Last wall time (FPlatformTime::Seconds) we ran TickWeather; 0 = not yet, use nominal tick interval. */
+  double LastTickWeatherWallTimeSec = 0.0;
 };
