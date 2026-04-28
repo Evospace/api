@@ -16,7 +16,7 @@ class ULogicContext;
 static constexpr int64 RailDistanceFixedScale = 1000;
 
 /** Centre-to-centre distance along the track for consecutive cars in a consist. */
-static constexpr float RailTrainCarLengthUu = 350.0f;
+static constexpr float RailTrainCarLengthUu = 400.0f;
 
 /** Wheelbase: distance between the two bogies of one car. */
 static constexpr float RailTrainCarBogieSpacingUu = 220.0f;
@@ -93,6 +93,33 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 DistanceAlongSegment = 0;
 
+  // Physical front end of the consist. Dispatch derives the route anchor from the train body.
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  bool HasRailAnchor = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FQrVector3i RailAnchorFrom = FQrVector3i::Zero();
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FQrVector3i RailAnchorTo = FQrVector3i::Zero();
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  int64 RailAnchorDistanceAlongSegment = 0;
+
+  // Physical rear end of the consist. Dispatch derives the next leading-car centre from this point.
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  bool HasRearRailAnchor = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FQrVector3i RearRailAnchorFrom = FQrVector3i::Zero();
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FQrVector3i RearRailAnchorTo = FQrVector3i::Zero();
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  int64 RearRailAnchorDistanceAlongSegment = 0;
+
+  /** Signed speed along the current path (fixed units per simulation tick); positive = toward path end, negative = toward path start. */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 Speed = 0;
 

@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "Qr/CoordinameMinimal.h"
 #include "RailTypes.h"
+#include "RailNetwork.h"
 #include "RailwayManager.generated.h"
 
 class ADimension;
@@ -88,10 +89,30 @@ class URailwayManager : public UObject {
   private:
   FQrVector3i StationRootKey(URailStationBlockLogic *S) const;
   bool BuildPathBetweenStations(const FString &SourceStationIdentifier, const FString &TargetStationIdentifier, TArray<FRailPathStep> &OutPath) const;
+  bool BuildPathFromTrainToStation(
+    const UTrainInstance *Train,
+    const FString &TargetStationIdentifier,
+    TArray<FRailPathStep> &OutPath,
+    int32 &OutPathIndex,
+    int64 &OutDistanceAlong) const;
+  void SyncRailAnchorFromPathPosition(UTrainInstance *Train) const;
+  bool EnsureRailAnchorForCurrentStop(UTrainInstance *Train) const;
   bool TryDispatchTrainFromSchedule(int32 Index);
   bool IsDepartureConditionMet(const UTrainInstance *Train) const;
   void RefreshStationDocking();
   int64 ComputeRemainingPathDistance(const UTrainInstance *Train) const;
+  int64 ComputeAnchorOffsetAlongPathFixed(const UTrainInstance *Train) const;
+  int64 ComputeTotalPathLengthFixed(const UTrainInstance *Train) const;
+  int64 ComputeRemainingPathDistanceBackward(const UTrainInstance *Train) const;
+  void SnapTrainAnchorToPathEnd(UTrainInstance *Train);
+  void SnapTrainAnchorToPathBackwardStop(UTrainInstance *Train);
+  bool TrySetTrainAnchorByPathOffset(UTrainInstance *Train, int64 AnchorOffsetFixed);
+  void CollectOccupiedDirectedEdgesForTrain(const UTrainInstance *Train, TSet<FRailDirectedEdgeKey> &OutEdges) const;
+  bool WouldPathEdgesConflictWithOccupancy(int32 SelfIndex, const TArray<FRailPathStep> &CandidatePath) const;
+  bool WouldConsistDirectedEdgesOverlapOtherTrains(int32 SelfIndex, const TArray<FRailPathStep> &Path, const UTrainInstance *TrainForConsist, int32 PathIndex, int64 DistanceAlong) const;
+  int64 ClampSignedMoveDeltaForOccupancy(int32 Index, int64 DeltaDistanceFixed) const;
+  /** Applies signed delta along Path; clamps at path ends. Returns applied distance (may be less than Delta if obstructed). */
+  int64 MoveTrainAlongPath(UTrainInstance *Train, int64 DeltaDistanceFixed);
   void UpdateTrainMovement(int32 Index);
   void ArriveAtTarget(int32 Index, int32 ArrivedStopIndex);
   bool TryGetTrainTransform(const UTrainInstance *Train, FVector &OutWorldLocation, FRotator &OutWorldRotation) const;
