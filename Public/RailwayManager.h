@@ -43,7 +43,6 @@ class URailwayManager : public UObject {
   bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0);
   UTrainInstance *GetTrainDataMutable(int32 Index);
   const UTrainInstance *GetTrainData(int32 Index) const;
-  UTrainInstance *GetDockedTrainAtStation(const FString &StationIdentifier) const;
 
   /** Centre + bogie poses for each car; anchor at path offset 0 = lead car centre (same as legacy single wagon). */
   bool TryGetTrainConsistWorldPoses(const UTrainInstance *Train, TArray<FTrainCarWorldPose> &OutPoses) const;
@@ -99,7 +98,9 @@ class URailwayManager : public UObject {
   bool EnsureRailAnchorForCurrentStop(UTrainInstance *Train) const;
   bool TryDispatchTrainFromSchedule(int32 Index);
   bool IsDepartureConditionMet(const UTrainInstance *Train) const;
-  void RefreshStationDocking();
+  void DockTrainAtCurrentStation(UTrainInstance *Train);
+  void UndockTrainFromCurrentStation(UTrainInstance *Train);
+  void RebuildStationDockingFromTrainStates();
   int64 ComputeRemainingPathDistance(const UTrainInstance *Train) const;
   int64 ComputeAnchorOffsetAlongPathFixed(const UTrainInstance *Train) const;
   int64 ComputeTotalPathLengthFixed(const UTrainInstance *Train) const;
