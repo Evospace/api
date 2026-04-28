@@ -120,6 +120,8 @@ class URailwayManager : public UObject {
   UPROPERTY(Transient)
   bool bRailSplineVisualDirty = true;
 
+  float LastTrainSimStepSeconds = 1.0f / 20.0f;
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Visual", meta = (AllowPrivateAccess = "true"))
   float TrainBogieSpacingUu = 220.0f;
 

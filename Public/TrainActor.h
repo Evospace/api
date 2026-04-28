@@ -38,6 +38,9 @@ class ATrainActor : public AActor {
   void BindToTrain(URailwayManager *InRailwayManager, int32 InTrainIndex);
   void SyncCarVisuals(const UTrainInstance *TrainData);
   void ApplyConsistPose(const TArray<FTrainCarWorldPose> &CarPoses);
+  void SetConsistPoseTarget(const TArray<FTrainCarWorldPose> &CarPoses, int64 SimTick, float SimStepSeconds);
+  void UpdateConsistVisual(float DeltaTime);
+  void ResetConsistPoseSmoothing();
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   UTrainInstance *GetTrainSimulation() const;
   TSubclassOf<UTrainHoverWidgetBase> GetHoverWidgetClass() const;
@@ -57,9 +60,20 @@ class ATrainActor : public AActor {
     FName Suffix, UStaticMesh *Mesh, bool bQueryCollision);
   UStaticMesh *ResolveWagonMesh() const;
   UStaticMesh *ResolveWheelMesh() const;
+  static FTrainCarWorldPose InterpolateCarPose(
+    const FTrainCarWorldPose &From, const FTrainCarWorldPose &To, float Alpha);
 
   UPROPERTY(VisibleAnywhere)
   TArray<FEvospaceTrainCarMeshGroup> CarMeshGroups;
+
+  TArray<FTrainCarWorldPose> PreviousCarPoses;
+  TArray<FTrainCarWorldPose> TargetCarPoses;
+  TArray<FTrainCarWorldPose> RenderedCarPoses;
+
+  float PoseInterpolationElapsed = 0.0f;
+  float PoseInterpolationDuration = 1.0f / 20.0f;
+  int64 LastPoseSimTick = INDEX_NONE;
+  bool HasPoseSmoothing = false;
 
   UPROPERTY(EditAnywhere, Category = "Train|Visual")
   float WagonBodyZOffset = 10.0f;
