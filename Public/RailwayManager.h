@@ -61,7 +61,7 @@ class URailwayManager : public UObject {
 
   // When true, draws rail segment polylines in the world (URailwayManager on ADimension in PIE / game).
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug|Rail")
-  bool bDebugDrawRailGraph = true;
+  bool bDebugDrawRailGraph = false;
 
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail")
   TArray<UTrainInstance *> Trains;
