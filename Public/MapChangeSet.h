@@ -23,8 +23,6 @@ struct EVOSPACE_API FMapCellState {
   const UStaticBlock *StaticBlock = nullptr;
   BlockDensity Density{};
   FQuat Rotation = FQuat::Identity;
-
-  /** When set, restores full UBlockLogic from JSON using the same format as Logic.bin saves. Root cell only. */
   TSharedPtr<FJsonObject> LogicJson;
 
   bool IsEmptyTerrain() const { return StaticBlock == nullptr && Density.Sum() == 0 && !LogicJson.IsValid(); }
