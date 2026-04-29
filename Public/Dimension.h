@@ -11,6 +11,7 @@
 #include "Evospace/World/SectorCompiler.h"
 #include "Public/StaticBlock.h"
 #include "Public/LazyGameSessionData.h"
+#include "Public/MapChangeSet.h"
 #include <Containers/CircularBuffer.h>
 #include <Engine/EngineTypes.h>
 #include <Math/Vector.h>
@@ -146,6 +147,24 @@ class ADimension : public AActor {
   UBlockLogic *DestroyLogicFull(const Vec3i &pos);
   UBlockLogic *SpawnLogicFullIdentity(const Vec3i &bpos, const UStaticBlock *staticObject);
   UBlockLogic *SpawnLogicFull(const Vec3i &bpos, const UStaticBlock *staticObject, const FQuat &rot);
+
+  /** Block cells involved in a break at wbpos (multi-cell-aware). */
+  TArray<Vec3i> GatherBreakFootprint(Vec3i wbpos);
+
+  /** Sample current sector + logic state for undo/patch payloads. Logic JSON is captured at the logic root cell only. */
+  FMapCellState CaptureMapCellState(Vec3i Pos);
+
+  /** Apply snapshots produced by CaptureMapCellState in a safe order (clear, logic roots, static-only fills). */
+  void ApplyMapCellSnapshots(const TArray<FMapCellState> &Targets);
+
+  /** Apply Before (undo) or After (redo) from a baked change record. */
+  void ApplyMapChangeSet(const FMapChangeSet &Change, EMapChangeDirection Direction);
+
+  /** Run ApplyBody once and return only cells whose state changed vs captured Before snapshots (unique Positions list). */
+  FMapChangeSet MakeEditChangeSet(const TArray<Vec3i> &Positions, TFunctionRef<void()> ApplyBody);
+
+  /** Remove logic from FinishSpawning queue (must run if actor/render teardown happens before DeferredActorSpawn sees the entry). */
+  void DiscardPendingDeferredRenderable(UBlockLogic *Logic);
 
   UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject,
                                const FQuat &rot);
