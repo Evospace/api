@@ -135,11 +135,20 @@ void UConveyorNetwork::Tick() {
 
     // Advance paths deterministically here (independent of block tick order)
     if (bl->GetSwitch_Implementation()) {
-      const int32 step = ConveyorConsts::StepForLevel(bl->GetStaticBlock()->Level);
-      if (!bl->GetInputAccess_Implementation()->IsEmpty()) {
+      const UStaticBlock *staticBlock = bl->GetStaticBlock();
+      auto *inAcc = bl->GetInputAccess_Implementation();
+      auto *outAcc = bl->GetOutputAccess_Implementation();
+      if (!staticBlock || !inAcc || !outAcc) {
+        LOG(ERROR_LL) << "Invalid conveyor tick state for " << bl->GetName()
+                      << ": staticBlock=" << staticBlock << " inAcc=" << inAcc << " outAcc=" << outAcc;
+        continue;
+      }
+
+      const int32 step = ConveyorConsts::StepForLevel(staticBlock->Level);
+      if (!inAcc->IsEmpty()) {
         bl->input_path += step;
       }
-      if (!bl->GetOutputAccess_Implementation()->IsEmpty()) {
+      if (!outAcc->IsEmpty()) {
         bl->output_path += step;
       }
     }
@@ -164,9 +173,15 @@ void UConveyorNetwork::Tick() {
       if (is_valid_renderable && inAcc && outAcc) {
         // Output visual instance lifecycle (at right side)
         if (bl->mItemInstancing2.IsEmpty() && !outAcc->IsEmpty()) {
-          auto rt = bl->GetTransformLocation();
-          rt.AddToTranslation(RotateVector(bl->GetBlockQuat(), Side::Right).vec() * gCubeSize / 2.f);
-          bl->mItemInstancing2 = bl->GetDim()->AddItemInstance(outAcc->_Get(0).mItem, rt);
+          const FItemData &slot = outAcc->_Get(0);
+          if (slot.mItem && slot.mValue > 0) {
+            auto rt = bl->GetTransformLocation();
+            rt.AddToTranslation(RotateVector(bl->GetBlockQuat(), Side::Right).vec() * gCubeSize / 2.f);
+            bl->mItemInstancing2 = bl->GetDim()->AddItemInstance(slot.mItem, rt);
+          } else {
+            LOG(ERROR_LL) << "Conveyor output has invalid item slot for " << bl->GetName()
+                          << ": item=" << slot.mItem << " value=" << slot.mValue;
+          }
         } else if (outAcc->IsEmpty()) {
           bl->mItemInstancing2.Reset();
           bl->output_path = 0;
@@ -174,8 +189,14 @@ void UConveyorNetwork::Tick() {
 
         // Input visual instance lifecycle (center)
         if (bl->mItemInstancing.IsEmpty() && !inAcc->IsEmpty()) {
-          auto rt = bl->GetTransformLocation();
-          bl->mItemInstancing = bl->GetDim()->AddItemInstance(inAcc->_Get(0).mItem, rt);
+          const FItemData &slot = inAcc->_Get(0);
+          if (slot.mItem && slot.mValue > 0) {
+            auto rt = bl->GetTransformLocation();
+            bl->mItemInstancing = bl->GetDim()->AddItemInstance(slot.mItem, rt);
+          } else {
+            LOG(ERROR_LL) << "Conveyor input has invalid item slot for " << bl->GetName()
+                          << ": item=" << slot.mItem << " value=" << slot.mValue;
+          }
         } else if (inAcc->IsEmpty()) {
           bl->mItemInstancing.Reset();
           bl->input_path = 0;
