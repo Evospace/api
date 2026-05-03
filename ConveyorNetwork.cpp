@@ -145,11 +145,12 @@ void UConveyorNetwork::Tick() {
       }
 
       const int32 step = ConveyorConsts::StepForLevel(staticBlock->Level);
+      const int32 segmentLen = ConveyorConsts::SegmentLen;
       if (!inAcc->IsEmpty()) {
-        bl->input_path += step;
+        bl->input_path = FMath::Clamp(bl->input_path + step, 0, segmentLen);
       }
       if (!outAcc->IsEmpty()) {
-        bl->output_path += step;
+        bl->output_path = FMath::Clamp(bl->output_path + step, 0, segmentLen);
       }
     }
 
