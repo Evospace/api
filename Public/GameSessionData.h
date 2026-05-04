@@ -130,7 +130,7 @@ class UGameSessionData : public UInstance {
   bool Cloud = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  int32 TickRate = 400;
+  int32 TickRate = 20;
 
   // Время суток и автопрогон теперь хранятся в данных игровой сессии.
   // Когда WorldTimeAutoAdvance = true, текущее время выводится из TotalGameTicks
