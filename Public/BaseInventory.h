@@ -26,12 +26,6 @@ class UBaseInventory : public UInventoryAccess {
 
   UBaseInventory();
 
-  // Diagnostic only: traps destruction of conveyor-owned inventories to capture
-  // call stack of the destruction path (root cause investigation for null vtable
-  // crash in UConveyorNetwork::Tick). Logs and triggers UE_DEBUG_BREAK when
-  // outer's class name contains "Conveyor". No gameplay effect.
-  virtual void BeginDestroy() override;
-
   void Empty();
 
   UFUNCTION(BlueprintCallable)
