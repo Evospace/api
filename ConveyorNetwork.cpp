@@ -14,6 +14,9 @@
 #include "Evospace/PerformanceStat.h"
 #include "Public/InventoryAccess.h"
 
+#include "HAL/Platform.h"
+#include "Misc/CoreMiscDefines.h"
+
 DECLARE_CYCLE_STAT(TEXT("Tick ConveyorNetwork"), STAT_TickConveyorNetwork, STATGROUP_BLOCKLOGIC);
 
 namespace {
@@ -21,6 +24,14 @@ struct FSenderReceiverPair {
   UConveyorBlockLogic *Sender;
   UBaseInventoryAccessor *ReceiverAcc; // any item-accessor in front, not only conveyors
 };
+
+// Debugger breakpoint site: Shipping keeps this live via no-optimization + volatile sink (no logs).
+PRAGMA_DISABLE_OPTIMIZATION
+static void ConveyorNetwork_DebugAnchorVolatileSink(UConveyorBlockLogic *Bl) {
+  volatile UPTRINT Sink = reinterpret_cast<UPTRINT>(Bl);
+  (void)Sink;
+}
+PRAGMA_ENABLE_OPTIMIZATION
 } // namespace
 
 void UConveyorNetwork::RebuildCache() {
@@ -132,6 +143,11 @@ void UConveyorNetwork::Tick() {
 
   for (UConveyorBlockLogic *bl : conveyors) {
     if (!bl) continue;
+
+    constexpr Vec3i ConveyorDbgWatchWorldPos(-3, -91, 12);
+    if (bl->GetBlockPos() == ConveyorDbgWatchWorldPos) {
+      ConveyorNetwork_DebugAnchorVolatileSink(bl);
+    }
 
     // Advance paths deterministically here (independent of block tick order)
     if (bl->GetSwitch_Implementation()) {
