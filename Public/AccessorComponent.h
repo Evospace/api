@@ -3,6 +3,7 @@
 #include "../CoordinateSystem.h"
 #include "Qr/SerializableJson.h"
 #include "CoreMinimal.h"
+#include "UObject/WeakObjectPtr.h"
 #include "Public/BlockLogic.h"
 #include "Qr/Prototype.h"
 
@@ -77,6 +78,9 @@ class UAccessor : public UInstance {
   FQrVector3i Side;
 
   private:
-  // Cached neighbor accessor of the same class as this accessor
-  UAccessor *CachedOutsideSameType = nullptr;
+  // Cached neighbor accessor of the same class as this accessor. Weak so a destroyed
+  // neighbor cannot leave a dangling raw pointer if invalidation is missed (streaming,
+  // bulk edits, order of teardown).
+  UPROPERTY()
+  TWeakObjectPtr<UAccessor> CachedOutsideSameType;
 };

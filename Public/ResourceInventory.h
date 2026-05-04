@@ -28,12 +28,18 @@ class UResourceInventory : public USingleSlotInventory {
 
   // TODO: why in single slot
   void AddResource(int64 a) {
+    if (!Data.IsValidIndex(0)) {
+      Data.SetNum(1);
+    }
     Data[0].mValue += a;
     ++Version;
   }
 
   // TODO: why in single slot
   void RemoveResource(int64 a) {
+    if (!Data.IsValidIndex(0)) {
+      Data.SetNum(1);
+    }
     Data[0].mValue -= a;
     ++Version;
   }
