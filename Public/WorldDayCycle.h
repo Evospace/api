@@ -43,6 +43,17 @@ inline int64 LockedHoursToPhaseTicks(float LockedHours, int64 DayLengthTicks) {
   return PositiveModInt64(t, len);
 }
 
+/** Whole cosmetic hour -> phase (hour wrapped to [0, 23]); rounding matches LockedHoursToPhaseTicks for whole hours. */
+inline int64 LockedWholeHoursToPhaseTicks(int32 Hour24, int64 DayLengthTicks) {
+  const int64 len = FMath::Max<int64>(1, DayLengthTicks);
+  int32 hn = Hour24 % 24;
+  if (hn < 0) {
+    hn += 24;
+  }
+  const int64 t = (static_cast<int64>(hn) * len + 12) / 24;
+  return PositiveModInt64(t, len);
+}
+
 inline float ResolveSessionTimeOfDayHoursCosmetic(
   bool bWorldTimeAutoAdvance,
   float LockedWorldTimeOfDayHours,

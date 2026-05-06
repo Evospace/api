@@ -23,6 +23,10 @@ class UStaticPlanet : public UPrototype {
       .addProperty("day_length_ticks", &Self::DayLengthTicks) //@field integer
       .addProperty("start_phase_ticks", &Self::StartPhaseTicks) //@field integer
       .addProperty("phase_offset_ticks", &Self::PhaseOffsetTicks) //@field integer
+      .addProperty("dawn_phase_ticks", &Self::DawnPhaseTicks) //@field integer
+      .addProperty("solar_noon_phase_ticks", &Self::SolarNoonPhaseTicks) //@field integer
+      .addProperty("sunset_phase_ticks", &Self::SunsetPhaseTicks) //@field integer
+      .addFunction("cosmetic_hours_from_day_phase_ticks", &Self::GetCosmeticDayHoursFromDayPhaseTicks)
       .addFunction("time_of_day_hours_from_ticks", &Self::LuaTimeOfDayHoursFromTicks)
       .addFunction("resolve_time_of_day_hours", &Self::ResolveTimeOfDayHours)
       .endClass();
@@ -41,6 +45,22 @@ class UStaticPlanet : public UPrototype {
   /** Added to phase after day wrap (e.g. longitude); integer tick space. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle")
   int64 PhaseOffsetTicks = 0;
+
+  /** Phase within one local day [0, DayLengthTicks) for dawn anchor (bus / scripts). */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
+  int64 DawnPhaseTicks = 24000;
+
+  /** Phase within one local day [0, DayLengthTicks) for solar noon anchor (bus / scripts). */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
+  int64 SolarNoonPhaseTicks = 72000;
+
+  /** Phase within one local day [0, DayLengthTicks) for sunset anchor (bus / scripts). */
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
+  int64 SunsetPhaseTicks = 120000;
+
+  /** Cosmetic hours [0, 24) for a tick in local day-phase space (after day length wrap). */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")
+  float GetCosmeticDayHoursFromDayPhaseTicks(int64 DayPhaseTick) const;
 
   /** Solar hour [0, 24) for rendering/curves from world ticks. */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")

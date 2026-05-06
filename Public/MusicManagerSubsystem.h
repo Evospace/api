@@ -46,8 +46,16 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UFUNCTION(BlueprintCallable)
   void StartCrossfade(USoundBase *NewSound);
 
+  /** Same as StartCrossfade but uses CrossfadeSeconds for this transition (fade-in / fade-out and auto-advance boundary). */
+  UFUNCTION(BlueprintCallable, meta = (ClampMin = "0"))
+  void StartCrossfadeWithDuration(USoundBase *NewSound, float CrossfadeSeconds);
+
   UFUNCTION(BlueprintCallable)
   void StartRandomTrack();
+
+  /** Like StartRandomTrack but uses CrossfadeSeconds for this transition only. */
+  UFUNCTION(BlueprintCallable, meta = (ClampMin = "0"))
+  void StartRandomTrackWithCrossfade(float CrossfadeSeconds);
 
   UFUNCTION(BlueprintCallable)
   void SetPlaylist(UMusicPlaylist *NewPlaylist);
@@ -63,6 +71,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   /** Play a track from the current playlist by zero-based index (Lua uses same indexing). */
   UFUNCTION(BlueprintCallable)
   void PlayTrackByIndex(int32 TrackIndex);
+
+  /** Like PlayTrackByIndex; fade duration in seconds (also used after request_silence so music can ramp up from quiet). */
+  UFUNCTION(BlueprintCallable, meta = (ClampMin = "0"))
+  void PlayTrackByIndexWithCrossfade(int32 TrackIndex, float CrossfadeSeconds);
 
   int32 GetTrackCount() const;
 
@@ -83,8 +95,14 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   //--- Play a track by zero-based index in the current playlist.
   //function Music:play_track(index) end
   //---
+  //--- Play a track with explicit crossfade duration in seconds (0 = immediate).
+  //function Music:play_track_crossfade(index, crossfade_seconds) end
+  //---
   //--- Start a random track from the current playlist (crossfade handled in C++).
   //function Music:play_random() end
+  //---
+  //--- Start a random track with explicit crossfade duration in seconds.
+  //function Music:play_random_crossfade(crossfade_seconds) end
 
   void lua_reg(lua_State *L) const {
     luabridge::getGlobalNamespace(L)
@@ -100,7 +118,9 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
           return S->SetPlaylistByKey(FString(UTF8_TO_TCHAR(Key.c_str())));
         })
       .addFunction("play_track", &Self::PlayTrackByIndex)
+      .addFunction("play_track_crossfade", &Self::PlayTrackByIndexWithCrossfade)
       .addFunction("play_random", &Self::StartRandomTrack)
+      .addFunction("play_random_crossfade", &Self::StartRandomTrackWithCrossfade)
       .endClass();
   }
 
@@ -162,7 +182,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
 
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
-  void ScheduleNextTimer(float DurationSeconds, bool bAddWindTail);
+  void ScheduleNextTimer(float DurationSeconds, bool bAddWindTail, float CrossfadeForAdvance);
 
   UFUNCTION()
   void OnNextTrackTimer();

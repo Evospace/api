@@ -10,7 +10,12 @@
 class UGameSessionSubsystem;
 class UStaticPlanet;
 
-DECLARE_DELEGATE_ThreeParams(FSurfaceDayPhaseNativeSlot, const FString &, ESurfaceDayPhaseAnchor, float);
+DECLARE_DELEGATE_FourParams(
+  FSurfaceDayPhaseNativeSlot,
+  const FString &,
+  ESurfaceDayPhaseAnchor,
+  float /*SessionCosmeticHour*/,
+  float /*AnchorPhaseCosmeticHour*/);
 
 /**
  * World-scoped registry of per-save-folder surface IDs (e.g. "Temperate") and bus for cosmetic day-phase moments.
@@ -60,6 +65,6 @@ class USurfaceDayPhaseSubsystem : public UWorldSubsystem {
   TArray<FNativeSubscription> NativeSubscriptions;
   int32 NextSubscriptionId = 1;
 
-  void BroadcastNative(const FString &SurfaceKey, ESurfaceDayPhaseAnchor Anchor, float CosmeticHour);
-  void EmitLua(const FString &SurfaceKey, ESurfaceDayPhaseAnchor Anchor, float CosmeticHour);
+  void BroadcastNative(const FString &SurfaceKey, ESurfaceDayPhaseAnchor Anchor, float SessionCosmeticHour, float AnchorPhaseCosmeticHour);
+  void EmitLua(const FString &SurfaceKey, ESurfaceDayPhaseAnchor Anchor, float SessionCosmeticHour, float AnchorPhaseCosmeticHour);
 };
