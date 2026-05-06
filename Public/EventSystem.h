@@ -22,7 +22,9 @@ enum class Event {
   on_player_at_sector,
   on_entity_died,
   on_entity_damaged,
-  on_entity_spawn
+  on_entity_spawn,
+  /** Context: surface (string), anchor (string), anchor_id (int), cosmetic_hour (number) — see USurfaceDayPhaseSubsystem. */
+  on_surface_day_phase
 };
 
 inline const char *ToString(Event event) {
@@ -39,6 +41,8 @@ inline const char *ToString(Event event) {
     return "on_player_spawn";
   case Event::on_region_spawn:
     return "on_region_spawn";
+  case Event::on_surface_day_phase:
+    return "on_surface_day_phase";
 
   // ...
   default:
@@ -89,6 +93,7 @@ class EventSystem {
           register_enum_line(on_tick)
           register_enum_line(on_player_at_sector)
           register_enum_line(on_region_spawn)
+          register_enum_line(on_surface_day_phase)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
