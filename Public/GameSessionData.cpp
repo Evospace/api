@@ -103,8 +103,10 @@ bool UGameSessionData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "SaveName", SaveName);
   json_helper::TryGet(json, "WorldTimeOfDayHours", WorldTimeOfDayHours);
   json_helper::TryGet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
-  json_helper::TryGet(json, "DayLengthSeconds", DayLengthSeconds);
-  json_helper::TryGet(json, "StartTimeOfDayHours", StartTimeOfDayHours);
+  json_helper::TryGet(json, "DayLengthTicks", DayLengthTicks);
+  json_helper::TryGet(json, "StartPhaseTicks", StartPhaseTicks);
+
+  DayLengthTicks = FMath::Max<int64>(1, DayLengthTicks);
 
   return true;
 }
@@ -124,8 +126,8 @@ bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "SaveName", SaveName);
   json_helper::TrySet(json, "WorldTimeOfDayHours", WorldTimeOfDayHours);
   json_helper::TrySet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
-  json_helper::TrySet(json, "DayLengthSeconds", DayLengthSeconds);
-  json_helper::TrySet(json, "StartTimeOfDayHours", StartTimeOfDayHours);
+  json_helper::TrySet(json, "DayLengthTicks", DayLengthTicks);
+  json_helper::TrySet(json, "StartPhaseTicks", StartPhaseTicks);
   return true;
 }
 
@@ -142,10 +144,10 @@ void UGameSessionData::Reset() {
   Mods.Empty();
   Cloud = false;
   SaveName = "Default";
-  WorldTimeOfDayHours = 8.0;
+  WorldTimeOfDayHours = 8.0f;
   WorldTimeAutoAdvance = true;
-  DayLengthSeconds = 3600.0 * 2.0;
-  StartTimeOfDayHours = 8.0;
+  DayLengthTicks = 144000;
+  StartPhaseTicks = 48000;
 }
 
 FString UGameSessionData::GetModsCombined() const {

@@ -15,6 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuMuffling, bool, bMuffled);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurfaceChange, FString, SurfaceName);
 
 class UStaticItem;
+class UStaticPlanet;
 
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
@@ -69,16 +70,23 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void IncrementTime(double delta);
 
-  // World time controls stored in GameSessionData
-  UFUNCTION(BlueprintCallable)
-  double GetWorldTimeOfDayHours() const;
+  // World time: tick phase is authoritative; hours are cosmetic (curves, lighting).
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
+  int64 GetWorldDayPhaseTicks() const;
 
-  UFUNCTION(BlueprintCallable)
-  void SetWorldTimeOfDayHours(double Hours);
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
+  float GetWorldTimeOfDayHours() const;
 
-  /** Sets time of day and freezes it (disables tick-based advance). Use for creative / UI lock. */
+  /** Per-planet solar hour (cosmetic); nullptr uses session day parameters. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
+  float GetWorldTimeOfDayHoursForPlanet(const UStaticPlanet *Planet) const;
+
   UFUNCTION(BlueprintCallable, Category = "World Time")
-  void SetLockedWorldTimeOfDayHours(double Hours);
+  void SetWorldTimeOfDayHours(float Hours);
+
+  /** Sets cosmetic hour and freezes (disables tick-based advance). */
+  UFUNCTION(BlueprintCallable, Category = "World Time")
+  void SetLockedWorldTimeOfDayHours(float Hours);
 
   UFUNCTION(BlueprintCallable)
   bool GetWorldTimeAutoAdvance() const;

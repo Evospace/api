@@ -62,10 +62,10 @@ class UGameSessionData : public UInstance {
       .addProperty("generator", QR_NAME_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
       .addProperty("cloud", &Self::GetCloud, &Self::SetCloud) //@field boolean
-      .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number
+      .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number cosmetic when frozen
       .addProperty("world_time_freeze", &Self::WorldTimeAutoAdvance) //@field boolean
-      .addProperty("day_length_seconds", &Self::DayLengthSeconds) //@field number
-      .addProperty("start_time_of_day_hours", &Self::StartTimeOfDayHours) //@field number
+      .addProperty("day_length_ticks", &Self::DayLengthTicks) //@field integer
+      .addProperty("start_phase_ticks", &Self::StartPhaseTicks) //@field integer
       .addProperty("tick_rate", &Self::TickRate) //@field integer
       .endClass();
   }
@@ -132,23 +132,21 @@ class UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 TickRate = 400;
 
-  // Время суток и автопрогон теперь хранятся в данных игровой сессии.
-  // Когда WorldTimeAutoAdvance = true, текущее время выводится из TotalGameTicks
-  // по формуле в UGameSessionSubsystem::GetWorldTimeOfDayHours().
-  // Сохранённое значение WorldTimeOfDayHours используется только в замороженном режиме.
+  // Day cycle: deterministically TotalGameTicks + DayLengthTicks + StartPhaseTicks (WorldDayCycle.h).
+  // WorldTimeOfDayHours is cosmetic only — used when WorldTimeAutoAdvance is false (UI / creative lock).
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  double WorldTimeOfDayHours = 8.0;
+  float WorldTimeOfDayHours = 8.0f;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool WorldTimeAutoAdvance = true;
 
-  /** Length of an in-game day in real seconds (drives tick-based time of day). */
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1.0"))
-  double DayLengthSeconds = 3600.0;
+  /** World ticks per full day (20 Hz logical clock). */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1"))
+  int64 DayLengthTicks = 144000;
 
-  /** Hour of day that corresponds to TotalGameTicks = 0. */
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.0", ClampMax = "24.0"))
-  double StartTimeOfDayHours = 8.0;
+  /** Phase added to TotalGameTicks before modulo DayLengthTicks. */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int64 StartPhaseTicks = 48000;
 
   private:
   friend class UGameSessionSubsystem;
