@@ -3,6 +3,10 @@
 #include "MusicPlaylist.h"
 #include <Sound/SoundBase.h>
 
+void UMusicPlaylist::ResetShuffle() {
+  ShuffleBag.Reset();
+}
+
 USoundBase *UMusicPlaylist::GetRandomSound() {
   // Refill shuffle bag when empty
   if (ShuffleBag.Num() == 0) {

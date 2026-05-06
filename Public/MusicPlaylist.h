@@ -16,6 +16,9 @@ class UMusicPlaylist : public UObject {
   UFUNCTION(BlueprintCallable)
   USoundBase *GetRandomSound();
 
+  /** Clears shuffle state so the next random pick uses the full track list. */
+  void ResetShuffle();
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   TArray<USoundBase *> Tracks;
 
