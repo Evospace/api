@@ -57,6 +57,6 @@ class UConveyorNetwork : public UNetworkBase {
   TArray<uint8> TmpVisited;
   TArray<bool> Accept;
   TArray<bool> OutClears;
-  TArray<UConveyorBlockLogic *> ChosenSenderByReceiver; // indexed by compact ReceiverId
+  TArray<int32> ChosenSenderByReceiver; // per ReceiverId: Conveyors index (first eligible in ActivePostOrder), or INDEX_NONE
   int32 UniqueReceiverCount = 0;
 };

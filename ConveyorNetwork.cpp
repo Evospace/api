@@ -20,11 +20,6 @@
 DECLARE_CYCLE_STAT(TEXT("Tick ConveyorNetwork"), STAT_TickConveyorNetwork, STATGROUP_BLOCKLOGIC);
 
 namespace {
-struct FSenderReceiverPair {
-  UConveyorBlockLogic *Sender;
-  UBaseInventoryAccessor *ReceiverAcc; // any item-accessor in front, not only conveyors
-};
-
 // Debugger breakpoint site: Shipping keeps this live via no-optimization + volatile sink (no logs).
 PRAGMA_DISABLE_OPTIMIZATION
 static void ConveyorNetwork_DebugAnchorVolatileSink(UConveyorBlockLogic *Bl) {
@@ -111,7 +106,7 @@ void UConveyorNetwork::RebuildCache() {
   UniqueReceiverCount = nextId;
   ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
   for (int32 i = 0; i < UniqueReceiverCount; ++i)
-    ChosenSenderByReceiver[i] = nullptr;
+    ChosenSenderByReceiver[i] = INDEX_NONE;
 
   // Build downstream-to-upstream post-order once
   TmpVisited.SetNumZeroed(n);
@@ -299,7 +294,7 @@ void UConveyorNetwork::Tick() {
     ChosenSenderByReceiver.SetNum(UniqueReceiverCount);
   }
   for (int32 receiverIdx = 0; receiverIdx < ChosenSenderByReceiver.Num(); ++receiverIdx) {
-    ChosenSenderByReceiver[receiverIdx] = nullptr;
+    ChosenSenderByReceiver[receiverIdx] = INDEX_NONE;
   }
 
   for (int32 index : ActivePostOrder) {
@@ -310,9 +305,9 @@ void UConveyorNetwork::Tick() {
     if (receiverId < 0) continue;
     if (!(TickStates[index].OutputReady && Accept[index])) continue;
 
-    UConveyorBlockLogic *&chosen = ChosenSenderByReceiver[receiverId];
-    if (!chosen || bl < chosen) {
-      chosen = bl;
+    int32 &winner = ChosenSenderByReceiver[receiverId];
+    if (winner == INDEX_NONE) {
+      winner = index; // first qualifying sender in ActivePostOrder wins; no tie-break
     }
   }
 
@@ -326,7 +321,7 @@ void UConveyorNetwork::Tick() {
     bool didPush = false;
     const int32 receiverId = ReceiverId[index];
     if (receiverId >= 0 && ReceiverAccessors[index] && TickStates[index].OutputReady && Accept[index]) {
-      if (ChosenSenderByReceiver[receiverId] == bl) {
+      if (ChosenSenderByReceiver[receiverId] == index) {
         if (outputAccess && !TickStates[index].OutputEmpty) {
 #ifdef EVOSPACE_ITEMS_RENDERING
           bool pushed = false;
