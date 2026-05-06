@@ -5,6 +5,20 @@
 #include "Public/Dimension.h"
 #include "Public/ConductorBlockLogic.h"
 
+#include "HAL/IConsoleManager.h"
+
+namespace {
+static TAutoConsoleVariable<int32> CVarResourceNetworkSimulate(
+  TEXT("evospace.ResourceNetwork.Simulate"),
+  0,
+  TEXT("1: run resource/data network simulation each tick. 0: skip network Tick/EndTick (bookkeeping only)."),
+  ECVF_Default);
+} // namespace
+
+bool UResourceNetworkManager::IsSimulationEnabled() {
+  return CVarResourceNetworkSimulate.GetValueOnGameThread() != 0;
+}
+
 void UResourceNetworkManager::Initialize(ADimension *inOwner) {
   ownerDimension = inOwner;
 }
@@ -56,6 +70,10 @@ void UResourceNetworkManager::Tick() {
       networks.Remove(network);
     }
     networksToKill.Empty();
+  }
+
+  if (!IsSimulationEnabled()) {
+    return;
   }
 
   // Tick all live networks

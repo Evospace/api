@@ -14,6 +14,12 @@ class UResourceNetworkManager : public UObject {
   GENERATED_BODY()
 
   public:
+  /**
+   * System gate: when false, managed networks do not run simulation (UBlockNetwork::Tick / EndTick).
+   * Bookkeeping (deferred kills, empty-network removal) still runs. Controlled by cvar evospace.ResourceNetwork.Simulate.
+   */
+  static bool IsSimulationEnabled();
+
   /** Bind this manager to its owning Dimension. Must be called once after construction. */
   void Initialize(ADimension *inOwner);
 
