@@ -161,6 +161,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float AudioComponentBDuration = 0.0f;
 
+  // Mirrors CrossfadeForAdvance passed to ScheduleNextTimer for the playing track. OnPostLoadMap uses Play(0) without
+  // re-entering StartCrossfadeWithDuration, so reschedule must use the same advance (e.g. play_random_crossfade(10)).
+  float AutoAdvanceScheduleCrossfadeSec = 3.0f;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
 
