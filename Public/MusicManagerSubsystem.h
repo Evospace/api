@@ -129,6 +129,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
   USoundBase *MusicMetaSoundSource = nullptr;
 
+  /** Procedural or one-shot wind between playlist tracks. Auto-advance: music -> crossfade -> wind -> crossfade -> next random track. If unset, music advances directly to the next random track. */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
+  USoundBase *WindTrack = nullptr;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true"))
   UMusicPlaylist *Playlist = nullptr;
 
@@ -149,8 +153,12 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   float CrossfadeTime = 3.0f;
 
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  float WindTime = 50.0f;
+  /**
+   * How long wind plays before we crossfade to the next playlist track — not WindTrack asset duration (wind may loop).
+   * Scheduling uses ScheduleNextTimer: transition starts FadeForSchedule seconds before this window ends, same as music.
+   */
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Music", meta = (AllowPrivateAccess = "true", ClampMin = "0"))
+  float WindSegmentSeconds = 50.0f;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bUseAAsActive = true;
@@ -164,6 +172,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   // Mirrors CrossfadeForAdvance passed to ScheduleNextTimer for the playing track. OnPostLoadMap uses Play(0) without
   // re-entering StartCrossfadeWithDuration, so reschedule must use the same advance (e.g. play_random_crossfade(10)).
   float AutoAdvanceScheduleCrossfadeSec = 3.0f;
+
+  /** When true, NextTrackTimer fires at end of wind segment (then random music). When false, at end of a playlist/music segment (then wind or random). */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+  bool bAutoAdvanceTimerAfterWindSegment = false;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
@@ -186,7 +198,7 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
 
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
-  void ScheduleNextTimer(float DurationSeconds, bool bAddWindTail, float CrossfadeForAdvance);
+  void ScheduleNextTimer(float DurationSeconds, float CrossfadeForAdvance);
 
   UFUNCTION()
   void OnNextTrackTimer();
