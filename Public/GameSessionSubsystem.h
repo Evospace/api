@@ -70,23 +70,19 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void IncrementTime(double delta);
 
-  // World time: tick phase is authoritative; hours are cosmetic (curves, lighting).
+  // World time: local day uses current surface planet (UStaticPlanet::DayLengthTicks); hours are cosmetic (curves, lighting).
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
-  int64 GetWorldDayPhaseTicks() const;
+  int64 GetWorldDayPhaseTicks(const UStaticPlanet *Planet) const;
 
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
-  float GetWorldTimeOfDayHours() const;
-
-  /** Per-planet solar hour (cosmetic); nullptr uses session day parameters. */
-  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
-  float GetWorldTimeOfDayHoursForPlanet(const UStaticPlanet *Planet) const;
+  float GetWorldTimeOfDayHours(const UStaticPlanet *Planet) const;
 
   UFUNCTION(BlueprintCallable, Category = "World Time")
-  void SetWorldTimeOfDayHours(float Hours);
+  void SetWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet);
 
   /** Sets cosmetic hour and freezes (disables tick-based advance). */
   UFUNCTION(BlueprintCallable, Category = "World Time")
-  void SetLockedWorldTimeOfDayHours(float Hours);
+  void SetLockedWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet);
 
   UFUNCTION(BlueprintCallable)
   bool GetWorldTimeAutoAdvance() const;

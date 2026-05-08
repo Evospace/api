@@ -17,11 +17,11 @@ inline int64 PositiveModInt64(int64 a, int64 m) {
 
 /**
  * Phase within one day [0, len), len = max(1, DayLengthTicks).
- * Deterministic: only int64 tick state and int64 parameters.
+ * Plain simulation: tick 0 is phase 0 (cosmetic/display alignment uses planet offsets if any).
  */
-inline int64 DayPhaseTicks(int64 TotalGameTicks, int64 DayLengthTicks, int64 StartPhaseTicks) {
+inline int64 DayPhaseTicks(int64 TotalGameTicks, int64 DayLengthTicks) {
   const int64 len = FMath::Max<int64>(1, DayLengthTicks);
-  return PositiveModInt64(TotalGameTicks + StartPhaseTicks, len);
+  return PositiveModInt64(TotalGameTicks, len);
 }
 
 /** [0, 1) fraction of day — use for rendering/MPC only. */
@@ -52,19 +52,6 @@ inline int64 LockedWholeHoursToPhaseTicks(int32 Hour24, int64 DayLengthTicks) {
   }
   const int64 t = (static_cast<int64>(hn) * len + 12) / 24;
   return PositiveModInt64(t, len);
-}
-
-inline float ResolveSessionTimeOfDayHoursCosmetic(
-  bool bWorldTimeAutoAdvance,
-  float LockedWorldTimeOfDayHours,
-  int64 DayLengthTicks,
-  int64 StartPhaseTicks,
-  int64 TotalGameTicks) {
-  if (!bWorldTimeAutoAdvance) {
-    return LockedWorldTimeOfDayHours;
-  }
-  const int64 phase = DayPhaseTicks(TotalGameTicks, DayLengthTicks, StartPhaseTicks);
-  return TimeOfDayHoursCosmetic(phase, DayLengthTicks);
 }
 
 } // namespace evo::WorldDayCycle

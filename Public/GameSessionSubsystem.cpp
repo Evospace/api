@@ -136,36 +136,31 @@ void UGameSessionSubsystem::IncrementTime(double delta) {
   Data->TotalGameTime += delta;
 }
 
-int64 UGameSessionSubsystem::GetWorldDayPhaseTicks() const {
+int64 UGameSessionSubsystem::GetWorldDayPhaseTicks(const UStaticPlanet *Planet) const {
   check(Data);
-  const int64 len = FMath::Max<int64>(1, Data->DayLengthTicks);
+  check(Planet);
+  const int64 len = FMath::Max<int64>(1, Planet->DayLengthTicks);
   if (!Data->WorldTimeAutoAdvance) {
-    return evo::WorldDayCycle::LockedHoursToPhaseTicks(Data->WorldTimeOfDayHours, len);
+    return evo::WorldDayCycle::PositiveModInt64(Data->WorldTimeOfDayPhaseTicks, len);
   }
-  return evo::WorldDayCycle::DayPhaseTicks(Data->TotalGameTicks, Data->DayLengthTicks, Data->StartPhaseTicks);
+  return evo::WorldDayCycle::PositiveModInt64(Planet->SimulationDayPhaseTicks(Data->TotalGameTicks), len);
 }
 
-float UGameSessionSubsystem::GetWorldTimeOfDayHours() const {
+float UGameSessionSubsystem::GetWorldTimeOfDayHours(const UStaticPlanet *Planet) const {
   check(Data);
-  return evo::WorldDayCycle::ResolveSessionTimeOfDayHoursCosmetic(
-    Data->WorldTimeAutoAdvance, Data->WorldTimeOfDayHours, Data->DayLengthTicks, Data->StartPhaseTicks, Data->TotalGameTicks);
+  check(Planet);
+  return Planet->ResolveTimeOfDayHours(Data->WorldTimeAutoAdvance, Data->WorldTimeOfDayPhaseTicks, Data->TotalGameTicks);
 }
 
-float UGameSessionSubsystem::GetWorldTimeOfDayHoursForPlanet(const UStaticPlanet *Planet) const {
+void UGameSessionSubsystem::SetWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet) {
   check(Data);
-  if (!Planet) {
-    return GetWorldTimeOfDayHours();
-  }
-  return Planet->ResolveTimeOfDayHours(Data->WorldTimeAutoAdvance, Data->WorldTimeOfDayHours, Data->TotalGameTicks);
+  check(Planet);
+  const int64 len = FMath::Max<int64>(1, Planet->DayLengthTicks);
+  Data->WorldTimeOfDayPhaseTicks = evo::WorldDayCycle::LockedHoursToPhaseTicks(Hours, len);
 }
 
-void UGameSessionSubsystem::SetWorldTimeOfDayHours(float Hours) {
-  check(Data);
-  Data->WorldTimeOfDayHours = FMath::Fmod(FMath::Max(0.f, Hours), 24.f);
-}
-
-void UGameSessionSubsystem::SetLockedWorldTimeOfDayHours(float Hours) {
-  SetWorldTimeOfDayHours(Hours);
+void UGameSessionSubsystem::SetLockedWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet) {
+  SetWorldTimeOfDayHours(Hours, Planet);
   SetWorldTimeAutoAdvance(false);
 }
 

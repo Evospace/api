@@ -21,7 +21,8 @@ DECLARE_DELEGATE_FourParams(
  * World-scoped registry of per-save-folder surface IDs (e.g. "Temperate") and bus for cosmetic day-phase moments.
  *
  * Advances are evaluated when the logical session tick increments (typically from ADimension), using TotalGameTicks
- * from UGameSessionData together with surface-specific cycle parameters from UStaticPlanet or session defaults.
+ * from UGameSessionData together with surface cycle parameters from UStaticPlanet (prototype name matches surface folder).
+ * Frozen world-time UI overlay (WorldTimeAutoAdvance false) does not affect crossings or event cosmetic_hour payloads.
  */
 UCLASS()
 class USurfaceDayPhaseSubsystem : public UWorldSubsystem {
@@ -31,8 +32,8 @@ class USurfaceDayPhaseSubsystem : public UWorldSubsystem {
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
-  /** Registers (or replaces) timing parameters for one surface folder key. Passing nullptr Planet uses GameSessionDefaults. */
-  void RegisterSurface(const FString &SurfaceFolderName, const UStaticPlanet *OptionalPlanetCycle);
+  /** Registers (or replaces) timing parameters for one surface folder key. Planet must match DB prototype (e.g. Temperate). */
+  void RegisterSurface(const FString &SurfaceFolderName, const UStaticPlanet *PlanetCycle);
 
   UFUNCTION(BlueprintCallable, Category = "Day Phase")
   void UnregisterSurface(const FString &SurfaceFolderName);

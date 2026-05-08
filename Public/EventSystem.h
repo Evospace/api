@@ -23,7 +23,7 @@ enum class Event {
   on_entity_died,
   on_entity_damaged,
   on_entity_spawn,
-  /** Context: surface (string), anchor (string), anchor_id (int), cosmetic_hour (session), anchor_cosmetic_hour (from planet phase ticks) — see USurfaceDayPhaseSubsystem. */
+  /** Context: surface (string), anchor (string), anchor_id (int), cosmetic_hour (simulation phase cosmetic hours; not frozen UI overlay), anchor_cosmetic_hour — see USurfaceDayPhaseSubsystem. */
   on_surface_day_phase
 };
 

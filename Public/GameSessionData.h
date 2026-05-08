@@ -62,10 +62,8 @@ class UGameSessionData : public UInstance {
       .addProperty("generator", QR_NAME_GET_SET(GeneratorName)) //@field string
       .addProperty("save_name", QR_STRING_GET_SET(SaveName)) //@field string
       .addProperty("cloud", &Self::GetCloud, &Self::SetCloud) //@field boolean
-      .addProperty("world_time", &Self::WorldTimeOfDayHours) //@field number cosmetic when frozen
+      .addProperty("world_time", &Self::WorldTimeOfDayPhaseTicks) //@field integer locked local day-phase ticks (planet space) when frozen
       .addProperty("world_time_freeze", &Self::WorldTimeAutoAdvance) //@field boolean
-      .addProperty("day_length_ticks", &Self::DayLengthTicks) //@field integer
-      .addProperty("start_phase_ticks", &Self::StartPhaseTicks) //@field integer
       .addProperty("tick_rate", &Self::TickRate) //@field integer
       .endClass();
   }
@@ -132,21 +130,12 @@ class UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int32 TickRate = 400;
 
-  // Day cycle: deterministically TotalGameTicks + DayLengthTicks + StartPhaseTicks (WorldDayCycle.h).
-  // WorldTimeOfDayHours is cosmetic only — used when WorldTimeAutoAdvance is false (UI / creative lock).
+  // Frozen local day phase in current surface planet tick space (see UStaticPlanet::DayLengthTicks). No day length on session.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  float WorldTimeOfDayHours = 8.0f;
+  int64 WorldTimeOfDayPhaseTicks = 0;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool WorldTimeAutoAdvance = true;
-
-  /** World ticks per full day (20 Hz logical clock). */
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1"))
-  int64 DayLengthTicks = 144000;
-
-  /** Phase added to TotalGameTicks before modulo DayLengthTicks. */
-  UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  int64 StartPhaseTicks = 48000;
 
   private:
   friend class UGameSessionSubsystem;

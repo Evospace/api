@@ -21,7 +21,6 @@ class UStaticPlanet : public UPrototype {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UStaticPlanet, UPrototype>("StaticPlanet") //@class StaticPlanet : Prototype
       .addProperty("day_length_ticks", &Self::DayLengthTicks) //@field integer
-      .addProperty("start_phase_ticks", &Self::StartPhaseTicks) //@field integer
       .addProperty("phase_offset_ticks", &Self::PhaseOffsetTicks) //@field integer
       .addProperty("dawn_phase_ticks", &Self::DawnPhaseTicks) //@field integer
       .addProperty("solar_noon_phase_ticks", &Self::SolarNoonPhaseTicks) //@field integer
@@ -37,10 +36,6 @@ class UStaticPlanet : public UPrototype {
   /** Number of world ticks per full local day (logical 20 Hz clock). */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "1"))
   int64 DayLengthTicks = 144000;
-
-  /** Phase at TotalGameTicks == 0; combined with TotalGameTicks modulo DayLengthTicks. */
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle")
-  int64 StartPhaseTicks = 48000;
 
   /** Added to phase after day wrap (e.g. longitude); integer tick space. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle")
@@ -58,6 +53,10 @@ class UStaticPlanet : public UPrototype {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
   int64 SunsetPhaseTicks = 120000;
 
+  /** Local simulation day-phase tick for TotalGameTicks (same space as dawn/sunset anchors). */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")
+  int64 SimulationDayPhaseTicks(int64 TotalGameTicks) const;
+
   /** Cosmetic hours [0, 24) for a tick in local day-phase space (after day length wrap). */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")
   float GetCosmeticDayHoursFromDayPhaseTicks(int64 DayPhaseTick) const;
@@ -67,7 +66,7 @@ class UStaticPlanet : public UPrototype {
   float GetTimeOfDayHoursForWorldTicks(int64 TotalGameTicks) const;
 
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")
-  float ResolveTimeOfDayHours(bool bWorldTimeAutoAdvance, float LockedWorldTimeOfDayHours, int64 TotalGameTicks) const;
+  float ResolveTimeOfDayHours(bool bWorldTimeAutoAdvance, int64 LockedWorldTimeOfDayPhaseTicks, int64 TotalGameTicks) const;
 
   float LuaTimeOfDayHoursFromTicks(int64 TotalGameTicks) const { return GetTimeOfDayHoursForWorldTicks(TotalGameTicks); }
 
