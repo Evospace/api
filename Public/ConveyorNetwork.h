@@ -13,6 +13,12 @@ UCLASS()
 class UConveyorNetwork : public UNetworkBase {
   GENERATED_BODY()
   public:
+  /**
+   * When false, conveyor networks do not run simulation (Tick / EndTick).
+   * Empty-network removal in ADimension still runs. Cvar: evospace.ConveyorNetwork.Simulate.
+   */
+  static bool IsSimulationEnabled();
+
   UPROPERTY(VisibleAnywhere)
   TArray<UConveyorBlockLogic *> Conveyors;
 

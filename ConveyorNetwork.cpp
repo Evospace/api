@@ -14,10 +14,23 @@
 #include "Evospace/PerformanceStat.h"
 #include "Public/InventoryAccess.h"
 
+#include "HAL/IConsoleManager.h"
 #include "HAL/Platform.h"
 #include "Misc/CoreMiscDefines.h"
 
 DECLARE_CYCLE_STAT(TEXT("Tick ConveyorNetwork"), STAT_TickConveyorNetwork, STATGROUP_BLOCKLOGIC);
+
+namespace {
+static TAutoConsoleVariable<int32> CVarConveyorNetworkSimulate(
+  TEXT("evospace.ConveyorNetwork.Simulate"),
+  0,
+  TEXT("1: run conveyor network simulation each tick. 0: skip network Tick/EndTick (bookkeeping only)."),
+  ECVF_Default);
+} // namespace
+
+bool UConveyorNetwork::IsSimulationEnabled() {
+  return CVarConveyorNetworkSimulate.GetValueOnGameThread() != 0;
+}
 
 namespace {
 // Debugger breakpoint site: Shipping keeps this live via no-optimization + volatile sink (no logs).

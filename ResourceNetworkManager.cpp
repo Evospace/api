@@ -10,7 +10,7 @@
 namespace {
 static TAutoConsoleVariable<int32> CVarResourceNetworkSimulate(
   TEXT("evospace.ResourceNetwork.Simulate"),
-  0,
+  1,
   TEXT("1: run resource/data network simulation each tick. 0: skip network Tick/EndTick (bookkeeping only)."),
   ECVF_Default);
 } // namespace
