@@ -164,7 +164,11 @@ class ADimension : public AActor {
   void InitializeSurface(USurfaceDefinition *surfaceDefinition);
   UDimensionRuntime *EnsureSimulationRuntimeCreated();
   bool BindToSimulationRuntime();
+  /** Destroys streamed columns and clears dimension presentation, then clears ADimension::Runtime (simulation state stays in USimulationSurfaceSubsystem until teardown). */
   void UnbindFromSimulationRuntime();
+
+  /** ADimension::Runtime must be set for SectorArea to advance LoadedPos/Radius and for LoadColumn to run. */
+  bool IsSimulationRuntimeBound() const { return Runtime != nullptr; }
 
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -344,6 +348,10 @@ class ADimension : public AActor {
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);
 
+  void TearDownSurfaceColumnsAndPresentation();
+  void InvalidateAllPlayerSectorStreamingAnchors();
+  UDimensionRuntime *ResolveSurfaceSimulationRuntime() const;
+
   void CacheSector(const Vec3i &pos, USectorProxy *sector);
 
   void GetNearestColumns(TMap<FQrVector3i, AColumn *> &data, TArray<NearestColumn> &out);
@@ -362,6 +370,10 @@ class ADimension : public AActor {
   FOnLogicInputDelivered OnLogicInputDelivered;
 
   private:
+  /** Last SurfaceFolderName for which InitializeSurface completed; used to detect surface switches and orphaned columns. */
+  UPROPERTY()
+  FString ActivePresentationSurfaceFolder;
+
   UPROPERTY(VisibleAnywhere)
   FLazyGameSession GameSessionCache;
 };
