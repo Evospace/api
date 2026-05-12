@@ -2,11 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BlockLogicStore.h"
+#include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "Qr/Vector.h"
+
+#include "Public/SurfaceDefinition.h"
+
 #include "DimensionRuntime.generated.h"
 
-class ADimension;
+class FJsonObject;
 class UBlockLogic;
 class UBlockNetwork;
 class UConveyorNetwork;
@@ -17,10 +21,12 @@ class URailNetwork;
 class URailwayManager;
 class UResourceNetworkManager;
 class UStaticBlock;
-class FJsonObject;
+class UGameInstance;
+class UWorld;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicAdded, const FQrVector3i &, UBlockLogic *);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicRemoved, const FQrVector3i &, UBlockLogic *);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSimulationLogicInputDelivered, UBlockLogic *, ULogicContext *);
 
 UCLASS()
 class EVOSPACE_API UDimensionRuntime : public UInstance {
@@ -28,17 +34,20 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   public:
   void InitializeForSurface(const FString &InSurfaceFolderName);
-  void BindDimension(ADimension *InDimension, UInstancedStaticMeshComponent *InDroneMeshComponent);
+  void BindDimension(class ADimension *InDimension, UInstancedStaticMeshComponent *InDroneMeshComponent);
   void UnbindDimension(const ADimension *InDimension);
   void Shutdown();
 
-  UBlockLogic *PlaceBlock(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
-  UBlockLogic *RemoveBlock(const FQrVector3i &BlockPos);
   void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
+  /** After simulation consumes logic input: broadcast OnSimulationLogicInputDelivered (ADimension routes to blueprint while bound). */
+  void NotifySimulationLogicInputDelivered(UBlockLogic *Target, ULogicContext *Context);
 
   UBlockLogic *SetBlockLogic(FQrVector3i Pos, UBlockLogic *Logic);
   UBlockLogic *GetBlockLogic(FQrVector3i BlockPos) const;
+
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
+  /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
+  USurfaceDefinition *GetSurfaceDefinition() const { return SurfaceDefinition; }
 
   const TMap<FQrVector3i, UBlockLogic *> &GetLogics() const { return DimensionLogics; }
 
@@ -58,11 +67,14 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void SerializeRuntimeManagers(TSharedPtr<FJsonObject> JsonLogic) const;
   void DeserializeRuntimeManagers(TSharedPtr<FJsonObject> JsonObject);
 
-  int32 TickRuntime(float DeltaTime, int32 TickRate, bool TickBlocksEnabled, bool TickNetworksEnabled);
+  int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled, bool TickNetworksEnabled);
   void TickVisual(float DeltaTime);
 
   FOnRuntimeLogicAdded OnRuntimeLogicAdded;
   FOnRuntimeLogicRemoved OnRuntimeLogicRemoved;
+
+  /** Subscribed by ADimension::NotifyLogicInputDelivered while this surface is bound. */
+  FOnSimulationLogicInputDelivered OnSimulationLogicInputDelivered;
 
   private:
   void TickConveyorNetworks();
@@ -70,11 +82,13 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   UPROPERTY(VisibleAnywhere)
   FString SurfaceFolderName;
 
-  TWeakObjectPtr<ADimension> Dimension;
+  UPROPERTY()
+  USurfaceDefinition *SurfaceDefinition = nullptr;
 
   UPROPERTY()
   UInstancedStaticMeshComponent *DroneMeshComponent = nullptr;
 
+  UPROPERTY()
   TMap<FQrVector3i, UBlockLogic *> DimensionLogics;
 
   FBlockLogicStore DimensionLogicsTick;

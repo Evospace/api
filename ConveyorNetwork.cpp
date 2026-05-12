@@ -10,6 +10,7 @@
 #include "DrawDebugHelpers.h"
 #include "Public/ConveyorConsts.h"
 #include "Public/Dimension.h"
+#include "Public/DimensionRuntime.h"
 #include "Public/StaticBlock.h"
 #include "Evospace/PerformanceStat.h"
 #include "Public/InventoryAccess.h"
@@ -82,7 +83,7 @@ void UConveyorNetwork::RebuildCache() {
 
     // Downstream neighbor conveyor index (by world position)
     const Vec3i neighborPos = bl->GetBlockPos() + RotateVector(bl->GetBlockQuat(), Side::Right);
-    if (UBlockLogic *neighbor = bl->GetDim()->GetBlockLogic(neighborPos)) {
+    if (UBlockLogic *neighbor = bl->GetDimensionRuntime()->GetBlockLogic(neighborPos)) {
       if (UBlockLogic *root = neighbor->GetPartRootBlock()) {
         if (UConveyorBlockLogic *neighborConv = Cast<UConveyorBlockLogic>(root)) {
           if (int32 *idx = indexByPtr.Find(neighborConv)) {
@@ -201,7 +202,9 @@ void UConveyorNetwork::Tick() {
           if (slot.mItem && slot.mValue > 0) {
             auto rt = bl->GetTransformLocation();
             rt.AddToTranslation(RotateVector(bl->GetBlockQuat(), Side::Right).vec() * gCubeSize / 2.f);
-            bl->mItemInstancing2 = bl->GetDim()->AddItemInstance(slot.mItem, rt);
+            if (ADimension *Pres = bl->GetPresentationActor()) {
+              bl->mItemInstancing2 = Pres->AddItemInstance(slot.mItem, rt);
+            }
           } else {
             LOG(ERROR_LL) << "Conveyor output has invalid item slot for " << bl->GetName()
                           << ": item=" << slot.mItem << " value=" << slot.mValue;
@@ -216,7 +219,9 @@ void UConveyorNetwork::Tick() {
           const FItemData &slot = inAcc->_Get(0);
           if (slot.mItem && slot.mValue > 0) {
             auto rt = bl->GetTransformLocation();
-            bl->mItemInstancing = bl->GetDim()->AddItemInstance(slot.mItem, rt);
+            if (ADimension *Pres = bl->GetPresentationActor()) {
+              bl->mItemInstancing = Pres->AddItemInstance(slot.mItem, rt);
+            }
           } else {
             LOG(ERROR_LL) << "Conveyor input has invalid item slot for " << bl->GetName()
                           << ": item=" << slot.mItem << " value=" << slot.mValue;

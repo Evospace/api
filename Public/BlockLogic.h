@@ -35,6 +35,7 @@ class UAccessor;
 class AColumn;
 class ULogicContext;
 class ULogicSettings;
+class UDimensionRuntime;
 
 UCLASS(BlueprintType)
 class UBlockLogic : public UInstance {
@@ -111,7 +112,14 @@ class UBlockLogic : public UInstance {
   FQrVector3i GetWorldPosition() const;
 
   // Initialization and ownership
-  void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, ADimension *dim);
+  void Init(const Vec3i &pos, const FQuat &r, const UStaticBlock *block, UDimensionRuntime *runtime);
+  /** World presentation actor (sectors, props, UE delegates). Not inferred from simulation; set via AttachPresentationActor. */
+  virtual ADimension *GetPresentationActor() const;
+  void AttachPresentationActor(ADimension *presentationActor);
+
+  /** Gameplay: logic input reached this block; emits via UDimensionRuntime (ADimension subscribes for BP while bound). */
+  void NotifyDeliveredLogicInput(class ULogicContext *context);
+
   void SetOwner(void *param1);
 
   // Accessors and helpers
@@ -196,8 +204,8 @@ class UBlockLogic : public UInstance {
   virtual UBlockLogic *GetWidgetRootBlock();
   virtual bool IsPart() { return false; }
 
-  // World/Dimension
-  ADimension *GetDim() const { return mDimension; }
+  // Simulation / surface runtime ( UObject outer )
+  UDimensionRuntime *GetDimensionRuntime() const { return Runtime; }
 
   // State controls
   void SetAccessorsInstances(bool show);
@@ -257,9 +265,12 @@ class UBlockLogic : public UInstance {
   UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
   ULogicSettings *LogicSettings = nullptr;
 
-  // Dimension
+  // Paired ADimension actor (presentation / world hooks only)
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   ADimension *mDimension = nullptr;
+
+  UPROPERTY()
+  UDimensionRuntime *Runtime = nullptr;
 
   // Internal state
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -303,6 +314,7 @@ class UPartBlockLogic : public UBlockLogic {
   virtual ULogicSettings *GetLogicSettings() override;
   virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
   virtual void ApplyLogicInput(const class ULogicContext *ctx) override;
+  virtual ADimension *GetPresentationActor() const override;
 
   // Variables
   UPROPERTY()

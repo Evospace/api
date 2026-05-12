@@ -18,6 +18,7 @@ class ABlockActor;
 class UBlockLogic;
 class UPartBlockLogic;
 class ADimension;
+class UDimensionRuntime;
 
 UCLASS(BlueprintType)
 class UStaticBlock : public UStaticObject {
@@ -118,7 +119,7 @@ class UStaticBlock : public UStaticObject {
 
   const TArray<FQrVector3i> &GetPositions() const;
 
-  virtual UBlockLogic *SpawnBlockDeferred(ADimension *dim, const FTransform &tr, const Vec3i &bpos) const;
+  virtual UBlockLogic *SpawnBlockDeferred(UDimensionRuntime *runtime, const FTransform &tr, const Vec3i &bpos) const;
 
-  virtual UPartBlockLogic *SpawnPart(ADimension *world, const FTransform &tr, const Vec3i &bpos, UBlockLogic *parent) const;
+  virtual UPartBlockLogic *SpawnPart(UDimensionRuntime *runtime, const FTransform &tr, const Vec3i &bpos, UBlockLogic *parent) const;
 };
