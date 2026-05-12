@@ -1,7 +1,6 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "CoreMinimal.h"
-#include "BlockLogicStore.h"
 #include "EvoRingBuffer.h"
 #include "Evospace/ThreadWorker.h"
 #include "Qr/Vector.h"
@@ -17,7 +16,6 @@
 #include <Math/Vector.h>
 #include <Containers/Ticker.h>
 #include "Evospace/Props/ItemInstancingComponent.h"
-#include <memory>
 
 #include "Dimension.generated.h"
 
@@ -40,22 +38,15 @@ class UDimensionPropComponent;
 class UStaticIndexedHierarchicalInstancedStaticMeshComponent;
 class USectorCompiler;
 class APlayerController;
-class UResourceNetworkManager;
 class UDroneManager;
 class URailNetwork;
 class URailwayManager;
+class UDimensionRuntime;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
 class UGameSessionData;
 class UInstancedStaticMeshComponent;
 class ULogicContext;
-
-USTRUCT()
-struct EVOSPACE_API FStatictics {
-  GENERATED_BODY()
-
-  public:
-};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicInputDelivered, UBlockLogic *, Target, ULogicContext *, Context);
 
@@ -171,6 +162,9 @@ class ADimension : public AActor {
 
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition);
+  UDimensionRuntime *EnsureSimulationRuntimeCreated();
+  bool BindToSimulationRuntime();
+  void UnbindFromSimulationRuntime();
 
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -210,6 +204,9 @@ class ADimension : public AActor {
   URailwayManager *GetRailwayManager();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
+  UBlockLogic *PlaceBlock(const Vec3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
+  UBlockLogic *RemoveBlock(const Vec3i &BlockPos);
+  void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UGraphStorage *ResourceGraph;
@@ -230,14 +227,10 @@ class ADimension : public AActor {
   // Core Tick
 
   float HalfSecond = 0.f;
-  float DeltaRemain = 0.f;
   int32 Ticks = 0;
   int32 HalfTps = 0;
   EvoRingBuffer<float> TpsBuffer = EvoRingBuffer<float>(16, 0);
   EvoRingBuffer<float> CyclesBuffer = EvoRingBuffer<float>(16, 0);
-
-  // Integer accumulator in tick-micro units (deltaMicros * tickRate)
-  int64 TickAccumulatorMicros = 0;
 
   bool Paused = false;
 
@@ -255,13 +248,6 @@ class ADimension : public AActor {
 
   void TeleportProcess();
   void LoadingProcess();
-
-  // Conveyor networks storage
-  UPROPERTY()
-  TArray<class UConveyorNetwork *> mConveyorNetworks;
-
-  UPROPERTY()
-  TArray<class UConveyorNetwork *> mConveyorNetworksToKill;
 
   float mPlayerTeleportDelay = 1.0;
   bool mPlayerTeleported = false;
@@ -283,25 +269,16 @@ class ADimension : public AActor {
   UDimensionLoadWidget *mLoadWidget;
 
   UPROPERTY()
-  TMap<FQrVector3i, UBlockLogic *> mDimensionLogics;
-
-  UPROPERTY()
-  FBlockLogicStore mDimensionLogicsTick;
-
-  UPROPERTY(VisibleAnywhere)
-  UResourceNetworkManager *ResourceNetworkManager;
-
-  UPROPERTY(VisibleAnywhere)
-  UDroneManager *DroneManager;
-
-  UPROPERTY(VisibleAnywhere)
-  URailNetwork *RailNetwork;
-
-  UPROPERTY(VisibleAnywhere)
-  URailwayManager *RailwayManager;
+  UDimensionRuntime *Runtime = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   UInstancedStaticMeshComponent *DroneMeshComponent;
+
+  UPROPERTY()
+  bool BuildModeCoverDirty = false;
+
+  void HandleRuntimeLogicAdded(const FQrVector3i &Pos, UBlockLogic *Logic);
+  void HandleRuntimeLogicRemoved(const FQrVector3i &Pos, UBlockLogic *Logic);
 
   private:
   // Columns
