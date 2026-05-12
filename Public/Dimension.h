@@ -350,7 +350,6 @@ class ADimension : public AActor {
 
   void TearDownSurfaceColumnsAndPresentation();
   void InvalidateAllPlayerSectorStreamingAnchors();
-  UDimensionRuntime *ResolveSurfaceSimulationRuntime() const;
 
   void CacheSector(const Vec3i &pos, USectorProxy *sector);
 
