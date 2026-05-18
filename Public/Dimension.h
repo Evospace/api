@@ -241,9 +241,6 @@ class ADimension : public AActor {
   UPROPERTY(EditAnywhere)
   bool mTicking = true;
 
-  UPROPERTY(EditAnywhere)
-  bool mNetworkTicking = true;
-
   FTSTicker::FDelegateHandle TickDelegateHandle;
 
   private:

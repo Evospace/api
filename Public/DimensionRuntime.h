@@ -67,7 +67,7 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void SerializeRuntimeManagers(TSharedPtr<FJsonObject> JsonLogic) const;
   void DeserializeRuntimeManagers(TSharedPtr<FJsonObject> JsonObject);
 
-  int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled, bool TickNetworksEnabled);
+  int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled);
   void TickVisual(float DeltaTime);
 
   FOnRuntimeLogicAdded OnRuntimeLogicAdded;
