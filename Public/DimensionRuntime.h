@@ -38,6 +38,9 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void UnbindDimension(const ADimension *InDimension);
   void Shutdown();
 
+  /** Clears all block logic and manager state. Recreates managers when Presentation is set (after bind). */
+  void ResetSimulationState(class ADimension *Presentation, UInstancedStaticMeshComponent *InDroneMeshComponent);
+
   void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
   /** After simulation consumes logic input: broadcast OnSimulationLogicInputDelivered (ADimension routes to blueprint while bound). */
   void NotifySimulationLogicInputDelivered(UBlockLogic *Target, ULogicContext *Context);

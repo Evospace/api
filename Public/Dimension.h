@@ -164,8 +164,11 @@ class ADimension : public AActor {
   void InitializeSurface(USurfaceDefinition *surfaceDefinition);
   UDimensionRuntime *EnsureSimulationRuntimeCreated();
   bool BindToSimulationRuntime();
-  /** Destroys streamed columns and clears dimension presentation, then clears ADimension::Runtime (simulation state stays in USimulationSurfaceSubsystem until teardown). */
+  /** Destroys streamed columns and clears dimension presentation, then clears ADimension::Runtime. */
   void UnbindFromSimulationRuntime();
+
+  /** USimulationSurfaceSubsystem::ApplySurfaceLifecycle(ResetBeforeLoad) — call immediately before LoadDimentionFolder. */
+  void PrepareSimulationRuntimeForLoad();
 
   /** ADimension::Runtime must be set for SectorArea to advance LoadedPos/Radius and for LoadColumn to run. */
   bool IsSimulationRuntimeBound() const { return Runtime != nullptr; }
