@@ -23,6 +23,12 @@ class UBaseInventoryAccessor;
 class UNetworkResourceInventory;
 class UGraphStorage;
 class USingleSlotInventory;
+
+struct FNetworkWidgetMedianBuffers {
+  EvoRingBuffer<float> Charge = EvoRingBuffer<float>(20, 0.f);
+  EvoRingBuffer<float> Request = EvoRingBuffer<float>(20, 0.f);
+  EvoRingBuffer<float> Production = EvoRingBuffer<float>(20, 0.f);
+};
 class UBlockLogic;
 class UAccessor;
 class AItemLogic;
@@ -204,10 +210,8 @@ class UBlockNetwork : public UObject {
   FNetworkWidgetData GetWidgetData(int32 sub);
 
   private:
-  // Widget data cache, updates only by widget data request
-  mutable EvoRingBuffer<float> medianCharge = EvoRingBuffer<float>(20, 0);
-  mutable EvoRingBuffer<float> medianRequest = EvoRingBuffer<float>(20, 0);
-  mutable EvoRingBuffer<float> medianProduction = EvoRingBuffer<float>(20, 0);
+  // Per-subnetwork widget medians; resized with ResizePerSubnetwork.
+  mutable TArray<FNetworkWidgetMedianBuffers> mWidgetMedians;
 
   UPROPERTY(VisibleAnywhere)
   FLazyGameSession GameSessionCache;
