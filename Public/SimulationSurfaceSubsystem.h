@@ -13,7 +13,6 @@ class EVOSPACE_API USimulationSurfaceSubsystem : public UGameInstanceSubsystem {
   public:
   virtual void Deinitialize() override;
   UDimensionRuntime *GetOrCreateRuntime(const FString &SurfaceFolderName);
-  UDimensionRuntime *FindRuntime(const FString &SurfaceFolderName) const;
 
   private:
   UPROPERTY()
