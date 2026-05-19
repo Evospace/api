@@ -19,19 +19,6 @@ class UGameSessionSubsystem;
 class UMusicPlaylist;
 class UWorld;
 
-UENUM()
-enum class EMusicPlaybackSegment : uint8 {
-  None,
-  Music,
-  Wind,
-};
-
-UENUM()
-enum class EMusicAutoAdvanceAction : uint8 {
-  ToWind,
-  ToRandomTrack,
-};
-
 UCLASS()
 class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
   GENERATED_BODY()
@@ -186,8 +173,9 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   // re-entering StartCrossfadeWithDuration, so reschedule must use the same advance (e.g. play_random_crossfade(10)).
   float AutoAdvanceScheduleCrossfadeSec = 3.0f;
 
+  /** When true, NextTrackTimer fires at end of wind segment (then random music). When false, at end of a playlist/music segment (then wind or random). */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  EMusicPlaybackSegment CurrentSegment = EMusicPlaybackSegment::None;
+  bool bAutoAdvanceTimerAfterWindSegment = false;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool bMuffled = false;
@@ -210,12 +198,10 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
 
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
-  bool IsWindSound(const USoundBase *Sound) const;
-  void ScheduleNextTimer(float DurationSeconds, float CrossfadeForAdvance, EMusicAutoAdvanceAction AdvanceAction);
+  void ScheduleNextTimer(float DurationSeconds, float CrossfadeForAdvance);
 
   UFUNCTION()
   void OnNextTrackTimer();
 
   FTimerHandle NextTrackTimerHandle;
-  EMusicAutoAdvanceAction ScheduledAutoAdvance = EMusicAutoAdvanceAction::ToRandomTrack;
 };
