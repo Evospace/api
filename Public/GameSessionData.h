@@ -128,7 +128,7 @@ class UGameSessionData : public UInstance {
   bool Cloud = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  int32 TickRate = 400;
+  int32 TickRate = 20;
 
   // Frozen local day phase in current surface planet tick space (see UStaticPlanet::DayLengthTicks). No day length on session.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
