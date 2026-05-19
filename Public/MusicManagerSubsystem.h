@@ -211,11 +211,9 @@ class UMusicManagerSubsystem : public UGameInstanceSubsystem, public FTickableGa
   UAudioComponent *GetActiveComponent() const;
   UAudioComponent *GetInactiveComponent() const;
   bool IsWindSound(const USoundBase *Sound) const;
+  float GetMusicTrackDurationSeconds(const USoundBase *Sound) const;
   void ScheduleNextTimer(float DurationSeconds, float CrossfadeForAdvance, EMusicAutoAdvanceAction AdvanceAction);
-
-  UFUNCTION()
-  void OnNextTrackTimer();
+  void HandleScheduledAdvance(EMusicAutoAdvanceAction Action);
 
   FTimerHandle NextTrackTimerHandle;
-  EMusicAutoAdvanceAction ScheduledAutoAdvance = EMusicAutoAdvanceAction::ToRandomTrack;
 };
