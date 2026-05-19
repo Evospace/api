@@ -185,7 +185,7 @@ class ADimension : public AActor {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   USurfaceDefinition *SurfaceDefinition;
 
-  /** Folder name under the save directory for this playable surface (e.g. Temperate); used for SurfaceDefinition.json, logic bin, weather, day-phase bus. */
+  /** Folder name under the save directory for this playable surface (e.g. Temperate); used for SurfaceDefinition.json, logic bin, weather. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Surface")
   FString SurfaceFolderName = TEXT("Temperate");
 
