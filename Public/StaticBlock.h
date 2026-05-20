@@ -37,6 +37,8 @@ class UStaticBlock : public UStaticObject {
       .addProperty("color_top", &Self::mColorTop) //@field Vec3
       .addProperty("tier", &Self::Tier) //@field integer
       .addProperty("level", &Self::Level) //@field integer
+      .addProperty("energy_consumption_per_tick", &Self::EnergyConsumptionPerTick) //@field integer
+      .addProperty("energy_production_per_tick", &Self::EnergyProductionPerTick) //@field integer
       .addProperty("break_effect", &Self::BreakEffect) //@field Class
       .addProperty("lua", &Self::Table) //@field table
       .addProperty("half_cover", &Self::HalfCover) //@field StaticCover
@@ -90,6 +92,12 @@ class UStaticBlock : public UStaticObject {
 
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   int32 Level = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 EnergyConsumptionPerTick = 0;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  int32 EnergyProductionPerTick = 0;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UStaticCover *HalfCover = nullptr;

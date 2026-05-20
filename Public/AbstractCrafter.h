@@ -121,6 +121,8 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   virtual void CopyOnReplace(UBlockLogic *from) override;
 
+  virtual void BlockBeginPlay() override;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool LoadIndependent = false;
 
