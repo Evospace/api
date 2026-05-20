@@ -121,6 +121,10 @@ class UStaticBlock : public UStaticObject {
   UFUNCTION(BlueprintCallable, BlueprintCosmetic)
   FString GetLuaTooltip(UBlockLogic *s) const;
 
+  /** Localized lines from prototype data via Lua Vlib.static_block_tooltip (energy, tier, level). */
+  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+  FString GetVlibStaticBlockTooltip() const;
+
   std::optional<luabridge::LuaRef> Table;
 
   virtual void Release() override;

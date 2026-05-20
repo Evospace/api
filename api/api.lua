@@ -847,7 +847,6 @@ function Dimension:sample_height(x, y) end
 --- 
 --- @class DrillingMachineBase : BlockLogic
 --- @field ticks_per_item integer undocumented
---- @field energy_per_tick integer undocumented
 --- @field remaining_energy integer undocumented
 --- @field productivity integer percent (e.g. 15 = +15%)
 --- @field total_production integer undocumented
@@ -1054,7 +1053,7 @@ Game = {}
 --- @field generator string undocumented
 --- @field save_name string undocumented
 --- @field cloud boolean undocumented
---- @field world_time number undocumented
+--- @field world_time integer locked local day-phase ticks (planet space) when frozen
 --- @field world_time_freeze boolean undocumented
 --- @field tick_rate integer undocumented
 GameSessionData = {}
@@ -2687,6 +2686,31 @@ function MapgenData.cast(object) end
 
 --- 
 --- 
+--- @class Music : Object
+--- @field playlist string undocumented
+--- @field track_count integer undocumented
+Music = {}
+
+--- Fade out both channels and stop automatic track advance.
+function Music:request_silence() end
+---
+--- Select a named playlist (e.g. default, cosmos). Returns whether the key exists.
+function Music:set_playlist(key) end
+---
+--- Play a track by zero-based index in the current playlist.
+function Music:play_track(index) end
+---
+--- Play a track with explicit crossfade duration in seconds (0 = immediate).
+function Music:play_track_crossfade(index, crossfade_seconds) end
+---
+--- Start a random track from the current playlist (crossfade handled in C++).
+function Music:play_random() end
+---
+--- Start a random track with explicit crossfade duration in seconds.
+function Music:play_random_crossfade(crossfade_seconds) end
+
+--- 
+--- 
 --- @class NoiseGenerator : Prototype
 --- @field min number undocumented
 --- @field max number undocumented
@@ -3148,7 +3172,6 @@ function SelectCrafter.cast(object) end
 --- @field bool_value boolean undocumented
 --- @field bool_default_value boolean undocumented
 --- @field string_value string undocumented
---- @field string_value string undocumented
 --- @field string_options string[] undocumented
 --- @field int_value integer undocumented
 --- @field int_default_value integer undocumented
@@ -3347,6 +3370,8 @@ function SourceData.cast(object) end
 --- @field color_top Vec3 undocumented
 --- @field tier integer undocumented
 --- @field level integer undocumented
+--- @field energy_consumption_per_tick integer undocumented
+--- @field energy_production_per_tick integer undocumented
 --- @field break_effect Class undocumented
 --- @field lua table undocumented
 --- @field half_cover StaticCover undocumented
@@ -3485,6 +3510,35 @@ function StaticObject.get_class() end
 --- @param object Object to cast
 --- @return StaticObject
 function StaticObject.cast(object) end
+
+--- 
+--- 
+--- @class StaticPlanet : Prototype
+--- @field day_length_ticks integer undocumented
+--- @field phase_offset_ticks integer undocumented
+--- @field dawn_phase_ticks integer undocumented
+--- @field solar_noon_phase_ticks integer undocumented
+--- @field sunset_phase_ticks integer undocumented
+StaticPlanet = {}
+
+--- Register a new StaticPlanet static object
+--- @param name string The name of the object
+--- @return StaticPlanet
+function StaticPlanet.reg(name) end
+
+--- Searching for StaticPlanet in db
+--- @param name string The name of the object
+--- @return StaticPlanet
+function StaticPlanet.find(name) end
+
+--- Return StaticPlanet class object
+--- @return Class
+function StaticPlanet.get_class() end
+
+--- Trying to cast Object into StaticPlanet
+--- @param object Object to cast
+--- @return StaticPlanet
+function StaticPlanet.cast(object) end
 
 --- 
 --- 
@@ -3781,6 +3835,7 @@ function StaticTip.cast(object) end
 --- @field second_fog01 number 0..1
 --- @field storminess01 number 0..1
 --- @field wind_speed number >=0
+--- @field gust_amount01 number 0..1
 StaticWeather = {}
 
 --- Register a new StaticWeather static object
@@ -3851,6 +3906,30 @@ function SurfaceDefinition.get_class() end
 --- @param object Object to cast
 --- @return SurfaceDefinition
 function SurfaceDefinition.cast(object) end
+
+--- 
+--- 
+--- @class TrainScheduleStop : Instance
+TrainScheduleStop = {}
+
+--- Creates a new TrainScheduleStop instance
+--- @param parent Object Object of parent
+--- @param name string The name of the instance
+--- @return TrainScheduleStop
+function TrainScheduleStop.new(parent, name) end
+
+--- Creates a new TrainScheduleStop instance
+--- @return TrainScheduleStop
+function TrainScheduleStop.new_simple() end
+
+--- Return TrainScheduleStop class object
+--- @return Class
+function TrainScheduleStop.get_class() end
+
+--- Trying to cast Object into TrainScheduleStop
+--- @param object Object to cast
+--- @return TrainScheduleStop
+function TrainScheduleStop.cast(object) end
 
 --- 
 --- 
