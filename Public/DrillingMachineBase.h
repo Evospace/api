@@ -25,7 +25,6 @@ class UDrillingMachineBase : public UBlockLogic {
     luabridge::getGlobalNamespace(L)
       .deriveClass<Self, UBlockLogic>("DrillingMachineBase") //@class DrillingMachineBase : BlockLogic
       .addProperty("ticks_per_item", &Self::TicksPerItem) //@field integer
-      .addProperty("energy_per_tick", &Self::EnergyPerTick) //@field integer
       .addProperty("remaining_energy", &Self::RemainingEnergy) //@field integer
       .addProperty("productivity", &Self::Productivity) //@field integer percent (e.g. 15 = +15%)
       .addProperty("total_production", &Self::TotalProduction) //@field integer
@@ -105,10 +104,6 @@ class UDrillingMachineBase : public UBlockLogic {
   // Energy management
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
   int32 RemainingEnergy = 0;
-
-  // Exact energy consumption per tick
-  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
-  int32 EnergyPerTick = 60;
 
   // Exact time to extract one item, in ticks
   UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Drilling|Energy")
