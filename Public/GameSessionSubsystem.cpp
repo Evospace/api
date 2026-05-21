@@ -8,8 +8,8 @@
 #include "Public/MainGameInstance.h"
 #include "Public/ResearchSubsystem.h"
 #include "Qr/GameInstanceHelper.h"
+#include "Qr/StaticLogger.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
-#include <Engine/World.h>
 
 void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
@@ -136,9 +136,20 @@ void UGameSessionSubsystem::IncrementTime(double delta) {
   Data->TotalGameTime += delta;
 }
 
-int64 UGameSessionSubsystem::GetWorldDayPhaseTicks(const UStaticPlanet *Planet) const {
+void UGameSessionSubsystem::SetPresentationSurfacePlanet(const UStaticPlanet *Planet) {
+  PresentationSurfacePlanet = Planet;
+}
+
+void UGameSessionSubsystem::ClearPresentationSurfacePlanet() {
+  PresentationSurfacePlanet = nullptr;
+}
+
+int64 UGameSessionSubsystem::GetWorldDayPhaseTicks() const {
   check(Data);
-  check(Planet);
+  const UStaticPlanet *Planet = PresentationSurfacePlanet.Get();
+  if (!Planet) {
+    return 0;
+  }
   const int64 len = FMath::Max<int64>(1, Planet->DayLengthTicks);
   if (!Data->WorldTimeAutoAdvance) {
     return evo::WorldDayCycle::PositiveModInt64(Data->WorldTimeOfDayPhaseTicks, len);
@@ -146,21 +157,28 @@ int64 UGameSessionSubsystem::GetWorldDayPhaseTicks(const UStaticPlanet *Planet) 
   return evo::WorldDayCycle::PositiveModInt64(Planet->SimulationDayPhaseTicks(Data->TotalGameTicks), len);
 }
 
-float UGameSessionSubsystem::GetWorldTimeOfDayHours(const UStaticPlanet *Planet) const {
+float UGameSessionSubsystem::GetWorldTimeOfDayHours() const {
   check(Data);
-  check(Planet);
+  const UStaticPlanet *Planet = PresentationSurfacePlanet.Get();
+  if (!Planet) {
+    return 0.f;
+  }
   return Planet->ResolveTimeOfDayHours(Data->WorldTimeAutoAdvance, Data->WorldTimeOfDayPhaseTicks, Data->TotalGameTicks);
 }
 
-void UGameSessionSubsystem::SetWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet) {
+void UGameSessionSubsystem::SetWorldTimeOfDayHours(float Hours) {
   check(Data);
-  check(Planet);
+  const UStaticPlanet *Planet = PresentationSurfacePlanet.Get();
+  if (!Planet) {
+    LOG(ERROR_LL) << "SetWorldTimeOfDayHours: presentation surface planet not set";
+    return;
+  }
   const int64 len = FMath::Max<int64>(1, Planet->DayLengthTicks);
   Data->WorldTimeOfDayPhaseTicks = evo::WorldDayCycle::LockedHoursToPhaseTicks(Hours, len);
 }
 
-void UGameSessionSubsystem::SetLockedWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet) {
-  SetWorldTimeOfDayHours(Hours, Planet);
+void UGameSessionSubsystem::SetLockedWorldTimeOfDayHours(float Hours) {
+  SetWorldTimeOfDayHours(Hours);
   SetWorldTimeAutoAdvance(false);
 }
 

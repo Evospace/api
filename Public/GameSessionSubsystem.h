@@ -70,19 +70,19 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void IncrementTime(double delta);
 
-  // World time: local day uses current surface planet (UStaticPlanet::DayLengthTicks); hours are cosmetic (curves, lighting).
+  // World time: uses PresentationSurfacePlanet day length; hours are cosmetic (curves, lighting).
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
-  int64 GetWorldDayPhaseTicks(const UStaticPlanet *Planet) const;
+  int64 GetWorldDayPhaseTicks() const;
 
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
-  float GetWorldTimeOfDayHours(const UStaticPlanet *Planet) const;
+  float GetWorldTimeOfDayHours() const;
 
   UFUNCTION(BlueprintCallable, Category = "World Time")
-  void SetWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet);
+  void SetWorldTimeOfDayHours(float Hours);
 
   /** Sets cosmetic hour and freezes (disables tick-based advance). */
   UFUNCTION(BlueprintCallable, Category = "World Time")
-  void SetLockedWorldTimeOfDayHours(float Hours, const UStaticPlanet *Planet);
+  void SetLockedWorldTimeOfDayHours(float Hours);
 
   UFUNCTION(BlueprintCallable)
   bool GetWorldTimeAutoAdvance() const;
@@ -132,7 +132,17 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   UPROPERTY(BlueprintAssignable)
   FOnSurfaceChange OnSurfaceChange;
 
+  /** Planet for the active presentation surface; set from ADimension::InitializeSurface. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "World Time")
+  const UStaticPlanet *GetPresentationSurfacePlanet() const { return PresentationSurfacePlanet; }
+
+  void SetPresentationSurfacePlanet(const UStaticPlanet *Planet);
+  void ClearPresentationSurfacePlanet();
+
   private:
+  UPROPERTY()
+  TObjectPtr<const UStaticPlanet> PresentationSurfacePlanet = nullptr;
+
   UPROPERTY(EditAnywhere)
   UGameSessionData *Data = nullptr;
 };
