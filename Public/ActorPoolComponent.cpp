@@ -2,6 +2,7 @@
 
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "Qr/StaticLogger.h"
 
 UActorPoolComponent::UActorPoolComponent() {
   PrimaryComponentTick.bCanEverTick = false;

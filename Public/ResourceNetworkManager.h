@@ -6,7 +6,9 @@
 #include "ResourceNetworkManager.generated.h"
 
 class ADimension;
+class FJsonObject;
 class UBlockNetwork;
+class UDimensionRuntime;
 class UStaticItem;
 
 UCLASS()
@@ -36,6 +38,12 @@ class UResourceNetworkManager : public UObject {
 
   /** Read-only enumeration helper for diagnostics/testing. */
   const TSet<UBlockNetwork *> &GetNetworks() const { return networks; }
+
+  bool SerializeJson(TSharedPtr<FJsonObject> json) const;
+  void RestoreGraphDataFromSave(TSharedPtr<FJsonObject> json);
+
+  /** Rebuild each detached resource network once after bulk block load. */
+  void RebuildAllNetworksAfterLoad(UDimensionRuntime *runtime);
 
   private:
   /** Back-reference to owning Dimension, kept weak to avoid cycles. */

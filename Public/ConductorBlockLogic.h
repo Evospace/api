@@ -319,6 +319,9 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   void PrepareNetworkStorageForRemoval();
 
+  /** Rebuild connected network when this conductor is not attached to one yet. */
+  void RebuildNetworkIfDetached();
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 

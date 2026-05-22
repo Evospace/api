@@ -70,6 +70,11 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void SerializeRuntimeManagers(TSharedPtr<FJsonObject> JsonLogic) const;
   void DeserializeRuntimeManagers(TSharedPtr<FJsonObject> JsonObject);
 
+  void BeginDeferredResourceNetworkLoad();
+  void FinishDeferredResourceNetworkLoad(TSharedPtr<FJsonObject> JsonLogic);
+  void CancelDeferredResourceNetworkLoad();
+  bool IsResourceNetworkRebuildDeferred() const { return bDeferResourceNetworkRebuild; }
+
   int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled);
   void TickVisual(float DeltaTime);
 
@@ -115,4 +120,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   TArray<UConveyorNetwork *> ConveyorNetworksToKill;
 
   int64 TickAccumulatorMicros = 0;
+
+  bool bDeferResourceNetworkRebuild = false;
 };
