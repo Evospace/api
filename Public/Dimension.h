@@ -7,6 +7,7 @@
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Evospace/Props/StaticIndexedHierarchicalInstancedStaticMeshComponent.h"
 #include "Evospace/World/Column.h"
+#include "Evospace/World/ColumnSaveRunner.h"
 #include "Evospace/World/SectorCompiler.h"
 #include "Public/StaticBlock.h"
 #include "Public/LazyGameSessionData.h"
@@ -47,6 +48,7 @@ class USurfaceDefinition;
 class UGameSessionData;
 class UInstancedStaticMeshComponent;
 class ULogicContext;
+class FColumnSaveRunner;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicInputDelivered, UBlockLogic *, Target, ULogicContext *, Context);
 
@@ -288,6 +290,7 @@ class ADimension : public AActor {
   // Columns
 
   friend class AColumn;
+  friend class FColumnSaveRunner;
   friend class USectorArea;
 
   struct ColumnDataKeyFuncs {
@@ -313,7 +316,13 @@ class ADimension : public AActor {
 
   private:
   std::unique_ptr<TThreadWorker<SectorCompilerData>> mSectorCompilerWorker;
-  std::unique_ptr<TThreadWorker<FColumnLoaderData>> mSectorSaverWorker;
+  std::unique_ptr<TThreadWorker<FColumnLoaderData>> mColumnLoadWorker;
+  FColumnSaveRunner mColumnSaveRunner;
+
+  void SaveAllDirtyColumnsViaRunner();
+
+  bool AreColumnLoadsFrozen() const { return bColumnLoadsFrozen; }
+  void FlushColumnLoadsSync();
 
   UPROPERTY(VisibleAnywhere)
   TMap<FQrVector3i, AColumn *> mColumns;
@@ -344,6 +353,14 @@ class ADimension : public AActor {
   bool IsColumnRemove(const AColumn &column) const;
   bool IsColumnLoaded(const AColumn &column) const;
   bool IsColumnUsed(const AColumn &column) const;
+  bool AreColumnFsmSavesIdle() const;
+
+  void SaveDimentionFolderImpl(bool backup);
+  void TickPendingFullSave();
+
+  bool mPendingFullSave = false;
+  bool mPendingFullSaveBackup = false;
+  bool bColumnLoadsFrozen = false;
 
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);
