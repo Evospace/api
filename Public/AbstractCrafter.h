@@ -123,6 +123,9 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   virtual void BlockBeginPlay() override;
 
+  int32 GetEnergyConsumptionPerTick() const;
+  int32 GetEnergyProductionPerTick() const;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool LoadIndependent = false;
 
