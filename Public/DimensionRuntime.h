@@ -78,6 +78,9 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled);
   void TickVisual(float DeltaTime);
 
+  int32 GetManagedResourceNetworkCount() const;
+  int32 GetActiveConveyorNetworkCount() const;
+
   FOnRuntimeLogicAdded OnRuntimeLogicAdded;
   FOnRuntimeLogicRemoved OnRuntimeLogicRemoved;
 
