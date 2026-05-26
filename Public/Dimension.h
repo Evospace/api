@@ -319,10 +319,7 @@ class ADimension : public AActor {
   std::unique_ptr<TThreadWorker<FColumnLoaderData>> mColumnLoadWorker;
   FColumnSaveRunner mColumnSaveRunner;
 
-  void SaveAllDirtyColumnsViaRunner();
-
-  bool AreColumnLoadsFrozen() const { return bColumnLoadsFrozen; }
-  void FlushColumnLoadsSync();
+  void SaveDirtyColumnsForSnapshot();
 
   UPROPERTY(VisibleAnywhere)
   TMap<FQrVector3i, AColumn *> mColumns;
@@ -353,14 +350,13 @@ class ADimension : public AActor {
   bool IsColumnRemove(const AColumn &column) const;
   bool IsColumnLoaded(const AColumn &column) const;
   bool IsColumnUsed(const AColumn &column) const;
-  bool AreColumnFsmSavesIdle() const;
+  bool IsSnapshotBarrierReady() const;
 
   void SaveDimentionFolderImpl(bool backup);
   void TickPendingFullSave();
 
   bool mPendingFullSave = false;
   bool mPendingFullSaveBackup = false;
-  bool bColumnLoadsFrozen = false;
 
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);
