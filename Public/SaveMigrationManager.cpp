@@ -4,6 +4,7 @@
 
 #include "Engine/GameInstance.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
+#include "Public/SavePathProvider.h"
 #include "Logging/StructuredLog.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -34,15 +35,25 @@ static const auto TierArray = {
 } // namespace
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
+  RunMigrationsAtRoot(FSavePathProvider::GetLocalSlotRoot(saveName), saveName, GameInstance);
+}
+
+void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const FString &DisplayName,
+                                                UGameInstance *GameInstance) {
   if (!GameInstance) {
     LOG(ERROR_LL) << "SaveMigrationManager: GameInstance is null";
     return;
   }
 
+  if (RootPath.IsEmpty()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: RootPath is empty for save '" << DisplayName << "'";
+    return;
+  }
+
   bool isPreGameSessionSave = false;
-  UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionData(GameInstance, saveName);
+  UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionDataAtRoot(GameInstance, RootPath);
   if (!loadedSession) {
-    LOG(ERROR_LL) << "SaveMigrationManager: No GameSessionData found for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: No GameSessionData found for save '" << DisplayName << "'";
     loadedSession = NewObject<UGameSessionData>(GameInstance, TEXT("GameSessionData"));
     loadedSession->Version = FVersionStruct{ 0, 19, 0, 0, TEXT("?") };
     loadedSession->Mods = {};
@@ -53,85 +64,83 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
   struct FMigrator {
     FVersionStruct Target;
-    TFunction<bool(const FString &, UGameInstance *GameInstance)> Action;
+    TFunction<bool(const FString &, const FString &, UGameInstance *)> Action;
   };
 
   TArray<FMigrator> migrators;
   migrators.Reserve(8);
 
   // Convert Logic.json to Logic.bin for saves from 0.18.2
-  migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-                   const FString logicJsonPath = saveRoot / TEXT("Dimension") / TEXT("Logic.json");
-                   const FString logicBinPath = saveRoot / TEXT("Dimension") / TEXT("Logic.bin");
+  migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") },
+                  [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                    const FString logicJsonPath = RootPath / TEXT("Dimension") / TEXT("Logic.json");
+                    const FString logicBinPath = RootPath / TEXT("Dimension") / TEXT("Logic.bin");
 
-                   // Load Logic.json
-                   FString jsonStr;
-                   if (FFileHelper::LoadFileToString(jsonStr, *logicJsonPath) && !jsonStr.IsEmpty()) {
-                     // Write to compressed binary format (same as current save format)
-                     FBufferArchive uncompressedData;
-                     FMemoryWriter memoryWriter(uncompressedData, true);
-                     int32 version = 0; // Use version 0 as in current saves
-                     memoryWriter << version;
-                     memoryWriter << jsonStr;
+                    // Load Logic.json
+                    FString jsonStr;
+                    if (FFileHelper::LoadFileToString(jsonStr, *logicJsonPath) && !jsonStr.IsEmpty()) {
+                      // Write to compressed binary format (same as current save format)
+                      FBufferArchive uncompressedData;
+                      FMemoryWriter memoryWriter(uncompressedData, true);
+                      int32 version = 0; // Use version 0 as in current saves
+                      memoryWriter << version;
+                      memoryWriter << jsonStr;
 
-                     // Compress the data with ZLIB
-                     TArray<uint8> compressedData;
-                     FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
-                     compressor << uncompressedData;
-                     compressor.Flush();
+                      // Compress the data with ZLIB
+                      TArray<uint8> compressedData;
+                      FArchiveSaveCompressedProxy compressor(compressedData, FName("ZLIB"));
+                      compressor << uncompressedData;
+                      compressor.Flush();
 
-                     // Save the compressed data as Logic.bin
-                     if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
-                       LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << saveName << "'";
-                       return false;
-                     }
+                      // Save the compressed data as Logic.bin
+                      if (!FFileHelper::SaveArrayToFile(compressedData, *logicBinPath)) {
+                        LOG(ERROR_LL) << "SaveMigrationManager: Failed to save Logic.bin for save '" << DisplayName << "'";
+                        return false;
+                      }
 
-                     LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << saveName << "'";
-                   } else if (jsonStr.IsEmpty()) {
-                     LOG(WARN_LL) << "SaveMigrationManager: Logic.json is empty for save '" << saveName << "'";
-                   }
+                      LOG(INFO_LL) << "SaveMigrationManager: Converted Logic.json to Logic.bin for save '" << DisplayName << "'";
+                    } else if (jsonStr.IsEmpty()) {
+                      LOG(WARN_LL) << "SaveMigrationManager: Logic.json is empty for save '" << DisplayName << "'";
+                    }
 
-                   // Strip "StaticBlock"/"SingleStaticBlock" suffix from block names (needed for both converted and
-                   // pre-existing Logic.bin)
-                   RemoveSingleStaticBlocksFromLogicJson(saveName);
+                    // Strip "StaticBlock"/"SingleStaticBlock" suffix from block names (needed for both converted and
+                    // pre-existing Logic.bin)
+                    RemoveSingleStaticBlocksFromLogicJsonAtRoot(RootPath, DisplayName);
 
-                   return true;
-                 } });
+                    return true;
+                  } });
 
   // Rename Dimension to Temperate, move Player.json and Preview.jpg to save root, rename Dimension.json to
   // GameSessionData.json
   migrators.Add(
-    { FVersionStruct{ 0, 20, 1, 8, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+    { FVersionStruct{ 0, 20, 1, 8, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
        IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
        IFileManager &FileManager = IFileManager::Get();
 
-       auto saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-
-       const FString dimensionDir = saveRoot / TEXT("Dimension");
-       const FString temperateDir = saveRoot / TEXT("Temperate");
+       const FString dimensionDir = RootPath / TEXT("Dimension");
+       const FString temperateDir = RootPath / TEXT("Temperate");
 
        if (!FileManager.Move(*temperateDir, *dimensionDir)) {
-         LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << saveName
+         LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << DisplayName
                        << "'";
          return false;
        }
 
        const FString playerSrc = temperateDir / TEXT("player.json");
-       const FString playerDst = saveRoot / TEXT("Player.json");
+       const FString playerDst = RootPath / TEXT("Player.json");
        if (PlatformFile.FileExists(*playerSrc)) {
          if (!PlatformFile.MoveFile(*playerDst, *playerSrc)) {
-           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Player.json to save root for '" << saveName
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Player.json to save root for '" << DisplayName
                          << "'";
            return false;
          }
        }
 
        const FString previewSrc = temperateDir / TEXT("Preview.jpg");
-       const FString previewDst = saveRoot / TEXT("Preview.jpg");
+       const FString previewDst = RootPath / TEXT("Preview.jpg");
        if (PlatformFile.FileExists(*previewSrc)) {
          if (!PlatformFile.MoveFile(*previewDst, *previewSrc)) {
-           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Preview.jpg to save root for '" << saveName
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Preview.jpg to save root for '" << DisplayName
                          << "'";
            return false;
          }
@@ -139,17 +148,17 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
        // Move Dimension.json into save root
        const FString dimJsonSrc = temperateDir / TEXT("Dimension.json");
-       const FString dimJsonDst = saveRoot / TEXT("GameSessionData.json");
+       const FString dimJsonDst = RootPath / TEXT("GameSessionData.json");
        if (PlatformFile.FileExists(*dimJsonSrc)) {
          if (!PlatformFile.MoveFile(*dimJsonDst, *dimJsonSrc)) {
            LOG(ERROR_LL) << "SaveMigrationManager: Failed to move Dimension.json to save root for '"
-                         << saveName << "'";
+                         << DisplayName << "'";
            return false;
          }
        }
 
        // Load GameSessionData.json
-       const FString gameSessionDataPath = saveRoot / TEXT("GameSessionData.json");
+       const FString gameSessionDataPath = RootPath / TEXT("GameSessionData.json");
        FString gameSessionDataStr;
        if (FFileHelper::LoadFileToString(gameSessionDataStr, *gameSessionDataPath)) {
          TSharedPtr<FJsonObject> gameSessionDataObj;
@@ -167,7 +176,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                !gameSessionDataFieldObj->TryGetStringField(TEXT("Generator"), generatorName)) {
              LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from "
                               "GameSessionData.GameSessionData for '"
-                           << saveName << "'";
+                           << DisplayName << "'";
            }
 
            if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
@@ -190,7 +199,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
              surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
 
-             UStaticSaveHelpers::SaveSurfaceDefinition(saveName, TEXT("Temperate"), surfaceDefinition);
+             UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
            }
          }
        }
@@ -200,9 +209,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
 
   // Update Temperate/SurfaceDefinition.json: set CurrentOre = 10 * InitialCapacity for every source, remove
   // ExtractedCount for every source
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 16, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-                   const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 16, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   const FString surfacePath = RootPath / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
                    FString jsonStr;
                    if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
@@ -213,7 +221,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
                    if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
-                                   << saveName << "'";
+                                   << DisplayName << "'";
                      return false;
                    }
 
@@ -292,7 +300,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
                    if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
-                                   << saveName << "'";
+                                   << DisplayName << "'";
                      return false;
                    }
 
@@ -300,9 +308,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                  } });
 
   // Fix broken ore sources with empty Item/Prop by setting them to Pyrite
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 123, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-                   const FString surfacePath = saveRoot / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 123, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   const FString surfacePath = RootPath / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
 
                    FString jsonStr;
                    if (!FFileHelper::LoadFileToString(jsonStr, *surfacePath)) {
@@ -313,7 +320,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
                    if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse SurfaceDefinition.json for '"
-                                   << saveName << "'";
+                                   << DisplayName << "'";
                      return false;
                    }
 
@@ -386,38 +393,36 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
                    if (!FFileHelper::SaveStringToFile(outStr, *surfacePath)) {
                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write SurfaceDefinition.json for '"
-                                   << saveName << "'";
+                                   << DisplayName << "'";
                      return false;
                    }
 
                    return true;
                  } });
 
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 140, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 140, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
                    for (const auto &tier : TierArray) {
-                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Scaffold", "Scaffold");
-                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Corner", "Corner");
-                     ReplaceBlocksInLogicJson(saveName, FString(tier) + "Beam", "Beam");
+                     ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, FString(tier) + "Scaffold", "Scaffold");
+                     ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, FString(tier) + "Corner", "Corner");
+                     ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, FString(tier) + "Beam", "Beam");
                    }
-                   ReplaceBlocksInLogicJson(saveName, "WoodenStairs", "Stairs");
+                   ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, "WoodenStairs", "Stairs");
                    return true;
                  } });
 
   // Rename FluetedColumn -> Column (designable migration)
-  migrators.Add({ FVersionStruct{ 0, 20, 1, 190, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   ReplaceBlocksInLogicJson(saveName, "FluetedColumn", "Column");
+  migrators.Add({ FVersionStruct{ 0, 20, 1, 190, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, "FluetedColumn", "Column");
                    return true;
                  } });
 
   // Migrate old placed pumpjacks (all tier variants) into explicit legacy block.
-  migrators.Add({ FVersionStruct{ 0, 21, 0, 322, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
-                   return ReplaceBlocksInLogicJson(saveName,
-                                                   { TEXT("StainlessSteelPumpjack"), TEXT("TitaniumPumpjack"), TEXT("CompositePumpjack"), TEXT("NeutroniumPumpjack") },
-                                                   TEXT("Pumpjack_leg"));
+  migrators.Add({ FVersionStruct{ 0, 21, 0, 322, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   return ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, { TEXT("StainlessSteelPumpjack"), TEXT("TitaniumPumpjack"), TEXT("CompositePumpjack"), TEXT("NeutroniumPumpjack") }, TEXT("Pumpjack_leg"));
                  } });
 
   // Convert AutomaticFarm legacy settings from Item output to CurrentRecipe.
-  migrators.Add({ FVersionStruct{ 0, 21, 0, 433, TEXT("*") }, [](const FString &saveName, UGameInstance *GameInstance) {
+  migrators.Add({ FVersionStruct{ 0, 21, 0, 433, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
                    UMainGameInstance *mainGameInstance = Cast<UMainGameInstance>(GameInstance);
                    if (!mainGameInstance || !mainGameInstance->mJsonObjectLibrary) {
                      LOG(ERROR_LL) << "SaveMigrationManager: MainGameInstance or object library is invalid";
@@ -450,23 +455,22 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                      return false;
                    }
 
-                   const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-                   const FString logicBinPath = saveRoot / TEXT("Temperate") / TEXT("Logic.bin");
+                   const FString logicBinPath = RootPath / TEXT("Temperate") / TEXT("Logic.bin");
 
                    TArray<uint8> binaryData;
                    if (!UStaticSaveHelpers::LoadFileToArray(binaryData, *logicBinPath)) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << DisplayName << "'";
                      return false;
                    }
 
                    if (binaryData.Num() == 0) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << DisplayName << "'";
                      return false;
                    }
 
                    FArchiveLoadCompressedProxy decompressor(binaryData, FName("ZLIB"));
                    if (decompressor.GetError()) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << DisplayName << "'";
                      return false;
                    }
 
@@ -474,13 +478,13 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    decompressor << decompressedData;
 
                    if (decompressedData.Num() == 0) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << DisplayName << "'";
                      return false;
                    }
 
                    FMemoryReader reader(decompressedData, true);
                    if (reader.IsError()) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << DisplayName << "'";
                      return false;
                    }
 
@@ -491,14 +495,14 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    reader << jsonStr;
 
                    if (jsonStr.IsEmpty()) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << DisplayName << "'";
                      return false;
                    }
 
                    TSharedPtr<FJsonObject> rootObj;
                    TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
                    if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << DisplayName << "'";
                      return false;
                    }
 
@@ -529,7 +533,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                        const FString *mappedRecipeName = outputItemToRecipeName.Find(oldItemName);
                        if (!mappedRecipeName || mappedRecipeName->IsEmpty()) {
                          LOG(ERROR_LL) << "SaveMigrationManager: Cannot map AutomaticFarm legacy item '" << oldItemName
-                                       << "' to recipe for save '" << saveName << "'";
+                                       << "' to recipe for save '" << DisplayName << "'";
                          return false;
                        }
                        blockObj->SetStringField(TEXT("CurrentRecipe"), *mappedRecipeName);
@@ -543,7 +547,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    FString modifiedJsonStr;
                    const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
                    if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << DisplayName << "'";
                      return false;
                    }
 
@@ -558,14 +562,14 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
                    compressor.Flush();
 
                    if (!FFileHelper::SaveArrayToFile(finalCompressedData, *logicBinPath)) {
-                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << saveName << "'";
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << DisplayName << "'";
                      return false;
                    }
 
                    LOG(INFO_LL) << "SaveMigrationManager: AutomaticFarm migration completed. Found " << farmBlocksFound
                                 << " farm blocks, set CurrentRecipe for " << migratedBlocks
                                 << " blocks, removed legacy Item field from " << removedLegacyField
-                                << " blocks in save '" << saveName << "'";
+                                << " blocks in save '" << DisplayName << "'";
                    return true;
                  } });
 
@@ -578,7 +582,7 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
     if (m.Target > saveVersion) {
       const FString versionStr = UGameSessionData::VersionToString(m.Target);
       LOG(INFO_LL) << "SaveMigrationManager: Applying migrator for version " << versionStr;
-      if (!m.Action(saveName, GameInstance)) {
+      if (!m.Action(RootPath, DisplayName, GameInstance)) {
         LOG(ERROR_LL) << "SaveMigrationManager: Failed to apply migrator for version " << versionStr;
         return;
       }
@@ -587,8 +591,8 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   }
 
   if (isPreGameSessionSave) {
-    loadedSession->Initialize(GameInstance, saveName, true, true, true, "Default", FName("WorldGeneratorRivers"));
-    UStaticSaveHelpers::SaveGameSessionData(saveName, loadedSession);
+    loadedSession->Initialize(GameInstance, DisplayName, true, true, true, "Default", FName("WorldGeneratorRivers"));
+    UStaticSaveHelpers::SaveGameSessionDataAtRoot(RootPath, loadedSession);
   }
 
   if (applied > 0) {
@@ -597,7 +601,13 @@ void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGame
   }
 }
 
-bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, const FString &oldBlockName, const FString &newBlockName) {
+bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, const FString &oldBlockName,
+                                                     const FString &newBlockName) {
+  return ReplaceBlocksInLogicJsonAtRoot(FSavePathProvider::GetLocalSlotRoot(saveName), saveName, oldBlockName, newBlockName);
+}
+
+bool USaveMigrationManager::ReplaceBlocksInLogicJsonAtRoot(const FString &RootPath, const FString &DisplayName,
+                                                           const FString &oldBlockName, const FString &newBlockName) {
   if (oldBlockName.IsEmpty() || newBlockName.IsEmpty()) {
     LOG(ERROR_LL) << "SaveMigrationManager: Block names cannot be empty";
     return false;
@@ -608,25 +618,24 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
     return true;
   }
 
-  const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-  const FString logicBinPath = saveRoot / TEXT("Temperate") / TEXT("Logic.bin");
+  const FString logicBinPath = RootPath / TEXT("Temperate") / TEXT("Logic.bin");
 
   // Load and decompress Logic.bin
   TArray<uint8> binaryData;
   if (!UStaticSaveHelpers::LoadFileToArray(binaryData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   if (binaryData.Num() == 0) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << DisplayName << "'";
     return false;
   }
 
   // Decompress the data
   FArchiveLoadCompressedProxy decompressor(binaryData, FName("ZLIB"));
   if (decompressor.GetError()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -634,14 +643,14 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   decompressor << decompressedData;
 
   if (decompressedData.Num() == 0) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << DisplayName << "'";
     return false;
   }
 
   // Read version and JSON string
   FMemoryReader reader(decompressedData, true);
   if (reader.IsError()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << DisplayName << "'";
     return false;
   }
 
@@ -652,7 +661,7 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   reader << jsonStr;
 
   if (jsonStr.IsEmpty()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -660,7 +669,7 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   TSharedPtr<FJsonObject> rootObj;
   TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
   if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -679,7 +688,7 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   }
 
   if (replacementsCount == 0) {
-    LOG(INFO_LL) << "SaveMigrationManager: No blocks with name '" << oldBlockName << "' found in Logic.bin for save '" << saveName << "'";
+    LOG(INFO_LL) << "SaveMigrationManager: No blocks with name '" << oldBlockName << "' found in Logic.bin for save '" << DisplayName << "'";
     return true; // Not an error, just nothing to replace
   }
 
@@ -687,7 +696,7 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   FString modifiedJsonStr;
   const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
   if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << DisplayName << "'";
     return false;
   }
 
@@ -705,39 +714,45 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
 
   // Save the compressed data back to Logic.bin
   if (!FFileHelper::SaveArrayToFile(finalCompressedData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   LOG(INFO_LL) << "SaveMigrationManager: Successfully replaced " << replacementsCount << " blocks from '"
-               << oldBlockName << "' to '" << newBlockName << "' in Logic.bin for save '" << saveName << "'";
+               << oldBlockName << "' to '" << newBlockName << "' in Logic.bin for save '" << DisplayName << "'";
 
   return true;
 }
 
-bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, const TArray<FString> &oldBlockNames, const FString &newBlockName) {
+bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, const TArray<FString> &oldBlockNames,
+                                                     const FString &newBlockName) {
+  return ReplaceBlocksInLogicJsonAtRoot(FSavePathProvider::GetLocalSlotRoot(saveName), saveName, oldBlockNames, newBlockName);
+}
+
+bool USaveMigrationManager::ReplaceBlocksInLogicJsonAtRoot(const FString &RootPath, const FString &DisplayName,
+                                                           const TArray<FString> &oldBlockNames,
+                                                           const FString &newBlockName) {
   if (oldBlockNames.Num() == 0 || newBlockName.IsEmpty()) {
     LOG(ERROR_LL) << "SaveMigrationManager: oldBlockNames cannot be empty and newBlockName cannot be empty";
     return false;
   }
 
-  const FString saveRoot = FPaths::ProjectSavedDir() / TEXT("SaveGames") / saveName;
-  const FString logicBinPath = saveRoot / TEXT("Temperate") / TEXT("Logic.bin");
+  const FString logicBinPath = RootPath / TEXT("Temperate") / TEXT("Logic.bin");
 
   TArray<uint8> binaryData;
   if (!UStaticSaveHelpers::LoadFileToArray(binaryData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   if (binaryData.Num() == 0) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin is empty for save '" << DisplayName << "'";
     return false;
   }
 
   FArchiveLoadCompressedProxy decompressor(binaryData, FName("ZLIB"));
   if (decompressor.GetError()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -745,13 +760,13 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   decompressor << decompressedData;
 
   if (decompressedData.Num() == 0) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << DisplayName << "'";
     return false;
   }
 
   FMemoryReader reader(decompressedData, true);
   if (reader.IsError()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to create reader for Logic.bin data in save '" << DisplayName << "'";
     return false;
   }
 
@@ -762,14 +777,14 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   reader << jsonStr;
 
   if (jsonStr.IsEmpty()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   TSharedPtr<FJsonObject> rootObj;
   TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
   if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -787,14 +802,14 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   }
 
   if (replacementsCount == 0) {
-    LOG(INFO_LL) << "SaveMigrationManager: No blocks matching old block names found in Logic.bin for save '" << saveName << "'";
+    LOG(INFO_LL) << "SaveMigrationManager: No blocks matching old block names found in Logic.bin for save '" << DisplayName << "'";
     return true;
   }
 
   FString modifiedJsonStr;
   const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
   if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << DisplayName << "'";
     return false;
   }
 
@@ -809,35 +824,40 @@ bool USaveMigrationManager::ReplaceBlocksInLogicJson(const FString &saveName, co
   compressor.Flush();
 
   if (!FFileHelper::SaveArrayToFile(finalCompressedData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   LOG(INFO_LL) << "SaveMigrationManager: Successfully replaced " << replacementsCount << " blocks to '"
-               << newBlockName << "' in Logic.bin for save '" << saveName << "'";
+               << newBlockName << "' in Logic.bin for save '" << DisplayName << "'";
 
   return true;
 }
 
 bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString &saveName) {
-  FString logicBinPath = FPaths::ProjectSavedDir() + TEXT("SaveGames/") + saveName + TEXT("/Dimension/Logic.bin");
+  return RemoveSingleStaticBlocksFromLogicJsonAtRoot(FSavePathProvider::GetLocalSlotRoot(saveName), saveName);
+}
+
+bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJsonAtRoot(const FString &RootPath,
+                                                                        const FString &DisplayName) {
+  FString logicBinPath = RootPath / TEXT("Dimension") / TEXT("Logic.bin");
 
   if (!FPaths::FileExists(logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin not found for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Logic.bin not found for save '" << DisplayName << "'";
     return false;
   }
 
   // Read the compressed Logic.bin file
   TArray<uint8> compressedData;
   if (!FFileHelper::LoadFileToArray(compressedData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   // Decompress the data
   FArchiveLoadCompressedProxy decompressor(compressedData, FName("ZLIB"));
   if (decompressor.GetError()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -846,7 +866,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   decompressor.Flush();
 
   if (uncompressedData.Num() == 0) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Decompressed Logic.bin is empty for save '" << DisplayName << "'";
     return false;
   }
 
@@ -859,7 +879,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   reader << jsonStr;
 
   if (jsonStr.IsEmpty()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: JSON data is empty in Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -867,7 +887,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   TSharedPtr<FJsonObject> rootObj;
   TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
   if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
@@ -888,7 +908,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   }
 
   if (modificationsCount == 0) {
-    LOG(INFO_LL) << "SaveMigrationManager: No StaticBlock values contained 'SingleStaticBlock' in Logic.bin for save '" << saveName << "'";
+    LOG(INFO_LL) << "SaveMigrationManager: No StaticBlock values contained 'SingleStaticBlock' in Logic.bin for save '" << DisplayName << "'";
     return true; // Not an error, just nothing to modify
   }
 
@@ -896,7 +916,7 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
   FString modifiedJsonStr;
   const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
   if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << DisplayName << "'";
     return false;
   }
 
@@ -914,12 +934,12 @@ bool USaveMigrationManager::RemoveSingleStaticBlocksFromLogicJson(const FString 
 
   // Save the compressed data back to Logic.bin
   if (!FFileHelper::SaveArrayToFile(finalCompressedData, *logicBinPath)) {
-    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << saveName << "'";
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified Logic.bin for save '" << DisplayName << "'";
     return false;
   }
 
   LOG(INFO_LL) << "SaveMigrationManager: Successfully removed 'SingleStaticBlock' from " << modificationsCount
-               << " StaticBlock values in Logic.bin for save '" << saveName << "'";
+               << " StaticBlock values in Logic.bin for save '" << DisplayName << "'";
 
   return true;
 }

@@ -17,14 +17,24 @@ class USaveMigrationManager : public UObject {
   UFUNCTION(BlueprintCallable)
   static void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
 
+  static void RunMigrationsAtRoot(const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance);
+
   // Replace block names in Logic.bin files (safe operation, ignores sector .bin files)
   UFUNCTION(BlueprintCallable)
   static bool ReplaceBlocksInLogicJson(const FString &saveName, const FString &oldBlockName, const FString &newBlockName);
 
+  static bool ReplaceBlocksInLogicJsonAtRoot(const FString &RootPath, const FString &DisplayName,
+                                             const FString &oldBlockName, const FString &newBlockName);
+
   // Replace multiple old block names with one new block name in a single pass
   static bool ReplaceBlocksInLogicJson(const FString &saveName, const TArray<FString> &oldBlockNames, const FString &newBlockName);
+
+  static bool ReplaceBlocksInLogicJsonAtRoot(const FString &RootPath, const FString &DisplayName,
+                                             const TArray<FString> &oldBlockNames, const FString &newBlockName);
 
   // Remove "SingleStaticBlock" from StaticBlock values in Logic.bin files
   UFUNCTION(BlueprintCallable)
   static bool RemoveSingleStaticBlocksFromLogicJson(const FString &saveName);
+
+  static bool RemoveSingleStaticBlocksFromLogicJsonAtRoot(const FString &RootPath, const FString &DisplayName);
 };
