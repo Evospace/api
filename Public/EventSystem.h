@@ -130,7 +130,9 @@ class EventSystem {
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
         .addStaticFunction("get", &EventSystem::get)
-        .addFunction("sub", &EventSystem::Sub)
+        .addFunction("sub", [](EventSystem *self, int event, luabridge::LuaRef func) {
+          return self->Sub(event, func, NoGroup);
+        })
         .addFunction("unsub", &EventSystem::Unsub)
         .addFunction("emmit", &EventSystem::Emmit)
       .endClass();
