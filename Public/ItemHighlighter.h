@@ -14,9 +14,12 @@ struct FItemHighlighter {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<const UStaticItem *> HoveredItem;
 
+  uint32 Generation = 0;
+
   public:
   void SetSearchItems(const TArray<const UStaticItem *> &InItems) {
     SearchItems = InItems;
+    ++Generation;
   }
 
   void SetHoveredItem(const UStaticItem *InItem) {
@@ -24,6 +27,7 @@ struct FItemHighlighter {
     if (InItem) {
       HoveredItem.Add(InItem);
     }
+    ++Generation;
   }
 
   const TArray<const UStaticItem *> &GetActiveHighlighted() const {
