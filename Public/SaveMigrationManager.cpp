@@ -50,14 +50,12 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
     return;
   }
 
-  bool isPreGameSessionSave = false;
   UGameSessionData *loadedSession = UStaticSaveHelpers::LoadGameSessionDataAtRoot(GameInstance, RootPath);
   if (!loadedSession) {
     LOG(ERROR_LL) << "SaveMigrationManager: No GameSessionData found for save '" << DisplayName << "'";
     loadedSession = NewObject<UGameSessionData>(GameInstance, TEXT("GameSessionData"));
     loadedSession->Version = FVersionStruct{ 0, 19, 0, 0, TEXT("?") };
     loadedSession->Mods = {};
-    isPreGameSessionSave = true;
   }
 
   const FVersionStruct saveVersion = loadedSession->Version;
@@ -598,36 +596,6 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
         return;
       }
       ++applied;
-    }
-  }
-
-  if (isPreGameSessionSave) {
-    IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-    const FString surfacePath = RootPath / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
-
-    if (UGameSessionData *migratedSession = UStaticSaveHelpers::LoadGameSessionDataAtRoot(GameInstance, RootPath)) {
-      loadedSession = migratedSession;
-      loadedSession->SaveName = DisplayName;
-    } else {
-      loadedSession->Initialize(GameInstance, DisplayName, true, true, true, TEXT("Default"), FName(TEXT("WorldGeneratorRivers")));
-      if (USurfaceDefinition *localSurface = UStaticSaveHelpers::LoadSurfaceDefinitionAtRoot(
-            GameInstance, FSavePathProvider::GetLocalSlotRoot(DisplayName), TEXT("Temperate"))) {
-        UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), localSurface);
-      }
-    }
-
-    UStaticSaveHelpers::SaveGameSessionDataAtRoot(RootPath, loadedSession);
-
-    if (!PlatformFile.FileExists(*surfacePath)) {
-      FName generatorName = loadedSession->GetGeneratorName();
-      if (generatorName.IsNone()) {
-        generatorName = FName(TEXT("WorldGeneratorRivers"));
-      }
-
-      USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
-      surfaceDefinition->GeneratorName = generatorName;
-      surfaceDefinition->Initialize();
-      UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
     }
   }
 
