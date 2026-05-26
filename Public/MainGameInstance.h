@@ -18,6 +18,7 @@
 #endif
 
 #include "Public/GameSessionSubsystem.h"
+#include "Public/SaveSourceTypes.h"
 #include "MainGameInstance.generated.h"
 
 class UEngineDataSubsystem;
@@ -104,6 +105,12 @@ class UMainGameInstance : public USteamGameInstance {
 
   UFUNCTION(BlueprintCallable)
   void GameLoadingSequence(const FString &saveName);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
+  void GameLoadingSequenceFromPreparedContext(const FPreparedSaveContext &Context);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
+  bool StartGameFromPreparedContext(const FPreparedSaveContext &Context, bool bListenServer);
 
   UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
   bool StartGameFromSave(const FString &saveName, bool bListenServer);

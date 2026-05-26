@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Public/Net/ObserverTransport.h"
+#include "Public/SaveSourceTypes.h"
 
 #include "SaveManagerSubsystem.generated.h"
 
@@ -18,6 +19,15 @@ class USaveManagerSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
   bool StartGameFromSave(const FString &SaveName, bool bListenServer);
 
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool ResolveAndStage(const FSaveSourceDescriptor &Source, FPreparedSaveContext &OutContext);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool StartGameFromSource(const FSaveSourceDescriptor &Source, bool bListenServer);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Save")
+  const FPreparedSaveContext &GetLastPreparedSaveContext() const { return LastPreparedSaveContext; }
+
   UFUNCTION(BlueprintCallable, Category = "Evospace|Observer")
   bool ObserverHost(EObserverTransportType Transport, const FString &SaveName, int32 Port = 27050);
 
@@ -26,6 +36,9 @@ class USaveManagerSubsystem : public UGameInstanceSubsystem {
 
   private:
   void HandlePostLoadMapForObserverHost(UWorld *LoadedWorld);
+
+  UPROPERTY()
+  FPreparedSaveContext LastPreparedSaveContext;
 
   FDelegateHandle PostLoadMapHandle;
   int32 PendingObserverHostPort = -1;
