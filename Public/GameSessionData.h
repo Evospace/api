@@ -97,6 +97,9 @@ class UGameSessionData : public UInstance {
   UFUNCTION(BlueprintCallable)
   int64 GetSeed() const { return GetTypeHash(Seed); }
 
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  FName GetGeneratorName() const { return GeneratorName; }
+
   UFUNCTION(BlueprintCallable)
   void Reset();
 
