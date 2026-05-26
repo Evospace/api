@@ -29,6 +29,16 @@ struct FEvoSimPerfMsStat {
   float P99 = 0.f;
 };
 
+struct FEvoSimPerfFpsStat {
+  float Mean = 0.f;
+  float Min = 0.f;
+  float Max = 0.f;
+  float P5 = 0.f;
+  float P50 = 0.f;
+  float Low1Pct = 0.f;
+  float Low01Pct = 0.f;
+};
+
 struct FEvoSimPerfEntityReport {
   UClass *Class = nullptr;
   FEvoSimPerfMsStat Timing;
@@ -69,11 +79,13 @@ class FEvoSimPerfMetrics {
   static bool IsSessionActive();
 
   /** Wall-clock frame sample during measure (StressSampleHz). */
-  void RecordFrameSample(double MeasureElapsedSec, float TickMs);
+  void RecordFrameSample(double MeasureElapsedSec, float SimTickMs, float FrameTimeMs);
 
   void Reset();
   void BuildReport(const UDimensionRuntime *Runtime, FEvoSimPerfReport &OutReport) const;
   FEvoSimPerfMsStat GetFrameTickSummary() const;
+  FEvoSimPerfMsStat GetFrameTimeSummary() const;
+  FEvoSimPerfFpsStat GetFpsSummary() const;
   bool ExportSessionJson(const FString &Path, const FEvoSimPerfSessionMeta &Meta, const UDimensionRuntime *Runtime) const;
 
   static const TCHAR *SystemName(EEvoSimPerfSystem System);
@@ -126,6 +138,7 @@ class FEvoSimPerfMetrics {
 
   static FEvoSimPerfMsStat BuildMsStat(uint64 TotalCycles, int64 TickCount, float PerTickMinMs, float PerTickMaxMs);
   static FEvoSimPerfMsStat BuildMsStatFromSamples(const TArray<float> &Samples);
+  static FEvoSimPerfFpsStat BuildFpsStatFromFrameTimes(const TArray<float> &FrameTimesMs);
   static float PercentileFromSorted(const TArray<float> &Sorted, double Percentile);
 
   uint64 SystemCycles[static_cast<int32>(EEvoSimPerfSystem::Count)] = {};
@@ -142,5 +155,6 @@ class FEvoSimPerfMetrics {
   double SessionMeasureStartWallSec = 0.0;
   TArray<double> FrameTimeSec;
   TArray<float> FrameTickMs;
+  TArray<float> FrameRenderMs;
   TArray<FEvoSimPerfSimTickSample> SimTickSamples;
 };
