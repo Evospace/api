@@ -32,10 +32,162 @@ static const auto TierArray = {
   "HardMetal",
   "Neutronium",
 };
+
+static bool ConvertFlatLegacyDimensionJson(TSharedPtr<FJsonObject> &InOutRoot, TSharedPtr<FJsonValue> &OutDepositsValue) {
+  if (!InOutRoot.IsValid() || InOutRoot->HasField(TEXT("GameSessionData")) || InOutRoot->HasField(TEXT("Dimension"))) {
+    return false;
+  }
+
+  const bool hasLegacySession = InOutRoot->HasField(TEXT("seed")) || InOutRoot->HasField(TEXT("generator")) ||
+                                InOutRoot->HasField(TEXT("Seed")) || InOutRoot->HasField(TEXT("Generator"));
+  if (!hasLegacySession) {
+    return false;
+  }
+
+  TSharedPtr<FJsonObject> sessionObj = MakeShared<FJsonObject>();
+
+  FString seed;
+  if (InOutRoot->TryGetStringField(TEXT("seed"), seed) || InOutRoot->TryGetStringField(TEXT("Seed"), seed)) {
+    sessionObj->SetStringField(TEXT("Seed"), seed);
+  }
+
+  FString generator;
+  if (InOutRoot->TryGetStringField(TEXT("generator"), generator) ||
+      InOutRoot->TryGetStringField(TEXT("Generator"), generator)) {
+    sessionObj->SetStringField(TEXT("Generator"), generator);
+  }
+
+  auto copyNumber = [&](const TCHAR *legacyKey, const TCHAR *sessionKey) {
+    double value = 0;
+    if (InOutRoot->TryGetNumberField(legacyKey, value)) {
+      sessionObj->SetNumberField(sessionKey, value);
+    }
+  };
+  copyNumber(TEXT("TotalGameTime"), TEXT("TotalGameTime"));
+  copyNumber(TEXT("TotalGameTicks"), TEXT("TotalGameTicks"));
+  copyNumber(TEXT("WorldTimeOfDayPhaseTicks"), TEXT("WorldTimeOfDayPhaseTicks"));
+  copyNumber(TEXT("TickRate"), TEXT("TickRate"));
+
+  auto copyBool = [&](const TCHAR *legacyKey, const TCHAR *sessionKey) {
+    bool value = false;
+    if (InOutRoot->TryGetBoolField(legacyKey, value)) {
+      sessionObj->SetBoolField(sessionKey, value);
+    }
+  };
+  copyBool(TEXT("CreativeMode"), TEXT("CreativeMode"));
+  copyBool(TEXT("CreativeAllowed"), TEXT("CreativeAllowed"));
+  copyBool(TEXT("InfiniteOre"), TEXT("InfiniteOre"));
+  copyBool(TEXT("AllResearchCompleted"), TEXT("AllResearchCompleted"));
+  copyBool(TEXT("Cloud"), TEXT("Cloud"));
+  copyBool(TEXT("WorldTimeAutoAdvance"), TEXT("WorldTimeAutoAdvance"));
+
+  const TArray<TSharedPtr<FJsonValue>> *legacySources = nullptr;
+  if (InOutRoot->TryGetArrayField(TEXT("Sources"), legacySources) && legacySources) {
+    TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
+    TArray<TSharedPtr<FJsonValue>> knownArray;
+    knownArray.Reserve(legacySources->Num());
+
+    for (const TSharedPtr<FJsonValue> &entryVal : *legacySources) {
+      TSharedPtr<FJsonObject> entryObj = entryVal->AsObject();
+      if (!entryObj.IsValid()) {
+        continue;
+      }
+
+      TSharedPtr<FJsonObject> knownEntry = MakeShared<FJsonObject>();
+      if (TSharedPtr<FJsonValue> keyField = entryObj->TryGetField(TEXT("Key"))) {
+        knownEntry->SetField(TEXT("Key"), keyField);
+      }
+
+      TSharedPtr<FJsonObject> legacyValueObj;
+      if (TSharedPtr<FJsonValue> valueField = entryObj->TryGetField(TEXT("Value"))) {
+        legacyValueObj = valueField->AsObject();
+      }
+      if (!legacyValueObj.IsValid()) {
+        continue;
+      }
+
+      TSharedPtr<FJsonObject> sourceObj = MakeShared<FJsonObject>();
+      FString itemStr;
+      if (legacyValueObj->TryGetStringField(TEXT("Item"), itemStr)) {
+        sourceObj->SetStringField(TEXT("Item"), itemStr);
+      }
+
+      double capacity = 0;
+      if (!legacyValueObj->TryGetNumberField(TEXT("MaxCapacity"), capacity)) {
+        legacyValueObj->TryGetNumberField(TEXT("Capacity"), capacity);
+      }
+      if (capacity > 0) {
+        sourceObj->SetNumberField(TEXT("Yield"), capacity);
+        sourceObj->SetNumberField(TEXT("InitialCapacity"), capacity);
+      }
+
+      TSharedPtr<FJsonObject> regionObj = MakeShared<FJsonObject>();
+      TArray<TSharedPtr<FJsonValue>> sourcesArray;
+      sourcesArray.Add(MakeShared<FJsonValueObject>(sourceObj));
+      regionObj->SetArrayField(TEXT("Sources"), sourcesArray);
+      knownEntry->SetObjectField(TEXT("Value"), regionObj);
+      knownArray.Add(MakeShared<FJsonValueObject>(knownEntry));
+    }
+
+    depositsObj->SetArrayField(TEXT("Known"), knownArray);
+    OutDepositsValue = MakeShared<FJsonValueObject>(depositsObj);
+  }
+
+  TSharedPtr<FJsonObject> newRoot = MakeShared<FJsonObject>();
+  newRoot->SetObjectField(TEXT("GameSessionData"), sessionObj);
+  InOutRoot = newRoot;
+  return true;
+}
+
+static bool NormalizeLegacyDimensionJsonAtPath(const FString &DimensionJsonPath, const FString &DisplayName) {
+  FString jsonStr;
+  if (!FFileHelper::LoadFileToString(jsonStr, *DimensionJsonPath)) {
+    return true;
+  }
+
+  TSharedPtr<FJsonObject> rootObj;
+  TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(jsonStr);
+  if (!FJsonSerializer::Deserialize(reader, rootObj) || !rootObj.IsValid()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse Dimension.json for '" << DisplayName << "'";
+    return false;
+  }
+
+  bool dirty = false;
+  TSharedPtr<FJsonValue> depositsValue;
+  if (!rootObj->HasField(TEXT("GameSessionData"))) {
+    if (TSharedPtr<FJsonValue> legacyDimensionField = rootObj->TryGetField(TEXT("Dimension"))) {
+      rootObj->SetField(TEXT("GameSessionData"), legacyDimensionField);
+      rootObj->RemoveField(TEXT("Dimension"));
+      dirty = true;
+    } else if (ConvertFlatLegacyDimensionJson(rootObj, depositsValue)) {
+      dirty = true;
+    }
+  }
+
+  if (depositsValue.IsValid() && !rootObj->HasField(TEXT("Deposits"))) {
+    rootObj->SetField(TEXT("Deposits"), depositsValue);
+    dirty = true;
+  }
+
+  if (!dirty) {
+    return true;
+  }
+
+  FString outStr;
+  const auto writer = TJsonWriterFactory<>::Create(&outStr);
+  FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer);
+  if (!FFileHelper::SaveStringToFile(outStr, *DimensionJsonPath)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to write Dimension.json for '" << DisplayName << "'";
+    return false;
+  }
+
+  LOG(INFO_LL) << "SaveMigrationManager: Normalized legacy Dimension.json for save '" << DisplayName << "'";
+  return true;
+}
 } // namespace
 
-void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
-  RunMigrationsAtRoot(FSavePathProvider::GetLocalSlotRoot(saveName), saveName, GameInstance);
+void USaveMigrationManager::RunMigrationsIfNeeded(const FString &DisplaySaveName, UGameInstance *GameInstance) {
+  RunMigrationsAtRoot(FSavePathProvider::GetStagingRoot(), DisplaySaveName, GameInstance);
 }
 
 void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const FString &DisplayName,
@@ -68,7 +220,7 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
   TArray<FMigrator> migrators;
   migrators.Reserve(8);
 
-  // Convert Logic.json to Logic.bin for saves from 0.18.2
+  // Convert Logic.json to Logic.bin and normalize 0.18.x Dimension.json for saves from 0.18.2
   migrators.Add({ FVersionStruct{ 0, 19, 0, 1, TEXT("*") },
                   [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
                     const FString logicJsonPath = RootPath / TEXT("Dimension") / TEXT("Logic.json");
@@ -104,6 +256,11 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
                     // Strip "StaticBlock"/"SingleStaticBlock" suffix from block names (needed for both converted and
                     // pre-existing Logic.bin)
                     RemoveSingleStaticBlocksFromLogicJsonAtRoot(RootPath, DisplayName);
+
+                    const FString dimensionJsonPath = RootPath / TEXT("Dimension") / TEXT("Dimension.json");
+                    if (!NormalizeLegacyDimensionJsonAtPath(dimensionJsonPath, DisplayName)) {
+                      return false;
+                    }
 
                     return true;
                   } });
@@ -187,13 +344,8 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
            }
 
            if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
-             // Remove "Deposits" from the main object
              gameSessionDataObj->RemoveField(TEXT("Deposits"));
              gameSessionDataDirty = true;
-
-             // Write Deposits to a new JSON file (for now, just as a separate object)
-             TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
-             depositsObj->SetField(TEXT("Deposits"), depositsValue);
 
              USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
              surfaceDefinition->GeneratorName = *generatorName;

@@ -13,9 +13,9 @@ class USaveMigrationManager : public UObject {
   GENERATED_BODY()
 
   public:
-  // Applies hardcoded migrators whose target version is less than the save's version
+  // Runs migrators on SaveGames/temp after ResolveAndStage/CopySaveToTemp. DisplaySaveName is for logs only.
   UFUNCTION(BlueprintCallable)
-  static void RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance);
+  static void RunMigrationsIfNeeded(const FString &DisplaySaveName, UGameInstance *GameInstance);
 
   static void RunMigrationsAtRoot(const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance);
 
