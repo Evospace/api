@@ -19,11 +19,28 @@ class USaveManagerSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
   bool StartGameFromSave(const FString &SaveName, bool bListenServer);
 
+  /** Loads save data into staging without opening the gameplay map. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool LoadGameFromSave(const FString &SaveName);
+
   UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
   bool ResolveAndStage(const FSaveSourceDescriptor &Source, FPreparedSaveContext &OutContext);
 
+  /** Loads save data from the source into staging without opening the gameplay map. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool LoadGameFromSource(const FSaveSourceDescriptor &Source);
+
   UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
   bool StartGameFromSource(const FSaveSourceDescriptor &Source, bool bListenServer);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool StartGameFromShippingBuiltIn(const FString &BuiltInPackageId, bool bListenServer);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool StartGameFromWorkshopPath(const FString &PackagePath, bool bListenServer);
+
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Save")
+  bool StartGameFromWorkshopId(int64 PublishedFileId, bool bListenServer);
 
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Save")
   const FPreparedSaveContext &GetLastPreparedSaveContext() const { return LastPreparedSaveContext; }
