@@ -32,6 +32,52 @@ static const auto TierArray = {
   "HardMetal",
   "Neutronium",
 };
+
+static TSharedPtr<FJsonObject> GetLegacySessionDataObject(const TSharedPtr<FJsonObject> &RootObj) {
+  if (!RootObj.IsValid()) {
+    return nullptr;
+  }
+  for (const TCHAR *Key : { TEXT("GameSessionData"), TEXT("Dimension") }) {
+    if (TSharedPtr<FJsonValue> Val = RootObj->TryGetField(Key)) {
+      if (TSharedPtr<FJsonObject> Obj = Val->AsObject()) {
+        return Obj;
+      }
+    }
+  }
+  return RootObj;
+}
+
+static bool TryGetLegacyGeneratorName(const TSharedPtr<FJsonObject> &RootObj, FString &OutGeneratorName) {
+  if (TSharedPtr<FJsonObject> SessionObj = GetLegacySessionDataObject(RootObj)) {
+    if (SessionObj->TryGetStringField(TEXT("Generator"), OutGeneratorName) && !OutGeneratorName.IsEmpty()) {
+      return true;
+    }
+  }
+  return RootObj->TryGetStringField(TEXT("Generator"), OutGeneratorName) && !OutGeneratorName.IsEmpty();
+}
+
+static TSharedPtr<FJsonValue> FindLegacyDepositsValue(const TSharedPtr<FJsonObject> &RootObj) {
+  if (TSharedPtr<FJsonValue> Deposits = RootObj->TryGetField(TEXT("Deposits"))) {
+    return Deposits;
+  }
+  if (TSharedPtr<FJsonObject> SessionObj = GetLegacySessionDataObject(RootObj)) {
+    return SessionObj->TryGetField(TEXT("Deposits"));
+  }
+  return nullptr;
+}
+
+static void NormalizeLegacyGameSessionJson(TSharedPtr<FJsonObject> RootObj) {
+  if (!RootObj.IsValid()) {
+    return;
+  }
+  if (RootObj->HasField(TEXT("GameSessionData"))) {
+    return;
+  }
+  if (TSharedPtr<FJsonValue> DimensionVal = RootObj->TryGetField(TEXT("Dimension"))) {
+    RootObj->SetField(TEXT("GameSessionData"), DimensionVal);
+    RootObj->RemoveField(TEXT("Dimension"));
+  }
+}
 } // namespace
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &saveName, UGameInstance *GameInstance) {
@@ -120,8 +166,14 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
        const FString dimensionDir = RootPath / TEXT("Dimension");
        const FString temperateDir = RootPath / TEXT("Temperate");
 
-       if (!FileManager.Move(*temperateDir, *dimensionDir)) {
-         LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << DisplayName
+       if (PlatformFile.DirectoryExists(*dimensionDir)) {
+         if (!FileManager.Move(*temperateDir, *dimensionDir)) {
+           LOG(ERROR_LL) << "SaveMigrationManager: Failed to rename 'Dimension' to 'Temperate' for '" << DisplayName
+                         << "'";
+           return false;
+         }
+       } else if (!PlatformFile.DirectoryExists(*temperateDir)) {
+         LOG(ERROR_LL) << "SaveMigrationManager: Neither 'Dimension' nor 'Temperate' folder found for '" << DisplayName
                        << "'";
          return false;
        }
@@ -164,34 +216,27 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
          TSharedPtr<FJsonObject> gameSessionDataObj;
          TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
          if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
-           // Extract "Deposits" field if it exists
+           NormalizeLegacyGameSessionJson(gameSessionDataObj);
 
            FString generatorName;
-           TSharedPtr<FJsonObject> gameSessionDataFieldObj;
-           if (TSharedPtr<FJsonValue> gameSessionDataFieldValue =
-                 gameSessionDataObj->TryGetField(TEXT("GameSessionData"))) {
-             gameSessionDataFieldObj = gameSessionDataFieldValue->AsObject();
-           }
-           if (!gameSessionDataFieldObj.IsValid() ||
-               !gameSessionDataFieldObj->TryGetStringField(TEXT("Generator"), generatorName)) {
-             LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from "
-                              "GameSessionData.GameSessionData for '"
+           if (!TryGetLegacyGeneratorName(gameSessionDataObj, generatorName)) {
+             LOG(ERROR_LL) << "SaveMigrationManager: Failed to get Generator from legacy session data for '"
                            << DisplayName << "'";
+             generatorName = TEXT("WorldGeneratorRivers");
            }
 
-           if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
+           if (TSharedPtr<FJsonValue> depositsValue = FindLegacyDepositsValue(gameSessionDataObj)) {
              // Remove "Deposits" from the main object
              gameSessionDataObj->RemoveField(TEXT("Deposits"));
+             if (TSharedPtr<FJsonObject> sessionObj = GetLegacySessionDataObject(gameSessionDataObj)) {
+               sessionObj->RemoveField(TEXT("Deposits"));
+             }
 
              // Write the rest of GameSessionData.json back (without Deposits)
              FString updatedGameSessionDataStr;
              const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
              FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
              FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
-
-             // Write Deposits to a new JSON file (for now, just as a separate object)
-             TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
-             depositsObj->SetField(TEXT("Deposits"), depositsValue);
 
              USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
              surfaceDefinition->GeneratorName = *generatorName;
@@ -200,6 +245,11 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
              surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
 
              UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
+           } else {
+             FString updatedGameSessionDataStr;
+             const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
+             FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
+             FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
            }
          }
        }
@@ -591,8 +641,35 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
   }
 
   if (isPreGameSessionSave) {
-    loadedSession->Initialize(GameInstance, DisplayName, true, true, true, "Default", FName("WorldGeneratorRivers"));
+    IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+    const FString surfacePath = RootPath / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+
+    if (UGameSessionData *migratedSession = UStaticSaveHelpers::LoadGameSessionDataAtRoot(GameInstance, RootPath)) {
+      loadedSession = migratedSession;
+      loadedSession->SaveName = DisplayName;
+    } else {
+      loadedSession->Initialize(GameInstance, DisplayName, true, true, true, TEXT("Default"), FName(TEXT("WorldGeneratorRivers")));
+    }
     UStaticSaveHelpers::SaveGameSessionDataAtRoot(RootPath, loadedSession);
+
+    if (!PlatformFile.FileExists(*surfacePath)) {
+      FString generatorName = TEXT("WorldGeneratorRivers");
+      const FString gameSessionDataPath = RootPath / TEXT("GameSessionData.json");
+      FString gameSessionDataStr;
+      if (FFileHelper::LoadFileToString(gameSessionDataStr, *gameSessionDataPath)) {
+        TSharedPtr<FJsonObject> gameSessionDataObj;
+        TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
+        if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
+          TryGetLegacyGeneratorName(gameSessionDataObj, generatorName);
+        }
+      }
+
+      USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
+      surfaceDefinition->GeneratorName = *generatorName;
+      surfaceDefinition->Initialize();
+      UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
+      LOG(INFO_LL) << "SaveMigrationManager: Created missing SurfaceDefinition.json for save '" << DisplayName << "'";
+    }
   }
 
   if (applied > 0) {
