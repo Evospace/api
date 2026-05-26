@@ -164,6 +164,15 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
          TSharedPtr<FJsonObject> gameSessionDataObj;
          TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(gameSessionDataStr);
          if (FJsonSerializer::Deserialize(reader, gameSessionDataObj) && gameSessionDataObj.IsValid()) {
+           bool gameSessionDataDirty = false;
+           if (!gameSessionDataObj->HasField(TEXT("GameSessionData"))) {
+             if (TSharedPtr<FJsonValue> legacyDimensionField = gameSessionDataObj->TryGetField(TEXT("Dimension"))) {
+               gameSessionDataObj->SetField(TEXT("GameSessionData"), legacyDimensionField);
+               gameSessionDataObj->RemoveField(TEXT("Dimension"));
+               gameSessionDataDirty = true;
+             }
+           }
+
            // Extract "Deposits" field if it exists
 
            FString generatorName;
@@ -182,12 +191,7 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
            if (TSharedPtr<FJsonValue> depositsValue = gameSessionDataObj->TryGetField(TEXT("Deposits"))) {
              // Remove "Deposits" from the main object
              gameSessionDataObj->RemoveField(TEXT("Deposits"));
-
-             // Write the rest of GameSessionData.json back (without Deposits)
-             FString updatedGameSessionDataStr;
-             const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
-             FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
-             FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
+             gameSessionDataDirty = true;
 
              // Write Deposits to a new JSON file (for now, just as a separate object)
              TSharedPtr<FJsonObject> depositsObj = MakeShared<FJsonObject>();
@@ -200,6 +204,13 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
              surfaceDefinition->RegionMap->DeserializeJson(depositsValue->AsObject());
 
              UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
+           }
+
+           if (gameSessionDataDirty) {
+             FString updatedGameSessionDataStr;
+             const auto writer = TJsonWriterFactory<>::Create(&updatedGameSessionDataStr);
+             FJsonSerializer::Serialize(gameSessionDataObj.ToSharedRef(), writer);
+             FFileHelper::SaveStringToFile(updatedGameSessionDataStr, *gameSessionDataPath);
            }
          }
        }
@@ -591,8 +602,33 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
   }
 
   if (isPreGameSessionSave) {
-    loadedSession->Initialize(GameInstance, DisplayName, true, true, true, "Default", FName("WorldGeneratorRivers"));
+    IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+    const FString surfacePath = RootPath / TEXT("Temperate") / TEXT("SurfaceDefinition.json");
+
+    if (UGameSessionData *migratedSession = UStaticSaveHelpers::LoadGameSessionDataAtRoot(GameInstance, RootPath)) {
+      loadedSession = migratedSession;
+      loadedSession->SaveName = DisplayName;
+    } else {
+      loadedSession->Initialize(GameInstance, DisplayName, true, true, true, TEXT("Default"), FName(TEXT("WorldGeneratorRivers")));
+      if (USurfaceDefinition *localSurface = UStaticSaveHelpers::LoadSurfaceDefinitionAtRoot(
+            GameInstance, FSavePathProvider::GetLocalSlotRoot(DisplayName), TEXT("Temperate"))) {
+        UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), localSurface);
+      }
+    }
+
     UStaticSaveHelpers::SaveGameSessionDataAtRoot(RootPath, loadedSession);
+
+    if (!PlatformFile.FileExists(*surfacePath)) {
+      FName generatorName = loadedSession->GetGeneratorName();
+      if (generatorName.IsNone()) {
+        generatorName = FName(TEXT("WorldGeneratorRivers"));
+      }
+
+      USurfaceDefinition *surfaceDefinition = NewObject<USurfaceDefinition>(GameInstance);
+      surfaceDefinition->GeneratorName = generatorName;
+      surfaceDefinition->Initialize();
+      UStaticSaveHelpers::SaveSurfaceDefinitionAtRoot(RootPath, TEXT("Temperate"), surfaceDefinition);
+    }
   }
 
   if (applied > 0) {
