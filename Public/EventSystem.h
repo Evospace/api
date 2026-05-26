@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ThirdParty/luabridge/LuaBridge.h"
-// #include "ThirdParty/lua/lua.h"
+#include <optional>
 #include <string>
 
 namespace evo {
@@ -24,7 +24,8 @@ enum class Event {
   on_entity_damaged,
   on_entity_spawn,
   /** Cosmetic day phase boundary (dawn / sunset); context table uses string field `anchor`. */
-  on_surface_day_phase
+  on_surface_day_phase,
+  Count
 };
 
 inline const char *ToString(Event event) {
@@ -49,26 +50,48 @@ inline const char *ToString(Event event) {
     return "on_entity_spawn";
   case Event::on_surface_day_phase:
     return "on_surface_day_phase";
-
-  // ...
   default:
     return "unknown_event";
   }
 }
+
+inline bool IsValidEvent(Event event) {
+  return event >= Event::on_player_mined_item && event < Event::Count;
+}
+
+inline int EventIndex(Event event) {
+  return static_cast<int>(event);
+}
+
+constexpr int EventCount = static_cast<int>(Event::Count);
 } // namespace defines
 
 class EventSystem {
   public:
-  using EventHandler = TFunction<void(luabridge::LuaRef)>;
-  using HandlerID = int;
+  using NativeHandler = TFunction<void(const luabridge::LuaRef &)>;
+  using HandlerID = int32;
+  using SubscriberGroup = uint32;
+
+  static constexpr SubscriberGroup NoGroup = 0;
+
+  struct FHandlerSlot {
+    HandlerID Id = 0;
+    SubscriberGroup Group = NoGroup;
+    std::optional<luabridge::LuaRef> LuaFunc;
+    NativeHandler NativeFunc;
+  };
 
   static EventSystem &get();
   void lua_cleanup();
   lua_State *L() const;
 
-  HandlerID Sub(int event, luabridge::LuaRef func);
+  HandlerID Sub(int event, luabridge::LuaRef func, SubscriberGroup group = NoGroup);
+
+  HandlerID SubNative(defines::Event event, NativeHandler handler, SubscriberGroup group = NoGroup);
 
   void Unsub(int event, HandlerID handlerId);
+
+  void UnsubscribeGroup(SubscriberGroup group);
 
   luabridge::LuaRef NewTable() const;
 
@@ -79,9 +102,12 @@ class EventSystem {
   private:
   EventSystem() : nextHandlerId(1) {}
 
+  bool InvokeHandler(const FHandlerSlot &slot, const luabridge::LuaRef &context, defines::Event event);
+
   evo::LuaState *lua_state = nullptr;
 
-  TMap<defines::Event, TMap<HandlerID, luabridge::LuaRef>> eventHandlers;
+  TArray<FHandlerSlot> handlersByEvent[defines::EventCount];
+  TMap<HandlerID, TPair<defines::Event, int32>> handlerLocations;
   HandlerID nextHandlerId;
 
   public:
@@ -103,29 +129,9 @@ class EventSystem {
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
-        //direct:
-        //--- Get global instance of EventSystem
-        //--- @return EventSystem
-        //function EventSystem.get() end
         .addStaticFunction("get", &EventSystem::get)
-        //direct:
-        //--- Subscribe
-        //--- @param event integer Event id
-        //--- @param action function Triggering action
-        //--- @return integer Subscription id
-        //function EventSystem:sub(event, action) end
         .addFunction("sub", &EventSystem::Sub)
-        //direct:
-        //--- Unsubscribe
-        //--- @param event integer Event id
-        //--- @param id integer Subscription id
-        //function EventSystem:unsub(event, id) end
         .addFunction("unsub", &EventSystem::Unsub)
-        //direct:
-        //--- Emmit
-        //--- @param event integer Event id
-        //--- @param table Context table
-        //function EventSystem:emmit(event, table) end
         .addFunction("emmit", &EventSystem::Emmit)
       .endClass();
 #undef register_enum_line

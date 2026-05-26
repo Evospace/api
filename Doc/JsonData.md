@@ -7,8 +7,6 @@ Load order:
 1) [Mixed](#mixed)
 1) [Recipes](#recipes)
 1) [Researches](#researches)
-1) [Quests](#quests)
-1) [Chapters](#chapters)
 1) [Generators](#generators)
 1) [Biomes](#biomes)
 1) [BiomeFamilies](#biomefamilies)
@@ -51,10 +49,6 @@ Load order:
 ## Recipes
 
 ## Researches
-
-## Quests
-
-## Chapters
 
 ## Generators
 
