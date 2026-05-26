@@ -56,7 +56,7 @@ struct FEvoSimPerfSessionMeta {
   FString MapName;
   int32 WarmupSec = 0;
   int32 MeasureSec = 0;
-  int32 SampleHz = 4;
+  int32 SampleHz = 20;
   int32 TickRate = 20;
   int32 Logics = 0;
   int32 ResourceNetworks = 0;
