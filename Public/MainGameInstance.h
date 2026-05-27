@@ -321,6 +321,9 @@ class UMainGameInstance : public USteamGameInstance {
   static FLinearColor IndexToColor(int32 index);
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FLinearColor IndexToGraphColor(int32 index);
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
   static FLinearColor HashToColor(const UStaticItem *Pointer);
 
   static FLinearColor VoidToColor(const void *Pointer);
