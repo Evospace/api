@@ -5,6 +5,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tickable.h"
 #include "Public/Net/ObserverTransport.h"
+#include "Public/Net/LanObserverState.h"
 
 #include "LanObserverSubsystem.generated.h"
 
@@ -61,4 +62,7 @@ class ULanObserverSubsystem : public UGameInstanceSubsystem, public FTickableGam
 
   UPROPERTY(BlueprintAssignable)
   FOnLanObserverStatus OnObserverStatus;
+
+  private:
+  FLanObsState ObsState;
 };
