@@ -9,7 +9,6 @@
 class UBaseInventoryAccessor;
 class UCoreAccessor;
 class UInventory;
-class UItemMap;
 
 UCLASS()
 class UChestBlockLogic : public UStorageBlockLogic {
@@ -30,9 +29,7 @@ class UChestBlockLogic : public UStorageBlockLogic {
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
 
-  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
-
-  virtual void ApplyLogicInput(const class ULogicContext *ctx) override {}
+  // Storage->logic export ("Storage") is provided by UStorageBlockLogic::PopulateLogicOutput.
 
   UFUNCTION(BlueprintCallable)
   virtual void SetLimit(int32 _l);
@@ -46,12 +43,6 @@ class UChestBlockLogic : public UStorageBlockLogic {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   int Capacity = 20;
-
-  mutable int64 LastKnownInventoryVersion = INDEX_NONE;
-
-  // Cached snapshot of exported signals to avoid rebuilding every tick
-  UPROPERTY()
-  UItemMap *CachedOutput = nullptr;
 
   protected:
   UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

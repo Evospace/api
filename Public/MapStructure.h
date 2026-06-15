@@ -13,7 +13,7 @@ struct FMapStructure {
   FQrVector2i Offset;
 
   UPROPERTY(VisibleAnywhere)
-  UStaticStructure *Structure;
+  UStaticStructure *Structure = nullptr;
 
   bool SerializeJson(TSharedPtr<FJsonObject> json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> json);
