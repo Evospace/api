@@ -24,25 +24,25 @@ namespace defines {
 //   on_research_finished  { research }
 //   on_quest_activated    { quest }
 //   on_surface_day_phase  { anchor }  -- string: "dawn" / "sunset"
-#define EVO_EVENT_LIST(X)   \
-  X(on_player_mined_item)   \
-  X(on_built_block)         \
-  X(on_player_spawn)        \
-  X(on_tick)                \
-  X(on_region_spawn)        \
-  X(on_player_at_sector)    \
-  X(on_entity_died)         \
-  X(on_entity_damaged)      \
-  X(on_entity_spawn)        \
-  X(on_surface_day_phase)   \
-  X(on_research_finished)   \
+#define EVO_EVENT_LIST(X) \
+  X(on_player_mined_item) \
+  X(on_built_block)       \
+  X(on_player_spawn)      \
+  X(on_tick)              \
+  X(on_region_spawn)      \
+  X(on_player_at_sector)  \
+  X(on_entity_died)       \
+  X(on_entity_damaged)    \
+  X(on_entity_spawn)      \
+  X(on_surface_day_phase) \
+  X(on_research_finished) \
   X(on_quest_activated)
 
 enum class Event {
 #define EVO_EVENT_ENUM(name) name,
   EVO_EVENT_LIST(EVO_EVENT_ENUM)
 #undef EVO_EVENT_ENUM
-  Count
+    Count
 };
 
 inline const char *ToString(Event event) {
