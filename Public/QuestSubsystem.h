@@ -9,6 +9,7 @@ struct lua_State;
 
 class UStaticChapter;
 class UStaticQuest;
+class UStaticResearch;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuestStateChanged, UStaticQuest *, Quest);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FChapterStateChanged, UStaticChapter *, Chapter);
@@ -65,6 +66,13 @@ class UQuestSubsystem : public UGameInstanceSubsystem {
   static void lua_reg(lua_State *L);
 
   private:
+  /** Bridges UResearchSubsystem::OnResearchFinished onto the Lua event bus as on_research_finished. */
+  UFUNCTION()
+  void OnResearchFinishedBridge(UStaticResearch *Research);
+
+  /** Emits the on_quest_activated event so the Lua questbook framework can (re)build objectives. */
+  void EmitQuestActivated(UStaticQuest *Quest);
+
   UFUNCTION()
   void LoadAllDefinitions();
 

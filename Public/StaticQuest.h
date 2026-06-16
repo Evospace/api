@@ -7,6 +7,9 @@
 #include "StaticQuest.generated.h"
 
 class UStaticChapter;
+class UStaticItem;
+class UAutosizeInventory;
+class UTexture2D;
 
 UENUM(BlueprintType)
 enum class EQuestState : uint8 {
@@ -20,6 +23,8 @@ class UStaticQuest : public UPrototype {
   GENERATED_BODY()
 
   public:
+  UStaticQuest();
+
   using Self = UStaticQuest;
   PROTOTYPE_CODEGEN(StaticQuest, StaticQuest)
 
@@ -34,6 +39,16 @@ class UStaticQuest : public UPrototype {
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   TArray<FLoc> DescriptionParts;
+
+  /** Explanatory image shown in the quest detail panel. Path is relative to the owning mod folder. */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UTexture2D *Image = nullptr;
+
+  std::string mImagePath;
+
+  /** Optional inventory of relevant items shown alongside the description (mirrors StaticTip). */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+  UAutosizeInventory *ContextInventory = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   UStaticChapter *Chapter = nullptr;
@@ -61,6 +76,12 @@ class UStaticQuest : public UPrototype {
 
   void RefreshEventHandlers();
   void Complete();
+
+  UFUNCTION(BlueprintCallable)
+  void LoadImagePath();
+
+  void AddContext(const UStaticItem *item);
+  void ClearContext();
 
   UFUNCTION(BlueprintCallable)
   void ClearObjectives();

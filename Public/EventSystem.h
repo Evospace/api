@@ -13,50 +13,52 @@ class LuaState;
 
 namespace defines {
 
+// Single source of truth for gameplay events exposed to Lua.
+// To add an event, add one line here: the `Event` enum, `ToString`, and the
+// `defines.events` Lua namespace (see EventSystem::lua_reg) are all generated
+// from this list, so they can never drift out of sync.
+//
+// Context tables passed to handlers (per event):
+//   on_player_mined_item  { item, count }
+//   on_built_block        { block, position }
+//   on_research_finished  { research }
+//   on_quest_activated    { quest }
+//   on_surface_day_phase  { anchor }  -- string: "dawn" / "sunset"
+#define EVO_EVENT_LIST(X)   \
+  X(on_player_mined_item)   \
+  X(on_built_block)         \
+  X(on_player_spawn)        \
+  X(on_tick)                \
+  X(on_region_spawn)        \
+  X(on_player_at_sector)    \
+  X(on_entity_died)         \
+  X(on_entity_damaged)      \
+  X(on_entity_spawn)        \
+  X(on_surface_day_phase)   \
+  X(on_research_finished)   \
+  X(on_quest_activated)
+
 enum class Event {
-  on_player_mined_item,
-  on_built_block,
-  on_player_spawn,
-  on_tick,
-  on_region_spawn,
-  on_player_at_sector,
-  on_entity_died,
-  on_entity_damaged,
-  on_entity_spawn,
-  /** Cosmetic day phase boundary (dawn / sunset); context table uses string field `anchor`. */
-  on_surface_day_phase,
+#define EVO_EVENT_ENUM(name) name,
+  EVO_EVENT_LIST(EVO_EVENT_ENUM)
+#undef EVO_EVENT_ENUM
   Count
 };
 
 inline const char *ToString(Event event) {
   switch (event) {
-  case Event::on_player_mined_item:
-    return "on_player_mined_item";
-  case Event::on_built_block:
-    return "on_built_block";
-  case Event::on_tick:
-    return "on_tick";
-  case Event::on_player_at_sector:
-    return "on_player_at_sector";
-  case Event::on_player_spawn:
-    return "on_player_spawn";
-  case Event::on_region_spawn:
-    return "on_region_spawn";
-  case Event::on_entity_died:
-    return "on_entity_died";
-  case Event::on_entity_damaged:
-    return "on_entity_damaged";
-  case Event::on_entity_spawn:
-    return "on_entity_spawn";
-  case Event::on_surface_day_phase:
-    return "on_surface_day_phase";
+#define EVO_EVENT_TOSTRING(name) \
+  case Event::name:              \
+    return #name;
+    EVO_EVENT_LIST(EVO_EVENT_TOSTRING)
+#undef EVO_EVENT_TOSTRING
   default:
     return "unknown_event";
   }
 }
 
 inline bool IsValidEvent(Event event) {
-  return event >= Event::on_player_mined_item && event < Event::Count;
+  return event >= static_cast<Event>(0) && event < Event::Count;
 }
 
 inline int EventIndex(Event event) {
@@ -119,13 +121,7 @@ class EventSystem {
     getGlobalNamespace(L)
       .beginNamespace("defines")
         .beginNamespace("events")
-          register_enum_line(on_player_mined_item)
-          register_enum_line(on_built_block)
-          register_enum_line(on_player_spawn)
-          register_enum_line(on_tick)
-          register_enum_line(on_player_at_sector)
-          register_enum_line(on_region_spawn)
-          register_enum_line(on_surface_day_phase)
+          EVO_EVENT_LIST(register_enum_line)
         .endNamespace()
       .endNamespace()
       .beginClass<EventSystem>("EventSystem") //@class EventSystem
