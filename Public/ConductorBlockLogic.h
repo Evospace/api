@@ -87,7 +87,6 @@ class UBlockNetwork : public UObject {
   GENERATED_BODY()
 
   public:
-  UBlockNetwork();
   void InitializeNetwork();
 
   bool AddSwitch(USwitchBlockLogic *a);
@@ -101,7 +100,7 @@ class UBlockNetwork : public UObject {
 
   void DeferredKill();
 
-  bool IsKillDeffered() const { return mKillDeffered; }
+  bool IsKillDeferred() const { return mKillDeferred; }
 
   void SetResource(const UStaticItem *param1);
 
@@ -157,9 +156,6 @@ class UBlockNetwork : public UObject {
   UFUNCTION(BlueprintCallable)
   float GetTotalProduction(int32 sub) const;
 
-  UFUNCTION(BlueprintCallable)
-  bool AddCharge(int64 addition);
-
   void CaptureStorageSnapshot();
   void RestoreStorageSnapshot();
   void ClearStorageSnapshot();
@@ -176,14 +172,14 @@ class UBlockNetwork : public UObject {
   UPROPERTY(VisibleAnywhere)
   int64 CachedDrain = 0;
 
-  void ClearCollectedDirty();
+  void InvalidateCollected();
 
   bool mCollectedDirty = true;
 
   private:
   const UStaticItem *mResource = nullptr;
 
-  bool mKillDeffered = false;
+  bool mKillDeferred = false;
 
   int32 mLifetime = 0;
 

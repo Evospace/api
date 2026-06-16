@@ -18,6 +18,12 @@ static TAutoConsoleVariable<int32> CVarResourceNetworkSimulate(
   TEXT("1: run resource/data network simulation each tick. 0: skip network Tick/EndTick (bookkeeping only)."),
   ECVF_Default);
 
+bool Vec3iLess(const Vec3i &a, const Vec3i &b) {
+  if (a.X != b.X) return a.X < b.X;
+  if (a.Y != b.Y) return a.Y < b.Y;
+  return a.Z < b.Z;
+}
+
 TArray<Vec3i> CollectSortedWirePositions(const UBlockNetwork *network) {
   TArray<Vec3i> positions;
   if (!network) {
@@ -31,15 +37,7 @@ TArray<Vec3i> CollectSortedWirePositions(const UBlockNetwork *network) {
     }
   }
 
-  positions.Sort([](const Vec3i &a, const Vec3i &b) {
-    if (a.X != b.X) {
-      return a.X < b.X;
-    }
-    if (a.Y != b.Y) {
-      return a.Y < b.Y;
-    }
-    return a.Z < b.Z;
-  });
+  positions.Sort(Vec3iLess);
 
   return positions;
 }
@@ -100,7 +98,7 @@ void UResourceNetworkManager::KillNetworkDeferred(UBlockNetwork *network) {
   if (!network) {
     return;
   }
-  if (!network->IsKillDeffered()) {
+  if (!network->IsKillDeferred()) {
     networksToKill.Add(network);
     network->DeferredKill();
   }
@@ -214,15 +212,7 @@ void UResourceNetworkManager::RestoreGraphDataFromSave(TSharedPtr<FJsonObject> j
       continue;
     }
 
-    savedWires.Sort([](const Vec3i &a, const Vec3i &b) {
-      if (a.X != b.X) {
-        return a.X < b.X;
-      }
-      if (a.Y != b.Y) {
-        return a.Y < b.Y;
-      }
-      return a.Z < b.Z;
-    });
+    savedWires.Sort(Vec3iLess);
 
     UBlockNetwork *matchedNetwork = nullptr;
     for (UBlockNetwork *network : networks) {
