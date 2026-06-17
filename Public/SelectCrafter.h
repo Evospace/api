@@ -59,8 +59,6 @@ class USelectCrafter : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
-  virtual void SetRenderable(AColumn *sector) override;
-
   protected:
   virtual void Tick() override;
 

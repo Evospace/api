@@ -21,8 +21,6 @@ class UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
-  virtual void SetActor(ABlockActor *actor) override;
-
   UPROPERTY(BlueprintReadOnly)
   FLinearColor Color;
 
