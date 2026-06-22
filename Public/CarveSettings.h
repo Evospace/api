@@ -7,12 +7,8 @@ USTRUCT(BlueprintType)
 struct FCarveNoiseSettings {
   GENERATED_BODY()
 
-  // Phase 0 (biome_plan.md): caves/canyons soft-disabled during the height
-  // rework so bare terrain shape is observable. USurfaceDefinition does not
-  // deserialize CarveSettings, so these defaults are authoritative — flip back
-  // to true to re-enable 3D carving against the new surface.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  bool bEnable = false;
+  bool bEnable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   float NoiseThreshold = 0.65f;
@@ -32,9 +28,9 @@ struct FCarveNoiseSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   int32 FractalOctaves = 3;
 
-  // Canyon parameters (soft-disabled for Phase 0, see bEnable above).
+  // Canyon parameters
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  bool bCanyonEnable = false;
+  bool bCanyonEnable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
   float CanyonFrequency = 0.02f;

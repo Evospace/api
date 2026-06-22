@@ -26,32 +26,49 @@ class ULayeringGenerator;
 class UBiome;
 class UHeightGenerator;
 
-namespace mapgen {
-// Single-pass separable Gaussian blur (finite support, truncated at `radius`)
-// over a row-major [w*h] grid. Because support is exactly `radius`, evaluating
-// it over a halo that extends `radius` beyond the region of interest makes
-// inner-cell results independent of the halo border (clamped replicate edges
-// only reach border cells) — that is what makes blended heights identical
-// across adjacent sectors. O(N*(2*radius+1)) per axis. `in`/`out` are [w*h] and
-// must not alias; scratch is allocated internally.
-void GaussianBlur2D(const float *in, float *out, int32 w, int32 h, int32 radius);
-
-// Weighted per-biome height blend (see biome_plan.md target pipeline):
-//   for each distinct biome b: Wb = Blur(mask_b, radius);
-//   out = Σ_b Wb·Hb / Σ_b Wb
-// biomeId/out are [w*h]; `heights` holds one [w*h] field per entry of
-// `distinctBiomes` (parallel arrays). Preserves interior detail, blends seams.
-void BlendBiomeHeights(const int32 *biomeId, int32 w, int32 h, int32 radius,
-                       const TArray<int32> &distinctBiomes,
-                       const TArray<const float *> &heights,
-                       float *out);
-} // namespace mapgen
-
 enum class StructureSize {
   s32x32,
   s64x64,
   s128x128,
 };
+
+constexpr auto gFlatForBiCubicSize = gFlatSectorSize + 4;
+constexpr auto gFlatForBiCubicCapacity = gFlatForBiCubicSize.Capacity();
+
+enum {
+  GeneratorOctaveCount = 4
+};
+enum {
+  SmoothKernelRadius = 20
+};
+enum {
+  DensSmoothKernelRadius = 3
+};
+constexpr Vec3i PrecomputedBiomesize =
+  gTallSectorSize + Vec3i{ SmoothKernelRadius * 2, SmoothKernelRadius * 2, SmoothKernelRadius * 2 };
+constexpr Vec3i PrecomputedDensSize =
+  gTallSectorSize + Vec3i{ DensSmoothKernelRadius * 2, DensSmoothKernelRadius * 2, DensSmoothKernelRadius * 2 };
+
+template <typename Ty_>
+using SmoothBuffer = std::array<std::array<Ty_, PrecomputedBiomesize.Y>, PrecomputedBiomesize.X>;
+
+template <typename Ty_>
+using SectorBuffer = std::array<std::array<Ty_, gFlatSectorSize.Y>, gFlatSectorSize.X>;
+
+template <typename Ty_>
+using SectorBufferHeap = std::vector<Ty_>;
+
+template <typename Ty_>
+using Smooth3DBuffer = std::vector<Ty_>;
+
+template <typename Ty_>
+using Sector3DBuffer = std::vector<Ty_>;
+
+constexpr Vec2i just_block{ gFlatSectorSize };
+constexpr Vec2i just_block_smooth{ gFlatSectorSize + SmoothKernelRadius * 2 };
+constexpr Vec2i sub_block{ gFlatSectorSize * 2.f };
+constexpr Vec2i baked_size{ gFlatSectorSize * 2.f + 4.f }; // sub block + bicubic
+constexpr Vec2i baked_smooth_size{ (gFlatSectorSize + SmoothKernelRadius) * 2.f }; // sub block + smooth
 
 UCLASS()
 class ULayeringGenerator : public UPrototype {
