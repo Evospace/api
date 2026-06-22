@@ -8,54 +8,66 @@ struct RuntimeMeshBuilder {
   using MeshType = RealtimeMesh::TRealtimeMeshBuilderLocal<uint32, FPackedNormal, FVector2DHalf, 1>;
 
   private:
-  static int32 BuildSection(MeshType &StaticProvider, const UTesselator::MeshData &SectionData, int32 SectionIndex,
-                            int32 VertexBase) {
+  static bool ValidateSectionData(const UTesselator::MeshData &SectionData, int32 SectionIndex) {
     if (SectionData.Normals.Num() != SectionData.Vertices.Num()) {
       LOG(ERROR_LL) << "RuntimeMeshBuilder: Normals mismatch: Vertices=" << SectionData.Vertices.Num()
                     << " Normals=" << SectionData.Normals.Num()
                     << " Section=" << SectionIndex;
-      return 0;
+      return false;
     }
     if (SectionData.Tangents.Num() != SectionData.Vertices.Num()) {
       LOG(ERROR_LL) << "RuntimeMeshBuilder: Tangents mismatch: Vertices=" << SectionData.Vertices.Num()
                     << " Tangents=" << SectionData.Tangents.Num()
                     << " Section=" << SectionIndex;
-      return 0;
+      return false;
     }
     if (SectionData.UV0.Num() != SectionData.Vertices.Num()) {
       LOG(ERROR_LL) << "RuntimeMeshBuilder: UV0 mismatch: Vertices=" << SectionData.Vertices.Num()
                     << " UV0=" << SectionData.UV0.Num()
                     << " Section=" << SectionIndex;
-      return 0;
+      return false;
     }
     if (SectionData.VertexColors.Num() != SectionData.Vertices.Num()) {
       LOG(ERROR_LL) << "RuntimeMeshBuilder: VertexColors mismatch: Vertices=" << SectionData.Vertices.Num()
                     << " Colors=" << SectionData.VertexColors.Num()
                     << " Section=" << SectionIndex;
-      return 0;
+      return false;
     }
     if (SectionData.Triangles.Num() % 3 != 0) {
       LOG(ERROR_LL) << "RuntimeMeshBuilder: Triangles not multiple of 3: Triangles=" << SectionData.Triangles.Num()
                     << " Section=" << SectionIndex;
+      return false;
+    }
+    return true;
+  }
+
+  static int32 BuildSection(MeshType &Builder, const UTesselator::MeshData &SectionData, int32 SectionIndex,
+                            int32 VertexBase) {
+    if (!ValidateSectionData(SectionData, SectionIndex)) {
       return 0;
     }
 
-    for (int32 i = 0; i < SectionData.Vertices.Num(); ++i) {
-      StaticProvider.AddVertex(SectionData.Vertices[i])
+    const int32 VertexCount = SectionData.Vertices.Num();
+    if (VertexCount == 0) {
+      return 0;
+    }
+
+    for (int32 i = 0; i < VertexCount; ++i) {
+      Builder.AddVertex(SectionData.Vertices[i])
         .SetNormalAndTangent(SectionData.Normals[i], SectionData.Tangents[i])
         .SetTexCoord(FVector2DHalf(SectionData.UV0[i].X, SectionData.UV0[i].Y))
         .SetColor(SectionData.VertexColors[i]);
     }
 
     for (int32 i = 0; i < SectionData.Triangles.Num(); i += 3) {
-      StaticProvider.AddTriangle(
+      Builder.AddTriangle(
         SectionData.Triangles[i] + VertexBase,
         SectionData.Triangles[i + 1] + VertexBase,
         SectionData.Triangles[i + 2] + VertexBase,
         SectionIndex);
     }
 
-    return SectionData.Vertices.Num();
+    return VertexCount;
   }
 
   static FRealtimeMeshSectionGroupKey MakeSurfaceGroupKey(int32 LodIndex) {
@@ -147,39 +159,54 @@ struct RuntimeMeshBuilder {
     EnsureLodExists(rm, LodIndex);
     const FRealtimeMeshSectionGroupKey groupKey = MakeSurfaceGroupKey(LodIndex);
     RealtimeMesh::FRealtimeMeshStreamSet StreamSet;
-    MeshType Builder(StreamSet);
-
-    Builder.EnableTangents();
-    Builder.EnableTexCoords();
-    Builder.EnableColors();
-    Builder.EnablePolyGroups();
-
-    const bool bUpdateMaterialSlots = (LodIndex == 0);
-
     TSet<int32> ActivePolyGroups;
     TMap<int32, int32> PolyGroupToMaterialSlot;
-    int32 VertexBase = 0;
-    for (int32 SectionIndex = 0; SectionIndex < data.Num(); ++SectionIndex) {
-      const auto &SectionData = data[SectionIndex];
-      if (SectionData.Vertices.Num() == 0) {
-        continue;
+    int32 TotalVertices = 0;
+    int32 TotalTriangles = 0;
+    for (const UTesselator::MeshData &SectionData : data) {
+      TotalVertices += SectionData.Vertices.Num();
+      TotalTriangles += SectionData.Triangles.Num() / 3;
+    }
+
+    {
+      MeshType Builder(StreamSet);
+
+      Builder.EnableTangents();
+      Builder.EnableTexCoords();
+      Builder.EnableColors();
+      Builder.EnablePolyGroups();
+
+      if (TotalVertices > 0) {
+        Builder.ReserveNumVertices(TotalVertices);
+      }
+      if (TotalTriangles > 0) {
+        Builder.ReserveNumTriangles(TotalTriangles);
       }
 
-      if (bUpdateMaterialSlots) {
-        if (SectionData.material) {
-          // Use full object path as slot name to avoid FName collisions between different packages.
-          rm->SetupMaterialSlot(SectionIndex, FName(*SectionData.material->GetPathName()), SectionData.material);
-        } else {
-          rm->SetupMaterialSlot(SectionIndex, "UnloadedMaterial", nullptr);
+      const bool bUpdateMaterialSlots = (LodIndex == 0);
+      int32 VertexBase = 0;
+      for (int32 SectionIndex = 0; SectionIndex < data.Num(); ++SectionIndex) {
+        const auto &SectionData = data[SectionIndex];
+        if (SectionData.Vertices.Num() == 0) {
+          continue;
         }
-      }
 
-      PolyGroupToMaterialSlot.Add(SectionIndex, SectionIndex);
-      const int32 AddedVertexCount = BuildSection(Builder, SectionData, SectionIndex, VertexBase);
-      if (AddedVertexCount > 0 && SectionData.Triangles.Num() > 0) {
-        ActivePolyGroups.Add(SectionIndex);
+        if (bUpdateMaterialSlots) {
+          if (SectionData.material) {
+            // Use full object path as slot name to avoid FName collisions between different packages.
+            rm->SetupMaterialSlot(SectionIndex, FName(*SectionData.material->GetPathName()), SectionData.material);
+          } else {
+            rm->SetupMaterialSlot(SectionIndex, "UnloadedMaterial", nullptr);
+          }
+        }
+
+        PolyGroupToMaterialSlot.Add(SectionIndex, SectionIndex);
+        const int32 AddedVertexCount = BuildSection(Builder, SectionData, SectionIndex, VertexBase);
+        if (AddedVertexCount > 0 && SectionData.Triangles.Num() > 0) {
+          ActivePolyGroups.Add(SectionIndex);
+        }
+        VertexBase += AddedVertexCount;
       }
-      VertexBase += AddedVertexCount;
     }
 
     RealtimeMesh::FRealtimeMeshUpdateBuilder UpdateBuilder;
