@@ -28,7 +28,7 @@ class UNoiseGenerator : public UPrototype {
      * @brief Sets the seed for noise generation.
      * @param seed The seed value.
      */
-  void set_seed(int seed) { noise->SetSeed(seed); }
+  void set_seed(int seed) { noise->SetSeed(seed + seed_offset); }
 
   /**
      * @brief Generates 3D noise based on the current settings.
@@ -110,6 +110,15 @@ class UNoiseGenerator : public UPrototype {
   std::unique_ptr<FastNoiseSIMD> noise;
   float min = 2;
   float max = 10;
+  // Added to the world seed before being applied to the noise so noises in a
+  // stack decorrelate from one another. Authored via JSON ("SeedOffset").
+  int32 seed_offset = 0;
+
+  // JSON-driven configuration so height noises can be authored as content
+  // (parallel to the Lua setters above). Reads NoiseType, Frequency,
+  // FractalOctaves, FractalGain, FractalLacunarity, FractalType, Min, Max,
+  // SeedOffset.
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   public:
   PROTOTYPE_CODEGEN(NoiseGenerator, NoiseGenerator)

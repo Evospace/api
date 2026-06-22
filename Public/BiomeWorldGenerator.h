@@ -17,6 +17,7 @@
 
 struct FNoiseArray;
 class UStaticBlock;
+class UBiome;
 class UGlobalBiomeFamily;
 class USurfaceDefinition;
 
@@ -36,7 +37,8 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   virtual void Initialize() override;
 
   void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FQrVector2i &sbpos,
-                 const TArray<float> &BaseHeightCache, const TArray<float> &SurfaceHeightCache, int w, int d) const;
+                 const TArray<float> &BaseHeightCache, const TArray<float> &SurfaceHeightCache,
+                 const TArray<UBiome *> &LeafBiomeCache, int w, int d) const;
 
   virtual void LoadBiomeFamily() override {}
 
