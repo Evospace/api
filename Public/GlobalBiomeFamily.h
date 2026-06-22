@@ -28,7 +28,6 @@ class UGlobalBiomeFamily : public UBiomeFamily {
   virtual void SetSeed(int32 seed) override;
 
   protected:
-  float GetSphereHeight(FVector2D start_point) const;
   std::unique_ptr<FastNoiseSIMD> mNoisePlanetSphere;
   std::unique_ptr<FastNoiseSIMD> mNoisePlanetSphereSmall;
 };
