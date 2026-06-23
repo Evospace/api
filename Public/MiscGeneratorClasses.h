@@ -26,6 +26,27 @@ class ULayeringGenerator;
 class UBiome;
 class UHeightGenerator;
 
+namespace mapgen {
+// Single-pass separable Gaussian blur (finite support, truncated at `radius`)
+// over a row-major [w*h] grid. Because support is exactly `radius`, evaluating
+// it over a halo that extends `radius` beyond the region of interest makes
+// inner-cell results independent of the halo border (clamped replicate edges
+// only reach border cells) — that is what makes blended heights identical
+// across adjacent sectors. O(N*(2*radius+1)) per axis. `in`/`out` are [w*h] and
+// must not alias; scratch is allocated internally.
+void GaussianBlur2D(const float *in, float *out, int32 w, int32 h, int32 radius);
+
+// Weighted per-biome height blend (see biome_plan.md target pipeline):
+//   for each distinct biome b: Wb = Blur(mask_b, radius);
+//   out = Σ_b Wb·Hb / Σ_b Wb
+// biomeId/out are [w*h]; `heights` holds one [w*h] field per entry of
+// `distinctBiomes` (parallel arrays). Preserves interior detail, blends seams.
+void BlendBiomeHeights(const int32 *biomeId, int32 w, int32 h, int32 radius,
+                       const TArray<int32> &distinctBiomes,
+                       const TArray<const float *> &heights,
+                       float *out);
+} // namespace mapgen
+
 enum class StructureSize {
   s32x32,
   s64x64,

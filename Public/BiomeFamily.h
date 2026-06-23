@@ -25,13 +25,17 @@ class UBiomeFamily : public UBiome {
   // Only baked
   virtual FLayering GetLayering(const Vec2i &pos) const override;
 
-  virtual float GetHeight(const FVector2D &pos) const override PURE_VIRTUAL(UBiomeFamily::GetHeight, return 0.f;)
-
-    // Only baked
-    virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;
+  // Only baked
+  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;
 
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;
+
+  // Batched (non-warped) sub-biome selection over a [w x h] region anchored at
+  // world (originX, originY): out[i] in [0, mSubBiomes.Num()-1]. The vectorized
+  // form of GetBiome — a single cellular fill — used to build seamless
+  // per-sector biome maps (see biome_plan.md FillBiomeMap).
+  void FillBiomeMap(int32 *out, int32 originX, int32 originY, int32 w, int32 h) const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
