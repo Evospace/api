@@ -31,6 +31,12 @@ void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionDa
   for (auto wg : WorldGenerators) {
     wg->SetSeed(GameSessionData->GetSeed());
   }
+
+  // Push persisted settings onto the configurable generator only; legacy
+  // generators keep the values hardcoded in their constructors.
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(GameSessionData->GetGeneratorName()))) {
+    cfg->SetMapSettings(GameSessionData->MapSettings);
+  }
 }
 
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {

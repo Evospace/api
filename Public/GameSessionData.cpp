@@ -8,6 +8,9 @@
 #include "Qr/Ensure.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
 #include "Qr/GameInstanceHelper.h"
+#include "Public/MapGeneratorSubsystem.h"
+#include "Public/BiomeWorldGenerator.h"
+#include "JsonObjectConverter.h"
 
 UGameSessionData::UGameSessionData() {}
 
@@ -56,6 +59,13 @@ void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &sa
   SaveName = saveName;
   Seed = seed;
   GeneratorName = generatorName;
+  // Capture the (menu-tuned) settings off the live generator so they persist with
+  // the save. Only biome generators carry MapSettings; others leave it default.
+  if (auto *mgs = UGameInstanceHelper::GetGameInstance(WorldContextObject).GetSubsystem<UMapGeneratorSubsystem>()) {
+    if (auto *bg = Cast<UBiomeWorldGenerator>(mgs->FindWorldGenerator(generatorName))) {
+      MapSettings = bg->GetMapSettings();
+    }
+  }
   TotalGameTime = 0.f;
   TotalGameTicks = 0;
   this->CreativeMode = CreativeMode;
@@ -104,6 +114,11 @@ bool UGameSessionData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "WorldTimeOfDayPhaseTicks", WorldTimeOfDayPhaseTicks);
   json_helper::TryGet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
 
+  const TSharedPtr<FJsonObject> *mapSettingsJson = nullptr;
+  if (json->TryGetObjectField(TEXT("MapSettings"), mapSettingsJson) && mapSettingsJson) {
+    FJsonObjectConverter::JsonObjectToUStruct(mapSettingsJson->ToSharedRef(), FMapGeneratorSettings::StaticStruct(), &MapSettings, 0, 0);
+  }
+
   return true;
 }
 
@@ -122,6 +137,10 @@ bool UGameSessionData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "SaveName", SaveName);
   json_helper::TrySet(json, "WorldTimeOfDayPhaseTicks", WorldTimeOfDayPhaseTicks);
   json_helper::TrySet(json, "WorldTimeAutoAdvance", WorldTimeAutoAdvance);
+
+  const TSharedRef<FJsonObject> mapSettingsJson = MakeShared<FJsonObject>();
+  FJsonObjectConverter::UStructToJsonObject(FMapGeneratorSettings::StaticStruct(), &MapSettings, mapSettingsJson, 0, 0);
+  json->SetObjectField(TEXT("MapSettings"), mapSettingsJson);
   return true;
 }
 
@@ -140,6 +159,7 @@ void UGameSessionData::Reset() {
   SaveName = "Default";
   WorldTimeOfDayPhaseTicks = 0;
   WorldTimeAutoAdvance = true;
+  MapSettings = {};
 }
 
 FString UGameSessionData::GetModsCombined() const {

@@ -34,6 +34,15 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   virtual void SetSeed(int32 seed) override;
 
+  // The configurable generator's whole settings bundle (height-map toggle,
+  // rivers, carve) is read/written as one struct, so a menu UI can edit it on the
+  // shared generator instance and then trigger a map regenerate.
+  UFUNCTION(BlueprintCallable)
+  FMapGeneratorSettings GetMapSettings() const { return MapSettings; }
+
+  UFUNCTION(BlueprintCallable)
+  void SetMapSettings(const FMapGeneratorSettings &InSettings) { MapSettings = InSettings; }
+
   protected:
   virtual void Initialize() override;
 
