@@ -3,13 +3,13 @@
 
 #include "CoreMinimal.h"
 #include <Subsystems/GameInstanceSubsystem.h>
-#include "CarveSettings.h"
+#include "MapGeneratorSettings.h"
 #include "MapGeneratorSubsystem.generated.h"
 
 class UWorldGenerator;
 class UGameSessionData;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCarveSettingsChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMapSettingsChanged);
 
 UCLASS()
 class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
@@ -29,25 +29,25 @@ class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
   void InitializeWorldGenerators();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
-  FCarveNoiseSettings GetCarveSettings() const { return CarveSettings; }
+  FMapGeneratorSettings GetMapSettings() const { return MapSettings; }
 
   UFUNCTION(BlueprintCallable)
-  void SetCarveSettings(const FCarveNoiseSettings &InSettings);
+  void SetMapSettings(const FMapGeneratorSettings &InSettings);
 
   UFUNCTION(BlueprintCallable)
-  void CommitCarveSettings();
+  void CommitMapSettings();
 
   UPROPERTY(BlueprintAssignable)
-  FOnCarveSettingsChanged OnCarveSettingsChanged;
+  FOnMapSettingsChanged OnMapSettingsChanged;
 
   private:
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves", meta = (AllowPrivateAccess = "true"))
-  FCarveNoiseSettings CarveSettings;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (AllowPrivateAccess = "true"))
+  FMapGeneratorSettings MapSettings;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   TArray<UWorldGenerator *> WorldGenerators;
 
-  void ApplyCarveSettingsToBiomeGenerators();
+  void ApplyMapSettingsToGenerators();
 
   UFUNCTION()
   void UpdateSeed_Internal(UGameSessionData *GameSessionData);

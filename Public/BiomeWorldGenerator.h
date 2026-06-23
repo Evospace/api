@@ -41,7 +41,7 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   FMapGeneratorSettings GetMapSettings() const { return MapSettings; }
 
   UFUNCTION(BlueprintCallable)
-  void SetMapSettings(const FMapGeneratorSettings &InSettings) { MapSettings = InSettings; }
+  virtual void SetMapSettings(const FMapGeneratorSettings &InSettings) { MapSettings = InSettings; }
 
   protected:
   virtual void Initialize() override;
@@ -131,4 +131,5 @@ class UWorldGeneratorConfigurable : public UBiomeWorldGenerator {
   public:
   UWorldGeneratorConfigurable();
   virtual void LoadBiomeFamily() override;
+  virtual void SetMapSettings(const FMapGeneratorSettings &InSettings) override;
 };

@@ -18,7 +18,12 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   virtual float GetHeight(const FVector2D &pos) const override;
   virtual void SetSeed(int32 seed) override;
 
-  public:
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+
+  // Adjusts cellular-biome and continent noise frequencies relative to authored
+  // defaults. SpreadPercent in [-50, 100]: 0 = authored size, +100 = 2x larger.
+  void ApplyLayoutScaleSettings(float BiomeSizeSpreadPercent, float ContinentScaleSpreadPercent);
+
   PROTOTYPE_CODEGEN(GlobalBiomeFamilyConfigurable, GlobalBiomeFamily)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -29,4 +34,7 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
 
   private:
   std::unique_ptr<FastNoiseSIMD> river_noise;
+
+  float AuthoredBiomeFrequency = 0.003f;
+  float AuthoredContinentFrequency = 0.0005f;
 };

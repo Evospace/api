@@ -29,7 +29,7 @@ void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionData) {
   check(GameSessionData);
   LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
-  CarveSettings = GameSessionData->MapSettings.CarveSettings;
+  MapSettings = GameSessionData->MapSettings;
 
   for (auto wg : WorldGenerators) {
     wg->SetSeed(GameSessionData->GetSeed());
@@ -41,7 +41,7 @@ void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionDa
     cfg->SetMapSettings(GameSessionData->MapSettings);
   }
 
-  ApplyCarveSettingsToBiomeGenerators();
+  ApplyMapSettingsToGenerators();
 }
 
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {
@@ -69,35 +69,44 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
   }
 
   if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(TEXT("WorldGeneratorConfigurable")))) {
-    CarveSettings = cfg->GetMapSettings().CarveSettings;
+    MapSettings = cfg->GetMapSettings();
   }
-  ApplyCarveSettingsToBiomeGenerators();
+  ApplyMapSettingsToGenerators();
 }
 
-void UMapGeneratorSubsystem::SetCarveSettings(const FCarveNoiseSettings &InSettings) {
-  CarveSettings = InSettings;
-  CommitCarveSettings();
+void UMapGeneratorSubsystem::SetMapSettings(const FMapGeneratorSettings &InSettings) {
+  MapSettings = InSettings;
+  CommitMapSettings();
 }
 
-void UMapGeneratorSubsystem::CommitCarveSettings() {
-  ApplyCarveSettingsToBiomeGenerators();
+void UMapGeneratorSubsystem::CommitMapSettings() {
+  ApplyMapSettingsToGenerators();
 
   if (auto *gameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
     if (UGameSessionData *gameSessionData = const_cast<UGameSessionData *>(gameSessionSubsystem->GetData())) {
-      gameSessionData->MapSettings.CarveSettings = CarveSettings;
+      gameSessionData->MapSettings = MapSettings;
     }
   }
 
-  OnCarveSettingsChanged.Broadcast();
+  OnMapSettingsChanged.Broadcast();
 }
 
-void UMapGeneratorSubsystem::ApplyCarveSettingsToBiomeGenerators() {
+void UMapGeneratorSubsystem::ApplyMapSettingsToGenerators() {
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(TEXT("WorldGeneratorConfigurable")))) {
+    FMapGeneratorSettings configurableSettings = MapSettings;
+    configurableSettings.bUseBiomeHeightMaps = true;
+    cfg->SetMapSettings(configurableSettings);
+  }
+
   for (auto *wg : WorldGenerators) {
-    if (auto *bg = Cast<UBiomeWorldGenerator>(wg)) {
-      FMapGeneratorSettings mapSettings = bg->GetMapSettings();
-      mapSettings.CarveSettings = CarveSettings;
-      bg->SetMapSettings(mapSettings);
+    auto *bg = Cast<UBiomeWorldGenerator>(wg);
+    if (!bg || Cast<UWorldGeneratorConfigurable>(bg)) {
+      continue;
     }
+
+    FMapGeneratorSettings generatorSettings = bg->GetMapSettings();
+    generatorSettings.CarveSettings = MapSettings.CarveSettings;
+    bg->SetMapSettings(generatorSettings);
   }
 }
 
