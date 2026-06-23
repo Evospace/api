@@ -25,7 +25,11 @@ class UBiome : public UPrototype {
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;
-  virtual float GetHeight(const FVector2D &pos) const PURE_VIRTUAL(UBiome::GetHeight, return 0.f;) virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
+  // Per-biome height *detail* (no global base elevation). Default returns the
+  // owned height generator's value, or 0 when none is authored — a biome
+  // without a height generator legitimately contributes no detail (e.g. sea).
+  virtual float GetHeight(const FVector2D &pos) const;
+  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void SetSeed(int32 seed);
@@ -35,6 +39,10 @@ class UBiome : public UPrototype {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UPropsGenerator *props = nullptr;
+
+  // Owns this leaf biome's terrain height detail (JSON "Height"). May be null.
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  UHeightGenerator *height = nullptr;
 
   virtual TArray<UStaticWeather *> GetAvailableWeather() const { return TArray<UStaticWeather *>(); }
 };
