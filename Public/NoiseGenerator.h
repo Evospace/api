@@ -107,6 +107,36 @@ class UNoiseGenerator : public UPrototype {
     }
   }
 
+  void set_cellular_return_type(const std::string &return_type) {
+    static const std::unordered_map<std::string, FastNoiseSIMD::CellularReturnType> return_map = {
+      { "CellValue", FastNoiseSIMD::CellValue },
+      { "Distance", FastNoiseSIMD::Distance },
+      { "Distance2", FastNoiseSIMD::Distance2 },
+      { "Distance2Add", FastNoiseSIMD::Distance2Add },
+      { "Distance2Sub", FastNoiseSIMD::Distance2Sub },
+      { "Distance2Mul", FastNoiseSIMD::Distance2Mul },
+      { "Distance2Div", FastNoiseSIMD::Distance2Div },
+      { "NoiseLookup", FastNoiseSIMD::NoiseLookup },
+      { "Distance2Cave", FastNoiseSIMD::Distance2Cave },
+    };
+    const auto it = return_map.find(return_type);
+    if (it != return_map.end()) {
+      noise->SetCellularReturnType(it->second);
+    }
+  }
+
+  void set_cellular_distance_function(const std::string &distance_function) {
+    static const std::unordered_map<std::string, FastNoiseSIMD::CellularDistanceFunction> distance_map = {
+      { "Euclidean", FastNoiseSIMD::Euclidean },
+      { "Manhattan", FastNoiseSIMD::Manhattan },
+      { "Natural", FastNoiseSIMD::Natural },
+    };
+    const auto it = distance_map.find(distance_function);
+    if (it != distance_map.end()) {
+      noise->SetCellularDistanceFunction(it->second);
+    }
+  }
+
   std::unique_ptr<FastNoiseSIMD> noise;
   float min = 2;
   float max = 10;
