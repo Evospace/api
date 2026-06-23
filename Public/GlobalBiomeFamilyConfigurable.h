@@ -24,6 +24,8 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   // defaults. SpreadPercent in [-50, 100]: 0 = authored size, +100 = 2x larger.
   void ApplyLayoutScaleSettings(float BiomeSizeSpreadPercent, float ContinentScaleSpreadPercent);
 
+  void ApplyHeightSettings(bool InGenerateRivers, float PrimaryHeightMultiplier, float SecondaryHeightMultiplier);
+
   PROTOTYPE_CODEGEN(GlobalBiomeFamilyConfigurable, GlobalBiomeFamily)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -37,4 +39,8 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
 
   float AuthoredBiomeFrequency = 0.003f;
   float AuthoredContinentFrequency = 0.0005f;
+
+  bool bGenerateRivers = true;
+  float PrimaryNoiseHeightMultiplier = 20.f;
+  float SecondaryNoiseHeightMultiplier = 1.f;
 };

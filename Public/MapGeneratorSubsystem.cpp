@@ -115,7 +115,19 @@ void UMapGeneratorSubsystem::Deinitialize() {
 }
 
 TArray<UWorldGenerator *> UMapGeneratorSubsystem::GetWorldGeneratorList() {
-  return WorldGenerators;
+  TArray<UWorldGenerator *> result;
+  result.Reserve(WorldGenerators.Num());
+
+  for (UWorldGenerator *gen : WorldGenerators) {
+    if (gen->IsA(UWorldGeneratorRivers::StaticClass()) ||
+        gen->IsA(UWorldGeneratorLegacy::StaticClass()) ||
+        gen->IsA(UWorldGeneratorPlains::StaticClass())) {
+      continue;
+    }
+    result.Add(gen);
+  }
+
+  return result;
 }
 
 UWorldGenerator *UMapGeneratorSubsystem::FindWorldGenerator(FName name) const {
