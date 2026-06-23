@@ -8,7 +8,7 @@ struct FCarveNoiseSettings {
   GENERATED_BODY()
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  bool bEnable = true;
+  bool CarveHoles = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   float NoiseThreshold = 0.65f;
@@ -28,9 +28,8 @@ struct FCarveNoiseSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   int32 FractalOctaves = 3;
 
-  // Canyon parameters
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  bool bCanyonEnable = true;
+  bool CarveCanyons = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
   float CanyonFrequency = 0.02f;

@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Qr/CommonConverter.h"
 #include "Qr/Prototype.h"
-#include "CarveSettings.h"
 #include "SurfaceDefinition.generated.h"
 
 class URegionMap;
@@ -27,9 +26,6 @@ class USurfaceDefinition : public UInstance {
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   FName GeneratorName;
-
-  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  FCarveNoiseSettings CarveSettings;
 
   UFUNCTION(BlueprintCallable)
   void Initialize();

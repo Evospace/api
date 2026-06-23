@@ -1,6 +1,7 @@
 #include "Public/MapGeneratorSubsystem.h"
 #include "Public/GameSessionData.h"
 #include "Public/GameSessionSubsystem.h"
+#include "Public/GameSessionSubsystem.h"
 #include "Qr/ModLoadingSubsystem.h"
 #include "Qr/JsonObjectLibrary.h"
 #include "Public/WorldGenerator.h"
@@ -28,9 +29,19 @@ void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionData) {
   check(GameSessionData);
   LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
+  MapSettings = GameSessionData->MapSettings;
+
   for (auto wg : WorldGenerators) {
     wg->SetSeed(GameSessionData->GetSeed());
   }
+
+  // Push persisted settings onto the configurable generator only; legacy
+  // generators keep the values hardcoded in their constructors.
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(GameSessionData->GetGeneratorName()))) {
+    cfg->SetMapSettings(GameSessionData->MapSettings);
+  }
+
+  ApplyMapSettingsToGenerators();
 }
 
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {
@@ -39,6 +50,7 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
   WorldGenerators.Add(NewObject<UWorldGeneratorRivers>(this, TEXT("WorldGeneratorRivers")));
   WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
   WorldGenerators.Add(NewObject<UWorldGeneratorPlains>(this, TEXT("WorldGeneratorPlains")));
+  WorldGenerators.Add(NewObject<UWorldGeneratorConfigurable>(this, TEXT("WorldGeneratorConfigurable")));
   WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));
 
   // Add modded world generators registered in DB storage
@@ -55,6 +67,47 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
     wg->Initialize();
     wg->LoadBiomeFamily();
   }
+
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(TEXT("WorldGeneratorConfigurable")))) {
+    MapSettings = cfg->GetMapSettings();
+  }
+  ApplyMapSettingsToGenerators();
+}
+
+void UMapGeneratorSubsystem::SetMapSettings(const FMapGeneratorSettings &InSettings) {
+  MapSettings = InSettings;
+  CommitMapSettings();
+}
+
+void UMapGeneratorSubsystem::CommitMapSettings() {
+  ApplyMapSettingsToGenerators();
+
+  if (auto *gameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
+    if (UGameSessionData *gameSessionData = const_cast<UGameSessionData *>(gameSessionSubsystem->GetData())) {
+      gameSessionData->MapSettings = MapSettings;
+    }
+  }
+
+  OnMapSettingsChanged.Broadcast();
+}
+
+void UMapGeneratorSubsystem::ApplyMapSettingsToGenerators() {
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(TEXT("WorldGeneratorConfigurable")))) {
+    FMapGeneratorSettings configurableSettings = MapSettings;
+    configurableSettings.bUseBiomeHeightMaps = true;
+    cfg->SetMapSettings(configurableSettings);
+  }
+
+  for (auto *wg : WorldGenerators) {
+    auto *bg = Cast<UBiomeWorldGenerator>(wg);
+    if (!bg || Cast<UWorldGeneratorConfigurable>(bg)) {
+      continue;
+    }
+
+    FMapGeneratorSettings generatorSettings = bg->GetMapSettings();
+    generatorSettings.CarveSettings = MapSettings.CarveSettings;
+    bg->SetMapSettings(generatorSettings);
+  }
 }
 
 void UMapGeneratorSubsystem::Deinitialize() {
@@ -62,7 +115,19 @@ void UMapGeneratorSubsystem::Deinitialize() {
 }
 
 TArray<UWorldGenerator *> UMapGeneratorSubsystem::GetWorldGeneratorList() {
-  return WorldGenerators;
+  TArray<UWorldGenerator *> result;
+  result.Reserve(WorldGenerators.Num());
+
+  for (UWorldGenerator *gen : WorldGenerators) {
+    if (gen->IsA(UWorldGeneratorRivers::StaticClass()) ||
+        gen->IsA(UWorldGeneratorLegacy::StaticClass()) ||
+        gen->IsA(UWorldGeneratorPlains::StaticClass())) {
+      continue;
+    }
+    result.Add(gen);
+  }
+
+  return result;
 }
 
 UWorldGenerator *UMapGeneratorSubsystem::FindWorldGenerator(FName name) const {

@@ -3,10 +3,13 @@
 
 #include "CoreMinimal.h"
 #include <Subsystems/GameInstanceSubsystem.h>
+#include "MapGeneratorSettings.h"
 #include "MapGeneratorSubsystem.generated.h"
 
 class UWorldGenerator;
 class UGameSessionData;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMapSettingsChanged);
 
 UCLASS()
 class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
@@ -25,9 +28,26 @@ class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
   UFUNCTION(BlueprintCallable)
   void InitializeWorldGenerators();
 
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  FMapGeneratorSettings GetMapSettings() const { return MapSettings; }
+
+  UFUNCTION(BlueprintCallable)
+  void SetMapSettings(const FMapGeneratorSettings &InSettings);
+
+  UFUNCTION(BlueprintCallable)
+  void CommitMapSettings();
+
+  UPROPERTY(BlueprintAssignable)
+  FOnMapSettingsChanged OnMapSettingsChanged;
+
   private:
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (AllowPrivateAccess = "true"))
+  FMapGeneratorSettings MapSettings;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   TArray<UWorldGenerator *> WorldGenerators;
+
+  void ApplyMapSettingsToGenerators();
 
   UFUNCTION()
   void UpdateSeed_Internal(UGameSessionData *GameSessionData);
