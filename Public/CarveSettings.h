@@ -12,7 +12,7 @@ struct FCarveNoiseSettings {
   // deserialize CarveSettings, so these defaults are authoritative — flip back
   // to true to re-enable 3D carving against the new surface.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  bool bEnable = false;
+  bool bEnable = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   float NoiseThreshold = 0.65f;
