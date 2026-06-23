@@ -12,7 +12,7 @@ struct FCarveNoiseSettings {
   // deserialize CarveSettings, so these defaults are authoritative — flip back
   // to true to re-enable 3D carving against the new surface.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
-  bool bEnable = true;
+  bool CarveHoles = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   float NoiseThreshold = 0.65f;
@@ -32,9 +32,9 @@ struct FCarveNoiseSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Caves")
   int32 FractalOctaves = 3;
 
-  // Canyon parameters (soft-disabled for Phase 0, see bEnable above).
+  // Canyon parameters (soft-disabled for Phase 0, see CarveHoles above).
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
-  bool bCanyonEnable = false;
+  bool CarveCanyons = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Canyons")
   float CanyonFrequency = 0.02f;

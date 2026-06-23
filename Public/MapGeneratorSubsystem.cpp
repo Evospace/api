@@ -1,6 +1,7 @@
 #include "Public/MapGeneratorSubsystem.h"
 #include "Public/GameSessionData.h"
 #include "Public/GameSessionSubsystem.h"
+#include "Public/GameSessionSubsystem.h"
 #include "Qr/ModLoadingSubsystem.h"
 #include "Qr/JsonObjectLibrary.h"
 #include "Public/WorldGenerator.h"
@@ -28,6 +29,8 @@ void UMapGeneratorSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
 void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionData) {
   check(GameSessionData);
   LOG(INFO_LL) << "UMapGeneratorSubsystem::UpdateSeed_Internal";
+  CarveSettings = GameSessionData->MapSettings.CarveSettings;
+
   for (auto wg : WorldGenerators) {
     wg->SetSeed(GameSessionData->GetSeed());
   }
@@ -37,6 +40,8 @@ void UMapGeneratorSubsystem::UpdateSeed_Internal(UGameSessionData *GameSessionDa
   if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(GameSessionData->GetGeneratorName()))) {
     cfg->SetMapSettings(GameSessionData->MapSettings);
   }
+
+  ApplyCarveSettingsToBiomeGenerators();
 }
 
 void UMapGeneratorSubsystem::InitializeWorldGenerators() {
@@ -61,6 +66,38 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
   for (auto wg : WorldGenerators) {
     wg->Initialize();
     wg->LoadBiomeFamily();
+  }
+
+  if (auto *cfg = Cast<UWorldGeneratorConfigurable>(FindWorldGenerator(TEXT("WorldGeneratorConfigurable")))) {
+    CarveSettings = cfg->GetMapSettings().CarveSettings;
+  }
+  ApplyCarveSettingsToBiomeGenerators();
+}
+
+void UMapGeneratorSubsystem::SetCarveSettings(const FCarveNoiseSettings &InSettings) {
+  CarveSettings = InSettings;
+  CommitCarveSettings();
+}
+
+void UMapGeneratorSubsystem::CommitCarveSettings() {
+  ApplyCarveSettingsToBiomeGenerators();
+
+  if (auto *gameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
+    if (UGameSessionData *gameSessionData = const_cast<UGameSessionData *>(gameSessionSubsystem->GetData())) {
+      gameSessionData->MapSettings.CarveSettings = CarveSettings;
+    }
+  }
+
+  OnCarveSettingsChanged.Broadcast();
+}
+
+void UMapGeneratorSubsystem::ApplyCarveSettingsToBiomeGenerators() {
+  for (auto *wg : WorldGenerators) {
+    if (auto *bg = Cast<UBiomeWorldGenerator>(wg)) {
+      FMapGeneratorSettings mapSettings = bg->GetMapSettings();
+      mapSettings.CarveSettings = CarveSettings;
+      bg->SetMapSettings(mapSettings);
+    }
   }
 }
 
