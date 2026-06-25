@@ -44,5 +44,9 @@ class UBiome : public UPrototype {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UHeightGenerator *height = nullptr;
 
+  /** Local water murkiness for this leaf biome (0 = clear, 1 = opaque). */
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0"))
+  float WaterMurkiness = 0.0f;
+
   virtual TArray<UStaticWeather *> GetAvailableWeather() const { return TArray<UStaticWeather *>(); }
 };
