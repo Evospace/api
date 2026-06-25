@@ -56,6 +56,8 @@ class USectorProxy : public UObject {
 
   void UnloadSector();
 
+  void ReleaseRenderMeshes();
+
   virtual bool ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
                                      TFunction<void()> callback);
   virtual bool ApplyCubeDataFromCompiler(ADimension *dim, UTesselator::Data &&data, TFunction<void()> callback);

@@ -257,6 +257,19 @@ void USectorProxy::LoadSector(const AColumn &c) {
   SetDirty(true);
 }
 
+void USectorProxy::ReleaseRenderMeshes() {
+  if (rmc) {
+    rmc->DestroyComponent();
+    rmc = nullptr;
+  }
+  if (rmcCubes) {
+    rmcCubes->DestroyComponent();
+    rmcCubes = nullptr;
+  }
+  IsSectionGroupCreated = false;
+  IsCubeSectionGroupCreated = false;
+}
+
 void USectorProxy::UnloadSector() {
   SectorColdData = {};
   SectorColdData.mStaticBlocks = StaticBlocks;
@@ -265,6 +278,8 @@ void USectorProxy::UnloadSector() {
     i.Value->RemoveActorOrRenderable();
   }
   owner->RenderBlocks.Empty();
+
+  ReleaseRenderMeshes();
 }
 
 bool USectorProxy::ApplyDataFromCompiler(ADimension *dim, UTesselator::Data &&data, int32 lod,
