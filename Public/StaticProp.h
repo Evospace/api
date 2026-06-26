@@ -30,6 +30,7 @@ class UStaticProp : public UStaticObject {
       .addProperty("top_height_max", &Self::TopHeightMax) //@field number
       .addProperty("floating", &Self::Floating) //@field boolean
       .addProperty("is_big", &Self::IsBig) //@field boolean
+      .addProperty("streamed", &Self::Streamed) //@field boolean
       .addProperty("mesh", &Self::Mesh) //@field StaticMesh
       .addProperty("no_collision", &Self::NoCollision) //@field boolean
       .addProperty("is_emitting", &Self::IsEmitting) //@field boolean
@@ -99,6 +100,11 @@ class UStaticProp : public UStaticObject {
 
   UPROPERTY(EditAnywhere)
   bool IsBig = false;
+
+  /** If true, this prop is not instanced into the column; placement is handed to
+      UGrassStreamingSubsystem which materializes HISM only within a ring around the player. */
+  UPROPERTY(EditAnywhere)
+  bool Streamed = false;
 
   UPROPERTY(EditAnywhere)
   int32 HitsToBreak = 1;
