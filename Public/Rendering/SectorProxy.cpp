@@ -6,6 +6,7 @@
 #include "Evospace/Item/DroppedInventory.h"
 #include "Evospace/Item/InventoryLibrary.h"
 #include "Evospace/Props/SectorPropComponent.h"
+#include "Public/GrassStreamingSubsystem.h"
 #include "Evospace/World/Column.h"
 #include "Evospace/World/Sector.h"
 #include "Evospace/World/SectorCompiler.h"
@@ -78,6 +79,11 @@ void USectorProxy::GetSectorDataHot(FSectorData &data) {
   // TODO: move storage to column to remove this workaround
   if (PivotPos.Z == 0 && ensure(owner && owner->SectorPropComponent)) {
     owner->SectorPropComponent->GetAll(data.mAttaches);
+    // Streamed props live in the grass subsystem, not the column component; fold their survivors
+    // back into the save so removal persists.
+    if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
+      grass->AppendSurvivors(FIntPoint(owner->pos.X, owner->pos.Y), data.mAttaches);
+    }
   }
 }
 
@@ -231,12 +237,22 @@ void USectorProxy::LoadSector(const AColumn &c) {
     }
   }
 
-  for (const auto &it : SectorColdData.mAttaches)
+  UGrassStreamingSubsystem *grass = owner ? UGrassStreamingSubsystem::Get(owner) : nullptr;
+  for (const auto &it : SectorColdData.mAttaches) {
+    // Streamed small props are not instanced into the column; hand them to the player-centric
+    // streaming subsystem which materializes HISM only around the player.
+    if (it.Key->Streamed && grass) {
+      grass->RegisterSectorProps(FIntPoint(owner->pos.X, owner->pos.Y), it.Key, it.Value);
+      for (const auto &tr : it.Value)
+        it.Key->OnSpawn(cs::WtoWB(tr.GetLocation()));
+      continue;
+    }
     for (const auto &tr : it.Value) {
       auto bpos = cs::WtoWB(tr.GetLocation());
       it.Key->Create(this, static_cast<FTransform>(tr), bpos);
       it.Key->OnSpawn(cs::WtoWB(tr.GetLocation()));
     }
+  }
   // Spawn lightweight actor decorations (not saved, not per-cell stored)
   if (owner) {
     UWorld *world = owner->GetWorld();
@@ -407,6 +423,13 @@ void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small
       }
 
       sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
+
+      if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
+        for (const auto it : grass->Get(bpos)) {
+          Drop(it, out_inventory);
+        }
+        grass->DestroyInBlock(bpos, only_small);
+      }
     }
   }
 
@@ -436,6 +459,9 @@ void USectorProxy::ClearBlockProps(const FQrVector3i &_bpos, bool only_small) {
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
       sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
+      if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
+        grass->DestroyInBlock(bpos, only_small);
+      }
     }
   }
 }
