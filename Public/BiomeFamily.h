@@ -15,6 +15,9 @@ class UBiomeFamily : public UBiome {
       .deriveClass<UBiomeFamily, UBiome>("BiomeFamily") //@class BiomeFamily : Biome
       .addProperty("sub_biomes", QR_ARRAY_GET_SET(mSubBiomes)) //@property Biome[]
       .addProperty("sub_frequency", &UBiomeFamily::mSubFrequency) //@property float
+      .addProperty("perturb_amp", &UBiomeFamily::PerturbAmp) //@property float
+      .addProperty("perturb_frequency", &UBiomeFamily::PerturbFrequency) //@property float
+      .addProperty("perturb_octaves", &UBiomeFamily::PerturbOctaves) //@property int
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return UBiome::StaticClass(); }
@@ -31,11 +34,15 @@ class UBiomeFamily : public UBiome {
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;
 
-  // Batched (non-warped) sub-biome selection over a [w x h] region anchored at
-  // world (originX, originY): out[i] in [0, mSubBiomes.Num()-1]. The vectorized
-  // form of GetBiome — a single cellular fill — used to build seamless
-  // per-sector biome maps (see biome_plan.md FillBiomeMap).
+  // Batched sub-biome selection over a [w x h] region anchored at world
+  // (originX, originY): out[i] in [0, mSubBiomes.Num()-1]. Uses the same
+  // domain-warped cellular field as GetBiome.
   void FillBiomeMap(int32 *out, int32 originX, int32 originY, int32 w, int32 h) const;
+
+  // Raw cellular noise values (CellValue return type, [-1..1]) with domain warp
+  // applied from Perturb* settings. Used by GetBiome, FillBiomeMap, and global
+  // biome GenerateGlobal paths so point and bulk sampling stay consistent.
+  void FillBiomeNoiseSet(float *out, float originX, float originY, int32 w, int32 h, float scale = 1.f) const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
@@ -48,6 +55,15 @@ class UBiomeFamily : public UBiome {
   float mSubFrequency = 0.016f;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float PerturbAmp = 28.f;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float PerturbFrequency = 0.008f;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  int32 PerturbOctaves = 3;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<UStaticWeather *> AvailableWeather;
 
   /** Must have the same length as AvailableWeather when that list is non-empty; sums to positive weights for random pick. */
@@ -57,12 +73,9 @@ class UBiomeFamily : public UBiome {
   virtual TArray<UStaticWeather *> GetAvailableWeather() const override { return AvailableWeather; }
 
   protected:
+  void ApplyBiomeNoiseSettings();
+  void ComputeBiomeWarpOffset(float fx, float fy, float &outWx, float &outWy) const;
+
   std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
   std::unique_ptr<FastNoiseSIMD> mWarpNoise;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  float WarpFrequency = 0.05f;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  int32 WarpOctaves = 4;
-  UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  float WarpAmplitude = 6.0f;
 };

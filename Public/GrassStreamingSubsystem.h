@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
-#include "Qr/Vector.h"
+#include "Qr/CoordinameMinimal.h"
 
 #include "GrassStreamingSubsystem.generated.h"
 
