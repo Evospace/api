@@ -1,0 +1,135 @@
+// Copyright (c) 2017 - 2026, Samsonov Andrei. All Rights Reserved.
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "Tickable.h"
+
+#include "Public/Net/NetTransport.h"
+
+#include "NetSessionSubsystem.generated.h"
+
+UENUM(BlueprintType)
+enum class ENetSessionStatus : uint8 {
+  None = 0,
+  Listening, // host: socket open, accepting guests
+  PeerConnecting, // host: a guest's transport connected, handshake in progress
+  PeerJoined, // a peer finished joining (roster grew)
+  PeerLeft, // a peer disconnected (roster shrank)
+  Joined, // guest: we finished joining the host
+  Failed, // error; Message carries detail
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
+  FOnNetSessionStatus, ENetSessionStatus, Status, int32, PeerId, const FString &, Message);
+
+/**
+ * Multiplayer Layer 2 — session / membership (ai/todo/lan_multiplayer_entry_plan.md).
+ *
+ * Owns one INetTransport and runs the handshake + membership model on the game thread.
+ * Star topology: a host accepts N guests; each guest talks only to the host. Lifecycle
+ * and routing only — blob transfer (L3) and avatar replication (L4) live in their own
+ * objects this will later compose.
+ *
+ * Global PeerId == the host's transport handle for a guest; the host itself is PeerId 0.
+ *
+ * Handshake:  Guest -Hello-> Host -Welcome-> Guest [-> snapshot transfer (M3) ->]
+ *             Guest -Ready-> Host, then Host broadcasts PeerJoined and backfills the roster.
+ * M2 scope is the framing + membership + status events; the snapshot step is deferred,
+ * so the guest currently sends Ready immediately after Welcome.
+ */
+UCLASS()
+class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
+  GENERATED_BODY()
+
+  public:
+  virtual void Deinitialize() override;
+
+  // FTickableGameObject
+  virtual void Tick(float DeltaTime) override;
+  virtual TStatId GetStatId() const override;
+  virtual bool IsTickable() const override { return bActive; }
+  virtual bool IsTickableInEditor() const override { return false; }
+  virtual bool IsTickableWhenPaused() const override { return false; }
+  virtual UWorld *GetTickableGameObjectWorld() const override { return GetWorld(); }
+
+  /** Host a LAN session. Requires a save already loaded (provides seed + SaveName). */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  bool HostSession(int32 Port = 27050);
+
+  /** Join a LAN host at Ip:Port. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  bool JoinSession(const FString &Ip, int32 Port = 27050);
+
+  /** Stop hosting/guesting and drop all peers. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  void StopSession();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
+  bool IsHost() const { return Role == ESessionRole::Host; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
+  bool IsActive() const { return bActive; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
+  int32 GetLocalPeerId() const { return (int32)LocalPeerId; }
+
+  /** Name advertised to others. Optional; defaults to the machine name. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  void SetDisplayName(const FString &Name) { LocalDisplayName = Name; }
+
+  UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
+  FOnNetSessionStatus OnStatus;
+
+  private:
+  enum class ESessionRole : uint8 { None,
+                                    Host,
+                                    Guest };
+
+  enum class EPeerHandshake : uint8 {
+    Connecting, // host: transport up, awaiting Hello
+    AwaitingReady, // host: Welcome sent, awaiting Ready (snapshot transfer slots in here)
+    Joined,
+  };
+
+  struct FPeerSession {
+    FNetPeerId PeerId = InvalidNetPeerId;
+    FString DisplayName;
+    EPeerHandshake State = EPeerHandshake::Connecting;
+  };
+
+  // Transport event handling.
+  void HandleConnected(FNetPeerId Peer);
+  void HandleDisconnected(FNetPeerId Peer);
+  void HandleData(FNetPeerId Peer, const TArray<uint8> &Bytes);
+
+  // Host side.
+  void HostOnHello(FNetPeerId Peer, uint32 ProtocolVer, uint32 Nonce, const FString &Name);
+  void HostOnReady(FNetPeerId Peer);
+  void BroadcastToJoined(const TArray<uint8> &Bytes, FNetPeerId Except);
+
+  // Guest side.
+  void GuestOnWelcome(uint32 NonceEcho, uint32 AssignedPeerId, int64 Seed, const FString &SaveName);
+  void GuestOnReject(uint8 Reason);
+  void GuestOnPeerJoined(FNetPeerId PeerId, const FString &Name);
+  void GuestOnPeerLeft(FNetPeerId PeerId);
+
+  void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
+  void EnsureDisplayName();
+
+  TUniquePtr<INetTransport> Transport;
+  ESessionRole Role = ESessionRole::None;
+  bool bActive = false;
+  FString LocalDisplayName;
+  FNetPeerId LocalPeerId = InvalidNetPeerId;
+
+  // Host membership.
+  TMap<FNetPeerId, FPeerSession> Peers;
+
+  // Guest state.
+  FNetPeerId HostTransportPeer = InvalidNetPeerId;
+  uint32 GuestNonce = 0;
+  int64 HostSeed = 0;
+  FString HostSaveName;
+  TMap<FNetPeerId, FString> Members; // global id -> name (peers other than us, for UI)
+};
