@@ -127,6 +127,19 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   // once it arrives.
   void OnBlobReceived(FNetPeerId Peer, uint32 BlobId, const TArray<uint8> &Data);
 
+  // Avatar replication (L4) — presentation only: float, interpolated, non-authoritative.
+  // Each peer broadcasts its pawn transform/head/anim at ~20 Hz; remote peers drive a
+  // collision/movement/camera-disabled ghost of the same pawn class. The host relays guest
+  // packets so guests see each other (star topology).
+  void SampleAndSendAvatar();
+  void HandleAvatar(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
+  void ApplyGhostState(FNetPeerId PeerId, const FVector &Loc, const FRotator &ControlRot,
+                       const FRotator &HeadRot, const FVector &Velocity, uint8 Flags);
+  void UpdateGhosts(float DeltaTime);
+  void DestroyGhost(FNetPeerId PeerId);
+  void DestroyAllGhosts();
+  class AMainCharacter *GetLocalMainCharacter() const;
+
   void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
   void EnsureDisplayName();
 
@@ -147,7 +160,19 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FString HostSaveName;
   TMap<FNetPeerId, FString> Members; // global id -> name (peers other than us, for UI)
 
-  // Guest snapshot, held until M4 unpacks + StartGameFromSave (then sends Ready).
-  TArray<uint8> ReceivedSave;
+  // True once the guest has unpacked the host snapshot and entered the world (Ready sent).
+  // Gates avatar sends so we don't broadcast before we have a pawn.
   bool bSnapshotReceived = false;
+
+  // Avatar replication state.
+  struct FGhostState {
+    TWeakObjectPtr<class AMainCharacter> Actor;
+    FVector TargetLoc = FVector::ZeroVector;
+    FRotator TargetControlRot = FRotator::ZeroRotator;
+    FRotator TargetHeadRot = FRotator::ZeroRotator;
+    FVector Velocity = FVector::ZeroVector;
+    uint8 Flags = 0;
+  };
+  TMap<FNetPeerId, FGhostState> Ghosts; // keyed by global PeerId (host == 0)
+  float AvatarSendAccum = 0.f;
 };
