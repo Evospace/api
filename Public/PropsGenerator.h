@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PropLayer.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "PropsGenerator.generated.h"
@@ -15,17 +16,17 @@ class UPropsGenerator : public UPrototype {
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
       .deriveClass<UPropsGenerator, UPrototype>("PropsGenerator") //@class PropsGenerator : Prototype
-      .addProperty("proplist", &UPropsGenerator::proplist) //@property StaticPropList
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
 
   public:
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &start_point) const;
+  void FillCandidates(TArray<FPropCandidate> &out, int32 seed, const Vec2i &sectorCorner, int32 sectorW,
+                      int32 sectorH) const;
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   virtual void SetSeed(int32 seed);
 
-  UPROPERTY()
-  UStaticPropList *proplist = nullptr;
+  TArray<FPropLayer> Layers;
 };

@@ -5,6 +5,7 @@
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "Evospace/Shared/Public/HeightGenerator.h"
+#include "PropLayer.h"
 #include "Biome.generated.h"
 
 class ULayeringGenerator;
@@ -29,7 +30,8 @@ class UBiome : public UPrototype {
   // owned height generator's value, or 0 when none is authored — a biome
   // without a height generator legitimately contributes no detail (e.g. sea).
   virtual float GetHeight(const FVector2D &pos) const;
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const;
+  virtual void FillPropCandidates(TArray<FPropCandidate> &out, int32 seed, const Vec2i &sectorCorner, int32 sectorW,
+                                  int32 sectorH) const;
   virtual IndexType GetBiome(const Vec2i &pos) const;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual void SetSeed(int32 seed);

@@ -25,8 +25,8 @@ class UBiomeFamily : public UBiome {
   // Only baked
   virtual FLayering GetLayering(const Vec2i &pos) const override;
 
-  // Only baked
-  virtual const UStaticProp *GetSurfaceAttach(FRandomStream &rnd, const Vec2i &pos) const override;
+  virtual void FillPropCandidates(TArray<FPropCandidate> &out, int32 seed, const Vec2i &sectorCorner, int32 sectorW,
+                                  int32 sectorH) const override;
 
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;

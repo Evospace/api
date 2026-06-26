@@ -45,9 +45,9 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   protected:
   virtual void Initialize() override;
 
-  void PlaceProp(FRandomStream &stream, FTallSectorData &data, const FQrVector2i &sbpos,
-                 const TArray<float> &BaseHeightCache, const TArray<float> &SurfaceHeightCache,
-                 const TArray<UBiome *> &LeafBiomeCache, int w, int d) const;
+  void TryPlaceProp(FRandomStream &stream, FTallSectorData &data, const FQrVector2i &sectorCornerPos,
+                    const TArray<float> &BaseHeightCache, const TArray<float> &SurfaceHeightCache, const UStaticProp *prop,
+                    const Vec2i &absolutePos) const;
 
   virtual void LoadBiomeFamily() override {}
 
