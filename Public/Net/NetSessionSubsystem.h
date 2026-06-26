@@ -5,6 +5,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tickable.h"
 
+#include "Public/Net/NetBlobChannel.h"
 #include "Public/Net/NetTransport.h"
 
 #include "NetSessionSubsystem.generated.h"
@@ -22,6 +23,10 @@ enum class ENetSessionStatus : uint8 {
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
   FOnNetSessionStatus, ENetSessionStatus, Status, int32, PeerId, const FString &, Message);
+
+// Snapshot transfer progress for a peer: Pct in [0,1]. Host fires it while sending,
+// guest fires it while receiving.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnNetSnapshotProgress, int32, PeerId, float, Pct);
 
 /**
  * Multiplayer Layer 2 — session / membership (ai/todo/lan_multiplayer_entry_plan.md).
@@ -43,6 +48,7 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   GENERATED_BODY()
 
   public:
+  virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
   // FTickableGameObject
@@ -81,6 +87,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 
+  UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
+  FOnNetSnapshotProgress OnSnapshotProgress;
+
   private:
   enum class ESessionRole : uint8 { None,
                                     Host,
@@ -114,10 +123,15 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void GuestOnPeerJoined(FNetPeerId PeerId, const FString &Name);
   void GuestOnPeerLeft(FNetPeerId PeerId);
 
+  // Snapshot transfer (L3). Host sends the save blob after Welcome; guest sends Ready
+  // once it arrives.
+  void OnBlobReceived(FNetPeerId Peer, uint32 BlobId, const TArray<uint8> &Data);
+
   void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
   void EnsureDisplayName();
 
   TUniquePtr<INetTransport> Transport;
+  FNetBlobChannel BlobChannel;
   ESessionRole Role = ESessionRole::None;
   bool bActive = false;
   FString LocalDisplayName;
@@ -132,4 +146,8 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   int64 HostSeed = 0;
   FString HostSaveName;
   TMap<FNetPeerId, FString> Members; // global id -> name (peers other than us, for UI)
+
+  // Guest snapshot, held until M4 unpacks + StartGameFromSave (then sends Ready).
+  TArray<uint8> ReceivedSave;
+  bool bSnapshotReceived = false;
 };
