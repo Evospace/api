@@ -70,6 +70,14 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool JoinSession(const FString &Ip, int32 Port = 27050);
 
+  /** Host over Steam (P2P). Production path; requires the Steam client. Requires a save loaded. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  bool HostSessionSteam();
+
+  /** Join a Steam host by its SteamID64 (P2P). Production path; requires the Steam client. */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  bool JoinSessionSteam(const FString &HostSteamId);
+
   /** Stop hosting/guesting and drop all peers. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void StopSession();
@@ -105,6 +113,13 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   enum class ESessionRole : uint8 { None,
                                     Host,
                                     Guest };
+
+  // Which Layer-1 backend to use. LAN is the dev path; Steam is production internet play.
+  enum class ETransportKind : uint8 { Lan,
+                                      Steam };
+
+  bool StartHost(int32 Port, ETransportKind Kind);
+  bool StartGuest(const FString &Address, int32 Port, ETransportKind Kind);
 
   enum class EPeerHandshake : uint8 {
     Connecting, // host: transport up, awaiting Hello
