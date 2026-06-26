@@ -28,6 +28,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
 // guest fires it while receiving.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnNetSnapshotProgress, int32, PeerId, float, Pct);
 
+class ADimension;
+struct FMapChangeSet;
+
 /**
  * Multiplayer Layer 2 — session / membership (ai/todo/lan_multiplayer_entry_plan.md).
  *
@@ -83,6 +86,14 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Name advertised to others. Optional; defaults to the machine name. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void SetDisplayName(const FString &Name) { LocalDisplayName = Name; }
+
+  /**
+   * Route a local player world-edit through the command pipeline. Called from the universal
+   * edit choke point (AMainPlayerController::PushMapUndo). No-op in singleplayer (the edit is
+   * already applied locally); host broadcasts it, guest sends it to the host. See
+   * ai/todo plan: unified player-action command pipeline.
+   */
+  void SubmitLocalMapEdit(ADimension *Dim, const FMapChangeSet &Set);
 
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
@@ -140,6 +151,11 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void DestroyAllGhosts();
   class AMainCharacter *GetLocalMainCharacter() const;
 
+  // Player-action command pipeline. A command is a serialized FMapChangeSet; the apply is
+  // ADimension::ApplyMapChangeSet. Host orders edits and rebroadcasts; guests apply.
+  void HandleMapEdit(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
+  ADimension *ResolveActiveDimension() const;
+
   void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
   void EnsureDisplayName();
 
@@ -175,4 +191,7 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   };
   TMap<FNetPeerId, FGhostState> Ghosts; // keyed by global PeerId (host == 0)
   float AvatarSendAccum = 0.f;
+
+  // Host-monotonic order stamp for confirmed map edits (own + relayed guest edits).
+  int32 HostEditSeq = 0;
 };
