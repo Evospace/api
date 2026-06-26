@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PropLayer.h"
+#include "Public/PropLayer.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "PropsGenerator.generated.h"

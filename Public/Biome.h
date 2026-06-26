@@ -5,7 +5,7 @@
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Prototype.h"
 #include "Evospace/Shared/Public/HeightGenerator.h"
-#include "PropLayer.h"
+#include "Public/PropLayer.h"
 #include "Biome.generated.h"
 
 class ULayeringGenerator;
