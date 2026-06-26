@@ -116,7 +116,10 @@ class ADimension : public AActor {
   const USectorProxy *FindBlockCell(const Vec3i &pos, IndexType &index) const;
 
   UFUNCTION(BlueprintCallable)
-  void SaveDimentionFolder(bool backup = false);
+  void SaveDimentionFolder(bool backup = false, bool bCapturePreview = false);
+
+  /** Flush the temp working copy for a network guest join. Returns false if column IO is still busy. */
+  bool FlushWorkingCopyForNetworkJoin();
 
   USectorSaver *GetSectorSaver();
 
@@ -352,11 +355,12 @@ class ADimension : public AActor {
   bool IsColumnUsed(const AColumn &column) const;
   bool IsSnapshotBarrierReady() const;
 
-  void SaveDimentionFolderImpl(bool backup);
+  void SaveDimentionFolderImpl(bool backup, bool bCapturePreview = false);
   void TickPendingFullSave();
 
   bool mPendingFullSave = false;
   bool mPendingFullSaveBackup = false;
+  bool mPendingFullSaveCapturePreview = false;
 
   void CacheColumn(AColumn &column);
   void DecacheColumn(AColumn &column);

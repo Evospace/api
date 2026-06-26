@@ -57,7 +57,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   // FTickableGameObject
   virtual void Tick(float DeltaTime) override;
   virtual TStatId GetStatId() const override;
-  virtual bool IsTickable() const override { return bActive || !PendingSteamJoinHostId.IsEmpty(); }
+  virtual bool IsTickable() const override {
+    return bActive || !PendingSteamJoinHostId.IsEmpty() || !PendingHostSnapshotPeers.IsEmpty();
+  }
   virtual bool IsTickableInEditor() const override { return false; }
   virtual bool IsTickableWhenPaused() const override { return false; }
   virtual UWorld *GetTickableGameObjectWorld() const override { return GetWorld(); }
@@ -185,8 +187,10 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void OnSteamRichPresenceJoinRequested(int64 FriendSteamId, const FString &ConnectString);
 
   void ProcessPendingSteamJoin();
+  void ProcessPendingHostSnapshots();
 
   FString PendingSteamJoinHostId;
+  TArray<FNetPeerId> PendingHostSnapshotPeers;
 
   TUniquePtr<INetTransport> Transport;
   FNetBlobChannel BlobChannel;
