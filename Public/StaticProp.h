@@ -4,6 +4,8 @@
 #include "StaticObject.h"
 #include "Qr/CoordinameMinimal.h"
 
+#include <limits>
+
 #include "StaticProp.generated.h"
 
 class USectorProxy;
@@ -23,8 +25,9 @@ class UStaticProp : public UStaticObject {
       .addProperty("additive_elevation", &Self::AdditiveElevation) //@field number
       .addProperty("cull_begin", &Self::CullBegin) //@field number
       .addProperty("cull_end", &Self::CullEnd) //@field number
-      .addProperty("maximum_height", &Self::MaximumHeight) //@field number
-      .addProperty("minimum_height", &Self::MinimumHeight) //@field number
+      .addProperty("surface_height_min", &Self::SurfaceHeightMin) //@field number
+      .addProperty("surface_height_max", &Self::SurfaceHeightMax) //@field number
+      .addProperty("top_height_max", &Self::TopHeightMax) //@field number
       .addProperty("floating", &Self::Floating) //@field boolean
       .addProperty("is_big", &Self::IsBig) //@field boolean
       .addProperty("mesh", &Self::Mesh) //@field StaticMesh
@@ -53,6 +56,12 @@ class UStaticProp : public UStaticObject {
 
   virtual bool ProtoValidCheck() override;
 
+  /** Surface height in blocks must be >= SurfaceHeightMin + water level (NaN = no bound). */
+  bool PassesSurfaceHeight(float surfaceHeightBlocks) const;
+
+  /** Prop top in blocks must be <= TopHeightMax + water level (NaN = no bound). */
+  bool PassesTopHeight(float topHeightBlocks) const;
+
   UPROPERTY(EditAnywhere)
   bool IsEmitting = false;
 
@@ -74,11 +83,16 @@ class UStaticProp : public UStaticObject {
   UPROPERTY(EditAnywhere)
   float CullEnd = 0;
 
+  /** Blocks relative to water surface; NaN disables the bound. */
   UPROPERTY(EditAnywhere)
-  float MaximumHeight = 100000;
+  float SurfaceHeightMax = std::numeric_limits<float>::quiet_NaN();
 
   UPROPERTY(EditAnywhere)
-  float MinimumHeight = -100000;
+  float SurfaceHeightMin = std::numeric_limits<float>::quiet_NaN();
+
+  /** Max prop top (surface + projected mesh height), blocks relative to water; NaN disables. */
+  UPROPERTY(EditAnywhere)
+  float TopHeightMax = std::numeric_limits<float>::quiet_NaN();
 
   UPROPERTY(EditAnywhere)
   bool Floating = false;
