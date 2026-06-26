@@ -78,6 +78,13 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool JoinSessionSteam(const FString &HostSteamId);
 
+  /**
+   * Open the Steam friends overlay. Friends who called HostSessionSteam show "Join Game"
+   * in the overlay context menu; Steam delivers GameRichPresenceJoinRequested to connect.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
+  void OpenSteamFriendsOverlay();
+
   /** Stop hosting/guesting and drop all peers. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void StopSession();
@@ -173,6 +180,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
 
   void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
   void EnsureDisplayName();
+
+  UFUNCTION()
+  void OnSteamRichPresenceJoinRequested(int64 FriendSteamId, const FString &ConnectString);
 
   TUniquePtr<INetTransport> Transport;
   FNetBlobChannel BlobChannel;
