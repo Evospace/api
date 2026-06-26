@@ -18,6 +18,8 @@ class UBiomeFamily : public UBiome {
       .addProperty("perturb_amp", &UBiomeFamily::PerturbAmp) //@property float
       .addProperty("perturb_frequency", &UBiomeFamily::PerturbFrequency) //@property float
       .addProperty("perturb_octaves", &UBiomeFamily::PerturbOctaves) //@property int
+      .addProperty("perturb_fine_amp", &UBiomeFamily::PerturbFineAmp) //@property float
+      .addProperty("perturb_fine_frequency", &UBiomeFamily::PerturbFineFrequency) //@property float
       .endClass();
   }
   virtual UClass *GetSuperProto() const override { return UBiome::StaticClass(); }
@@ -63,6 +65,13 @@ class UBiomeFamily : public UBiome {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int32 PerturbOctaves = 3;
 
+  /** High-frequency simplex offset (world blocks) breaking up locally straight cellular edges. */
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float PerturbFineAmp = 5.f;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  float PerturbFineFrequency = 0.08f;
+
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   TArray<UStaticWeather *> AvailableWeather;
 
@@ -74,8 +83,9 @@ class UBiomeFamily : public UBiome {
 
   protected:
   void ApplyBiomeNoiseSettings();
-  void ComputeBiomeWarpOffset(float fx, float fy, float &outWx, float &outWy) const;
 
   std::unique_ptr<FastNoiseSIMD> mBiomeNoise;
   std::unique_ptr<FastNoiseSIMD> mWarpNoise;
+  std::unique_ptr<FastNoiseSIMD> mFineWarpNoise;
+  std::unique_ptr<FastNoiseSIMD> mFineWarpNoiseY;
 };

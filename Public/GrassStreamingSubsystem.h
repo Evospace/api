@@ -48,10 +48,10 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   TArray<const UStaticProp *> Get(const Vec3i &bpos) const;
   const UStaticProp *LookForProp(const FHism *comp) const;
 
-  // --- Tunables ---
+  // --- Tunables (overridable live via evo.GrassStream.* console variables) ---
   /** Tile edge in sectors (1 sector = gFlatSectorSize blocks). */
-  int32 TileSize = 4;
-  /** Materialization radius in tiles around the player. */
+  int32 TileSize = 2;
+  /** Materialization radius in tiles around the player view. */
   int32 RingRadius = 2;
   /** Extra tiles kept materialized before dematerializing (hysteresis). */
   int32 RingHysteresis = 1;
@@ -85,6 +85,7 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
 
   FIntPoint mLastPlayerTile = FIntPoint(MAX_int32, MAX_int32);
   bool mHasLastPlayer = false;
+  mutable FVector mLastCenterLoc = FVector::ZeroVector;
 
   FIntPoint SectorToTile(const FIntPoint &sectorPos) const;
   static FIntPoint BlockToSector(const Vec3i &bpos);
