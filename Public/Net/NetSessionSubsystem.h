@@ -213,6 +213,13 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   // Gates avatar sends so we don't broadcast before we have a pawn.
   bool bSnapshotReceived = false;
 
+  // Guest handshake watchdog: seconds since StartGuest. If the host never answers (no Welcome,
+  // so LocalPeerId stays Invalid) within GuestHandshakeTimeoutSec the join is failed instead of
+  // hanging forever. Welcome arrives before the (possibly long) snapshot transfer, so this only
+  // covers the connect+Hello+Welcome control phase, never the blob stream.
+  float GuestConnectElapsed = 0.f;
+  static constexpr float GuestHandshakeTimeoutSec = 15.f;
+
   // Avatar replication state.
   struct FGhostState {
     TWeakObjectPtr<class AMainCharacter> Actor;
