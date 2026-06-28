@@ -39,7 +39,7 @@ void UDroneManager::TickLogic(float TickDelta) {
     }
 
     FVector Direction = (Drone.TargetPosition.world() - Drone.Position).GetSafeNormal();
-    Drone.Position += Direction * Drone.Speed * TickDelta;
+    Drone.Position += Direction * Drone.Speed;
 
     if (FVector::DistSquared(Drone.Position, Drone.TargetPosition.world()) < 100.f * 100.f) {
       if (Drone.State == EDroneState::TravelingToTarget) {

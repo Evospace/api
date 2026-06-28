@@ -37,17 +37,6 @@ struct FDroneRoute final {
   // Внутреннее поле: накопленное время
   float TimeSinceLastSend = 0.0f;
 
-  // Проверка на готовность к отправке
-  bool CanDispatch(float DeltaTime) {
-
-    TimeSinceLastSend += DeltaTime;
-
-    if (SendCondition == EDroneSendCondition::ManualOnly)
-      return false;
-
-    return TimeSinceLastSend >= CooldownSeconds;
-  }
-
   void MarkDispatched() { TimeSinceLastSend = 0.0f; }
 
   bool SerializeJson(TSharedPtr<FJsonObject> json) const;
