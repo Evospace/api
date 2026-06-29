@@ -24,6 +24,8 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   // defaults. SpreadPercent in [-50, 100]: 0 = authored size, +100 = 2x larger.
   void ApplyLayoutScaleSettings(float BiomeSizeSpreadPercent, float ContinentScaleSpreadPercent);
 
+  void SyncRegionalNoiseFrequencies(float biomeSizeMultiplier);
+
   void ApplyHeightSettings(
     bool InGenerateRivers,
     float PrimaryHeightMultiplier,
@@ -50,8 +52,9 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
 
   float AuthoredBiomeFrequency = 0.003f;
   float AuthoredContinentFrequency = 0.0005f;
-  float AuthoredSeaRegionFrequency = 0.00022f;
-  float AuthoredMountainRegionFrequency = 0.00018f;
+
+  static constexpr float SeaRegionBiomeFrequencyScale = 0.85f;
+  static constexpr float MountainRegionBiomeFrequencyScale = 0.75f;
 
   bool bGenerateRivers = true;
   float PrimaryNoiseHeightMultiplier = 20.f;

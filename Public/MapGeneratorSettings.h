@@ -41,13 +41,11 @@ struct FMapGeneratorSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "-20", ClampMax = "0"))
   float OceanFoldLevel = -2.5f;
 
-  // Scales low-frequency regional sea basins on UWorldGeneratorConfigurable.
-  // 0 disables the feature; 1 is the authored default depth.
+  // Regional shallow seas at biome-family scale. 0 disables; higher = deeper local basins.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "3"))
   float SeaRegionMultiplier = 1.f;
 
-  // Scales low-frequency regional mountain-range uplift on UWorldGeneratorConfigurable.
-  // 0 disables the feature; 1 is the authored default relief.
+  // Regional mountain clusters at biome-family scale. 0 disables; higher = taller relief.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "3"))
   float MountainRegionMultiplier = 1.f;
 

@@ -50,6 +50,7 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
   WorldGenerators.Add(NewObject<UWorldGeneratorRivers>(this, TEXT("WorldGeneratorRivers")));
   WorldGenerators.Add(NewObject<UWorldGeneratorLegacy>(this, TEXT("WorldGeneratorBiome")));
   WorldGenerators.Add(NewObject<UWorldGeneratorPlains>(this, TEXT("WorldGeneratorPlains")));
+  WorldGenerators.Add(NewObject<UWorldGeneratorMoon>(this, TEXT("WorldGeneratorMoon")));
   WorldGenerators.Add(NewObject<UWorldGeneratorConfigurable>(this, TEXT("WorldGeneratorConfigurable")));
   WorldGenerators.Add(NewObject<UFlatWorldGenerator>(this, TEXT("FlatWorldGenerator")));
 

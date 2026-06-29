@@ -166,7 +166,7 @@ class ADimension : public AActor {
                                const FQuat &rot);
 
   UFUNCTION(BlueprintCallable)
-  void InitializeSurface(USurfaceDefinition *surfaceDefinition);
+  void InitializeSurface(USurfaceDefinition *surfaceDefinition, bool bDestroyPreviousOnSwitch = true);
   UDimensionRuntime *EnsureSimulationRuntimeCreated();
   bool BindToSimulationRuntime();
   /** Destroys streamed columns and clears dimension presentation, then clears ADimension::Runtime. */
