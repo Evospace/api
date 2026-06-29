@@ -13,7 +13,7 @@
 #include "Public/SurfaceDefinition.h"
 #include "Public/Net/NetSessionSubsystem.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
-#include "Evospace/CoordinateSystem.h"
+#include "Evospace/Player/MainPlayerController.h"
 #include "Qr/GameInstanceHelper.h"
 #include "Qr/QrFind.h"
 #include "Qr/StaticLogger.h"
@@ -283,9 +283,12 @@ void UGameSessionSubsystem::TravelToSurface(const FString &SurfaceName) {
   Dimension->SurfaceFolderName = SurfaceName;
   Dimension->InitializeSurface(TargetDefinition, /*bDestroyPreviousOnSwitch=*/false);
 
-  const float SurfaceHeightBlocks = Dimension->LuaSampleHeight(0.f, 0.f);
-  const FVector SpawnLocation(0.f, 0.f, SurfaceHeightBlocks * gCubeSize + 200.f);
+  const FVector SpawnLocation = AMainPlayerController::GetInitialSurfaceSpawnLocation();
   Dimension->BeginTeleport(SpawnLocation);
+  if (AMainPlayerController *PlayerController = World->GetFirstPlayerController<AMainPlayerController>()) {
+    PlayerController->mGameWorld = Dimension;
+    PlayerController->mSpawnPoint = SpawnLocation;
+  }
 
   if (UNetSessionSubsystem *Net = Gi->GetSubsystem<UNetSessionSubsystem>()) {
     Net->OnLocalSurfaceChanged();
