@@ -63,7 +63,7 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   float SecondaryNoiseHeightMultiplier = 0.f;
   float OceanFoldLevel = -2.5f;
   float SeaRegionMultiplier = 1.f;
-  float MountainRegionMultiplier = 2.f;
+  float MountainRegionMultiplier = 1.f;
 
   int32 SnowBiomeIndex = INDEX_NONE;
   int32 MountainsBiomeIndex = INDEX_NONE;

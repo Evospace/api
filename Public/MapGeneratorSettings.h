@@ -48,7 +48,7 @@ struct FMapGeneratorSettings {
   // Regional mountain clusters at biome-family scale. 0 disables; higher values
   // lower the regional-noise threshold (more/larger clusters) and raise peak uplift.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "3"))
-  float MountainRegionMultiplier = 2.f;
+  float MountainRegionMultiplier = 1.f;
 
   // Percent offset applied to authored biome cell size on UWorldGeneratorConfigurable
   // only. 0 = default; +100 doubles biome regions; -50 halves them.
