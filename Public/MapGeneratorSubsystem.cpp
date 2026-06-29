@@ -75,11 +75,11 @@ void UMapGeneratorSubsystem::InitializeWorldGenerators() {
 }
 
 void UMapGeneratorSubsystem::SetMapSettings(const FMapGeneratorSettings &InSettings) {
-  MapSettings = InSettings;
-  CommitMapSettings();
+  SetMapSettingsWithNotify(InSettings, true);
 }
 
-void UMapGeneratorSubsystem::CommitMapSettings() {
+void UMapGeneratorSubsystem::SetMapSettingsWithNotify(const FMapGeneratorSettings &InSettings, bool bNotifyListeners) {
+  MapSettings = InSettings;
   ApplyMapSettingsToGenerators();
 
   if (auto *gameSessionSubsystem = GetGameInstance()->GetSubsystem<UGameSessionSubsystem>()) {
@@ -88,7 +88,17 @@ void UMapGeneratorSubsystem::CommitMapSettings() {
     }
   }
 
+  if (bNotifyListeners) {
+    OnMapSettingsChanged.Broadcast();
+  }
+}
+
+void UMapGeneratorSubsystem::NotifyMapSettingsChanged() {
   OnMapSettingsChanged.Broadcast();
+}
+
+void UMapGeneratorSubsystem::CommitMapSettings() {
+  SetMapSettingsWithNotify(MapSettings, true);
 }
 
 void UMapGeneratorSubsystem::ApplyMapSettingsToGenerators() {

@@ -24,7 +24,13 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   // defaults. SpreadPercent in [-50, 100]: 0 = authored size, +100 = 2x larger.
   void ApplyLayoutScaleSettings(float BiomeSizeSpreadPercent, float ContinentScaleSpreadPercent);
 
-  void ApplyHeightSettings(bool InGenerateRivers, float PrimaryHeightMultiplier, float SecondaryHeightMultiplier, float InOceanFoldLevel);
+  void ApplyHeightSettings(
+    bool InGenerateRivers,
+    float PrimaryHeightMultiplier,
+    float SecondaryHeightMultiplier,
+    float InOceanFoldLevel,
+    float InSeaRegionMultiplier,
+    float InMountainRegionMultiplier);
 
   PROTOTYPE_CODEGEN(GlobalBiomeFamilyConfigurable, GlobalBiomeFamily)
   virtual void lua_reg(lua_State *L) const override {
@@ -35,13 +41,26 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   virtual UClass *GetSuperProto() const override { return UBiome::StaticClass(); }
 
   private:
+  void CacheHeightGatedBiomeIndices();
+  int32 PickHeightGatedBiomeIndex(float height, float cellularRaw) const;
+
   std::unique_ptr<FastNoiseSIMD> river_noise;
+  std::unique_ptr<FastNoiseSIMD> sea_region_noise;
+  std::unique_ptr<FastNoiseSIMD> mountain_region_noise;
 
   float AuthoredBiomeFrequency = 0.003f;
   float AuthoredContinentFrequency = 0.0005f;
+  float AuthoredSeaRegionFrequency = 0.00022f;
+  float AuthoredMountainRegionFrequency = 0.00018f;
 
   bool bGenerateRivers = true;
   float PrimaryNoiseHeightMultiplier = 20.f;
   float SecondaryNoiseHeightMultiplier = 1.f;
   float OceanFoldLevel = -2.5f;
+  float SeaRegionMultiplier = 1.f;
+  float MountainRegionMultiplier = 1.f;
+
+  int32 MountainsBiomeIndex = INDEX_NONE;
+  int32 HillsBiomeIndex = INDEX_NONE;
+  TArray<int32> CellularLandBiomeIndices;
 };

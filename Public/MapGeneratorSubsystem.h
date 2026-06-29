@@ -35,6 +35,12 @@ class UMapGeneratorSubsystem : public UGameInstanceSubsystem {
   void SetMapSettings(const FMapGeneratorSettings &InSettings);
 
   UFUNCTION(BlueprintCallable)
+  void SetMapSettingsWithNotify(const FMapGeneratorSettings &InSettings, bool bNotifyListeners);
+
+  UFUNCTION(BlueprintCallable)
+  void NotifyMapSettingsChanged();
+
+  UFUNCTION(BlueprintCallable)
   void CommitMapSettings();
 
   UPROPERTY(BlueprintAssignable)
