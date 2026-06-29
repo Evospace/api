@@ -31,6 +31,16 @@ struct FMapGeneratorSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "50"))
   float SecondaryNoiseHeightMultiplier = 1.f;
 
+  // Ocean fold level (in blocks, below the height-0 water surface). Terrain that
+  // ends up deeper than this gets reflected upward, so the deepest seafloor
+  // surfaces as islands and the open-water footprint shrinks WITHOUT raising the
+  // map (spawn at 0,0 stays at height 0, water stays at 0). Closer to 0 => less
+  // ocean (shallower seas, more islands); more negative => more ocean. At -20 the
+  // fold barely triggers (~original ~50% ocean). Consumed only by the configurable
+  // generator's height curve. Default targets roughly 10-15% ocean.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "-20", ClampMax = "0"))
+  float OceanFoldLevel = -2.5f;
+
   // Percent offset applied to authored biome cell size on UWorldGeneratorConfigurable
   // only. 0 = default; +100 doubles biome regions; -50 halves them.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "-50", ClampMax = "100"))
