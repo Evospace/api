@@ -32,7 +32,8 @@ class UStaticPropList : public UPrototype {
 
   virtual bool ProtoValidCheck() override;
 
-  const UStaticProp *PickOne(FRandomStream &rnd, const Vec2i &start_point);
+  /** When dist >= 0, filters and re-weights entries by MinDist / FarWeight. dist < 0 keeps legacy flat pick. */
+  const UStaticProp *PickOne(FRandomStream &rnd, const Vec2i &start_point, float dist = -1.f);
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 

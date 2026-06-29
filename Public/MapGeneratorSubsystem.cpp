@@ -122,7 +122,8 @@ TArray<UWorldGenerator *> UMapGeneratorSubsystem::GetWorldGeneratorList() {
   for (UWorldGenerator *gen : WorldGenerators) {
     if (gen->IsA(UWorldGeneratorRivers::StaticClass()) ||
         gen->IsA(UWorldGeneratorLegacy::StaticClass()) ||
-        gen->IsA(UWorldGeneratorPlains::StaticClass())) {
+        gen->IsA(UWorldGeneratorPlains::StaticClass()) ||
+        gen->IsA(UWorldGeneratorMoon::StaticClass())) {
       continue;
     }
     result.Add(gen);
