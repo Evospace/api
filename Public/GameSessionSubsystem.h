@@ -16,6 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSurfaceChange, FString, SurfaceNa
 
 class UStaticItem;
 class UStaticPlanet;
+class UWorld;
 
 UCLASS()
 class UGameSessionSubsystem : public UGameInstanceSubsystem {
@@ -138,6 +139,13 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   void SetPresentationSurfacePlanet(const UStaticPlanet *Planet);
   void ClearPresentationSurfacePlanet();
+
+  /** Switch local presentation to another playable surface (e.g. Moon, Temperate). */
+  UFUNCTION(BlueprintCallable, Category = "Surface")
+  void TravelToSurface(const FString &SurfaceName);
+
+  /** Persist simulation logic for surfaces that are not the active presentation. */
+  void SaveAllSurfaces(UWorld *World);
 
   private:
   UPROPERTY()

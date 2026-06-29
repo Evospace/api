@@ -118,6 +118,15 @@ class UWorldGeneratorPlains : public UBiomeWorldGenerator {
   virtual void LoadBiomeFamily() override;
 };
 
+UCLASS(BlueprintType)
+class UWorldGeneratorMoon : public UBiomeWorldGenerator {
+  GENERATED_BODY()
+
+  public:
+  UWorldGeneratorMoon();
+  virtual void LoadBiomeFamily() override;
+};
+
 /**
  * Configurable generator: a copy of UWorldGeneratorRivers that drives its
  * behavior from MapSettings (biome height maps ON by default), as opposed to the

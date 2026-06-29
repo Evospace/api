@@ -33,6 +33,10 @@ class EVOSPACE_API USimulationSurfaceSubsystem : public UGameInstanceSubsystem {
   /** Drops every per-surface runtime when a save is loaded into temp (new game / reload). */
   void ResetAllSurfaceRuntimesForSaveLoad();
 
+  void GetSurfaceFolderNames(TArray<FString> &OutNames) const;
+  UDimensionRuntime *GetRuntime(const FString &SurfaceFolderName) const;
+  bool HasRuntime(const FString &SurfaceFolderName) const;
+
   private:
   UPROPERTY()
   TMap<FString, UDimensionRuntime *> SurfaceRuntimes;

@@ -61,7 +61,7 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
     return bActive || !PendingSteamJoinHostId.IsEmpty() || !PendingHostSnapshotPeers.IsEmpty();
   }
   virtual bool IsTickableInEditor() const override { return false; }
-  virtual bool IsTickableWhenPaused() const override { return false; }
+  virtual bool IsTickableWhenPaused() const override { return true; }
   virtual UWorld *GetTickableGameObjectWorld() const override { return GetWorld(); }
 
   /** Host a LAN session. Requires a save already loaded (provides seed + SaveName). */
@@ -117,6 +117,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
 
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSnapshotProgress OnSnapshotProgress;
+
+  /** Clear remote avatar ghosts after the local player switches presentation surface. */
+  void OnLocalSurfaceChanged();
 
   private:
   enum class ESessionRole : uint8 { None,

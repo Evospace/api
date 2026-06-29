@@ -7,9 +7,18 @@
 #include "Public/WorldDayCycle.h"
 #include "Public/MainGameInstance.h"
 #include "Public/ResearchSubsystem.h"
-#include "Qr/GameInstanceHelper.h"
-#include "Qr/StaticLogger.h"
+#include "Public/Dimension.h"
+#include "Public/SimulationSurfaceSubsystem.h"
+#include "Public/DimensionRuntime.h"
+#include "Public/SurfaceDefinition.h"
+#include "Public/Net/NetSessionSubsystem.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
+#include "Evospace/CoordinateSystem.h"
+#include "Qr/GameInstanceHelper.h"
+#include "Qr/QrFind.h"
+#include "Qr/StaticLogger.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
 
 void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
   Super::Initialize(Collection);
@@ -201,4 +210,119 @@ void UGameSessionSubsystem::SetInfiniteOre(bool val) {
 bool UGameSessionSubsystem::GetInfiniteOre() const {
   check(Data);
   return Data->InfiniteOre;
+}
+
+namespace {
+FName GeneratorNameForSurface(const FString &SurfaceName, const UGameSessionData *SessionData) {
+  if (SurfaceName == TEXT("Moon")) {
+    return TEXT("WorldGeneratorMoon");
+  }
+  if (SessionData) {
+    return SessionData->GetGeneratorName();
+  }
+  return TEXT("WorldGeneratorConfigurable");
+}
+
+ADimension *FindDimensionInWorld(UWorld *World) {
+  if (!World) {
+    return nullptr;
+  }
+  for (TActorIterator<ADimension> It(World); It; ++It) {
+    return *It;
+  }
+  return nullptr;
+}
+} // namespace
+
+void UGameSessionSubsystem::TravelToSurface(const FString &SurfaceName) {
+  if (SurfaceName.IsEmpty()) {
+    LOG(ERROR_LL) << "TravelToSurface: empty surface name";
+    return;
+  }
+
+  UGameInstance *Gi = GetGameInstance();
+  if (!Gi) {
+    LOG(ERROR_LL) << "TravelToSurface: no game instance";
+    return;
+  }
+
+  UWorld *World = Gi->GetWorld();
+  if (!World) {
+    LOG(ERROR_LL) << "TravelToSurface: no world";
+    return;
+  }
+
+  ADimension *Dimension = FindDimensionInWorld(World);
+  if (!Dimension) {
+    LOG(ERROR_LL) << "TravelToSurface: no ADimension in world";
+    return;
+  }
+
+  if (Dimension->SurfaceFolderName == SurfaceName) {
+    LOG(INFO_LL) << "TravelToSurface: already on " << SurfaceName;
+    return;
+  }
+
+  if (!QrTryFind<UStaticPlanet>(FName(*SurfaceName))) {
+    LOG(ERROR_LL) << "TravelToSurface: no StaticPlanet for surface " << SurfaceName;
+    return;
+  }
+
+  Dimension->SaveDimentionFolder();
+
+  auto &InstanceRef = UGameInstanceHelper::GetGameInstance(Gi);
+  USurfaceDefinition *TargetDefinition =
+    UStaticSaveHelpers::LoadSurfaceDefinition(&InstanceRef, TEXT("temp"), SurfaceName);
+  if (!TargetDefinition) {
+    TargetDefinition = NewObject<USurfaceDefinition>(&InstanceRef);
+    TargetDefinition->GeneratorName = GeneratorNameForSurface(SurfaceName, Data);
+    TargetDefinition->Initialize();
+    UStaticSaveHelpers::SaveSurfaceDefinition(TEXT("temp"), SurfaceName, TargetDefinition);
+  }
+
+  Dimension->SurfaceFolderName = SurfaceName;
+  Dimension->InitializeSurface(TargetDefinition, /*bDestroyPreviousOnSwitch=*/false);
+
+  const float SurfaceHeightBlocks = Dimension->LuaSampleHeight(0.f, 0.f);
+  const FVector SpawnLocation(0.f, 0.f, SurfaceHeightBlocks * gCubeSize + 200.f);
+  Dimension->BeginTeleport(SpawnLocation);
+
+  if (UNetSessionSubsystem *Net = Gi->GetSubsystem<UNetSessionSubsystem>()) {
+    Net->OnLocalSurfaceChanged();
+  }
+
+  OnSurfaceChange.Broadcast(SurfaceName);
+  LOG(INFO_LL) << "TravelToSurface: switched presentation to " << SurfaceName;
+}
+
+void UGameSessionSubsystem::SaveAllSurfaces(UWorld *World) {
+  if (!World) {
+    return;
+  }
+
+  UGameInstance *Gi = World->GetGameInstance();
+  if (!Gi) {
+    return;
+  }
+
+  USimulationSurfaceSubsystem *SurfaceSubsystem = Gi->GetSubsystem<USimulationSurfaceSubsystem>();
+  if (!SurfaceSubsystem) {
+    return;
+  }
+
+  FString ActiveSurface;
+  if (ADimension *Dimension = FindDimensionInWorld(World)) {
+    ActiveSurface = Dimension->SurfaceFolderName;
+  }
+
+  TArray<FString> SurfaceNames;
+  SurfaceSubsystem->GetSurfaceFolderNames(SurfaceNames);
+  for (const FString &SurfaceName : SurfaceNames) {
+    if (SurfaceName == ActiveSurface) {
+      continue;
+    }
+    if (UDimensionRuntime *Runtime = SurfaceSubsystem->GetRuntime(SurfaceName)) {
+      UStaticSaveHelpers::SaveRuntimeLogic(TEXT("temp"), SurfaceName, Runtime);
+    }
+  }
 }
