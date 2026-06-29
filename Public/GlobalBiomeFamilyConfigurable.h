@@ -34,6 +34,8 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
     float InSeaRegionMultiplier,
     float InMountainRegionMultiplier);
 
+  void EnsureHeightGatedBiomeIndicesCached();
+
   PROTOTYPE_CODEGEN(GlobalBiomeFamilyConfigurable, GlobalBiomeFamily)
   virtual void lua_reg(lua_State *L) const override {
     luabridge::getGlobalNamespace(L)
@@ -44,7 +46,7 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
 
   private:
   void CacheHeightGatedBiomeIndices();
-  int32 PickHeightGatedBiomeIndex(float height, float cellularRaw) const;
+  int32 PickHeightGatedBiomeIndex(float height, float cellularRaw, float mountainRegionRaw) const;
 
   std::unique_ptr<FastNoiseSIMD> river_noise;
   std::unique_ptr<FastNoiseSIMD> sea_region_noise;
@@ -56,14 +58,14 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   static constexpr float SeaRegionBiomeFrequencyScale = 0.85f;
   static constexpr float MountainRegionBiomeFrequencyScale = 0.75f;
 
-  bool bGenerateRivers = true;
-  float PrimaryNoiseHeightMultiplier = 20.f;
-  float SecondaryNoiseHeightMultiplier = 1.f;
+  bool bGenerateRivers = false;
+  float PrimaryNoiseHeightMultiplier = 4.f;
+  float SecondaryNoiseHeightMultiplier = 0.f;
   float OceanFoldLevel = -2.5f;
   float SeaRegionMultiplier = 1.f;
-  float MountainRegionMultiplier = 1.f;
+  float MountainRegionMultiplier = 2.f;
 
+  int32 SnowBiomeIndex = INDEX_NONE;
   int32 MountainsBiomeIndex = INDEX_NONE;
-  int32 HillsBiomeIndex = INDEX_NONE;
   TArray<int32> CellularLandBiomeIndices;
 };

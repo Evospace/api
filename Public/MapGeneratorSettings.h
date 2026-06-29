@@ -19,17 +19,17 @@ struct FMapGeneratorSettings {
   bool bUseBiomeHeightMaps = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map")
-  bool bGenerateRivers = true;
+  bool bGenerateRivers = false;
 
   // Height contribution of the primary (planet-sphere) noise on
-  // UWorldGeneratorConfigurable. Matches EvalConfigurableShapedHeight default.
+  // UWorldGeneratorConfigurable. Low values keep the global reference field flat.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "100"))
-  float PrimaryNoiseHeightMultiplier = 20.f;
+  float PrimaryNoiseHeightMultiplier = 4.f;
 
   // Height contribution of the secondary (small-sphere) noise on
-  // UWorldGeneratorConfigurable. Matches EvalConfigurableShapedHeight default.
+  // UWorldGeneratorConfigurable. Usually 0 for the flat configurable reference field.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "50"))
-  float SecondaryNoiseHeightMultiplier = 1.f;
+  float SecondaryNoiseHeightMultiplier = 0.f;
 
   // Ocean fold level (in blocks, below the height-0 water surface). Terrain that
   // ends up deeper than this gets reflected upward, so the deepest seafloor
@@ -45,9 +45,10 @@ struct FMapGeneratorSettings {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "3"))
   float SeaRegionMultiplier = 1.f;
 
-  // Regional mountain clusters at biome-family scale. 0 disables; higher = taller relief.
+  // Regional mountain clusters at biome-family scale. 0 disables; higher values
+  // lower the regional-noise threshold (more/larger clusters) and raise peak uplift.
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WorldGen|Map", meta = (ClampMin = "0", ClampMax = "3"))
-  float MountainRegionMultiplier = 1.f;
+  float MountainRegionMultiplier = 2.f;
 
   // Percent offset applied to authored biome cell size on UWorldGeneratorConfigurable
   // only. 0 = default; +100 doubles biome regions; -50 halves them.
