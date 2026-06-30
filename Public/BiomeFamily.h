@@ -57,13 +57,13 @@ class UBiomeFamily : public UBiome {
   float mSubFrequency = 0.016f;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  float PerturbAmp = 28.f;
+  float PerturbAmp = 12.f;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   float PerturbFrequency = 0.008f;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
-  int32 PerturbOctaves = 3;
+  int32 PerturbOctaves = 2;
 
   /** High-frequency simplex offset (world blocks) breaking up locally straight cellular edges. */
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
