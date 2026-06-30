@@ -153,3 +153,35 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   TArray<UStaticBlock *> mLayerChanceBlock;
   TArray<float> mChances;
 };
+
+// Selects between two block stacks by the local surface detail height: where a
+// referenced HeightGenerator's detail at (x,y) drops below `Below`, the "low"
+// stack is used (e.g. clay flats in basins), otherwise the inherited base stack
+// (Blocks/Starts). Lets a single leaf biome read as grass on the swells and a
+// different material only in the carved lowlands instead of one material edge
+// to edge. JSON: "LowBlocks"/"LowStarts" (the low stack), "Height" (a
+// HeightGenerator name, normally the same basin field the biome height uses)
+// and "Below" (threshold). Seam-safe: the height field is world-position based.
+UCLASS()
+class ULowlandLayeringGenerator : public USimpleLayeringGenerator {
+  GENERATED_BODY()
+  PROTOTYPE_CODEGEN(LowlandLayeringGenerator, LayeringGenerator)
+  virtual void lua_reg(lua_State *L) const override {
+    luabridge::getGlobalNamespace(L)
+      .deriveClass<ULowlandLayeringGenerator, USimpleLayeringGenerator>(
+        "LowlandLayeringGenerator") //@class LowlandLayeringGenerator : SimpleLayeringGenerator
+      .endClass();
+  }
+  virtual UClass *GetSuperProto() const override { return ULayeringGenerator::StaticClass(); }
+
+  public:
+  virtual FLayering GetLayering(const Vec2i &pos) const override;
+  virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
+  virtual void SetSeed(int32 seed) override;
+
+  protected:
+  TArray<UStaticBlock *> mLowBlock;
+  TArray<int32> mLowStart;
+  UHeightGenerator *mHeight = nullptr;
+  float mBelow = 0.f;
+};
