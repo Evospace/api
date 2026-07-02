@@ -70,3 +70,7 @@ bool UItemMap::Has(const UStaticItem *Item, int64 MinAmount) const {
 void UItemMap::Clear() {
   Map.Reset();
 }
+
+int32 UItemMap::GetNum() const {
+  return Map.Num();
+}

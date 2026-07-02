@@ -42,4 +42,7 @@ class UItemMap : public UObject {
 
   UFUNCTION(BlueprintCallable)
   void Clear();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
+  int32 GetNum() const;
 };

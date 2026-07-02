@@ -41,6 +41,12 @@ class ULogicSettings : public UInstance {
   UPROPERTY(Transient)
   TArray<TObjectPtr<class UNonSerializedSingleSlotInventory>> ImportSignalInventories;
 
+  private:
+  UPROPERTY(Transient)
+  TObjectPtr<class ULogicContext> DeliveredInputContext;
+
+  public:
+
   /** Prototype export list from the owning block's UStaticBlock (same as StaticBlock.export_options). */
   const TArray<ULogicExportOption *> &GetExportSignals() const;
   /** Prototype import list from the owning block's UStaticBlock (same as StaticBlock.import_options). */
@@ -86,6 +92,14 @@ class ULogicSettings : public UInstance {
 
   UFUNCTION(BlueprintCallable)
   void SetImportEnabled(int32 Index, bool bEnabled);
+
+  // Last logic input delivered to the owning block (data wire or direct push).
+  // Created on first GUI request; transport records into it only after that,
+  // so blocks whose settings GUI was never opened pay nothing.
+  UFUNCTION(BlueprintCallable)
+  class ULogicContext *GetDeliveredInputContext();
+
+  void RecordDeliveredInput(const class UItemMap *SourceInput);
 
   // Serialization for saving per-block state
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
