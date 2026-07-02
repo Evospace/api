@@ -313,7 +313,7 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   friend UBlockNetwork;
   friend USwitchBlockLogic;
 
-  void PrepareNetworkStorageForRemoval();
+  virtual void PrepareRemovalFromWorld() override;
 
   /** Rebuild connected network when this conductor is not attached to one yet. */
   void RebuildNetworkIfDetached();

@@ -77,6 +77,9 @@ class UAccessor : public UInstance {
   FQrVector3i Side;
 
   private:
-  // Cached neighbor accessor of the same class as this accessor
-  UAccessor *CachedOutsideSameType = nullptr;
+  // Cached neighbor accessor of the same class as this accessor.
+  // Weak on purpose: it points into another block; event-driven invalidation
+  // (InvalidateNeighborCache) may be missed, and a strong or raw pointer would
+  // then keep or dereference a dead object instead of recomputing.
+  TWeakObjectPtr<UAccessor> CachedOutsideSameType;
 };

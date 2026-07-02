@@ -4,7 +4,6 @@
 #include "Engine/EngineTypes.h"
 #include "Engine/HitResult.h"
 #include "Qr/Prototype.h"
-#include "Evospace/BreakResult.h"
 #include "Evospace/Common.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
@@ -68,16 +67,16 @@ class UBlockLogic : public UInstance {
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
+  // Called by UDimensionRuntime::SetBlockLogic when this block is removed from the world,
+  // after it left the logic map but before neighbors are notified and BlockEndPlay runs.
+  // Release cross-block references here (cached neighbor accessors, network storage, etc.).
+  virtual void PrepareRemovalFromWorld();
 
   // Neighbor and accessor events
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
   // Notify accessors to invalidate cached neighbor pointers
   void InvalidateAccessorsNeighborCache();
-
-  // Item interactions
-  virtual void SpawnedByItem(AItemLogic *item);
-  virtual EBreakResult RemovedByItem(AItemLogic *item);
 
   // Ticking
   virtual bool IsBlockTicks() const;
@@ -119,8 +118,6 @@ class UBlockLogic : public UInstance {
 
   /** Gameplay: logic input reached this block; emits via UDimensionRuntime (ADimension subscribes for BP while bound). */
   void NotifyDeliveredLogicInput(class ULogicContext *context);
-
-  void SetOwner(void *param1);
 
   // Accessors and helpers
   void RegisterAccessor(UAccessor *c);
