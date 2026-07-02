@@ -63,7 +63,9 @@ class UBlockLogic : public UInstance {
   public:
   // Lifecycle
 
-  // Before SetRenderable
+  // Both invoked centrally by UDimensionRuntime::SetBlockLogic: BlockBeginPlay right after
+  // the block is added to the logic map (neighbors already notified, before SetRenderable),
+  // BlockEndPlay when it is removed. Spawn sites must not call them manually.
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
