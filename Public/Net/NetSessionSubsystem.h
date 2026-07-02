@@ -29,6 +29,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnNetSnapshotProgress, int32, PeerId, float, Pct);
 
 class ADimension;
+class ADroppedInventory;
+class UBlockLogic;
+class UInventoryAccess;
+class URecipe;
+class UStaticResearch;
 struct FMapChangeSet;
 
 /**
@@ -112,6 +117,43 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
    */
   void SubmitLocalMapEdit(ADimension *Dim, const FMapChangeSet &Set);
 
+  // -- Player-action command pipeline (non-map-edit actions) ------------------
+  // Same star-topology relay as map edits, but the payload is an intent delta, not absolute
+  // cell state, so the host relays to everyone EXCEPT the originator (the originator already
+  // applied it locally; re-applying would double it).
+
+  /** Convenience resolver (any world-context object). Null when no game instance. */
+  static UNetSessionSubsystem *Get(const UObject *WorldContext);
+
+  /** True while this peer is applying a remote player-action; Submit* hooks must no-op. */
+  bool IsApplyingRemoteAction() const { return bApplyingRemoteAction; }
+
+  /**
+   * Block-inventory diff capture. Wrap any local player operation that may move items
+   * between the player inventory and the open block's inventories (clicks, drags, drops).
+   * Begin snapshots the block's per-item sums; End diffs them and broadcasts the deltas.
+   * Re-entrant (depth-counted): only the outermost pair sends. No-op without a session.
+   */
+  void BeginBlockInvCapture(UBlockLogic *Block);
+  void EndBlockInvCapture();
+
+  /** Recipe picked in a crafter GUI. Recipe == nullptr syncs a reset. */
+  void SubmitRecipeSelect(UBlockLogic *Block, const URecipe *Recipe);
+
+  /** Settings JSON pasted onto a block (clipboard paste in the block GUI). */
+  void SubmitBlockSettings(UBlockLogic *Block, const FString &SettingsJson);
+
+  /** Research queue edits from the research screen. */
+  void SubmitResearchEnqueue(const UStaticResearch *Research);
+  void SubmitResearchDequeue();
+
+  /** Track a spawned drop actor so remote pickup commands can resolve it. */
+  void RegisterDropActor(ADroppedInventory *Drop);
+  /** Broadcast a locally spawned drop (called once from the actor when physics is live). */
+  void AnnounceLocalDrop(ADroppedInventory *Drop);
+  /** Broadcast that the local player consumed a drop; remote copies get destroyed. */
+  void SubmitDropPickup(const FGuid &DropId);
+
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 
@@ -183,6 +225,11 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void HandleMapEdit(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
   ADimension *ResolveActiveDimension() const;
 
+  // Non-map-edit player actions (recipe/settings/research/inventory/drops).
+  void SendPlayerAction(const TArray<uint8> &Bytes);
+  void HandlePlayerAction(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
+  void SubmitBlockInvDeltas();
+
   void EmitStatus(ENetSessionStatus Status, FNetPeerId PeerId, const FString &Message);
   void EnsureDisplayName();
 
@@ -239,4 +286,46 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
 
   // Host-monotonic order stamp for confirmed map edits (own + relayed guest edits).
   int32 HostEditSeq = 0;
+
+  // -- Player-action state ----------------------------------------------------
+
+  // Guard: true while applying a remote action, so the local Submit* hooks inside the
+  // shared apply code (SelectRecipe, LoadSettings, Enqueue...) don't echo it back.
+  bool bApplyingRemoteAction = false;
+
+  // Block-inventory diff capture (see BeginBlockInvCapture).
+  struct FBlockInvCapture {
+    FIntVector BlockPos = FIntVector::ZeroValue;
+    TArray<TWeakObjectPtr<UInventoryAccess>> Inventories;
+    TArray<TMap<const class UStaticItem *, int64>> Sums;
+    bool bArmed = false;
+  };
+  FBlockInvCapture InvCapture;
+  int32 InvCaptureDepth = 0;
+
+  // Live drop actors by net id (local + remote spawns), for remote pickup resolution.
+  TMap<FGuid, TWeakObjectPtr<ADroppedInventory>> DropActors;
+};
+
+/**
+ * RAII wrapper for the block-inventory diff capture around a local player inventory
+ * operation. Safe with a null context / no session (no-ops).
+ */
+struct FScopedBlockInvSync {
+  FScopedBlockInvSync(const UObject *WorldContext, UBlockLogic *Block) {
+    Net = UNetSessionSubsystem::Get(WorldContext);
+    if (Net) {
+      Net->BeginBlockInvCapture(Block);
+    }
+  }
+  ~FScopedBlockInvSync() {
+    if (Net) {
+      Net->EndBlockInvCapture();
+    }
+  }
+  FScopedBlockInvSync(const FScopedBlockInvSync &) = delete;
+  FScopedBlockInvSync &operator=(const FScopedBlockInvSync &) = delete;
+
+  private:
+  UNetSessionSubsystem *Net = nullptr;
 };
