@@ -26,7 +26,6 @@ class UWorld;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicAdded, const FQrVector3i &, UBlockLogic *);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicRemoved, const FQrVector3i &, UBlockLogic *);
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSimulationLogicInputDelivered, UBlockLogic *, ULogicContext *);
 
 UCLASS()
 class EVOSPACE_API UDimensionRuntime : public UInstance {
@@ -42,8 +41,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void ResetSimulationState(class ADimension *Presentation, UInstancedStaticMeshComponent *InDroneMeshComponent);
 
   void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
-  /** After simulation consumes logic input: broadcast OnSimulationLogicInputDelivered (ADimension routes to blueprint while bound). */
-  void NotifySimulationLogicInputDelivered(UBlockLogic *Target, ULogicContext *Context);
 
   UBlockLogic *SetBlockLogic(FQrVector3i Pos, UBlockLogic *Logic);
   UBlockLogic *GetBlockLogic(FQrVector3i BlockPos) const;
@@ -83,9 +80,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   FOnRuntimeLogicAdded OnRuntimeLogicAdded;
   FOnRuntimeLogicRemoved OnRuntimeLogicRemoved;
-
-  /** Subscribed by ADimension::NotifyLogicInputDelivered while this surface is bound. */
-  FOnSimulationLogicInputDelivered OnSimulationLogicInputDelivered;
 
   private:
   void TickConveyorNetworks();

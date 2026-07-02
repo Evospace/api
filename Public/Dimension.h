@@ -50,8 +50,6 @@ class UInstancedStaticMeshComponent;
 class ULogicContext;
 class FColumnSaveRunner;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLogicInputDelivered, UBlockLogic *, Target, ULogicContext *, Context);
-
 UCLASS()
 class ADimension : public AActor {
   public:
@@ -218,7 +216,6 @@ class ADimension : public AActor {
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
   UBlockLogic *PlaceBlock(const Vec3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
   UBlockLogic *RemoveBlock(const Vec3i &BlockPos);
-  void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UGraphStorage *ResourceGraph;
@@ -378,12 +375,6 @@ class ADimension : public AActor {
                           AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
-
-  // Emits when logic input is delivered to a block via gameplay paths (network/direct/program).
-  void NotifyLogicInputDelivered(UBlockLogic *Target, ULogicContext *Context);
-
-  UPROPERTY(BlueprintAssignable, Category = "Logic")
-  FOnLogicInputDelivered OnLogicInputDelivered;
 
   private:
   /** Last SurfaceFolderName for which InitializeSurface completed; used to detect surface switches and orphaned columns. */

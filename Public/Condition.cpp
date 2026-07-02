@@ -1,4 +1,5 @@
 #include "Condition.h"
+#include "Evospace/Shared/Public/ConditionWidget.h"
 #include "Evospace/Shared/Public/LogicContext.h"
 #include "Evospace/Shared/Public/ItemMap.h"
 #include "Public/StaticItem.h"
@@ -49,6 +50,13 @@ int64 UCondition::Evaluate(const ULogicContext *ctx) const {
       if (!cond->Evaluate(ctx))
         return 0;
     return 1;
+  }
+  case EConditionMode::Xor: {
+    int64 result = 0;
+    for (const auto *cond : Operands)
+      if (cond && cond->Evaluate(ctx))
+        result ^= 1;
+    return result;
   }
   case EConditionMode::Not: {
     ensure(Operands.Num() == 1 && Operands[0]);
@@ -136,6 +144,13 @@ float UCondition::EvaluateGui(const ULogicContext *ctx) const {
       if (cond->EvaluateGui(ctx) < 0.999)
         return 0.0;
     return 1.0;
+  }
+  case EConditionMode::Xor: {
+    int32 trueCount = 0;
+    for (const auto *cond : Operands)
+      if (cond && cond->EvaluateGui(ctx) > 0.999)
+        ++trueCount;
+    return (trueCount % 2) ? 1.0 : 0.0;
   }
   case EConditionMode::Not: {
     ensure(Operands.Num() == 1 && Operands[0]);

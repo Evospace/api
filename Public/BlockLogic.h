@@ -7,7 +7,6 @@
 #include "Evospace/Common.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
-#include "Public/LogicProgram.h"
 #include "Public/LogicContext.h"
 #include "Evospace/Misc/CoverWrapper.h"
 
@@ -117,9 +116,6 @@ class UBlockLogic : public UInstance {
   /** World presentation actor (sectors, props, UE delegates). Not inferred from simulation; set via AttachPresentationActor. */
   virtual ADimension *GetPresentationActor() const;
   void AttachPresentationActor(ADimension *presentationActor);
-
-  /** Gameplay: logic input reached this block; emits via UDimensionRuntime (ADimension subscribes for BP while bound). */
-  void NotifyDeliveredLogicInput(class ULogicContext *context);
 
   // Accessors and helpers
   void RegisterAccessor(UAccessor *c);
