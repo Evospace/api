@@ -58,7 +58,7 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   virtual void Tick(float DeltaTime) override;
   virtual TStatId GetStatId() const override;
   virtual bool IsTickable() const override {
-    return bActive || !PendingSteamJoinHostId.IsEmpty() || !PendingHostSnapshotPeers.IsEmpty();
+    return bActive || !bSteamRelayWarmedUp || !PendingSteamJoinHostId.IsEmpty() || !PendingHostSnapshotPeers.IsEmpty();
   }
   virtual bool IsTickableInEditor() const override { return false; }
   virtual bool IsTickableWhenPaused() const override { return true; }
@@ -199,6 +199,8 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FNetBlobChannel BlobChannel;
   ESessionRole Role = ESessionRole::None;
   bool bActive = false;
+  // Steam SDR warm-up done (or n/a). False until SteamAPI comes up; Tick retries until then.
+  bool bSteamRelayWarmedUp = false;
   FString LocalDisplayName;
   FNetPeerId LocalPeerId = InvalidNetPeerId;
 
