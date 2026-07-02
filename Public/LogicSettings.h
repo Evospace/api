@@ -46,7 +46,6 @@ class ULogicSettings : public UInstance {
   TObjectPtr<class ULogicContext> DeliveredInputContext;
 
   public:
-
   /** Prototype export list from the owning block's UStaticBlock (same as StaticBlock.export_options). */
   const TArray<ULogicExportOption *> &GetExportSignals() const;
   /** Prototype import list from the owning block's UStaticBlock (same as StaticBlock.import_options). */
