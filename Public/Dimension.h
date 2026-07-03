@@ -159,6 +159,10 @@ class ADimension : public AActor {
   /** Remove logic from FinishSpawning queue (must run if actor/render teardown happens before DeferredActorSpawn sees the entry). */
   void DiscardPendingDeferredRenderable(UBlockLogic *Logic);
 
+  /** Ask for a data-only column cell-edit job (load-or-generate → apply queued cells → save, no AColumn).
+   * Called by the runtime when a cell write targets an unloaded column. Game thread. */
+  void RequestColumnCellEditJob(const Vec3i &ColumnPos);
+
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition, bool bDestroyPreviousOnSwitch = true);
   UDimensionRuntime *EnsureSimulationRuntimeCreated();
@@ -336,6 +340,11 @@ class ADimension : public AActor {
   void DeferredActorSpawn();
   void TickProcess(float DeltaTime);
   bool TickBlocks(float DeltaTime);
+
+  /** Columns with queued cell edits awaiting a worker slot. Skipped while the column streams (the load path drains the queue itself). */
+  TSet<FQrVector3i> PendingCellEditColumns;
+  void PumpColumnCellEditJobs();
+  void ScheduleColumnCellEditJob(const Vec3i &ColumnPos);
 
   bool IsColumnActive(const AColumn &column) const;
   void SpawnColumn(Vec3i spos, AColumn *tall, FColumnLoaderData &data);

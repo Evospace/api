@@ -6,6 +6,8 @@
 #include "Qr/Prototype.h"
 #include "Qr/Vector.h"
 
+#include "Public/ColumnCellEditQueue.h"
+#include "Public/MapChangeSet.h"
 #include "Public/SurfaceDefinition.h"
 
 #include "DimensionRuntime.generated.h"
@@ -28,6 +30,14 @@ class UWorld;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicAdded, const FQrVector3i &, UBlockLogic *);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicRemoved, const FQrVector3i &, UBlockLogic *);
 
+/** What to do with sector-cell writes when the target column is not streamed in. */
+enum class ECellWritePolicy : uint8 {
+  /** Fail/skip like direct gameplay always did — building requires loaded terrain. */
+  RequireLoaded,
+  /** Apply the sim part now and queue the cell write for the column cell-edit job (remote edits, undo/redo). */
+  QueueIfUnloaded,
+};
+
 UCLASS()
 class EVOSPACE_API UDimensionRuntime : public UInstance {
   GENERATED_BODY()
@@ -46,16 +56,35 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   UBlockLogic *SetBlockLogic(FQrVector3i Pos, UBlockLogic *Logic);
   UBlockLogic *GetBlockLogic(FQrVector3i BlockPos) const;
 
-  /** Spawn a block with all its part cells: logic, sector cells and presentation renderables.
-   * Requires a bound presentation while sector cells live in streamed columns. */
-  UBlockLogic *SpawnBlockFull(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
+  /** Spawn a block with all its part cells: logic always, sector cells and renderables per Policy.
+   * ConfigureRoot (settings/paint restore) runs after SpawnBlockPostprocess, before BlockBeginPlay. */
+  UBlockLogic *SpawnBlockFull(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation,
+                              ECellWritePolicy Policy = ECellWritePolicy::RequireLoaded,
+                              const TFunction<void(UBlockLogic *)> &ConfigureRoot = nullptr);
   UBlockLogic *SpawnBlockFullIdentity(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock);
 
-  /** Remove a block with all its part cells (or clear a static-only cell). Returns the removed root logic. */
-  UBlockLogic *DestroyBlockFull(const FQrVector3i &BlockPos);
+  /** Remove a block with all its part cells (or clear a static-only cell). Returns the removed root logic.
+   * Logic always leaves the runtime; cell clears follow Policy. */
+  UBlockLogic *DestroyBlockFull(const FQrVector3i &BlockPos, ECellWritePolicy Policy = ECellWritePolicy::RequireLoaded);
 
   /** Block cells involved in a break at BlockPos (multi-cell-aware). */
   TArray<FQrVector3i> GatherBreakFootprint(const FQrVector3i &BlockPos) const;
+
+  /** Sample current sector + logic state for undo/patch payloads. Logic JSON is captured at the logic root cell only. */
+  FMapCellState CaptureCellState(const FQrVector3i &Pos) const;
+
+  /** Apply snapshots produced by CaptureCellState in a safe order (clear, logic roots, static-only fills).
+   * Logic applies to the sim immediately; cells of unloaded columns queue for the column cell-edit job. */
+  void ApplyCellSnapshots(const TArray<FMapCellState> &Targets);
+
+  /** Apply Before (undo) or After (redo) from a baked change record. */
+  void ApplyChangeSet(const FMapChangeSet &Change, EMapChangeDirection Direction);
+
+  /** Run ApplyBody once and return only cells whose state changed vs captured Before snapshots. */
+  FMapChangeSet MakeEditChangeSet(const TArray<FQrVector3i> &Positions, TFunctionRef<void()> ApplyBody);
+
+  /** Pending cell writes for unloaded columns; drained by the column cell-edit job or a streaming load. */
+  FColumnCellEditQueue &GetCellEditQueue() { return CellEditQueue; }
 
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
   /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
@@ -97,7 +126,14 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void TickConveyorNetworks();
 
   UBlockLogic *SpawnBlockCell(const FQrVector3i &BlockPos, UBlockLogic *Parent, const UStaticBlock *StaticBlock,
-                              const FQuat &Rotation);
+                              const FQuat &Rotation, ECellWritePolicy Policy,
+                              const TFunction<void(UBlockLogic *)> &ConfigureRoot);
+
+  /** Restore logic + parts from a SaveSettings/LoadSettings snapshot (+ PaintMaterial). Root cell only. */
+  void RestoreBlockFromSnapshot(const FMapCellState &S);
+
+  /** Write one sector cell: direct when the column is streamed, queued per Policy otherwise. */
+  bool WriteCell(const FQrVector3i &Pos, const UStaticBlock *Block, const BlockDensity &Density, ECellWritePolicy Policy);
 
   UPROPERTY(VisibleAnywhere)
   FString SurfaceFolderName;
@@ -138,4 +174,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   int64 TickAccumulatorMicros = 0;
 
   bool bDeferResourceNetworkRebuild = false;
+
+  FColumnCellEditQueue CellEditQueue;
 };
