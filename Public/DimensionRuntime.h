@@ -83,7 +83,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   /** Run ApplyBody once and return only cells whose state changed vs captured Before snapshots. */
   FMapChangeSet MakeEditChangeSet(const TArray<FQrVector3i> &Positions, TFunctionRef<void()> ApplyBody);
 
-
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
   /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
   USurfaceDefinition *GetSurfaceDefinition() const { return SurfaceDefinition; }
