@@ -130,7 +130,6 @@ class ADimension : public AActor {
 
   virtual void BeginPlay() override;
 
-  UBlockLogic *LuaSpawnBlockLogicDefault(const Vec3i &bpos, const UStaticBlock *cl);
   UBlockLogic *LuaSpawnBlockLogic(const Vec3i &bpos, const FQuat &block_q, const UStaticBlock *cl);
 
   RItemInstancingHandle AddItemInstance(const UStaticItem *prop, const FTransform &t) const;
@@ -159,9 +158,6 @@ class ADimension : public AActor {
 
   /** Remove logic from FinishSpawning queue (must run if actor/render teardown happens before DeferredActorSpawn sees the entry). */
   void DiscardPendingDeferredRenderable(UBlockLogic *Logic);
-
-  UBlockLogic *_SpawnLogicFull(const Vec3i &bpos, UBlockLogic *parent, const UStaticBlock *staticObject,
-                               const FQuat &rot);
 
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition, bool bDestroyPreviousOnSwitch = true);
@@ -214,8 +210,6 @@ class ADimension : public AActor {
   URailwayManager *GetRailwayManager();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
-  UBlockLogic *PlaceBlock(const Vec3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
-  UBlockLogic *RemoveBlock(const Vec3i &BlockPos);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
   UGraphStorage *ResourceGraph;

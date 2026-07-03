@@ -10,6 +10,7 @@
 
 #include "DimensionRuntime.generated.h"
 
+class ADimension;
 class FJsonObject;
 class UBlockLogic;
 class UBlockNetwork;
@@ -37,13 +38,24 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   void UnbindDimension(const ADimension *InDimension);
   void Shutdown();
 
-  /** Clears all block logic and manager state. Recreates managers when Presentation is set (after bind). */
-  void ResetSimulationState(class ADimension *Presentation, UInstancedStaticMeshComponent *InDroneMeshComponent);
+  /** Clears all block logic and manager state. Recreates managers when InPresentation is set (after bind). */
+  void ResetSimulationState(class ADimension *InPresentation, UInstancedStaticMeshComponent *InDroneMeshComponent);
 
   void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
 
   UBlockLogic *SetBlockLogic(FQrVector3i Pos, UBlockLogic *Logic);
   UBlockLogic *GetBlockLogic(FQrVector3i BlockPos) const;
+
+  /** Spawn a block with all its part cells: logic, sector cells and presentation renderables.
+   * Requires a bound presentation while sector cells live in streamed columns. */
+  UBlockLogic *SpawnBlockFull(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock, const FQuat &Rotation);
+  UBlockLogic *SpawnBlockFullIdentity(const FQrVector3i &BlockPos, const UStaticBlock *StaticBlock);
+
+  /** Remove a block with all its part cells (or clear a static-only cell). Returns the removed root logic. */
+  UBlockLogic *DestroyBlockFull(const FQrVector3i &BlockPos);
+
+  /** Block cells involved in a break at BlockPos (multi-cell-aware). */
+  TArray<FQrVector3i> GatherBreakFootprint(const FQrVector3i &BlockPos) const;
 
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
   /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
@@ -84,8 +96,15 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   private:
   void TickConveyorNetworks();
 
+  UBlockLogic *SpawnBlockCell(const FQrVector3i &BlockPos, UBlockLogic *Parent, const UStaticBlock *StaticBlock,
+                              const FQuat &Rotation);
+
   UPROPERTY(VisibleAnywhere)
   FString SurfaceFolderName;
+
+  /** Bound presentation actor; sector cell writes and renderable/actor spawn go through it. */
+  UPROPERTY()
+  ADimension *Presentation = nullptr;
 
   UPROPERTY()
   USurfaceDefinition *SurfaceDefinition = nullptr;
