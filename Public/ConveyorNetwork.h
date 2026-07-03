@@ -2,6 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "NetworkBase.h"
+#include "Public/BlockRef.h"
 #include "ConveyorNetwork.generated.h"
 
 class ADimension;
@@ -31,8 +32,8 @@ class UConveyorNetwork : public UNetworkBase {
   UPROPERTY(VisibleAnywhere)
   TArray<int32> NeighborIndex; // per conveyor index, -1 if receiver is not a conveyor
 
-  UPROPERTY(VisibleAnywhere)
-  TArray<UBaseInventoryAccessor *> ReceiverAccessors; // per conveyor
+  // Per conveyor; points into other blocks, so validated at tick start (TBlockRef)
+  TArray<TBlockRef<UBaseInventoryAccessor>> ReceiverAccessors;
 
   UPROPERTY(VisibleAnywhere)
   TArray<int32> ReceiverId; // per conveyor, -1 if no receiver
@@ -40,14 +41,12 @@ class UConveyorNetwork : public UNetworkBase {
   UPROPERTY(VisibleAnywhere)
   TArray<int32> PostOrder; // downstream-to-upstream processing order
 
+  // Per conveyor; own inventories of member conveyors
   UPROPERTY(VisibleAnywhere)
-  TArray<UInventoryAccess *> CachedInput; // per conveyor
+  TArray<UInventoryAccess *> CachedInput;
 
   UPROPERTY(VisibleAnywhere)
-  TArray<UInventoryAccess *> CachedOutput; // per conveyor
-
-  UPROPERTY(VisibleAnywhere)
-  TArray<UInventoryAccess *> ReceiverExternalInput; // per conveyor, only for non-conveyor receivers
+  TArray<UInventoryAccess *> CachedOutput;
 
   struct FConveyorTickState {
     bool InputEmpty = true;
@@ -60,6 +59,7 @@ class UConveyorNetwork : public UNetworkBase {
   TArray<int32> ActivePostOrder;
 
   // Working buffers reused between ticks (to avoid reallocations)
+  TArray<UBaseInventoryAccessor *> ResolvedReceivers; // per conveyor, validated once per tick
   TArray<uint8> TmpVisited;
   TArray<bool> Accept;
   TArray<bool> OutClears;

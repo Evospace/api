@@ -298,13 +298,14 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   virtual void UpdateSides(UAccessor *except = nullptr);
 
+  // A conductor snapshots its share of network charge only while it is in the world;
+  // a removed conductor must not take charge with it into a rebuild.
   bool SupportsLocalNetworkStorage() const {
-    return !bSkipLocalNetworkStorageSnapshot;
+    return IsInWorld();
   }
   void ResetStoredNetworkCharge();
   void AccumulateStoredNetworkCharge(UStaticItem *resource, int64 amount);
   void ApplyStoredNetworkCharge();
-  void DisableLocalNetworkStorageSnapshot();
   int64 GetStoredNetworkCharge() const { return StoredNetworkCharge; }
   const UStaticItem *GetStoredNetworkResource() const { return StoredNetworkResource; }
 
@@ -312,8 +313,6 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
   public:
   friend UBlockNetwork;
   friend USwitchBlockLogic;
-
-  virtual void PrepareRemovalFromWorld() override;
 
   /** Rebuild connected network when this conductor is not attached to one yet. */
   void RebuildNetworkIfDetached();
@@ -357,8 +356,6 @@ class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttac
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   int32 Subnetwork = 0;
-
-  bool bSkipLocalNetworkStorageSnapshot = false;
 
   UPROPERTY()
   UStaticItem *StoredNetworkResource = nullptr;

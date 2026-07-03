@@ -68,16 +68,16 @@ class UBlockLogic : public UInstance {
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
-  // Called by UDimensionRuntime::SetBlockLogic when this block is removed from the world,
-  // after it left the logic map but before neighbors are notified and BlockEndPlay runs.
-  // Release cross-block references here (cached neighbor accessors, network storage, etc.).
-  virtual void PrepareRemovalFromWorld();
 
-  // Neighbor and accessor events
+  // True while the block is present in the dimension logic map. Flipped exclusively by
+  // UDimensionRuntime::SetBlockLogic; TBlockRef checks it at the point of use, which is
+  // the only cross-block reference safety mechanism.
+  bool IsInWorld() const { return bInWorld; }
+
+  // Topology semantics only (network split/merge, multiblock parts).
+  // Never use these for reference/cache safety; that is TBlockRef's job.
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
-  // Notify accessors to invalidate cached neighbor pointers
-  void InvalidateAccessorsNeighborCache();
 
   // Ticking
   virtual bool IsBlockTicks() const;
@@ -272,6 +272,12 @@ class UBlockLogic : public UInstance {
   bool Working = false;
 
   TArray<int32> AccessorInstances;
+
+  private:
+  friend class UDimensionRuntime;
+  // See IsInWorld(); written only by UDimensionRuntime::SetBlockLogic.
+  void SetInWorld(bool value) { bInWorld = value; }
+  bool bInWorld = false;
 };
 
 UCLASS(BlueprintType)

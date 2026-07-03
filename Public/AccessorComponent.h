@@ -4,6 +4,7 @@
 #include "Qr/SerializableJson.h"
 #include "CoreMinimal.h"
 #include "Public/BlockLogic.h"
+#include "Public/BlockRef.h"
 #include "Qr/Prototype.h"
 
 #include "AccessorComponent.generated.h"
@@ -49,7 +50,9 @@ class UAccessor : public UInstance {
   const UAccessor *GetOutsideAccessor() const { return GetOutsideAccessor(GetClass()); }
 
   UAccessor *GetOutsideNeighborSameTypeCached();
-  void InvalidateNeighborCache();
+
+  // TBlockRef contract: alive as long as the owner block is in the world.
+  bool IsInWorld() const { return Owner && Owner->IsInWorld(); }
 
   template <class T>
   T *GetOutsideAccessor() { return static_cast<T *>(GetOutsideAccessor(T::StaticClass())); }
@@ -78,8 +81,6 @@ class UAccessor : public UInstance {
 
   private:
   // Cached neighbor accessor of the same class as this accessor.
-  // Weak on purpose: it points into another block; event-driven invalidation
-  // (InvalidateNeighborCache) may be missed, and a strong or raw pointer would
-  // then keep or dereference a dead object instead of recomputing.
-  TWeakObjectPtr<UAccessor> CachedOutsideSameType;
+  // Validated at use (weak + owner-in-world); recomputed by position on miss.
+  TBlockRef<UAccessor> CachedOutsideSameType;
 };
