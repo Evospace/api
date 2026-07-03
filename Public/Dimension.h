@@ -42,6 +42,7 @@ class APlayerController;
 class UDroneManager;
 class URailNetwork;
 class URailwayManager;
+class UColumnStreamingManager;
 class UDimensionRuntime;
 class UDimensionLoadWidget;
 class USurfaceDefinition;
@@ -159,9 +160,8 @@ class ADimension : public AActor {
   /** Remove logic from FinishSpawning queue (must run if actor/render teardown happens before DeferredActorSpawn sees the entry). */
   void DiscardPendingDeferredRenderable(UBlockLogic *Logic);
 
-  /** Ask for a data-only column cell-edit job (load-or-generate → apply queued cells → save, no AColumn).
-   * Called by the runtime when a cell write targets an unloaded column. Game thread. */
-  void RequestColumnCellEditJob(const Vec3i &ColumnPos);
+  /** Column streaming, caching and the pending cell-edit machinery. */
+  UColumnStreamingManager *GetColumnManager() const { return ColumnManager; }
 
   UFUNCTION(BlueprintCallable)
   void InitializeSurface(USurfaceDefinition *surfaceDefinition, bool bDestroyPreviousOnSwitch = true);
@@ -291,42 +291,10 @@ class ADimension : public AActor {
   friend class FColumnSaveRunner;
   friend class USectorArea;
 
-  struct ColumnDataKeyFuncs {
-    typedef Vec3i KeyType;
-    typedef typename TCallTraits<Vec3i>::ParamType KeyInitType;
-    typedef typename TCallTraits<AColumn *>::ParamType ElementInitType;
-
-    enum {
-      bAllowDuplicateKeys = false
-    };
-
-    static FORCEINLINE KeyInitType GetSetKey(ElementInitType Element) { return Element->pos; }
-
-    static FORCEINLINE bool Matches(KeyInitType A, KeyInitType B) { return A == B; }
-
-    static FORCEINLINE uint32 GetKeyHash(KeyInitType Key) { return GetTypeHash(Key); }
-  };
-
-  struct NearestColumn {
-    AColumn *data;
-    double dist;
-  };
-
-  private:
-  std::unique_ptr<TThreadWorker<SectorCompilerData>> mSectorCompilerWorker;
-  std::unique_ptr<TThreadWorker<FColumnLoaderData>> mColumnLoadWorker;
-  FColumnSaveRunner mColumnSaveRunner;
-
   void SaveDirtyColumnsForSnapshot();
 
-  UPROPERTY(VisibleAnywhere)
-  TMap<FQrVector3i, AColumn *> mColumns;
-
-  UPROPERTY(VisibleAnywhere)
-  int32 mCountRemove = 0;
-
-  UPROPERTY(VisibleAnywhere)
-  int32 mCountCreate = 0;
+  UPROPERTY()
+  UColumnStreamingManager *ColumnManager = nullptr;
 
   public:
   void LoadColumn(const Vec3i &pos);
@@ -341,18 +309,6 @@ class ADimension : public AActor {
   void TickProcess(float DeltaTime);
   bool TickBlocks(float DeltaTime);
 
-  /** Columns with queued cell edits awaiting a worker slot. Skipped while the column streams (the load path drains the queue itself). */
-  TSet<FQrVector3i> PendingCellEditColumns;
-  void PumpColumnCellEditJobs();
-  void ScheduleColumnCellEditJob(const Vec3i &ColumnPos);
-
-  bool IsColumnActive(const AColumn &column) const;
-  void SpawnColumn(Vec3i spos, AColumn *tall, FColumnLoaderData &data);
-
-  bool IsColumnActive1(const AColumn &column) const;
-  bool IsColumnRemove(const AColumn &column) const;
-  bool IsColumnLoaded(const AColumn &column) const;
-  bool IsColumnUsed(const AColumn &column) const;
   bool IsSnapshotBarrierReady() const;
 
   void SaveDimentionFolderImpl(bool backup, bool bCapturePreview = false);
@@ -362,20 +318,11 @@ class ADimension : public AActor {
   bool mPendingFullSaveBackup = false;
   bool mPendingFullSaveCapturePreview = false;
 
-  void CacheColumn(AColumn &column);
-  void DecacheColumn(AColumn &column);
-
   void TearDownSurfaceColumnsAndPresentation();
   void InvalidateAllPlayerSectorStreamingAnchors();
 
-  void CacheSector(const Vec3i &pos, USectorProxy *sector);
-
-  void GetNearestColumns(TMap<FQrVector3i, AColumn *> &data, TArray<NearestColumn> &out);
-
   public:
   UBlockLogic *GetBlockLogic(Vec3i bpos);
-  void ReplaceSectorProxy(Vec3i spos, TScriptInterface<USectorProxy> old_proxy, TScriptInterface<USectorProxy> proxy,
-                          AColumn *column);
 
   void KillNetworkDeffered(UBlockNetwork *mNetwork);
 

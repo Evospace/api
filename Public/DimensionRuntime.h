@@ -6,7 +6,6 @@
 #include "Qr/Prototype.h"
 #include "Qr/Vector.h"
 
-#include "Public/ColumnCellEditQueue.h"
 #include "Public/MapChangeSet.h"
 #include "Public/SurfaceDefinition.h"
 
@@ -14,6 +13,7 @@
 
 class ADimension;
 class FJsonObject;
+class UColumnStreamingManager;
 class UBlockLogic;
 class UBlockNetwork;
 class UConveyorNetwork;
@@ -83,8 +83,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   /** Run ApplyBody once and return only cells whose state changed vs captured Before snapshots. */
   FMapChangeSet MakeEditChangeSet(const TArray<FQrVector3i> &Positions, TFunctionRef<void()> ApplyBody);
 
-  /** Pending cell writes for unloaded columns; drained by the column cell-edit job or a streaming load. */
-  FColumnCellEditQueue &GetCellEditQueue() { return CellEditQueue; }
 
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
   /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
@@ -138,9 +136,13 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   UPROPERTY(VisibleAnywhere)
   FString SurfaceFolderName;
 
-  /** Bound presentation actor; sector cell writes and renderable/actor spawn go through it. */
+  /** Bound presentation actor; renderable/actor spawn goes through it. */
   UPROPERTY()
   ADimension *Presentation = nullptr;
+
+  /** Bound presentation's column manager; sector cell reads/writes go through it. */
+  UPROPERTY()
+  UColumnStreamingManager *ColumnManager = nullptr;
 
   UPROPERTY()
   USurfaceDefinition *SurfaceDefinition = nullptr;
@@ -174,6 +176,4 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   int64 TickAccumulatorMicros = 0;
 
   bool bDeferResourceNetworkRebuild = false;
-
-  FColumnCellEditQueue CellEditQueue;
 };
