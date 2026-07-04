@@ -25,6 +25,7 @@ class URailwayManager;
 class UResourceNetworkManager;
 class UStaticBlock;
 class UGameInstance;
+class UGameSessionSubsystem;
 class UWorld;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnRuntimeLogicAdded, const FQrVector3i &, UBlockLogic *);
@@ -113,6 +114,17 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   int32 TickRuntime(UWorld *World, UGameInstance *GameInstance, float DeltaTime, int32 TickRate, bool TickBlocksEnabled);
   void TickVisual(float DeltaTime);
 
+  /**
+   * SimBench: run Count simulation substeps back-to-back at max throughput, bypassing
+   * the DeltaTime accumulator (fixed step 1/TickRate for drones/railways). Returns ticks run.
+   * Metrics must be enabled by the caller (BeginSession) for per-tick samples to be recorded.
+   */
+  int64 RunBenchTicks(int32 Count, int32 TickRate, UGameInstance *GameInstance);
+
+  /** While set, the normal ADimension::TickBlocks ticker stands down: SimBench drives the sim. */
+  static void SetBenchOwnsSim(bool bOwns);
+  static bool IsBenchOwningSim();
+
   int32 GetManagedResourceNetworkCount() const;
   int32 GetActiveConveyorNetworkCount() const;
 
@@ -121,6 +133,9 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   private:
   void TickConveyorNetworks();
+
+  /** One simulation substep: all sim systems + optional block logic, then commit a metrics sample. */
+  void RunSimSubstep(int32 TickRate, UGameSessionSubsystem *GameSession, bool bTickBlocksEnabled);
 
   UBlockLogic *SpawnBlockCell(const FQrVector3i &BlockPos, UBlockLogic *Parent, const UStaticBlock *StaticBlock,
                               const FQuat &Rotation, ECellWritePolicy Policy,
