@@ -33,9 +33,9 @@ class UStaticPlanet : public UPrototype {
   virtual UClass *GetSuperProto() const override { return StaticClass(); }
   using Self = UStaticPlanet;
 
-  /** Number of world ticks per full local day (logical 20 Hz clock). */
+  /** Simulation ticks per full local day. Real-time day length = DayLengthTicks / TickRate. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "1"))
-  int64 DayLengthTicks = 144000;
+  int64 DayLengthTicks = 24000;
 
   /** Added to phase after day wrap (e.g. longitude); integer tick space. */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle")
@@ -43,15 +43,15 @@ class UStaticPlanet : public UPrototype {
 
   /** Phase within one local day [0, DayLengthTicks) for dawn anchor (bus / scripts). */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
-  int64 DawnPhaseTicks = 24000;
+  int64 DawnPhaseTicks = 4000;
 
   /** Phase within one local day [0, DayLengthTicks) for solar noon anchor (bus / scripts). */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
-  int64 SolarNoonPhaseTicks = 72000;
+  int64 SolarNoonPhaseTicks = 12000;
 
   /** Phase within one local day [0, DayLengthTicks) for sunset anchor (bus / scripts). */
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Day Cycle", meta = (ClampMin = "0"))
-  int64 SunsetPhaseTicks = 120000;
+  int64 SunsetPhaseTicks = 20000;
 
   /** Local simulation day-phase tick for TotalGameTicks (same space as dawn/sunset anchors). */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Day Cycle")
