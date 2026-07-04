@@ -17,6 +17,7 @@ enum class ENetSessionStatus : uint8 {
   PeerConnecting, // host: a guest's transport connected, handshake in progress
   PeerJoined, // a peer finished joining (roster grew)
   PeerLeft, // a peer disconnected (roster shrank)
+  Connecting, // guest: join attempt started; connecting transport + handshaking (no progress yet)
   ReceivingWorld, // guest: Welcome accepted, world snapshot transfer starting (Pct via OnSnapshotProgress)
   Joined, // guest: we finished joining the host
   Failed, // error; Message carries detail
