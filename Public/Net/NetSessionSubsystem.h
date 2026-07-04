@@ -17,6 +17,7 @@ enum class ENetSessionStatus : uint8 {
   PeerConnecting, // host: a guest's transport connected, handshake in progress
   PeerJoined, // a peer finished joining (roster grew)
   PeerLeft, // a peer disconnected (roster shrank)
+  ReceivingWorld, // guest: Welcome accepted, world snapshot transfer starting (Pct via OnSnapshotProgress)
   Joined, // guest: we finished joining the host
   Failed, // error; Message carries detail
 };
@@ -271,6 +272,14 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   // covers the connect+Hello+Welcome control phase, never the blob stream.
   float GuestConnectElapsed = 0.f;
   static constexpr float GuestHandshakeTimeoutSec = 15.f;
+
+  // Guest snapshot-transfer stall watchdog. Starts at Welcome and resets on every received
+  // chunk (OnRecvProgress). Fails the join only if the stream goes fully silent for longer than
+  // the timeout — a big world may legitimately take a long time to transfer, so this is stall-
+  // based, not a total-time cap. The budget is generous enough to also cover the host packing
+  // the snapshot (the gap between Welcome and the first chunk, during which no progress fires).
+  float GuestSnapshotStallElapsed = 0.f;
+  static constexpr float GuestSnapshotStallTimeoutSec = 45.f;
 
   // Avatar replication state.
   struct FGhostState {
