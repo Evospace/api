@@ -156,6 +156,12 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Broadcast that the local player consumed a drop; remote copies get destroyed. */
   void SubmitDropPickup(const FGuid &DropId);
 
+  /** Screwdriver rotation: peers re-run it on their own block copy at the absolute orientation. */
+  void SubmitBlockRotate(const FIntVector &Pos, const FQuat &Rotation);
+
+  /** Mop clean: peers hide their own footprint decals inside the world sphere (Center, Radius). */
+  void SubmitFootprintClean(const FVector &Center, float Radius);
+
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 
