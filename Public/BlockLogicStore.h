@@ -14,8 +14,6 @@ struct FBlockLogicStore {
 
   TMap<FQrVector3i, int32> IndexMap;
 
-  bool Flip = false;
-
   public:
   void Reset() {
     Blocks.Empty();
@@ -71,24 +69,9 @@ struct FBlockLogicStore {
     return true;
   }
 
-  FORCEINLINE void ForEachFlipFlop(TFunctionRef<void(UBlockLogic *)> Func) {
-    if (Flip) {
-      ForEachForward(Func);
-    } else {
-      ForEachReverse(Func);
-    }
-    Flip = !Flip;
-  }
-
   FORCEINLINE void ForEachForward(TFunctionRef<void(UBlockLogic *)> Func) const {
     for (UBlockLogic *Logic : Blocks) {
       Func(Logic);
-    }
-  }
-
-  FORCEINLINE void ForEachReverse(TFunctionRef<void(UBlockLogic *)> Func) const {
-    for (int32 i = Blocks.Num() - 1; i >= 0; --i) {
-      Func(Blocks[i]);
     }
   }
 
