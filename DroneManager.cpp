@@ -43,7 +43,9 @@ int64 LegLengthUuBetween(const Vec3i &A, const Vec3i &B) {
 // Begin a new leg from Start to End; resets progress (sim state, pure integer)
 // and re-syncs the render cache to the leg start so every leg begins the same
 // way (no carry-over gap that would make the render dart to catch up).
-void StartLeg(FDroneInstanceData &Drone, const Vec3i &Start, const Vec3i &End) {
+// Start/End are taken by value: callers pass Drone.TargetPosition, which this
+// function overwrites — a reference param would alias and corrupt the length.
+void StartLeg(FDroneInstanceData &Drone, Vec3i Start, Vec3i End) {
   Drone.LegStart = Start;
   Drone.TargetPosition = End;
   Drone.LegLengthUu = LegLengthUuBetween(Start, End);
