@@ -125,6 +125,10 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   static void SetBenchOwnsSim(bool bOwns);
   static bool IsBenchOwningSim();
 
+  /** Desync hash: fill section hashes of the deterministic sim state (blocks/networks/drones/trains).
+   * Diagnostic tool driven by FSimStateHash, never on the hot path unless the gate is on. */
+  void ComputeSimStateHash(struct FSimStateHashRecord &Out) const;
+
   int32 GetManagedResourceNetworkCount() const;
   int32 GetActiveConveyorNetworkCount() const;
 

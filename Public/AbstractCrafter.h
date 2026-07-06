@@ -52,6 +52,8 @@ class UAbstractCrafter : public UBlockLogic, public ISwitchInterface {
 
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
+  virtual void AppendSimStateHash(struct FSimHashWriter &W) const override;
+
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const override;
 

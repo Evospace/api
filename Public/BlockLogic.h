@@ -184,6 +184,11 @@ class UBlockLogic : public UInstance {
   const UStaticItem *GetNetworkSignal() const;
   virtual const UStaticBlock *GetStaticBlock() const;
 
+  // Desync hash: append deterministic sim state (never presentation/caches) to the writer.
+  // Default covers class, position, rotation, Working and every owned inventory — the same
+  // subobject surface SerializeJson walks. Override to add scalar sim fields on top (call Super).
+  virtual void AppendSimStateHash(struct FSimHashWriter &W) const;
+
   // Serialization
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;

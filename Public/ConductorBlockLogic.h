@@ -399,6 +399,8 @@ class USwitchBlockLogic : public UConductorBlockLogic, public ISwitchInterface {
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 
+  virtual void AppendSimStateHash(struct FSimHashWriter &W) const override;
+
   virtual void OnAction(const FHitResult &hit, const Vec3i &side, AItemLogic *item) override;
   virtual bool HasAction() const override { return true; }
 
