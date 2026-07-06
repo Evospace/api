@@ -7,6 +7,7 @@
 #include "Evospace/Common.h"
 #include "Qr/CoordinameMinimal.h"
 #include "Qr/Vector.h"
+#include "Public/SimRng.h"
 #include "Public/LogicContext.h"
 #include "Evospace/Misc/CoverWrapper.h"
 
@@ -207,6 +208,11 @@ class UBlockLogic : public UInstance {
   // Simulation / surface runtime ( UObject outer )
   UDimensionRuntime *GetDimensionRuntime() const { return Runtime; }
 
+  // Deterministic per-block simulation RNG. Seeded in Init() from the surface runtime's
+  // seed base and this block's position, persisted in Serialize/DeserializeJson and folded
+  // into the desync hash. Simulation randomness only, never presentation.
+  FSimRng &GetSimRng() { return SimRng; }
+
   // State controls
   void SetAccessorsInstances(bool show);
   void SetWorking(bool working);
@@ -275,6 +281,10 @@ class UBlockLogic : public UInstance {
   // Internal state
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool Working = false;
+
+  // Deterministic simulation RNG stream. Plain member (not a UPROPERTY): serialized
+  // manually as a decimal string in Serialize/DeserializeJson, seeded in Init().
+  FSimRng SimRng;
 
   TArray<int32> AccessorInstances;
 

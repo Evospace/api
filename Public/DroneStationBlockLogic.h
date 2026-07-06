@@ -57,6 +57,4 @@ class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) const override;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc) override;
   virtual ULogicContext *GetContext_Implementation() const override;
-
-  int Delay = 100;
 };

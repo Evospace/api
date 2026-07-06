@@ -15,6 +15,7 @@ class UTrainSchedule;
 class UTrainInstance;
 class FJsonObject;
 class ARailSplineRenderManagerActor;
+struct FSimRng;
 
 UCLASS()
 class URailwayManager : public UObject {
@@ -37,7 +38,8 @@ class URailwayManager : public UObject {
   FString GetStationIdentifier(const URailStationBlockLogic *Station) const;
   const TMap<FString, URailStationBlockLogic *> &GetStations() const { return Stations; }
 
-  FString GenerateStationID() const;
+  /** Names a station via the placing block's deterministic RNG so peers agree on the id. */
+  FString GenerateStationID(FSimRng &Rng) const;
 
   bool LaunchTrain(URailStationBlockLogic *From, const FString &TargetStationIdentifier);
   bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0);

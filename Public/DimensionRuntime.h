@@ -85,6 +85,11 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   FMapChangeSet MakeEditChangeSet(const TArray<FQrVector3i> &Positions, TFunctionRef<void()> ApplyBody);
 
   const FString &GetSurfaceFolderName() const { return SurfaceFolderName; }
+
+  /** Seed base for per-block deterministic RNG: derived from the world seed and this
+   * surface, independent of block order. Resolved lazily (the seed string may be set
+   * after the runtime is created); spawns are rare so the lookup cost is irrelevant. */
+  uint64 GetBlockRngSeedBase() const;
   /** World/surface authoring data synced from ADimension during BindDimension; gameplay must not depend on presentation. */
   USurfaceDefinition *GetSurfaceDefinition() const { return SurfaceDefinition; }
 

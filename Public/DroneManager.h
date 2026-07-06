@@ -8,6 +8,7 @@ class ADimension;
 class UDroneStationBlockLogic;
 class UInstancedStaticMeshComponent;
 class UInventory;
+struct FSimRng;
 
 UCLASS()
 class UDroneManager : public UObject {
@@ -27,7 +28,8 @@ class UDroneManager : public UObject {
   void UnregisterStation(UDroneStationBlockLogic *Station);
   UDroneStationBlockLogic *FindStationByID(const FString &ID);
 
-  FString GenerateStationID() const;
+  /** Names a station via the placing block's deterministic RNG so peers agree on the id. */
+  FString GenerateStationID(FSimRng &Rng) const;
   bool NameUsed(const FString &BaseName) const;
 
   const TMap<FString, UDroneStationBlockLogic *> &GetStations() const { return Stations; }

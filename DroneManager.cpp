@@ -5,6 +5,7 @@
 #include "Public/Dimension.h"
 #include "Public/DroneStationBlockLogic.h"
 #include "Public/Inventory.h"
+#include "Public/SimRng.h"
 
 namespace {
 // Cruise speed in world uu per simulation tick. Deterministic: a fixed integer
@@ -199,7 +200,7 @@ UDroneStationBlockLogic *UDroneManager::FindStationByID(const FString &ID) {
   return FoundStation ? *FoundStation : nullptr;
 }
 
-FString UDroneManager::GenerateStationID() const {
+FString UDroneManager::GenerateStationID(FSimRng &Rng) const {
   static const TArray<FString> FirstParts = { TEXT("Iron"), TEXT("Copper"), TEXT("Silver"), TEXT("Quantum"), TEXT("Thorn"), TEXT("Crimson"), TEXT("Stone"), TEXT("Titan"), TEXT("Void"), TEXT("Amber") };
   static const TArray<FString> SecondParts = { TEXT("Nest"), TEXT("Field"), TEXT("Hollow"), TEXT("Spire"), TEXT("Forge"), TEXT("Core"), TEXT("Vault"), TEXT("Cradle"), TEXT("Throne"), TEXT("Outpost") };
 
@@ -207,8 +208,8 @@ FString UDroneManager::GenerateStationID() const {
   int32 Attempts = 0;
 
   do {
-    int32 Index1 = FMath::RandRange(0, FirstParts.Num() - 1);
-    int32 Index2 = FMath::RandRange(0, SecondParts.Num() - 1);
+    int32 Index1 = Rng.RandRange(0, FirstParts.Num() - 1);
+    int32 Index2 = Rng.RandRange(0, SecondParts.Num() - 1);
     BaseName = FirstParts[Index1] + " " + SecondParts[Index2];
     Attempts++;
   } while (Attempts < 100 && NameUsed(BaseName));
