@@ -40,12 +40,15 @@ int64 LegLengthUuBetween(const Vec3i &A, const Vec3i &B) {
   return IntSqrtFloor(static_cast<uint64>(sqUu));
 }
 
-// Begin a new leg from Start to End; resets progress. Pure integer.
+// Begin a new leg from Start to End; resets progress (sim state, pure integer)
+// and re-syncs the render cache to the leg start so every leg begins the same
+// way (no carry-over gap that would make the render dart to catch up).
 void StartLeg(FDroneInstanceData &Drone, const Vec3i &Start, const Vec3i &End) {
   Drone.LegStart = Start;
   Drone.TargetPosition = End;
   Drone.LegLengthUu = LegLengthUuBetween(Start, End);
   Drone.TraveledUu = 0;
+  Drone.VisualPosition = Start.world();
 }
 } // namespace
 
@@ -158,7 +161,6 @@ int32 UDroneManager::LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlo
   Drone.State = EDroneState::TravelingToTarget;
   Drone.InstanceRandom = indexCounter++;
   StartLeg(Drone, From->GetBlockPos(), To->GetBlockPos());
-  Drone.VisualPosition = Drone.LegStart.world();
 
   int32 Index = Drones.Num();
   Drones.Add(Drone);
