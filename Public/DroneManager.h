@@ -36,7 +36,8 @@ class UDroneManager : public UObject {
   TArray<FDroneInstanceData> Drones;
 
   private:
-  void TickLogic(float TickDelta);
+  /** Deterministic: fixed integer step per tick, no delta time. */
+  void TickLogic();
   void UpdateVisual(float DeltaTime);
 
   UPROPERTY()

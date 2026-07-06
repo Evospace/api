@@ -6,20 +6,63 @@
 #include "Public/DroneStationBlockLogic.h"
 #include "Public/Inventory.h"
 
+namespace {
+// Cruise speed in world uu per simulation tick. Deterministic: a fixed integer
+// step every tick, independent of frame/tick delta time. 30 uu/tick is ~600 uu/s
+// at 20 TPS (the drone's former visual speed).
+constexpr int64 kDroneSpeedPerTick = 30;
+
+// Integer floor(sqrt(Value)) — keeps leg-length computation deterministic
+// (no float sqrt) so arrival is bit-identical across machines.
+int64 IntSqrtFloor(uint64 Value) {
+  uint64 low = 0;
+  uint64 high = Value;
+  uint64 answer = 0;
+  while (low <= high) {
+    const uint64 mid = low + (high - low) / 2;
+    if (mid == 0 || mid <= Value / mid) {
+      answer = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return static_cast<int64>(answer);
+}
+
+// Straight-line length between two block positions, in world uu (1 block = gCubeSize uu).
+int64 LegLengthUuBetween(const Vec3i &A, const Vec3i &B) {
+  const int64 dx = static_cast<int64>(B.X) - A.X;
+  const int64 dy = static_cast<int64>(B.Y) - A.Y;
+  const int64 dz = static_cast<int64>(B.Z) - A.Z;
+  const int64 uuPerBlock = static_cast<int64>(gCubeSize);
+  const int64 sqUu = (dx * dx + dy * dy + dz * dz) * uuPerBlock * uuPerBlock;
+  return IntSqrtFloor(static_cast<uint64>(sqUu));
+}
+
+// Begin a new leg from Start to End; resets progress. Pure integer.
+void StartLeg(FDroneInstanceData &Drone, const Vec3i &Start, const Vec3i &End) {
+  Drone.LegStart = Start;
+  Drone.TargetPosition = End;
+  Drone.LegLengthUu = LegLengthUuBetween(Start, End);
+  Drone.TraveledUu = 0;
+}
+} // namespace
+
 void UDroneManager::Initialize(ADimension *inOwner, UInstancedStaticMeshComponent *inDroneMeshComponent) {
   ownerDimension = inOwner;
   DroneMeshComponent = inDroneMeshComponent;
 }
 
 void UDroneManager::Tick(float TickDelta) {
-  TickLogic(TickDelta);
+  TickLogic();
 }
 
 void UDroneManager::TickVisual(float DeltaTime) {
   UpdateVisual(DeltaTime);
 }
 
-void UDroneManager::TickLogic(float TickDelta) {
+void UDroneManager::TickLogic() {
   if (!DroneMeshComponent) {
     return;
   }
@@ -38,19 +81,22 @@ void UDroneManager::TickLogic(float TickDelta) {
       continue;
     }
 
-    FVector Direction = (Drone.TargetPosition.world() - Drone.Position).GetSafeNormal();
-    Drone.Position += Direction * Drone.Speed;
+    // Fixed integer step per tick; progress accumulates until it reaches the leg
+    // length. The integer >= test always fires (no float overshoot/oscillation),
+    // so a returning drone is always removed and its instance released.
+    Drone.TraveledUu += kDroneSpeedPerTick;
+    if (Drone.TraveledUu < Drone.LegLengthUu) {
+      continue; // still en route
+    }
 
-    if (FVector::DistSquared(Drone.Position, Drone.TargetPosition.world()) < 100.f * 100.f) {
-      if (Drone.State == EDroneState::TravelingToTarget) {
-        Drone.Target->ReceiveDronePayload(Drone.Payload);
-        Drone.TargetPosition = Drone.Source->GetBlockPos();
-        Drone.State = EDroneState::Returning;
-      } else if (Drone.State == EDroneState::Returning) {
-        Drones.RemoveAt(i);
-        DroneMeshComponent->RemoveInstance(i);
-        --i;
-      }
+    if (Drone.State == EDroneState::TravelingToTarget) {
+      Drone.Target->ReceiveDronePayload(Drone.Payload);
+      StartLeg(Drone, Drone.TargetPosition, Drone.Source->GetBlockPos());
+      Drone.State = EDroneState::Returning;
+    } else if (Drone.State == EDroneState::Returning) {
+      Drones.RemoveAt(i);
+      DroneMeshComponent->RemoveInstance(i);
+      --i;
     }
   }
 }
@@ -68,8 +114,23 @@ void UDroneManager::UpdateVisual(float DeltaTime) {
       continue;
     }
 
-    FVector Direction = (Drone.TargetPosition.world() - Drone.VisualPosition).GetSafeNormal();
-    Drone.VisualPosition += Direction * Drone.Speed * DeltaTime;
+    // Reconstruct the authoritative sim position from the integer leg progress
+    // (presentation math — float is fine here and never feeds sim state).
+    const FVector LegStartWorld = Drone.LegStart.world();
+    const FVector LegEndWorld = Drone.TargetPosition.world();
+    const float Alpha = Drone.LegLengthUu > 0
+                          ? FMath::Clamp(static_cast<float>(Drone.TraveledUu) / static_cast<float>(Drone.LegLengthUu), 0.f, 1.f)
+                          : 1.f;
+    const FVector SimWorld = FMath::Lerp(LegStartWorld, LegEndWorld, Alpha);
+
+    // VisualPosition lags slightly behind the sim position for smooth rendering,
+    // then arrives (and disappears) together with the sim drone.
+    Drone.VisualPosition = FMath::VInterpTo(Drone.VisualPosition, SimWorld, DeltaTime, 8.0f);
+
+    FVector Direction = (LegEndWorld - LegStartWorld).GetSafeNormal();
+    if (Direction.IsNearlyZero()) {
+      Direction = FVector::ForwardVector;
+    }
     float HoverOffset = FMath::Sin(World->TimeSeconds * 3.0f + Drone.InstanceRandom) * 10.0f;
     float Sway = FMath::Sin(World->TimeSeconds * 1.2f + Drone.InstanceRandom * 3.14f) * 8.0f;
     FVector RenderedPosition = Drone.VisualPosition + FVector(0, Sway, 200 + HoverOffset);
@@ -96,16 +157,14 @@ int32 UDroneManager::LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlo
   Drone.Payload = Payload;
   Drone.State = EDroneState::TravelingToTarget;
   Drone.InstanceRandom = indexCounter++;
-  Drone.Position = From->GetBlockPos().world();
-  Drone.VisualPosition = Drone.Position;
-  Drone.TargetPosition = To->GetBlockPos();
-  Drone.Speed = 600.f;
+  StartLeg(Drone, From->GetBlockPos(), To->GetBlockPos());
+  Drone.VisualPosition = Drone.LegStart.world();
 
   int32 Index = Drones.Num();
   Drones.Add(Drone);
 
   FTransform Transform;
-  Transform.SetLocation(Drone.Position);
+  Transform.SetLocation(Drone.VisualPosition);
   DroneMeshComponent->AddInstance(Transform);
 
   return Index;
