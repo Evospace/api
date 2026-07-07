@@ -146,6 +146,21 @@ struct RuntimeMeshBuilder {
                         << " Mesh=" << MeshName;
         }
       }
+
+      // SetAllStreams only touches sections whose poly group exists in the new streams.
+      // A section left over from a previous rebuild keeps its old stream range into the
+      // replaced buffers and its old material slot, drawing phantom geometry.
+      const FRealtimeMeshSectionGroupKey GroupKey = SectionGroup.GetKey(UpdateContext);
+      TSet<FRealtimeMeshSectionKey> ExpectedSections;
+      ExpectedSections.Reserve(ActivePolyGroups.Num());
+      for (const int32 PolyGroupIndex : ActivePolyGroups) {
+        ExpectedSections.Add(FRealtimeMeshSectionKey::CreateForPolyGroup(GroupKey, PolyGroupIndex));
+      }
+      for (const FRealtimeMeshSectionKey &SectionKey : SectionGroup.GetSectionKeys(UpdateContext)) {
+        if (SectionKey.IsPolyGroupKey() && !ExpectedSections.Contains(SectionKey)) {
+          SectionGroup.RemoveSection(UpdateContext, SectionKey);
+        }
+      }
     };
   }
 
