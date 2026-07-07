@@ -222,6 +222,9 @@ class UMainGameInstance : public USteamGameInstance {
   static FString GetBuildString();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
+  static FString GetDisplayVersionString();
+
+  UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLicensesText();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
