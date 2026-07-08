@@ -14,6 +14,8 @@ class UItemMap;
 class ULogicContext;
 class ULogicSettings;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRailStationTrainDockEvent, UTrainInstance *, Train);
+
 UCLASS()
 class URailStationBlockLogic : public URailNodeBlockLogic {
   GENERATED_BODY()
@@ -55,6 +57,13 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
 
   void SetDockedTrain(UTrainInstance *Train);
   UTrainInstance *GetDockedTrain() const { return DockedTrain; }
+
+  /** Cosmetic hooks for station animation (gates, lights); fired from SetDockedTrain transitions. */
+  UPROPERTY(BlueprintAssignable, Category = "Rail|Events")
+  FRailStationTrainDockEvent OnTrainDocked;
+
+  UPROPERTY(BlueprintAssignable, Category = "Rail|Events")
+  FRailStationTrainDockEvent OnTrainUndocked;
 
   /** Exports + wire Context::Input into the docked train DepartureContext for DepartureCondition. */
   void SyncDepartureContextForDockedTrain();

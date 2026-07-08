@@ -123,6 +123,10 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 Speed = 0;
 
+  /** Consecutive ticks the train wanted to move but was fully held by another consist. Transient (not serialized); used for deadlock diagnostics. */
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  int32 BlockedByTrafficTicks = 0;
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   ETrainSimState SimState = ETrainSimState::Idle;
 

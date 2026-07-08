@@ -47,6 +47,43 @@ class ATrainActor : public AActor {
   TSubclassOf<UTrainWidgetBase> GetWidgetClass() const;
   void OpenWidget(UHudWidget *HudWidget);
 
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  URailwayManager *GetRailwayManager() const { return RailwayManager; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  int32 GetTrainIndex() const { return TrainIndex; }
+
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  int32 GetCarCount() const { return CarMeshGroups.Num(); }
+
+  /** Last rendered pose of one car (centre + bogies); false when CarIndex is out of range or nothing rendered yet. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  bool GetRenderedCarPose(int32 CarIndex, FTrainCarWorldPose &OutPose) const;
+
+  /** |sim speed| / max speed, updated on the visual tick. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
+  float GetSpeedFraction() const { return LastSpeedFraction; }
+
+  /** Called by the railway manager on the visual tick; fires OnTrainSpeedFractionChanged on change. */
+  void SetSpeedFraction(float Fraction);
+
+  // --- Blueprint animation hooks (cosmetic; fired from local sim state transitions) ---
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
+  void OnTrainArrived(const FString &StationIdentifier);
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
+  void OnTrainDeparted(const FString &StationIdentifier);
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
+  void OnTrainDocked(const FString &StationIdentifier);
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
+  void OnTrainUndocked(const FString &StationIdentifier);
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
+  void OnTrainSpeedFractionChanged(float SpeedFraction);
+
   UPROPERTY(VisibleAnywhere)
   USceneComponent *Root = nullptr;
 
@@ -74,6 +111,7 @@ class ATrainActor : public AActor {
   float PoseInterpolationDuration = 1.0f / 20.0f;
   int64 LastPoseSimTick = INDEX_NONE;
   bool HasPoseSmoothing = false;
+  float LastSpeedFraction = 0.0f;
 
   UPROPERTY(EditAnywhere, Category = "Train|Visual")
   float WagonBodyZOffset = 10.0f;

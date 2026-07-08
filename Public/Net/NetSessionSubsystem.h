@@ -162,6 +162,12 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Mop clean: peers hide their own footprint decals inside the world sphere (Center, Radius). */
   void SubmitFootprintClean(const FVector &Center, float Radius);
 
+  /** Train placed at a station (train placer item); peers re-run PlaceTrainAtStation on their sim. */
+  void SubmitTrainPlace(UBlockLogic *StationRoot, int32 NumCars);
+
+  /** Train removed by index; indices are lockstep-deterministic across peers. */
+  void SubmitTrainRemove(int32 TrainIndex);
+
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 

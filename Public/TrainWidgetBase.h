@@ -17,6 +17,13 @@ class UTrainWidgetBase : public UUserWidget {
 
   UTrainInstance *GetTrainSimulation() const { return TrainSimulation; }
 
+  /**
+   * Removes the bound train and refunds one Train item to the owning player (skipped in
+   * creative). Returns false when the widget lost its train. BP closes the widget on success.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Train")
+  bool RemoveTrainAndRefund();
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (ExposeOnSpawn = "true"))
   ATrainActor *TrainActor = nullptr;
 

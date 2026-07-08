@@ -15,6 +15,7 @@ class UTrainSchedule;
 class UTrainInstance;
 class FJsonObject;
 class ARailSplineRenderManagerActor;
+class APlayerController;
 struct FSimRng;
 
 UCLASS()
@@ -42,12 +43,29 @@ class URailwayManager : public UObject {
   FString GenerateStationID(FSimRng &Rng) const;
 
   bool LaunchTrain(URailStationBlockLogic *From, const FString &TargetStationIdentifier);
-  bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0);
+  bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0, int32 NumCars = 4);
+
+  /**
+   * Player-facing placement: spawns a consist docked at Station with a single-stop schedule.
+   * Pc non-null marks a local player action (replicated to the session); internal/remote callers pass nullptr.
+   * Returns the new train index or INDEX_NONE.
+   */
+  int32 PlaceTrainAtStation(APlayerController *Pc, URailStationBlockLogic *Station, int32 NumCars = 4);
+
+  /**
+   * Tears down one train: undock, release visual, drop the sim instance.
+   * Pc non-null marks a local player action (replicated to the session).
+   */
+  bool RemoveTrain(APlayerController *Pc, int32 Index);
+
   UTrainInstance *GetTrainDataMutable(int32 Index);
   const UTrainInstance *GetTrainData(int32 Index) const;
 
   /** Centre + bogie poses for each car; anchor at path offset 0 = lead car centre (same as legacy single wagon). */
   bool TryGetTrainConsistWorldPoses(const UTrainInstance *Train, TArray<FTrainCarWorldPose> &OutPoses) const;
+
+  /** True if any two consist bodies geometrically overlap (gap 0). Smoke-test / debug invariant. */
+  bool DebugAnyConsistHardOverlap() const;
 
   /** Removes every train instance and its visual actor; clears station docking. */
   void ClearAllTrains();
@@ -87,6 +105,10 @@ class URailwayManager : public UObject {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Simulation")
   int32 TrainStopDistanceTolerance = 5000;
 
+  // Minimum along-track clearance kept between two consist bodies (and around shared graph nodes), uu.
+  UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Simulation")
+  float TrainFollowGapUu = 150.0f;
+
   private:
   FQrVector3i StationRootKey(URailStationBlockLogic *S) const;
   bool BuildPathBetweenStations(const FString &SourceStationIdentifier, const FString &TargetStationIdentifier, TArray<FRailPathStep> &OutPath) const;
@@ -110,9 +132,11 @@ class URailwayManager : public UObject {
   void SnapTrainAnchorToPathEnd(UTrainInstance *Train);
   void SnapTrainAnchorToPathBackwardStop(UTrainInstance *Train);
   bool TrySetTrainAnchorByPathOffset(UTrainInstance *Train, int64 AnchorOffsetFixed);
-  void CollectOccupiedDirectedEdgesForTrain(const UTrainInstance *Train, TSet<FRailDirectedEdgeKey> &OutEdges) const;
-  bool WouldPathEdgesConflictWithOccupancy(int32 SelfIndex, const TArray<FRailPathStep> &CandidatePath) const;
-  bool WouldConsistDirectedEdgesOverlapOtherTrains(int32 SelfIndex, const TArray<FRailPathStep> &Path, const UTrainInstance *TrainForConsist, int32 PathIndex, int64 DistanceAlong) const;
+  /** 1-D body occupancy: true when TrainForConsist placed at (PathIndex, DistanceAlong) on Path would come closer than the follow gap to another consist (shared undirected edge interval or shared graph node). */
+  bool WouldConsistBodyOverlapOtherTrains(int32 SelfIndex, const TArray<FRailPathStep> &Path, const UTrainInstance *TrainForConsist, int32 PathIndex, int64 DistanceAlong) const;
+  /** True when CandidatePath traverses an edge that a currently moving train still has ahead of it in the opposite direction (head-on avoidance at dispatch). */
+  bool WouldPathOpposeMovingTraffic(int32 SelfIndex, const TArray<FRailPathStep> &CandidatePath) const;
+  int64 GetFollowGapFixed() const;
   int64 ClampSignedMoveDeltaForOccupancy(int32 Index, int64 DeltaDistanceFixed) const;
   /** Applies signed delta along Path; clamps at path ends. Returns applied distance (may be less than Delta if obstructed). */
   int64 MoveTrainAlongPath(UTrainInstance *Train, int64 DeltaDistanceFixed);
@@ -124,6 +148,7 @@ class URailwayManager : public UObject {
   bool TrySampleTrainPathAtOffset(const UTrainInstance *Train, int64 OffsetFixed, FVector &OutWorldLocation, FVector &OutWorldTangent) const;
   void EnsureVisual(int32 Index);
   void ReleaseVisual(int32 Index);
+  ATrainActor *FindVisualForTrain(const UTrainInstance *Train) const;
   void DebugDrawRailGraph() const;
   void EnsureRailSplineRenderer();
   void ReleaseRailSplineRenderer();
