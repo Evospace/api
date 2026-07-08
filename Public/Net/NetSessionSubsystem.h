@@ -183,6 +183,11 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** "Depart now": the train skips its departure condition at the next dispatch opportunity. */
   void SubmitTrainForceDepart(int32 TrainIndex);
 
+  // Rail-node segment link/unlink (rail linker item); peers re-run the same graph mutation on
+  // the two nodes at the given root block positions. Suppressed while applying a remote action.
+  void SubmitRailLink(UBlockLogic *NodeA, UBlockLogic *NodeB);
+  void SubmitRailUnlink(UBlockLogic *NodeA, UBlockLogic *NodeB);
+
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 

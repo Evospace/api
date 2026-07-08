@@ -31,10 +31,13 @@ class URailNodeBlockLogic : public UBlockLogic {
   const TSet<URailNodeBlockLogic *> &GetLinkedRailNodes() const { return LinkedRailNodes; }
 
   void RailLink(URailNodeBlockLogic *Other);
+  void RailUnlink(URailNodeBlockLogic *Other);
   void UnlinkAllRail();
 
   // Face-adjacent only (see URailNetwork::TryAddSegment). Used by ARailLinkerItemLogic.
+  // Both apply locally and replicate through the player-action pipeline (RailLink/RailUnlink).
   void TryAddSegmentTo(URailNodeBlockLogic *Other);
+  void TryRemoveSegmentTo(URailNodeBlockLogic *Other);
 
   protected:
   void EnsureNetworkRegistered();

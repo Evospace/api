@@ -54,6 +54,9 @@ class URailNetwork : public UNetworkBase {
 
   bool TryAddSegment(URailNodeBlockLogic *A, URailNodeBlockLogic *B);
 
+  /** Remove a single undirected segment between two linked nodes; true if a link was removed. */
+  bool RemoveSegment(URailNodeBlockLogic *A, URailNodeBlockLogic *B);
+
   /** Count of undirected links (for diagnostics). */
   int32 GetUndirectedLinkCount() const;
 
