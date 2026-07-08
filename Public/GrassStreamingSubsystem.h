@@ -99,6 +99,9 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   FHism *MakeHism(const UStaticProp *prop);
 
   void MarkSectorTileDirty(const FIntPoint &sectorPos);
+  // In-place removal from an already-materialized tile's HISM (no teardown/rebuild, no flicker).
+  void RemoveLiveInstancesInBlock(const FIntPoint &sectorPos, const Vec3i &bpos);
+  void RemoveLiveInstanceAt(const FIntPoint &sectorPos, const UStaticProp *prop, const FVector &loc);
   void RebuildTile(const FIntPoint &tileCoord, FTile &tile, int32 &budget);
   void DestroyTile(const FIntPoint &tileCoord, FTile &tile);
   void ClearTileHisms(FTile &tile);
