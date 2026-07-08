@@ -69,6 +69,9 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   // Canyon noises stored on the generator instance
   std::unique_ptr<FastNoiseSIMD> canyon_mask2d; // Simplex fractal mask in XY
   std::unique_ptr<FastNoiseSIMD> canyon_cell3d; // Cellular distance field in 3D
+  // Ridged 3D noise displacing the isosurface near the terrain surface where
+  // the leaf biome authors SurfaceRockDetail > 0 (rocky mountains vs smooth dunes)
+  std::unique_ptr<FastNoiseSIMD> rock_detail3d;
 
   public:
   PROTOTYPE_CODEGEN(BiomeWorldGenerator, WorldGenerator)

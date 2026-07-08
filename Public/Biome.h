@@ -50,5 +50,10 @@ class UBiome : public UPrototype {
   UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float WaterMurkiness = 0.0f;
 
+  /** Amplitude, in blocks, of the near-surface 3D rock noise that displaces the
+   * terrain isosurface (0 = keep the heightmap surface smooth, e.g. dunes). */
+  UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0"))
+  float SurfaceRockDetail = 0.0f;
+
   virtual TArray<UStaticWeather *> GetAvailableWeather() const { return TArray<UStaticWeather *>(); }
 };
