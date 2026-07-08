@@ -25,7 +25,6 @@ enum class EEvoSimPerfSystem : uint8 {
   SimTotal = 0,
   ResourceNetworks,
   ConveyorSystems,
-  Drones,
   Railways,
   BlockAccessors,
   LogicIO,

@@ -275,9 +275,6 @@ class ADimension : public AActor {
   UPROPERTY()
   UDimensionRuntime *Runtime = nullptr;
 
-  UPROPERTY(VisibleAnywhere)
-  UInstancedStaticMeshComponent *DroneMeshComponent;
-
   UPROPERTY()
   bool BuildModeCoverDirty = false;
 

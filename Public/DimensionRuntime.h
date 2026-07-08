@@ -18,7 +18,6 @@ class UBlockLogic;
 class UBlockNetwork;
 class UConveyorNetwork;
 class UDroneManager;
-class UInstancedStaticMeshComponent;
 class ULogicContext;
 class URailNetwork;
 class URailwayManager;
@@ -45,12 +44,12 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   public:
   void InitializeForSurface(const FString &InSurfaceFolderName);
-  void BindDimension(class ADimension *InDimension, UInstancedStaticMeshComponent *InDroneMeshComponent);
+  void BindDimension(class ADimension *InDimension);
   void UnbindDimension(const ADimension *InDimension);
   void Shutdown();
 
   /** Clears all block logic and manager state. Recreates managers when InPresentation is set (after bind). */
-  void ResetSimulationState(class ADimension *InPresentation, UInstancedStaticMeshComponent *InDroneMeshComponent);
+  void ResetSimulationState(class ADimension *InPresentation);
 
   void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
 
@@ -121,7 +120,7 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   /**
    * SimBench: run Count simulation substeps back-to-back at max throughput, bypassing
-   * the DeltaTime accumulator (fixed step 1/TickRate for drones/railways). Returns ticks run.
+   * the DeltaTime accumulator (fixed step 1/TickRate for railways). Returns ticks run.
    * Metrics must be enabled by the caller (BeginSession) for per-tick samples to be recorded.
    */
   int64 RunBenchTicks(int32 Count, int32 TickRate, UGameInstance *GameInstance);
@@ -130,7 +129,7 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   static void SetBenchOwnsSim(bool bOwns);
   static bool IsBenchOwningSim();
 
-  /** Desync hash: fill section hashes of the deterministic sim state (blocks/networks/drones/trains).
+  /** Desync hash: fill section hashes of the deterministic sim state (blocks/networks/trains).
    * Diagnostic tool driven by FSimStateHash, never on the hot path unless the gate is on. */
   void ComputeSimStateHash(struct FSimStateHashRecord &Out) const;
 
@@ -169,9 +168,6 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   UPROPERTY()
   USurfaceDefinition *SurfaceDefinition = nullptr;
-
-  UPROPERTY()
-  UInstancedStaticMeshComponent *DroneMeshComponent = nullptr;
 
   UPROPERTY()
   TMap<FQrVector3i, UBlockLogic *> DimensionLogics;

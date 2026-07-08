@@ -5,7 +5,6 @@
 #include "SimulationSurfaceSubsystem.generated.h"
 
 class ADimension;
-class UInstancedStaticMeshComponent;
 class UDimensionRuntime;
 
 /** Per-surface simulation runtime handling when (re)initializing presentation or loading a save. */
@@ -28,8 +27,7 @@ class EVOSPACE_API USimulationSurfaceSubsystem : public UGameInstanceSubsystem {
   UDimensionRuntime *GetOrCreateRuntime(const FString &SurfaceFolderName);
 
   void ApplySurfaceLifecycle(const FString &SurfaceFolderName, ESurfaceSimulationLifecycle Lifecycle,
-                             ADimension *PresentationForRebind = nullptr,
-                             UInstancedStaticMeshComponent *DroneMeshComponent = nullptr);
+                             ADimension *PresentationForRebind = nullptr);
   /** Drops every per-surface runtime when a save is loaded into temp (new game / reload). */
   void ResetAllSurfaceRuntimesForSaveLoad();
 

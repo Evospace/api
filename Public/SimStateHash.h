@@ -50,7 +50,6 @@ struct FSimStateHashRecord {
   uint64 World = 0;
   uint64 Blocks = 0;
   uint64 Networks = 0;
-  uint64 Drones = 0;
   uint64 Trains = 0;
 };
 
