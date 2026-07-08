@@ -9,6 +9,7 @@
 class UCondition;
 class UInventory;
 class UDroneManager;
+class APlayerController;
 UCLASS()
 class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider {
   GENERATED_BODY()
@@ -31,9 +32,17 @@ class UDroneStationBlockLogic : public UBlockLogic, public ILogicContextProvider
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   ULogicContext *Context;
 
-  // Уникальный ID станции
+  // Non-unique display name; empty = unassigned, a default ("Station N") is assigned
+  // in UDroneManager::RegisterStation. Change via RenameStation, not directly.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FString StationID;
+  FString StationName;
+
+  /**
+   * Player-facing rename; delegates to UDroneManager::RenameStation (route
+   * auto-update + multiplayer sync). Pc non-null marks a local player action.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Drone|Station")
+  bool RenameStation(APlayerController *Pc, const FString &NewName);
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TWeakObjectPtr<UDroneManager> DroneManager;

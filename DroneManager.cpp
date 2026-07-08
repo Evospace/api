@@ -5,7 +5,8 @@
 #include "Public/Dimension.h"
 #include "Public/DroneStationBlockLogic.h"
 #include "Public/Inventory.h"
-#include "Public/SimRng.h"
+#include "Public/Net/NetSessionSubsystem.h"
+#include "Public/StationNameUtils.h"
 
 namespace {
 // Cruise speed in world uu per simulation tick. Deterministic: a fixed integer
@@ -176,60 +177,118 @@ int32 UDroneManager::LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlo
 }
 
 void UDroneManager::RegisterStation(UDroneStationBlockLogic *Station) {
-  if (!Station || Station->StationID.IsEmpty()) {
+  if (!Station) {
     return;
   }
-  Stations.Add(Station->StationID, Station);
+  if (Station->StationName.IsEmpty()) {
+    Station->StationName = GenerateDefaultStationName();
+  }
+  Stations.Add(Station->GetBlockPos(), Station);
 }
 
 void UDroneManager::UnregisterStation(UDroneStationBlockLogic *Station) {
   if (!Station) {
     return;
   }
-
-  if (!Station->StationID.IsEmpty()) {
-    UDroneStationBlockLogic **FoundStation = Stations.Find(Station->StationID);
-    if (FoundStation && *FoundStation == Station) {
-      Stations.Remove(Station->StationID);
+  if (UDroneStationBlockLogic **FoundStation = Stations.Find(Station->GetBlockPos())) {
+    if (*FoundStation == Station) {
+      Stations.Remove(Station->GetBlockPos());
     }
   }
 }
 
-UDroneStationBlockLogic *UDroneManager::FindStationByID(const FString &ID) {
-  UDroneStationBlockLogic **FoundStation = Stations.Find(ID);
+UDroneStationBlockLogic *UDroneManager::FindStationAt(const Vec3i &Pos) const {
+  UDroneStationBlockLogic *const *FoundStation = Stations.Find(Pos);
   return FoundStation ? *FoundStation : nullptr;
 }
 
-FString UDroneManager::GenerateStationID(FSimRng &Rng) const {
-  static const TArray<FString> FirstParts = { TEXT("Iron"), TEXT("Copper"), TEXT("Silver"), TEXT("Quantum"), TEXT("Thorn"), TEXT("Crimson"), TEXT("Stone"), TEXT("Titan"), TEXT("Void"), TEXT("Amber") };
-  static const TArray<FString> SecondParts = { TEXT("Nest"), TEXT("Field"), TEXT("Hollow"), TEXT("Spire"), TEXT("Forge"), TEXT("Core"), TEXT("Vault"), TEXT("Cradle"), TEXT("Throne"), TEXT("Outpost") };
-
-  FString BaseName;
-  int32 Attempts = 0;
-
-  do {
-    int32 Index1 = Rng.RandRange(0, FirstParts.Num() - 1);
-    int32 Index2 = Rng.RandRange(0, SecondParts.Num() - 1);
-    BaseName = FirstParts[Index1] + " " + SecondParts[Index2];
-    Attempts++;
-  } while (Attempts < 100 && NameUsed(BaseName));
-
-  int32 Counter = 1;
-  FString FinalName = BaseName;
-
-  while (Stations.Contains(FinalName)) {
-    FinalName = FString::Printf(TEXT("%s_%03d"), *BaseName, Counter);
-    Counter++;
+void UDroneManager::FindStationsByName(const FString &Name, TArray<UDroneStationBlockLogic *> &Out) const {
+  Out.Reset();
+  if (Name.IsEmpty()) {
+    return;
   }
-
-  return FinalName;
-}
-
-bool UDroneManager::NameUsed(const FString &BaseName) const {
-  for (const TPair<FString, UDroneStationBlockLogic *> &Pair : Stations) {
-    if (Pair.Key.StartsWith(BaseName)) {
-      return true;
+  for (const TPair<FQrVector3i, UDroneStationBlockLogic *> &Pair : Stations) {
+    if (Pair.Value && Pair.Value->StationName == Name) {
+      Out.Add(Pair.Value);
     }
   }
-  return false;
+  // TMap iteration order is insertion-dependent; sort so every peer sees the same order.
+  Out.Sort([](const UDroneStationBlockLogic &A, const UDroneStationBlockLogic &B) {
+    return A.GetBlockPos() < B.GetBlockPos();
+  });
+}
+
+UDroneStationBlockLogic *UDroneManager::FindNearestStationByName(const Vec3i &FromPos, const FString &Name, const UDroneStationBlockLogic *Exclude) const {
+  TArray<UDroneStationBlockLogic *> Candidates;
+  FindStationsByName(Name, Candidates);
+  UDroneStationBlockLogic *Best = nullptr;
+  int64 BestDistSq = 0;
+  for (UDroneStationBlockLogic *Candidate : Candidates) {
+    if (Candidate == Exclude) {
+      continue;
+    }
+    const Vec3i Delta = Candidate->GetBlockPos() - FromPos;
+    const int64 DistSq = static_cast<int64>(Delta.X) * Delta.X + static_cast<int64>(Delta.Y) * Delta.Y + static_cast<int64>(Delta.Z) * Delta.Z;
+    // Candidates arrive position-sorted, so on equal distance the first one wins deterministically.
+    if (!Best || DistSq < BestDistSq) {
+      Best = Candidate;
+      BestDistSq = DistSq;
+    }
+  }
+  return Best;
+}
+
+bool UDroneManager::RenameStation(APlayerController *Pc, UDroneStationBlockLogic *Station, const FString &NewName) {
+  if (!Station || FindStationAt(Station->GetBlockPos()) != Station) {
+    return false;
+  }
+  const FString Trimmed = NewName.TrimStartAndEnd();
+  if (Trimmed.IsEmpty() || Trimmed == Station->StationName) {
+    return false;
+  }
+  const FString OldName = Station->StationName;
+
+  // Renaming the last station carrying the old name follows it through every route
+  // (Factorio behavior for a unique station); with sister stations left behind the
+  // routes keep pointing at them.
+  TArray<UDroneStationBlockLogic *> SameName;
+  FindStationsByName(OldName, SameName);
+  const bool bLastWithOldName = SameName.Num() == 1 && SameName[0] == Station;
+
+  Station->StationName = Trimmed;
+
+  if (bLastWithOldName) {
+    for (const TPair<FQrVector3i, UDroneStationBlockLogic *> &Pair : Stations) {
+      if (!Pair.Value) {
+        continue;
+      }
+      for (FDroneRoute &Route : Pair.Value->Routes) {
+        if (Route.TargetStationName == OldName) {
+          Route.TargetStationName = Trimmed;
+        }
+      }
+    }
+  }
+
+  if (Pc) {
+    if (UNetSessionSubsystem *Net = UNetSessionSubsystem::Get(Pc)) {
+      Net->SubmitStationRename(Station, Trimmed);
+    }
+  }
+  return true;
+}
+
+FString UDroneManager::GenerateDefaultStationName() const {
+  return EvoStationName::SmallestFreeDefaultName(GetAllStationNames());
+}
+
+TArray<FString> UDroneManager::GetAllStationNames() const {
+  TArray<FString> Names;
+  for (const TPair<FQrVector3i, UDroneStationBlockLogic *> &Pair : Stations) {
+    if (Pair.Value && !Pair.Value->StationName.IsEmpty()) {
+      Names.AddUnique(Pair.Value->StationName);
+    }
+  }
+  Names.Sort();
+  return Names;
 }

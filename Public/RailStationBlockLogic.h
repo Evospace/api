@@ -13,6 +13,7 @@ class UTrainInstance;
 class UItemMap;
 class ULogicContext;
 class ULogicSettings;
+class APlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRailStationTrainDockEvent, UTrainInstance *, Train);
 
@@ -31,9 +32,21 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventory *WagonStorageProxy = nullptr;
 
-  // Empty = unassigned; assigned in URailwayManager::RegisterStation.
+  // Non-unique display name; empty = unassigned, a default ("Station N") is assigned
+  // in URailwayManager::RegisterStation. Change via RenameStation, not directly.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
-  FString StationID;
+  FString StationName;
+
+  /**
+   * Player-facing rename; delegates to URailwayManager::RenameStation (schedule
+   * auto-update + multiplayer sync). Pc non-null marks a local player action.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Station")
+  bool RenameStation(APlayerController *Pc, const FString &NewName);
+
+  /** Distinct station names on this station's railway manager, sorted; for the rename GUI. */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Rail|Station")
+  TArray<FString> GetAllStationNames() const;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   TWeakObjectPtr<URailwayManager> RailwayManager;

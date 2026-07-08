@@ -18,6 +18,9 @@ class UMapWidgetData : public UObject, public ISerializableJson {
   bool MapObjects = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  bool Railways = true;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   bool OreDescription = false;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -42,6 +45,7 @@ inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "OreDescription", OreDescription);
   json_helper::TrySet(json, "SpawnPoint", SpawnPoint);
   json_helper::TrySet(json, "MapObjects", MapObjects);
+  json_helper::TrySet(json, "Railways", Railways);
   json_helper::TrySet(json, "UserMarkers", UserMarkers);
   json_helper::TrySet(json, "TextFontSize", TextFontSize);
   json_helper::TrySet(json, "TextFontStyle", TextFontStyle);
@@ -54,6 +58,7 @@ inline bool UMapWidgetData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "OreDescription", OreDescription);
   json_helper::TryGet(json, "SpawnPoint", SpawnPoint);
   json_helper::TryGet(json, "MapObjects", MapObjects);
+  json_helper::TryGet(json, "Railways", Railways);
   json_helper::TryGet(json, "UserMarkers", UserMarkers);
   json_helper::TryGet(json, "TextFontSize", TextFontSize);
   json_helper::TryGet(json, "TextFontStyle", TextFontStyle);

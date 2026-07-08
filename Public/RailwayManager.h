@@ -16,7 +16,6 @@ class UTrainInstance;
 class FJsonObject;
 class ARailSplineRenderManagerActor;
 class APlayerController;
-struct FSimRng;
 
 UCLASS()
 class URailwayManager : public UObject {
@@ -32,18 +31,38 @@ class URailwayManager : public UObject {
   bool SerializeJson(TSharedPtr<FJsonObject> Json) const;
   bool DeserializeJson(TSharedPtr<FJsonObject> Json);
 
+  /** Registers by block position; assigns a default name ("Station N") when unnamed. */
   void RegisterStation(URailStationBlockLogic *Station);
   void UnregisterStation(URailStationBlockLogic *Station);
-  URailStationBlockLogic *FindStationByID(const FString &ID) const;
-  URailStationBlockLogic *FindStationByIdentifier(const FString &StationIdentifier) const;
-  FString GetStationIdentifier(const URailStationBlockLogic *Station) const;
-  const TMap<FString, URailStationBlockLogic *> &GetStations() const { return Stations; }
 
-  /** Names a station via the placing block's deterministic RNG so peers agree on the id. */
-  FString GenerateStationID(FSimRng &Rng) const;
+  URailStationBlockLogic *FindStationAt(const FQrVector3i &Pos) const;
 
-  bool LaunchTrain(URailStationBlockLogic *From, const FString &TargetStationIdentifier);
-  bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0, int32 NumCars = 4);
+  /** All stations carrying Name, sorted by block position (deterministic across peers). */
+  void FindStationsByName(const FString &Name, TArray<URailStationBlockLogic *> &Out) const;
+
+  const TMap<FQrVector3i, URailStationBlockLogic *> &GetStations() const { return Stations; }
+
+  /**
+   * Renames a station. Renaming the last station carrying the old name also updates
+   * every schedule stop that referenced it. Pc non-null marks a local player action
+   * (replicated to the session); internal/remote callers pass nullptr.
+   */
+  bool RenameStation(APlayerController *Pc, URailStationBlockLogic *Station, const FString &NewName);
+
+  /** Smallest free "Station N"; deterministic function of the registered set. */
+  FString GenerateDefaultStationName() const;
+
+  /** Distinct station names, sorted; for schedule-editing UI. */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Station")
+  TArray<FString> GetAllStationNames() const;
+
+  bool LaunchTrain(URailStationBlockLogic *From, const FString &TargetStationName);
+
+  /**
+   * InitialStation null = resolve by the initial stop's name (first free candidate in
+   * deterministic order); non-null must carry the initial stop's name.
+   */
+  bool SpawnTrainWithSchedule(UTrainSchedule *Schedule, int32 InitialStopIndex = 0, int32 NumCars = 4, URailStationBlockLogic *InitialStation = nullptr);
 
   /**
    * Player-facing placement: spawns a consist docked at Station with a single-stop schedule.
@@ -60,6 +79,43 @@ class URailwayManager : public UObject {
 
   UTrainInstance *GetTrainDataMutable(int32 Index);
   const UTrainInstance *GetTrainData(int32 Index) const;
+
+  // --- Schedule editing (train GUI). Pc non-null marks a local player action
+  // (replicated to the session); internal/remote callers pass nullptr. Every mutation
+  // keeps CurrentStopIndex pointing at the same stop object (Factorio semantics).
+
+  /** Inserts a stop targeting StationName with an Always departure condition; InsertIndex -1 appends. */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool AddScheduleStop(APlayerController *Pc, int32 TrainIndex, const FString &StationName, int32 InsertIndex = -1);
+
+  /** Removes a stop. The last remaining stop cannot be removed (remove the train instead). */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool RemoveScheduleStop(APlayerController *Pc, int32 TrainIndex, int32 StopIndex);
+
+  /** Reorders a stop to NewStopIndex (both must be valid indices). */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool MoveScheduleStop(APlayerController *Pc, int32 TrainIndex, int32 StopIndex, int32 NewStopIndex);
+
+  /** Retargets an existing stop to another (non-empty) station name. */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool SetScheduleStopStation(APlayerController *Pc, int32 TrainIndex, int32 StopIndex, const FString &StationName);
+
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool SetScheduleLoop(APlayerController *Pc, int32 TrainIndex, bool bLoop);
+
+  /**
+   * Publishes the stop's DepartureCondition to the session. The GUI edits the
+   * UCondition object in place; call this once per completed edit.
+   */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool CommitScheduleStopCondition(APlayerController *Pc, int32 TrainIndex, int32 StopIndex);
+
+  /** Remote-apply counterpart of CommitScheduleStopCondition (net handler). */
+  bool ApplyScheduleStopConditionJson(int32 TrainIndex, int32 StopIndex, const FString &ConditionJson);
+
+  /** Departs at the next dispatch opportunity regardless of the departure condition. */
+  UFUNCTION(BlueprintCallable, Category = "Rail|Schedule")
+  bool ForceDepartTrain(APlayerController *Pc, int32 TrainIndex);
 
   /** Centre + bogie poses for each car; anchor at path offset 0 = lead car centre (same as legacy single wagon). */
   bool TryGetTrainConsistWorldPoses(const UTrainInstance *Train, TArray<FTrainCarWorldPose> &OutPoses) const;
@@ -110,14 +166,16 @@ class URailwayManager : public UObject {
   float TrainFollowGapUu = 150.0f;
 
   private:
-  FQrVector3i StationRootKey(URailStationBlockLogic *S) const;
-  bool BuildPathBetweenStations(const FString &SourceStationIdentifier, const FString &TargetStationIdentifier, TArray<FRailPathStep> &OutPath) const;
+  UTrainInstance *GetTrainWithSchedule(int32 TrainIndex) const;
+  FQrVector3i StationRootKey(const URailStationBlockLogic *S) const;
+  bool BuildPathBetweenStations(URailStationBlockLogic *From, URailStationBlockLogic *To, TArray<FRailPathStep> &OutPath) const;
   bool BuildPathFromTrainToStation(
     const UTrainInstance *Train,
-    const FString &TargetStationIdentifier,
+    const URailStationBlockLogic *TargetStation,
     TArray<FRailPathStep> &OutPath,
     int32 &OutPathIndex,
-    int64 &OutDistanceAlong) const;
+    int64 &OutDistanceAlong,
+    int64 &OutCost) const;
   void SyncRailAnchorFromPathPosition(UTrainInstance *Train) const;
   bool EnsureRailAnchorForCurrentStop(UTrainInstance *Train) const;
   bool TryDispatchTrainFromSchedule(int32 Index);
@@ -160,8 +218,9 @@ class URailwayManager : public UObject {
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
   TWeakObjectPtr<URailNetwork> railNetwork;
 
+  // Keyed by the station block position — the stable identity; names are non-unique labels.
   UPROPERTY(VisibleAnywhere, Category = "Debug|Rail", meta = (AllowPrivateAccess = "true"))
-  TMap<FString, URailStationBlockLogic *> Stations;
+  TMap<FQrVector3i, URailStationBlockLogic *> Stations;
 
   UPROPERTY(Transient)
   TWeakObjectPtr<ARailSplineRenderManagerActor> RailSplineRenderer;

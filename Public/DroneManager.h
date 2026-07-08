@@ -8,7 +8,7 @@ class ADimension;
 class UDroneStationBlockLogic;
 class UInstancedStaticMeshComponent;
 class UInventory;
-struct FSimRng;
+class APlayerController;
 
 UCLASS()
 class UDroneManager : public UObject {
@@ -24,15 +24,34 @@ class UDroneManager : public UObject {
   void TickVisual(float DeltaTime);
 
   int32 LaunchDrone(UDroneStationBlockLogic *From, UDroneStationBlockLogic *To, UInventory *Payload);
+
+  /** Registers by block position; assigns a default name ("Station N") when unnamed. */
   void RegisterStation(UDroneStationBlockLogic *Station);
   void UnregisterStation(UDroneStationBlockLogic *Station);
-  UDroneStationBlockLogic *FindStationByID(const FString &ID);
 
-  /** Names a station via the placing block's deterministic RNG so peers agree on the id. */
-  FString GenerateStationID(FSimRng &Rng) const;
-  bool NameUsed(const FString &BaseName) const;
+  UDroneStationBlockLogic *FindStationAt(const Vec3i &Pos) const;
 
-  const TMap<FString, UDroneStationBlockLogic *> &GetStations() const { return Stations; }
+  /** All stations carrying Name, sorted by block position (deterministic across peers). */
+  void FindStationsByName(const FString &Name, TArray<UDroneStationBlockLogic *> &Out) const;
+
+  /** Nearest station named Name (integer distance², tie-break by position); Exclude may be null. */
+  UDroneStationBlockLogic *FindNearestStationByName(const Vec3i &FromPos, const FString &Name, const UDroneStationBlockLogic *Exclude) const;
+
+  /**
+   * Renames a station. Renaming the last station carrying the old name also updates
+   * every drone route that referenced it. Pc non-null marks a local player action
+   * (replicated to the session); internal/remote callers pass nullptr.
+   */
+  bool RenameStation(APlayerController *Pc, UDroneStationBlockLogic *Station, const FString &NewName);
+
+  /** Smallest free "Station N"; deterministic function of the registered set. */
+  FString GenerateDefaultStationName() const;
+
+  /** Distinct station names, sorted; for route-editing UI. */
+  UFUNCTION(BlueprintCallable, Category = "Drone|Station")
+  TArray<FString> GetAllStationNames() const;
+
+  const TMap<FQrVector3i, UDroneStationBlockLogic *> &GetStations() const { return Stations; }
 
   UPROPERTY()
   TArray<FDroneInstanceData> Drones;
@@ -48,6 +67,7 @@ class UDroneManager : public UObject {
   UPROPERTY()
   UInstancedStaticMeshComponent *DroneMeshComponent = nullptr;
 
+  // Keyed by the station block position — the stable identity; names are non-unique labels.
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  TMap<FString, UDroneStationBlockLogic *> Stations;
+  TMap<FQrVector3i, UDroneStationBlockLogic *> Stations;
 };

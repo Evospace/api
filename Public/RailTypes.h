@@ -134,8 +134,13 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 SimTick = 0;
 
+  // Concrete resolved destination while moving (schedule stops are non-unique names;
+  // the dispatcher pins one station and remembers it by block position).
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
-  FString TargetStationIdentifier;
+  bool bHasTargetStation = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  FQrVector3i TargetStationPos = FQrVector3i::Zero();
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   TWeakObjectPtr<URailStationBlockLogic> SourceStation;
@@ -155,8 +160,17 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   int32 CurrentStopIndex = 0;
 
+  // Player-requested departure: the next dispatch skips the departure condition.
+  // Transient intent (not serialized); reaches every peer as a player action.
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "Rail|Schedule")
+  bool bDepartureForced = false;
+
+  // Station the train physically occupies (Arrived/docked), by block position.
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
-  FString CurrentStationIdentifier;
+  bool bHasCurrentStation = false;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
+  FQrVector3i CurrentStationPos = FQrVector3i::Zero();
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   ULogicContext *DepartureContext = nullptr;

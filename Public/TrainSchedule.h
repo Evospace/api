@@ -17,8 +17,10 @@ class UTrainScheduleStop : public UInstance {
   }
 
   public:
+  // Non-unique station name (Factorio semantics: the train goes to any reachable
+  // station carrying this name).
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
-  FString StationIdentifier;
+  FString StationName;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
   UCondition *DepartureCondition = nullptr;
@@ -35,6 +37,8 @@ class UTrainSchedule : public UObject {
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rail|Schedule")
   TArray<UTrainScheduleStop *> Stops;
 
-  void AddStopAlways(const FString &StationIdentifier);
+  void AddStopAlways(const FString &StationName);
+  /** Inserts a stop with an Always departure condition; Index outside [0, Num] appends. Returns the new stop or null. */
+  UTrainScheduleStop *InsertStopAlways(const FString &StationName, int32 Index);
   int32 ResolveNextStopIndex(int32 CurrentStopIndex) const;
 };

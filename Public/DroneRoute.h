@@ -14,9 +14,10 @@ USTRUCT(BlueprintType)
 struct FDroneRoute final {
   GENERATED_BODY()
 
-  // Куда отправлять
+  // Куда отправлять: неуникальное имя станции; при отправке выбирается ближайшая
+  // станция с этим именем (детерминированный tie-break по позиции).
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  FString TargetStationID;
+  FString TargetStationName;
 
   // Фильтрация предметов (по ID или тегам)
   UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -168,6 +168,21 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Train removed by index; indices are lockstep-deterministic across peers. */
   void SubmitTrainRemove(int32 TrainIndex);
 
+  /** Station renamed (rail or drone); peers re-run RenameStation on the block at Pos. */
+  void SubmitStationRename(UBlockLogic *StationRoot, const FString &NewName);
+
+  // Train schedule edits (train GUI); peers re-run the same URailwayManager mutation
+  // by train index (indices are lockstep-deterministic across peers).
+  void SubmitTrainScheduleAddStop(int32 TrainIndex, int32 InsertIndex, const FString &StationName);
+  void SubmitTrainScheduleRemoveStop(int32 TrainIndex, int32 StopIndex);
+  void SubmitTrainScheduleMoveStop(int32 TrainIndex, int32 StopIndex, int32 NewStopIndex);
+  void SubmitTrainScheduleSetStop(int32 TrainIndex, int32 StopIndex, const FString &StationName);
+  void SubmitTrainScheduleSetLoop(int32 TrainIndex, bool bLoop);
+  /** Full serialized DepartureCondition of one stop (the GUI edits it in place, then commits). */
+  void SubmitTrainScheduleSetCondition(int32 TrainIndex, int32 StopIndex, const FString &ConditionJson);
+  /** "Depart now": the train skips its departure condition at the next dispatch opportunity. */
+  void SubmitTrainForceDepart(int32 TrainIndex);
+
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;
 
