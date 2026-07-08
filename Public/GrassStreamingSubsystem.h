@@ -39,10 +39,14 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   void AppendSurvivors(const FIntPoint &sectorPos, TMap<const UStaticProp *, TArray<FTransform3f>> &out) const;
 
   // --- Removal ---
-  /** Remove streamed props at a world block position (only_small ignored: streamed props are all small). */
-  void DestroyInBlock(const Vec3i &bpos, bool only_small);
+  /** Remove streamed props at a world block position (only_small ignored: streamed props are all
+   * small). Returns true if at least one instance was removed. */
+  bool DestroyInBlock(const Vec3i &bpos, bool only_small);
   /** Remove the streamed instance addressed by a HISM + its static index (breaking brush). */
   bool DestroyInstance(FHism *comp, int32 staticIndex);
+  /** Remove the streamed instance of `prop` at `loc` (1-unit tolerance). Remote-peer path for
+   * PropBreak: instance indices diverge across peers, so the instance travels by prop + location. */
+  bool DestroyInstanceAt(const UStaticProp *prop, const FVector &loc);
 
   // --- Queries ---
   TArray<const UStaticProp *> Get(const Vec3i &bpos) const;

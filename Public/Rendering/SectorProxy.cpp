@@ -408,9 +408,10 @@ void Drop(const UStaticProp *prop, UInventory *inv) {
 }
 } // namespace
 
-void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small) {
+bool USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small) {
   const auto out_inventory = NewObject<UAutosizeInventory>();
 
+  bool removedAny = false;
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
     auto bpos = _bpos + offset;
@@ -422,13 +423,13 @@ void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small
         Drop(it, out_inventory);
       }
 
-      sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
+      removedAny |= sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
 
       if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
         for (const auto it : grass->Get(bpos)) {
           Drop(it, out_inventory);
         }
-        grass->DestroyInBlock(bpos, only_small);
+        removedAny |= grass->DestroyInBlock(bpos, only_small);
       }
     }
   }
@@ -440,7 +441,7 @@ void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small
 
     auto *world = owner->GetWorld();
     if (!ensure(world))
-      return;
+      return removedAny;
 
     const auto dropped =
       world->SpawnActorDeferred<ADroppedInventory>(ADroppedInventory::StaticClass(), dropTransform, owner);
@@ -449,28 +450,32 @@ void USectorProxy::ClearBlockPropsDrop(const FQrVector3i &_bpos, bool only_small
       dropped->FinishSpawning(dropTransform);
     }
   }
+  return removedAny;
 }
 
-void USectorProxy::ClearBlockProps(const FQrVector3i &_bpos, bool only_small) {
+bool USectorProxy::ClearBlockProps(const FQrVector3i &_bpos, bool only_small) {
+  bool removedAny = false;
   for (int32 i = 0; i < Vec3i(3, 3, 3).Capacity(); ++i) {
     auto offset = cs::IndexToArea(i, Vec3i(-1), Vec3i(1));
     auto bpos = _bpos + offset;
 
     IndexType s_index = -1;
     if (auto sector = owner->Dim->FindBlockCell(bpos, s_index)) {
-      sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
+      removedAny |= sector->GetInstancingComponent()->DestroyInBlock(bpos, only_small);
       if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
-        grass->DestroyInBlock(bpos, only_small);
+        removedAny |= grass->DestroyInBlock(bpos, only_small);
       }
     }
   }
+  return removedAny;
 }
 
-void USectorProxy::ClearNearActors(const FQrVector3i &_bpos, float radius) {
+bool USectorProxy::ClearNearActors(const FQrVector3i &_bpos, float radius) {
   if (!owner)
-    return;
+    return false;
   const FVector worldPos = cs::WBtoWd(_bpos) + FVector(gCubeSize * 0.5f);
   const float r2 = radius * radius;
+  bool removedAny = false;
   int32 i = 0;
   while (i < owner->ActorDecorations.Num()) {
     AActor *a = owner->ActorDecorations[i];
@@ -481,8 +486,10 @@ void USectorProxy::ClearNearActors(const FQrVector3i &_bpos, float radius) {
     if (FVector::DistSquared(a->GetActorLocation(), worldPos) <= r2) {
       a->Destroy();
       owner->ActorDecorations.RemoveAtSwap(i);
+      removedAny = true;
       continue;
     }
     ++i;
   }
+  return removedAny;
 }

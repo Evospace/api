@@ -34,6 +34,7 @@ class ADimension;
 class ADroppedInventory;
 class UBlockLogic;
 class UInventoryAccess;
+class UStaticProp;
 class URecipe;
 class UStaticResearch;
 struct FMapChangeSet;
@@ -161,6 +162,15 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
 
   /** Mop clean: peers hide their own footprint decals inside the world sphere (Center, Radius). */
   void SubmitFootprintClean(const FVector &Center, float Radius);
+
+  /** Decoration clear that accompanied a local terrain edit or block placement: peers remove
+   * small props around BlockPos (and actor decorations within ActorClearRadius when > 0).
+   * Decorations are per-peer saved state, so the clear must be mirrored explicitly. */
+  void SubmitPropsClear(const FIntVector &BlockPos, float ActorClearRadius);
+
+  /** Single prop instance broken by the breaking brush. Instance indices diverge across peers,
+   * so peers resolve the instance by prop + world location (grass subsystem or column bucket). */
+  void SubmitPropBreak(const UStaticProp *Prop, const FVector &Location);
 
   /** Train placed at a station (train placer item); peers re-run PlaceTrainAtStation on their sim. */
   void SubmitTrainPlace(UBlockLogic *StationRoot, int32 NumCars);

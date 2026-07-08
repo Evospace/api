@@ -64,11 +64,12 @@ class USectorProxy : public UObject {
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 
-  virtual void ClearBlockProps(const FQrVector3i &bpos, bool only_small);
-  virtual void ClearBlockPropsDrop(const FQrVector3i &bpos, bool only_small);
+  // All return true if at least one decoration was removed.
+  virtual bool ClearBlockProps(const FQrVector3i &bpos, bool only_small);
+  virtual bool ClearBlockPropsDrop(const FQrVector3i &bpos, bool only_small);
 
-  // New: clear near actor decorations by distance
-  virtual void ClearNearActors(const FQrVector3i &bpos, float radius);
+  // Clear near actor decorations by distance
+  virtual bool ClearNearActors(const FQrVector3i &bpos, float radius);
 
   AColumn *GetColumn() const { return owner; }
 
