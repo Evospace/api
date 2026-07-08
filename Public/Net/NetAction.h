@@ -89,8 +89,8 @@ struct FNetActionRegistrar {
 
 /** Registers Type (which must expose `static constexpr uint8 ActionId`) for the receive
  * path. Place next to the action's Serialize/Apply definitions in the domain cpp. */
-#define EVO_REGISTER_NET_ACTION(Type)                          \
-  static const FNetActionRegistrar GNetActionRegistrar##Type(  \
+#define EVO_REGISTER_NET_ACTION(Type)                         \
+  static const FNetActionRegistrar GNetActionRegistrar##Type( \
     Type::ActionId, []() -> TUniquePtr<FNetAction> { return TUniquePtr<FNetAction>(new Type()); });
 
 /** Resolve the session and submit in one call. Safe with a null context, no game
