@@ -34,10 +34,8 @@ class ADimension;
 class ADroppedInventory;
 class UBlockLogic;
 class UInventoryAccess;
-class UStaticProp;
-class URecipe;
-class UStaticResearch;
 struct FMapChangeSet;
+struct FNetAction;
 
 /**
  * Multiplayer Layer 2 — session / membership (ai/todo/lan_multiplayer_entry_plan.md).
@@ -123,13 +121,21 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   // -- Player-action command pipeline (non-map-edit actions) ------------------
   // Same star-topology relay as map edits, but the payload is an intent delta, not absolute
   // cell state, so the host relays to everyone EXCEPT the originator (the originator already
-  // applied it locally; re-applying would double it).
+  // applied it locally; re-applying would double it). Actions are FNetAction structs defined
+  // and registered next to their domain code (Online/Actions/*); this subsystem only routes.
 
   /** Convenience resolver (any world-context object). Null when no game instance. */
   static UNetSessionSubsystem *Get(const UObject *WorldContext);
 
-  /** True while this peer is applying a remote player-action; Submit* hooks must no-op. */
+  /** True while this peer is applying a remote player-action; submit hooks must no-op. */
   bool IsApplyingRemoteAction() const { return bApplyingRemoteAction; }
+
+  /**
+   * Broadcast a locally applied player action (see FNetAction). No-op without a session,
+   * and while applying a remote action unless the action opts in (AllowDuringRemoteApply).
+   * Prefer the SubmitNetAction(WorldContext, Action) free helper at call sites.
+   */
+  void SubmitAction(FNetAction &Action);
 
   /**
    * Block-inventory diff capture. Wrap any local player operation that may move items
@@ -140,63 +146,13 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void BeginBlockInvCapture(UBlockLogic *Block);
   void EndBlockInvCapture();
 
-  /** Recipe picked in a crafter GUI. Recipe == nullptr syncs a reset. */
-  void SubmitRecipeSelect(UBlockLogic *Block, const URecipe *Recipe);
-
-  /** Settings JSON pasted onto a block (clipboard paste in the block GUI). */
-  void SubmitBlockSettings(UBlockLogic *Block, const FString &SettingsJson);
-
-  /** Research queue edits from the research screen. */
-  void SubmitResearchEnqueue(const UStaticResearch *Research);
-  void SubmitResearchDequeue();
-
+  // Live drop-actor registry (drops are identified across peers by a net GUID).
   /** Track a spawned drop actor so remote pickup commands can resolve it. */
   void RegisterDropActor(ADroppedInventory *Drop);
-  /** Broadcast a locally spawned drop (called once from the actor when physics is live). */
-  void AnnounceLocalDrop(ADroppedInventory *Drop);
-  /** Broadcast that the local player consumed a drop; remote copies get destroyed. */
-  void SubmitDropPickup(const FGuid &DropId);
-
-  /** Screwdriver rotation: peers re-run it on their own block copy at the absolute orientation. */
-  void SubmitBlockRotate(const FIntVector &Pos, const FQuat &Rotation);
-
-  /** Mop clean: peers hide their own footprint decals inside the world sphere (Center, Radius). */
-  void SubmitFootprintClean(const FVector &Center, float Radius);
-
-  /** Decoration clear that accompanied a local terrain edit or block placement: peers remove
-   * small props around BlockPos (and actor decorations within ActorClearRadius when > 0).
-   * Decorations are per-peer saved state, so the clear must be mirrored explicitly. */
-  void SubmitPropsClear(const FIntVector &BlockPos, float ActorClearRadius);
-
-  /** Single prop instance broken by the breaking brush. Instance indices diverge across peers,
-   * so peers resolve the instance by prop + world location (grass subsystem or column bucket). */
-  void SubmitPropBreak(const UStaticProp *Prop, const FVector &Location);
-
-  /** Train placed at a station (train placer item); peers re-run PlaceTrainAtStation on their sim. */
-  void SubmitTrainPlace(UBlockLogic *StationRoot, int32 NumCars);
-
-  /** Train removed by index; indices are lockstep-deterministic across peers. */
-  void SubmitTrainRemove(int32 TrainIndex);
-
-  /** Station renamed (rail or drone); peers re-run RenameStation on the block at Pos. */
-  void SubmitStationRename(UBlockLogic *StationRoot, const FString &NewName);
-
-  // Train schedule edits (train GUI); peers re-run the same URailwayManager mutation
-  // by train index (indices are lockstep-deterministic across peers).
-  void SubmitTrainScheduleAddStop(int32 TrainIndex, int32 InsertIndex, const FString &StationName);
-  void SubmitTrainScheduleRemoveStop(int32 TrainIndex, int32 StopIndex);
-  void SubmitTrainScheduleMoveStop(int32 TrainIndex, int32 StopIndex, int32 NewStopIndex);
-  void SubmitTrainScheduleSetStop(int32 TrainIndex, int32 StopIndex, const FString &StationName);
-  void SubmitTrainScheduleSetLoop(int32 TrainIndex, bool bLoop);
-  /** Full serialized DepartureCondition of one stop (the GUI edits it in place, then commits). */
-  void SubmitTrainScheduleSetCondition(int32 TrainIndex, int32 StopIndex, const FString &ConditionJson);
-  /** "Depart now": the train skips its departure condition at the next dispatch opportunity. */
-  void SubmitTrainForceDepart(int32 TrainIndex);
-
-  // Rail-node segment link/unlink (rail linker item); peers re-run the same graph mutation on
-  // the two nodes at the given root block positions. Suppressed while applying a remote action.
-  void SubmitRailLink(UBlockLogic *NodeA, UBlockLogic *NodeB);
-  void SubmitRailUnlink(UBlockLogic *NodeA, UBlockLogic *NodeB);
+  /** True when a live drop with this id is already tracked (dedupes relayed spawns). */
+  bool HasDropActor(const FGuid &Id) const;
+  /** Untrack and return the live drop with this id (consumed locally or remotely). */
+  ADroppedInventory *ClaimDropActor(const FGuid &Id);
 
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSessionStatus OnStatus;

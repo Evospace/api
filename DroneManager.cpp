@@ -5,7 +5,7 @@
 #include "Public/Dimension.h"
 #include "Public/DroneStationBlockLogic.h"
 #include "Public/Inventory.h"
-#include "Public/Net/NetSessionSubsystem.h"
+#include "Evospace/Online/Actions/RailNetActions.h"
 #include "Public/StationNameUtils.h"
 
 namespace {
@@ -271,9 +271,11 @@ bool UDroneManager::RenameStation(APlayerController *Pc, UDroneStationBlockLogic
   }
 
   if (Pc) {
-    if (UNetSessionSubsystem *Net = UNetSessionSubsystem::Get(Pc)) {
-      Net->SubmitStationRename(Station, Trimmed);
-    }
+    FStationRenameAction Action;
+    const auto Pos = Station->GetBlockPos();
+    Action.Pos = FIntVector(Pos.X, Pos.Y, Pos.Z);
+    Action.NewName = Trimmed;
+    SubmitNetAction(Pc, Action);
   }
   return true;
 }
