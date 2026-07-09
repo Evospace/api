@@ -4,6 +4,7 @@
 
 #include "Engine/GameInstance.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
+#include "Evospace/Online/PlayerIdentity.h"
 #include "Public/SavePathProvider.h"
 #include "Logging/StructuredLog.h"
 #include "Misc/FileHelper.h"
@@ -739,6 +740,64 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
   // block position, restored after blocks register) survive the rename.
   migrators.Add({ FVersionStruct{ 0, 21, 1, 474, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
                    return ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, { TEXT("CopperRailNode"), TEXT("SteelRailNode"), TEXT("AluminiumRailNode"), TEXT("StainlessSteelRailNode"), TEXT("TitaniumRailNode"), TEXT("CompositeRailNode"), TEXT("NeutroniumRailNode") }, TEXT("SteelRail"));
+                 } });
+
+  // Single Player.json becomes per-player Players/<stable id>.json, and the research
+  // state it carried becomes the save-wide Research.json (one shared tree per game).
+  // The save's sole legacy player is whoever is loading it (the save owner), so the
+  // profile moves under the local stable id. Idempotent: no root Player.json, no-op.
+  migrators.Add({ FVersionStruct{ 0, 21, 1, 475, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+                   const FString playerSrc = RootPath / TEXT("Player.json");
+                   if (!PlatformFile.FileExists(*playerSrc)) {
+                     return true;
+                   }
+
+                   FString playerStr;
+                   TSharedPtr<FJsonObject> playerObj;
+                   if (FFileHelper::LoadFileToString(playerStr, *playerSrc)) {
+                     TSharedRef<TJsonReader<>> reader = TJsonReaderFactory<>::Create(playerStr);
+                     FJsonSerializer::Deserialize(reader, playerObj);
+                   }
+                   if (!playerObj.IsValid()) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse Player.json for '" << DisplayName << "'";
+                     return false;
+                   }
+
+                   auto writeJson = [](const TSharedPtr<FJsonObject> &obj, const FString &path) {
+                     FString out;
+                     const auto writer = TJsonWriterFactory<>::Create(&out);
+                     return FJsonSerializer::Serialize(obj.ToSharedRef(), writer) && FFileHelper::SaveStringToFile(out, *path);
+                   };
+
+                   // Split the research fields out into the save-level Research.json.
+                   static const TCHAR *ResearchFields[] = {
+                     TEXT("ActiveResearchLeft"), TEXT("ActiveResearch"), TEXT("ResearchQueue"), TEXT("OldResearches"), TEXT("CompletedResearches")
+                   };
+                   TSharedPtr<FJsonObject> researchObj = MakeShared<FJsonObject>();
+                   for (const TCHAR *field : ResearchFields) {
+                     if (TSharedPtr<FJsonValue> value = playerObj->TryGetField(field)) {
+                       researchObj->SetField(field, value);
+                       playerObj->RemoveField(field);
+                     }
+                   }
+                   if (!writeJson(researchObj, RootPath / TEXT("Research.json"))) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to write Research.json for '" << DisplayName << "'";
+                     return false;
+                   }
+
+                   const FString playerDst = FSavePathProvider::GetPlayerProfilePath(RootPath, PlayerIdentity::GetStableId());
+                   PlatformFile.CreateDirectoryTree(*FPaths::GetPath(playerDst));
+                   if (!writeJson(playerObj, playerDst)) {
+                     LOG(ERROR_LL) << "SaveMigrationManager: Failed to write profile '" << playerDst
+                                   << "' for '" << DisplayName << "'";
+                     return false;
+                   }
+                   PlatformFile.DeleteFile(*playerSrc);
+
+                   LOG(INFO_LL) << "SaveMigrationManager: Split Player.json into per-player profile + Research.json for '"
+                                << DisplayName << "'";
+                   return true;
                  } });
 
   // Migrators end

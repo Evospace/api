@@ -39,6 +39,12 @@ struct EVOSPACE_API FSavePathProvider {
     return GetLocalSlotRoot(GetStagingSlotName());
   }
 
+  // Per-player profile inside a save root. One file per player who ever entered the
+  // world, keyed by the stable player id (see PlayerIdentity::GetStableId).
+  static FString GetPlayerProfilePath(const FString &SaveRoot, const FString &StableId) {
+    return SaveRoot / TEXT("Players") / (StableId + TEXT(".json"));
+  }
+
   static bool IsReservedSlotName(const FString &SlotName) {
     if (SlotName.Equals(GetStagingSlotName(), ESearchCase::IgnoreCase)) {
       return true;

@@ -43,6 +43,9 @@ struct FEngineDataStorage {
   UPROPERTY(EditAnywhere)
   bool DetailShadows = true;
 
+  UPROPERTY(EditAnywhere)
+  bool SpotlightShadows = true;
+
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool Performance = false;
 

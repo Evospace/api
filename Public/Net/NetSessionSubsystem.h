@@ -17,6 +17,7 @@ enum class ENetSessionStatus : uint8 {
   PeerConnecting, // host: a guest's transport connected, handshake in progress
   PeerJoined, // a peer finished joining (roster grew)
   PeerLeft, // a peer disconnected (roster shrank)
+  PeerRenamed, // a peer changed its display name (Message = new name)
   Connecting, // guest: join attempt started; connecting transport + handshaking (no progress yet)
   ReceivingWorld, // guest: Welcome accepted, world snapshot transfer starting (Pct via OnSnapshotProgress)
   Joined, // guest: we finished joining the host
@@ -106,9 +107,17 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
   int32 GetLocalPeerId() const { return (int32)LocalPeerId; }
 
-  /** Name advertised to others. Optional; defaults to the machine name. */
+  /** Local player name shown to others (custom name / Steam persona / machine name). */
+  UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
+  FString GetPlayerName() const;
+
+  /**
+   * Rename the local player. Persists the custom name (empty resets to the Steam/machine
+   * default) and, inside a session, broadcasts it so rosters and ghost labels update.
+   * Names are display-only and non-unique; identity is the stable player id.
+   */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
-  void SetDisplayName(const FString &Name) { LocalDisplayName = Name; }
+  void SetPlayerName(const FString &Name);
 
   /**
    * Route a local player world-edit through the command pipeline. Called from the universal
@@ -216,6 +225,17 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void GuestOnPeerJoined(FNetPeerId PeerId, const FString &Name);
   void GuestOnPeerLeft(FNetPeerId PeerId);
 
+  // Display-name change (both directions): host applies + relays a guest's rename,
+  // guests update their roster copy.
+  void HandlePeerRenamed(FNetPeerId FromPeer, FNetPeerId RenamedPeer, const FString &Name);
+
+  // Guest→host player-profile upload (see ProfileMsgType). The guest's player state
+  // (inventory/position/research) lives only on the guest machine, so it periodically
+  // pushes its serialized profile; the host writes it through to the staging save's
+  // Players/<stable id>.json so world saves include every player's latest state.
+  bool SendLocalProfile();
+  void HandleProfileUpload(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
+
   // Snapshot transfer (L3). Host sends the save blob after Welcome; guest sends Ready
   // once it arrives.
   void OnBlobReceived(FNetPeerId Peer, uint32 BlobId, const TArray<uint8> &Data);
@@ -304,6 +324,11 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   };
   TMap<FNetPeerId, FGhostState> Ghosts; // keyed by global PeerId (host == 0)
   float AvatarSendAccum = 0.f;
+
+  // Guest profile-upload cadence. Counts up to the interval; a failed attempt (controller
+  // not ready yet) retries shortly instead of waiting a full period.
+  float ProfileSendAccum = 0.f;
+  static constexpr float ProfileSendIntervalSec = 30.f;
 
   // Host-monotonic order stamp for confirmed map edits (own + relayed guest edits).
   int32 HostEditSeq = 0;

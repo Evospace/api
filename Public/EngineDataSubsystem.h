@@ -54,6 +54,7 @@ class UEngineDataSubsystem : public UGameInstanceSubsystem {
       .addProperty("texture_mip_bias", QR_GET_SET(Storage.TextureMipBias)) //@field number
       .addProperty("render_target_pool_min_mb", QR_GET_SET(Storage.RenderTargetPoolMinMb)) //@field integer
       .addProperty("detail_shadows", QR_GET_SET(Storage.DetailShadows)) //@field boolean
+      .addProperty("spotlight_shadows", QR_GET_SET(Storage.SpotlightShadows)) //@field boolean
       .addProperty("fps", QR_GET_SET(Storage.Fps)) //@field integer
       .addProperty("res_x", QR_GET_SET(Storage.ResolutionX)) //@field integer
       .addProperty("res_y", QR_GET_SET(Storage.ResolutionY)) //@field integer
