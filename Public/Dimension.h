@@ -176,6 +176,9 @@ class ADimension : public AActor {
   /** ADimension::Runtime must be set for SectorArea to advance LoadedPos/Radius and for LoadColumn to run. */
   bool IsSimulationRuntimeBound() const { return Runtime != nullptr; }
 
+  /** Current simulation runtime without creating one; null when unbound (e.g. preview/menu). */
+  UDimensionRuntime *GetSimulationRuntime() const { return Runtime; }
+
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
   virtual void Tick(float DeltaTime) override;

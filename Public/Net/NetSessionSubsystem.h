@@ -163,6 +163,19 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Clear remote avatar ghosts after the local player switches presentation surface. */
   void OnLocalSurfaceChanged();
 
+  // Lightweight snapshot of one remote-player ghost for map/compass markers: world position
+  // (uu), facing yaw (deg) and display name. Non-reflected; consumed by native HUD widgets.
+  struct FNetGhostView {
+    int32 PeerId = 0;
+    FString Name;
+    FVector Location = FVector::ZeroVector;
+    float Yaw = 0.0f;
+  };
+
+  /** Snapshot of every live remote-player ghost (position + facing + name). Empty in
+   *  singleplayer or before any peer's avatar has arrived. */
+  void GetGhostViews(TArray<FNetGhostView> &Out) const;
+
   private:
   enum class ESessionRole : uint8 { None,
                                     Host,

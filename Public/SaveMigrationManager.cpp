@@ -734,6 +734,13 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
                    return true;
                  } });
 
+  // Collapse the per-material rail node family (Copper..Neutronium RailNode) into the
+  // single SteelRail block. Positions are unchanged, so rail-network links (stored by
+  // block position, restored after blocks register) survive the rename.
+  migrators.Add({ FVersionStruct{ 0, 21, 1, 474, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   return ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, { TEXT("CopperRailNode"), TEXT("SteelRailNode"), TEXT("AluminiumRailNode"), TEXT("StainlessSteelRailNode"), TEXT("TitaniumRailNode"), TEXT("CompositeRailNode"), TEXT("NeutroniumRailNode") }, TEXT("SteelRail"));
+                 } });
+
   // Migrators end
   // ================================
   // ================================

@@ -62,6 +62,9 @@ struct FEngineDataStorage {
   bool CompassShowSpawnPoint = true;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
+  bool CompassShowGhosts = true;
+
+  UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool CtrlHotbar = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadOnly)

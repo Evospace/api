@@ -3,17 +3,21 @@
 
 #include "CoreMinimal.h"
 #include "BlockLogic.h"
+#include "RailLinkable.h"
 #include "RailNodeBlockLogic.generated.h"
 
 class URailNetwork;
 class UBlockLogic;
 class ABlockActor;
 UCLASS()
-class URailNodeBlockLogic : public UBlockLogic {
+class URailNodeBlockLogic : public UBlockLogic, public IRailLinkable {
   GENERATED_BODY()
 
   public:
   URailNodeBlockLogic();
+
+  // IRailLinkable: a plain rail node is its own graph node.
+  virtual URailNodeBlockLogic *GetRailNode() override { return this; }
 
   virtual void BlockBeginPlay() override;
   virtual void BlockEndPlay() override;
@@ -34,7 +38,7 @@ class URailNodeBlockLogic : public UBlockLogic {
   void RailUnlink(URailNodeBlockLogic *Other);
   void UnlinkAllRail();
 
-  // Face-adjacent only (see URailNetwork::TryAddSegment). Used by ARailLinkerItemLogic.
+  // Face-adjacent only (see URailNetwork::TryAddSegment). Used by ASteelRailItemLogic.
   // Both apply locally and replicate through the player-action pipeline (RailLink/RailUnlink).
   void TryAddSegmentTo(URailNodeBlockLogic *Other);
   void TryRemoveSegmentTo(URailNodeBlockLogic *Other);

@@ -30,6 +30,9 @@ class UMapWidgetData : public UObject, public ISerializableJson {
   bool UserMarkers = true;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
+  bool Ghosts = true;
+
+  UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int32 TextFontSize = 12;
 
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -47,6 +50,7 @@ inline bool UMapWidgetData::SerializeJson(TSharedPtr<FJsonObject> json) const {
   json_helper::TrySet(json, "MapObjects", MapObjects);
   json_helper::TrySet(json, "Railways", Railways);
   json_helper::TrySet(json, "UserMarkers", UserMarkers);
+  json_helper::TrySet(json, "Ghosts", Ghosts);
   json_helper::TrySet(json, "TextFontSize", TextFontSize);
   json_helper::TrySet(json, "TextFontStyle", TextFontStyle);
   return true;
@@ -60,6 +64,7 @@ inline bool UMapWidgetData::DeserializeJson(TSharedPtr<FJsonObject> json) {
   json_helper::TryGet(json, "MapObjects", MapObjects);
   json_helper::TryGet(json, "Railways", Railways);
   json_helper::TryGet(json, "UserMarkers", UserMarkers);
+  json_helper::TryGet(json, "Ghosts", Ghosts);
   json_helper::TryGet(json, "TextFontSize", TextFontSize);
   json_helper::TryGet(json, "TextFontStyle", TextFontStyle);
   return true;
