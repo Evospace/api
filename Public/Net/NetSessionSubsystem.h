@@ -349,6 +349,17 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FBlockInvCapture InvCapture;
   int32 InvCaptureDepth = 0;
 
+  // Open-block config watch (see UpdateBlockConfigWatch): while the local player has a
+  // block GUI open, its settings JSON is diffed periodically and changes are broadcast
+  // as FBlockSettingsAction.
+  void UpdateBlockConfigWatch(float DeltaTime);
+  void FlushBlockConfigWatch();
+  void RebaseBlockConfigWatch();
+  TWeakObjectPtr<UBlockLogic> ConfigWatchBlock;
+  FIntVector ConfigWatchPos = FIntVector::ZeroValue;
+  FString ConfigWatchJson;
+  float ConfigWatchAccum = 0.f;
+
   // Live drop actors by net id (local + remote spawns), for remote pickup resolution.
   TMap<FGuid, TWeakObjectPtr<ADroppedInventory>> DropActors;
 };
