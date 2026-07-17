@@ -23,12 +23,14 @@ class EVOSPACE_API USimulationSurfaceSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
   public:
+  virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
   UDimensionRuntime *GetOrCreateRuntime(const FString &SurfaceFolderName);
 
   void ApplySurfaceLifecycle(const FString &SurfaceFolderName, ESurfaceSimulationLifecycle Lifecycle,
                              ADimension *PresentationForRebind = nullptr);
-  /** Drops every per-surface runtime when a save is loaded into temp (new game / reload). */
+  /** Drops every per-surface runtime; runs on UGameSessionSubsystem::OnSessionEnded (new game / reload). */
+  UFUNCTION()
   void ResetAllSurfaceRuntimesForSaveLoad();
 
   void GetSurfaceFolderNames(TArray<FString> &OutNames) const;

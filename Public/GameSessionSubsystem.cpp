@@ -12,8 +12,11 @@
 #include "Public/DimensionRuntime.h"
 #include "Public/SurfaceDefinition.h"
 #include "Public/Net/NetSessionSubsystem.h"
+#include "Public/SaveMigrationManager.h"
+#include "Public/SavePathProvider.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
 #include "Evospace/Player/MainPlayerController.h"
+#include "Qr/DB.h"
 #include "Qr/GameInstanceHelper.h"
 #include "Qr/QrFind.h"
 #include "Qr/StaticLogger.h"
@@ -27,6 +30,51 @@ void UGameSessionSubsystem::Initialize(FSubsystemCollectionBase &Collection) {
     Data = NewObject<UGameSessionData>(this, TEXT("GameSessionData"));
   }
 }
+bool UGameSessionSubsystem::BeginSession(const FPreparedSaveContext &Context) {
+  const FString &displaySaveName = Context.DisplaySaveName;
+
+  if (displaySaveName.IsEmpty()) {
+    LOG(ERROR_LL) << "LoadSave: DisplaySaveName is empty";
+    return false;
+  }
+
+  EndSession();
+
+  const double t0 = FPlatformTime::Seconds();
+
+  const double t1 = FPlatformTime::Seconds();
+  USaveMigrationManager::RunMigrationsIfNeeded(displaySaveName, GetGameInstance());
+  LOG(INFO_LL) << "LoadSave: Migrations took " << (int32)((FPlatformTime::Seconds() - t1) * 1000.0) << " ms";
+
+  const double t2 = FPlatformTime::Seconds();
+  // Notify subsystems to load their save-scoped data from staging before session data is set
+  NotifySaveLoaded(FSavePathProvider::GetStagingSlotName());
+  LOG(INFO_LL) << "LoadSave: NotifySaveLoaded took " << (int32)((FPlatformTime::Seconds() - t2) * 1000.0) << " ms";
+
+  const double t3 = FPlatformTime::Seconds();
+  auto data = UStaticSaveHelpers::LoadGameSessionData(GetGameInstance(), FSavePathProvider::GetStagingSlotName());
+  LOG(INFO_LL) << "LoadSave: LoadGameSessionData took " << (int32)((FPlatformTime::Seconds() - t3) * 1000.0) << " ms";
+  if (!data) {
+    LOG(ERROR_LL) << "LoadSave: GameSessionData load failed for save " << displaySaveName;
+    return false;
+  }
+
+  const double t4 = FPlatformTime::Seconds();
+  auto *instance = Cast<UMainGameInstance>(GetGameInstance());
+  check(instance);
+  SetDataExt(data, displaySaveName, UGameSessionData::VersionFromString(UMainGameInstance::GetBuildString()).Get({}), instance->DB->GetMods());
+  LOG(INFO_LL) << "LoadSave: SetDataExt took " << (int32)((FPlatformTime::Seconds() - t4) * 1000.0) << " ms";
+
+  LOG(INFO_LL) << "LoadSave: total " << (int32)((FPlatformTime::Seconds() - t0) * 1000.0) << " ms"
+               << " sourceType=" << static_cast<int32>(Context.SourceType)
+               << " readOnly=" << (Context.ReadOnly ? 1 : 0);
+  return true;
+}
+
+void UGameSessionSubsystem::EndSession() {
+  OnSessionEnded.Broadcast();
+}
+
 void UGameSessionSubsystem::RequestSave(const FString &saveName) {
   OnSaveRequested.Broadcast(saveName);
 }

@@ -103,17 +103,11 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"))
   static TArray<UStaticTip *> GetAllStaticTips(const UObject *WorldContextObject);
 
-  UFUNCTION(BlueprintCallable)
-  void GameLoadingSequence(const FString &saveName);
+  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
+  bool StartGameFromPreparedContext(const FPreparedSaveContext &Context);
 
   UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
-  void GameLoadingSequenceFromPreparedContext(const FPreparedSaveContext &Context);
-
-  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
-  bool StartGameFromPreparedContext(const FPreparedSaveContext &Context, bool bListenServer);
-
-  UFUNCTION(BlueprintCallable, Category = "Evospace|Game")
-  bool StartGameFromSave(const FString &saveName, bool bListenServer);
+  bool StartGameFromSave(const FString &saveName);
 
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Game")
   FString GetGameplayMapPath() const;
@@ -129,13 +123,6 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Gui")
   static UEvoGuiProjectStyle *GetGuiProjectStyle();
 
-  private:
-  void HandlePostLoadMap(UWorld *NewWorld);
-
-  FDelegateHandle PostLoadMapHandle;
-  FString PendingStartSaveName;
-
-  public:
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 

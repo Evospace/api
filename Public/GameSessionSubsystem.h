@@ -6,9 +6,11 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Public/GameSessionData.h"
 #include "Public/ItemHighlighter.h"
+#include "Public/SaveSourceTypes.h"
 #include "GameSessionSubsystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDataUpdated, UGameSessionData *, gameSessionData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSessionEnded);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveRequested, const FString &, SaveName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveLoading, const FString &, SaveName);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMenuMuffling, bool, bMuffled);
@@ -23,6 +25,18 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
   public:
+  /**
+   * Starts a game session from a staged save: ends the previous session, runs migrations,
+   * lets subsystems load their save-scoped data (OnSaveLoading) and publishes the loaded
+   * UGameSessionData (OnDataUpdated). Must complete before the gameplay map opens — the
+   * world starts generating from this data in BeginPlay.
+   */
+  bool BeginSession(const FPreparedSaveContext &Context);
+
+  /** Tears down per-session state; subscribers of OnSessionEnded drop their save-scoped data. */
+  UFUNCTION(BlueprintCallable)
+  void EndSession();
+
   UFUNCTION(BlueprintCallable)
   const UGameSessionData *GetData() const { return Data; }
 
@@ -120,6 +134,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
 
   UPROPERTY(BlueprintAssignable)
   FDataUpdated OnDataUpdated;
+
+  UPROPERTY(BlueprintAssignable)
+  FOnSessionEnded OnSessionEnded;
 
   UPROPERTY(BlueprintAssignable)
   FOnSaveRequested OnSaveRequested;
