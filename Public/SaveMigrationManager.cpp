@@ -4,7 +4,6 @@
 
 #include "Engine/GameInstance.h"
 #include "Evospace/Misc/StaticSaveHelpers.h"
-#include "Evospace/Online/PlayerIdentity.h"
 #include "Public/SavePathProvider.h"
 #include "Logging/StructuredLog.h"
 #include "Misc/FileHelper.h"
@@ -742,10 +741,11 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
                    return ReplaceBlocksInLogicJsonAtRoot(RootPath, DisplayName, { TEXT("CopperRailNode"), TEXT("SteelRailNode"), TEXT("AluminiumRailNode"), TEXT("StainlessSteelRailNode"), TEXT("TitaniumRailNode"), TEXT("CompositeRailNode"), TEXT("NeutroniumRailNode") }, TEXT("SteelRail"));
                  } });
 
-  // Single Player.json becomes per-player Players/<stable id>.json, and the research
+  // Single Player.json becomes per-player Players/<host id>.json, and the research
   // state it carried becomes the save-wide Research.json (one shared tree per game).
-  // The save's sole legacy player is whoever is loading it (the save owner), so the
-  // profile moves under the local stable id. Idempotent: no root Player.json, no-op.
+  // The save's sole legacy player is whoever is loading it (the save owner = the host),
+  // so the profile moves under the fixed host id — the local player is always the host
+  // and must not depend on a machine/Steam stable id. Idempotent: no root Player.json, no-op.
   migrators.Add({ FVersionStruct{ 0, 21, 1, 475, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
                    IPlatformFile &PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
                    const FString playerSrc = RootPath / TEXT("Player.json");
@@ -786,7 +786,7 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
                      return false;
                    }
 
-                   const FString playerDst = FSavePathProvider::GetPlayerProfilePath(RootPath, PlayerIdentity::GetStableId());
+                   const FString playerDst = FSavePathProvider::GetPlayerProfilePath(RootPath, FSavePathProvider::GetHostProfileId());
                    PlatformFile.CreateDirectoryTree(*FPaths::GetPath(playerDst));
                    if (!writeJson(playerObj, playerDst)) {
                      LOG(ERROR_LL) << "SaveMigrationManager: Failed to write profile '" << playerDst

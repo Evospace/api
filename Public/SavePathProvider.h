@@ -45,6 +45,16 @@ struct EVOSPACE_API FSavePathProvider {
     return SaveRoot / TEXT("Players") / (StableId + TEXT(".json"));
   }
 
+  // The local player is always the host of their own single-player / hosted world, so the
+  // host's own profile uses a fixed key instead of the machine/Steam-dependent stable id:
+  // a changing stable id (config reset, new machine, Steam up vs down) must never orphan
+  // the host's profile. Only remote guests key by their real stable id (see
+  // UNetSessionSubsystem::GetLocalProfileId).
+  static const FString &GetHostProfileId() {
+    static const FString Id = TEXT("host");
+    return Id;
+  }
+
   static bool IsReservedSlotName(const FString &SlotName) {
     if (SlotName.Equals(GetStagingSlotName(), ESearchCase::IgnoreCase)) {
       return true;

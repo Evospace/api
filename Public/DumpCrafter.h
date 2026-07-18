@@ -21,6 +21,8 @@ class UDumpCrafterBlockLogic : public UAbstractCrafter {
 
   virtual void BlockBeginPlay() override;
 
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+
   UPROPERTY(BlueprintReadOnly)
   FLinearColor Color;
 

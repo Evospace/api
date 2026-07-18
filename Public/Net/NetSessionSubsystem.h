@@ -136,6 +136,14 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   /** Convenience resolver (any world-context object). Null when no game instance. */
   static UNetSessionSubsystem *Get(const UObject *WorldContext);
 
+  /**
+   * Profile id for the local player's own save profile inside a world. The local player is
+   * the host of their world unless actively joined to a remote host as a guest, so this is
+   * the fixed host id (FSavePathProvider::GetHostProfileId) in single-player and while
+   * hosting, and only a real guest keys by their stable id (PlayerIdentity::GetStableId).
+   */
+  static FString GetLocalProfileId(const UObject *WorldContext);
+
   /** True while this peer is applying a remote player-action; submit hooks must no-op. */
   bool IsApplyingRemoteAction() const { return bApplyingRemoteAction; }
 
