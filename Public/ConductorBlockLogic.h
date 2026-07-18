@@ -7,7 +7,7 @@
 #include "Evospace/Props/DimensionPropComponent.h"
 #include "Public/EvoRingBuffer.h"
 #include "Public/LazyGameSessionData.h"
-#include "Public/LogicSettingsBlockLogic.h"
+#include "Public/BlockLogic.h"
 
 #include "CoverAttachInterface.h"
 
@@ -216,7 +216,7 @@ class UBlockNetwork : public UObject {
 /// Conductors
 
 UCLASS(BlueprintType)
-class UConductorBlockLogic : public ULogicSettingsBlockLogic, public ICoverAttachInterface {
+class UConductorBlockLogic : public UBlockLogic, public ICoverAttachInterface {
   using Self = UConductorBlockLogic;
   EVO_CODEGEN_INSTANCE(ConductorBlockLogic)
   virtual void lua_reg(lua_State *L) const override {

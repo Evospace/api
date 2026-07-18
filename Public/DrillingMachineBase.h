@@ -3,6 +3,7 @@
 #pragma once
 #include "BlockLogic.h"
 #include "EvoRingBuffer.h"
+#include "SwitchInterface.h"
 #include "DrillingMachineBase.generated.h"
 
 class UResourceAccessor;
@@ -17,7 +18,7 @@ class USourceData;
  * Handles resource extraction, energy consumption, and inventory management.
  */
 UCLASS(Abstract)
-class UDrillingMachineBase : public UBlockLogic {
+class UDrillingMachineBase : public UBlockLogic, public ISwitchInterface {
   GENERATED_BODY()
   using Self = UDrillingMachineBase;
   EVO_CODEGEN_INSTANCE(DrillingMachineBase)
@@ -93,6 +94,11 @@ class UDrillingMachineBase : public UBlockLogic {
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
+  virtual void PopulateLogicOutput(class ULogicContext *ctx) const override;
+
+  virtual void SetSwitch_Implementation(bool val) override;
+  virtual bool GetSwitch_Implementation() const override;
+
   protected:
   // Core components
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Components")
@@ -120,6 +126,8 @@ class UDrillingMachineBase : public UBlockLogic {
   // Accumulated productivity points for bonus progress
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drilling|Stats")
   int32 CollectedProductivity = 0;
+
+  bool mSwitched = true;
 
   // Utility functions
   virtual void ProcessEnergy();

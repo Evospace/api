@@ -1,7 +1,7 @@
 // Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 #include "Public/TieredBlockLogic.h"
-#include "Public/LogicSettingsBlockLogic.h"
+#include "Public/BlockLogic.h"
 
 #include "StorageBlockLogic.generated.h"
 
@@ -10,7 +10,7 @@ class UItemMap;
 class ULogicContext;
 
 UCLASS()
-class UStorageBlockLogic : public ULogicSettingsBlockLogic {
+class UStorageBlockLogic : public UBlockLogic {
   using Self = UStorageBlockLogic;
   EVO_CODEGEN_INSTANCE(StorageBlockLogic)
   virtual void lua_reg(lua_State *L) const override {

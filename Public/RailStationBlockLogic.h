@@ -24,7 +24,6 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
   public:
   URailStationBlockLogic();
   virtual UCoreAccessor *CoreInit() override;
-  virtual ULogicSettings *GetLogicSettings() override;
   virtual void LoadSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) override;
   virtual void SaveSettings(TSharedPtr<FJsonObject> json, AMainPlayerController *mpc = nullptr) const override;
 
