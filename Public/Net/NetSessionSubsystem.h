@@ -13,22 +13,20 @@
 UENUM(BlueprintType)
 enum class ENetSessionStatus : uint8 {
   None = 0,
-  Listening, // host: socket open, accepting guests
-  PeerConnecting, // host: a guest's transport connected, handshake in progress
-  PeerJoined, // a peer finished joining (roster grew)
-  PeerLeft, // a peer disconnected (roster shrank)
-  PeerRenamed, // a peer changed its display name (Message = new name)
-  Connecting, // guest: join attempt started; connecting transport + handshaking (no progress yet)
-  ReceivingWorld, // guest: Welcome accepted, world snapshot transfer starting (Pct via OnSnapshotProgress)
-  Joined, // guest: we finished joining the host
-  Failed, // error; Message carries detail
+  Listening,
+  PeerConnecting,
+  PeerJoined,
+  PeerLeft,
+  PeerRenamed,
+  Connecting,
+  ReceivingWorld,
+  Joined,
+  Failed,
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(
   FOnNetSessionStatus, ENetSessionStatus, Status, int32, PeerId, const FString &, Message);
 
-// Snapshot transfer progress for a peer: Pct in [0,1]. Host fires it while sending,
-// guest fires it while receiving.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnNetSnapshotProgress, int32, PeerId, float, Pct);
 
 class ADimension;
@@ -38,21 +36,6 @@ class UInventoryAccess;
 struct FMapChangeSet;
 struct FNetAction;
 
-/**
- * Multiplayer Layer 2 — session / membership (ai/todo/lan_multiplayer_entry_plan.md).
- *
- * Owns one INetTransport and runs the handshake + membership model on the game thread.
- * Star topology: a host accepts N guests; each guest talks only to the host. Lifecycle
- * and routing only — blob transfer (L3) and avatar replication (L4) live in their own
- * objects this will later compose.
- *
- * Global PeerId == the host's transport handle for a guest; the host itself is PeerId 0.
- *
- * Handshake:  Guest -Hello-> Host -Welcome-> Guest [-> snapshot transfer (M3) ->]
- *             Guest -Ready-> Host, then Host broadcasts PeerJoined and backfills the roster.
- * M2 scope is the framing + membership + status events; the snapshot step is deferred,
- * so the guest currently sends Ready immediately after Welcome.
- */
 UCLASS()
 class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGameObject {
   GENERATED_BODY()
@@ -61,7 +44,6 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
-  // FTickableGameObject
   virtual void Tick(float DeltaTime) override;
   virtual TStatId GetStatId() const override;
   virtual bool IsTickable() const override {
@@ -71,30 +53,21 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   virtual bool IsTickableWhenPaused() const override { return true; }
   virtual UWorld *GetTickableGameObjectWorld() const override { return GetWorld(); }
 
-  /** Host a LAN session. Requires a save already loaded (provides seed + SaveName). */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool HostSession(int32 Port = 27050);
 
-  /** Join a LAN host at Ip:Port. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool JoinSession(const FString &Ip, int32 Port = 27050);
 
-  /** Host over Steam (P2P). Production path; requires the Steam client. Requires a save loaded. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool HostSessionSteam();
 
-  /** Join a Steam host by its SteamID64 (P2P). Production path; requires the Steam client. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   bool JoinSessionSteam(const FString &HostSteamId);
 
-  /**
-   * Open the Steam friends overlay. Friends who called HostSessionSteam show "Join Game"
-   * in the overlay context menu; Steam delivers GameRichPresenceJoinRequested to connect.
-   */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void OpenSteamFriendsOverlay();
 
-  /** Stop hosting/guesting and drop all peers. */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void StopSession();
 
@@ -107,68 +80,27 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
   int32 GetLocalPeerId() const { return (int32)LocalPeerId; }
 
-  /** Local player name shown to others (custom name / Steam persona / machine name). */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Evospace|Net")
   FString GetPlayerName() const;
 
-  /**
-   * Rename the local player. Persists the custom name (empty resets to the Steam/machine
-   * default) and, inside a session, broadcasts it so rosters and ghost labels update.
-   * Names are display-only and non-unique; identity is the stable player id.
-   */
   UFUNCTION(BlueprintCallable, Category = "Evospace|Net")
   void SetPlayerName(const FString &Name);
 
-  /**
-   * Route a local player world-edit through the command pipeline. Called from the universal
-   * edit choke point (AMainPlayerController::PushMapUndo). No-op in singleplayer (the edit is
-   * already applied locally); host broadcasts it, guest sends it to the host. See
-   * ai/todo plan: unified player-action command pipeline.
-   */
   void SubmitLocalMapEdit(ADimension *Dim, const FMapChangeSet &Set);
 
-  // -- Player-action command pipeline (non-map-edit actions) ------------------
-  // Same star-topology relay as map edits, but the payload is an intent delta, not absolute
-  // cell state, so the host relays to everyone EXCEPT the originator (the originator already
-  // applied it locally; re-applying would double it). Actions are FNetAction structs defined
-  // and registered next to their domain code (Online/Actions/*); this subsystem only routes.
-
-  /** Convenience resolver (any world-context object). Null when no game instance. */
   static UNetSessionSubsystem *Get(const UObject *WorldContext);
 
-  /**
-   * Profile id for the local player's own save profile inside a world. The local player is
-   * the host of their world unless actively joined to a remote host as a guest, so this is
-   * the fixed host id (FSavePathProvider::GetHostProfileId) in single-player and while
-   * hosting, and only a real guest keys by their stable id (PlayerIdentity::GetStableId).
-   */
   static FString GetLocalProfileId(const UObject *WorldContext);
 
-  /** True while this peer is applying a remote player-action; submit hooks must no-op. */
   bool IsApplyingRemoteAction() const { return bApplyingRemoteAction; }
 
-  /**
-   * Broadcast a locally applied player action (see FNetAction). No-op without a session,
-   * and while applying a remote action unless the action opts in (AllowDuringRemoteApply).
-   * Prefer the SubmitNetAction(WorldContext, Action) free helper at call sites.
-   */
   void SubmitAction(FNetAction &Action);
 
-  /**
-   * Block-inventory diff capture. Wrap any local player operation that may move items
-   * between the player inventory and the open block's inventories (clicks, drags, drops).
-   * Begin snapshots the block's per-item sums; End diffs them and broadcasts the deltas.
-   * Re-entrant (depth-counted): only the outermost pair sends. No-op without a session.
-   */
   void BeginBlockInvCapture(UBlockLogic *Block);
   void EndBlockInvCapture();
 
-  // Live drop-actor registry (drops are identified across peers by a net GUID).
-  /** Track a spawned drop actor so remote pickup commands can resolve it. */
   void RegisterDropActor(ADroppedInventory *Drop);
-  /** True when a live drop with this id is already tracked (dedupes relayed spawns). */
   bool HasDropActor(const FGuid &Id) const;
-  /** Untrack and return the live drop with this id (consumed locally or remotely). */
   ADroppedInventory *ClaimDropActor(const FGuid &Id);
 
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
@@ -177,11 +109,8 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   UPROPERTY(BlueprintAssignable, Category = "Evospace|Net")
   FOnNetSnapshotProgress OnSnapshotProgress;
 
-  /** Clear remote avatar ghosts after the local player switches presentation surface. */
   void OnLocalSurfaceChanged();
 
-  // Lightweight snapshot of one remote-player ghost for map/compass markers: world position
-  // (uu), facing yaw (deg) and display name. Non-reflected; consumed by native HUD widgets.
   struct FNetGhostView {
     int32 PeerId = 0;
     FString Name;
@@ -189,8 +118,6 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
     float Yaw = 0.0f;
   };
 
-  /** Snapshot of every live remote-player ghost (position + facing + name). Empty in
-   *  singleplayer or before any peer's avatar has arrived. */
   void GetGhostViews(TArray<FNetGhostView> &Out) const;
 
   private:
@@ -198,7 +125,6 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
                                     Host,
                                     Guest };
 
-  // Which Layer-1 backend to use. LAN is the dev path; Steam is production internet play.
   enum class ETransportKind : uint8 { Lan,
                                       Steam };
 
@@ -206,8 +132,8 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   bool StartGuest(const FString &Address, int32 Port, ETransportKind Kind);
 
   enum class EPeerHandshake : uint8 {
-    Connecting, // host: transport up, awaiting Hello
-    AwaitingReady, // host: Welcome sent, awaiting Ready (snapshot transfer slots in here)
+    Connecting,
+    AwaitingReady,
     Joined,
   };
 
@@ -217,41 +143,26 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
     EPeerHandshake State = EPeerHandshake::Connecting;
   };
 
-  // Transport event handling.
   void HandleConnected(FNetPeerId Peer);
   void HandleDisconnected(FNetPeerId Peer);
   void HandleData(FNetPeerId Peer, const TArray<uint8> &Bytes);
 
-  // Host side.
   void HostOnHello(FNetPeerId Peer, uint32 ProtocolVer, uint32 Nonce, const FString &Name);
   void HostOnReady(FNetPeerId Peer);
   void BroadcastToJoined(const TArray<uint8> &Bytes, FNetPeerId Except);
 
-  // Guest side.
   void GuestOnWelcome(uint32 NonceEcho, uint32 AssignedPeerId, int64 Seed, const FString &SaveName);
   void GuestOnReject(uint8 Reason);
   void GuestOnPeerJoined(FNetPeerId PeerId, const FString &Name);
   void GuestOnPeerLeft(FNetPeerId PeerId);
 
-  // Display-name change (both directions): host applies + relays a guest's rename,
-  // guests update their roster copy.
   void HandlePeerRenamed(FNetPeerId FromPeer, FNetPeerId RenamedPeer, const FString &Name);
 
-  // Guest→host player-profile upload (see ProfileMsgType). The guest's player state
-  // (inventory/position/research) lives only on the guest machine, so it periodically
-  // pushes its serialized profile; the host writes it through to the staging save's
-  // Players/<stable id>.json so world saves include every player's latest state.
   bool SendLocalProfile();
   void HandleProfileUpload(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
 
-  // Snapshot transfer (L3). Host sends the save blob after Welcome; guest sends Ready
-  // once it arrives.
   void OnBlobReceived(FNetPeerId Peer, uint32 BlobId, const TArray<uint8> &Data);
 
-  // Avatar replication (L4) — presentation only: float, interpolated, non-authoritative.
-  // Each peer broadcasts its pawn transform/head/anim at ~20 Hz; remote peers drive a
-  // collision/movement/camera-disabled ghost of the same pawn class. The host relays guest
-  // packets so guests see each other (star topology).
   void SampleAndSendAvatar();
   void HandleAvatar(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
   void ApplyGhostState(FNetPeerId PeerId, const FVector &Loc, const FRotator &ControlRot,
@@ -261,12 +172,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   void DestroyAllGhosts();
   class AMainCharacter *GetLocalMainCharacter() const;
 
-  // Player-action command pipeline. A command is a serialized FMapChangeSet; the apply is
-  // ADimension::ApplyMapChangeSet. Host orders edits and rebroadcasts; guests apply.
   void HandleMapEdit(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
   ADimension *ResolveActiveDimension() const;
 
-  // Non-map-edit player actions (recipe/settings/research/inventory/drops).
   void SendPlayerAction(const TArray<uint8> &Bytes);
   void HandlePlayerAction(FNetPeerId FromPeer, const TArray<uint8> &Bytes);
   void SubmitBlockInvDeltas();
@@ -287,41 +195,26 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FNetBlobChannel BlobChannel;
   ESessionRole Role = ESessionRole::None;
   bool bActive = false;
-  // Steam SDR warm-up done (or n/a). False until SteamAPI comes up; Tick retries until then.
   bool bSteamRelayWarmedUp = false;
   FString LocalDisplayName;
   FNetPeerId LocalPeerId = InvalidNetPeerId;
 
-  // Host membership.
   TMap<FNetPeerId, FPeerSession> Peers;
 
-  // Guest state.
   FNetPeerId HostTransportPeer = InvalidNetPeerId;
   uint32 GuestNonce = 0;
   int64 HostSeed = 0;
   FString HostSaveName;
-  TMap<FNetPeerId, FString> Members; // global id -> name (peers other than us, for UI)
+  TMap<FNetPeerId, FString> Members;
 
-  // True once the guest has unpacked the host snapshot and entered the world (Ready sent).
-  // Gates avatar sends so we don't broadcast before we have a pawn.
   bool bSnapshotReceived = false;
 
-  // Guest handshake watchdog: seconds since StartGuest. If the host never answers (no Welcome,
-  // so LocalPeerId stays Invalid) within GuestHandshakeTimeoutSec the join is failed instead of
-  // hanging forever. Welcome arrives before the (possibly long) snapshot transfer, so this only
-  // covers the connect+Hello+Welcome control phase, never the blob stream.
   float GuestConnectElapsed = 0.f;
   static constexpr float GuestHandshakeTimeoutSec = 15.f;
 
-  // Guest snapshot-transfer stall watchdog. Starts at Welcome and resets on every received
-  // chunk (OnRecvProgress). Fails the join only if the stream goes fully silent for longer than
-  // the timeout — a big world may legitimately take a long time to transfer, so this is stall-
-  // based, not a total-time cap. The budget is generous enough to also cover the host packing
-  // the snapshot (the gap between Welcome and the first chunk, during which no progress fires).
   float GuestSnapshotStallElapsed = 0.f;
   static constexpr float GuestSnapshotStallTimeoutSec = 45.f;
 
-  // Avatar replication state.
   struct FGhostState {
     TWeakObjectPtr<class AMainCharacter> Actor;
     FVector TargetLoc = FVector::ZeroVector;
@@ -330,24 +223,16 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
     FVector Velocity = FVector::ZeroVector;
     uint8 Flags = 0;
   };
-  TMap<FNetPeerId, FGhostState> Ghosts; // keyed by global PeerId (host == 0)
+  TMap<FNetPeerId, FGhostState> Ghosts;
   float AvatarSendAccum = 0.f;
 
-  // Guest profile-upload cadence. Counts up to the interval; a failed attempt (controller
-  // not ready yet) retries shortly instead of waiting a full period.
   float ProfileSendAccum = 0.f;
   static constexpr float ProfileSendIntervalSec = 30.f;
 
-  // Host-monotonic order stamp for confirmed map edits (own + relayed guest edits).
   int32 HostEditSeq = 0;
 
-  // -- Player-action state ----------------------------------------------------
-
-  // Guard: true while applying a remote action, so the local Submit* hooks inside the
-  // shared apply code (SelectRecipe, LoadSettings, Enqueue...) don't echo it back.
   bool bApplyingRemoteAction = false;
 
-  // Block-inventory diff capture (see BeginBlockInvCapture).
   struct FBlockInvCapture {
     FIntVector BlockPos = FIntVector::ZeroValue;
     TArray<TWeakObjectPtr<UInventoryAccess>> Inventories;
@@ -357,9 +242,6 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FBlockInvCapture InvCapture;
   int32 InvCaptureDepth = 0;
 
-  // Open-block config watch (see UpdateBlockConfigWatch): while the local player has a
-  // block GUI open, its settings JSON is diffed periodically and changes are broadcast
-  // as FBlockSettingsAction.
   void UpdateBlockConfigWatch(float DeltaTime);
   void FlushBlockConfigWatch();
   void RebaseBlockConfigWatch();
@@ -368,14 +250,9 @@ class UNetSessionSubsystem : public UGameInstanceSubsystem, public FTickableGame
   FString ConfigWatchJson;
   float ConfigWatchAccum = 0.f;
 
-  // Live drop actors by net id (local + remote spawns), for remote pickup resolution.
   TMap<FGuid, TWeakObjectPtr<ADroppedInventory>> DropActors;
 };
 
-/**
- * RAII wrapper for the block-inventory diff capture around a local player inventory
- * operation. Safe with a null context / no session (no-ops).
- */
 struct FScopedBlockInvSync {
   FScopedBlockInvSync(const UObject *WorldContext, UBlockLogic *Block) {
     Net = UNetSessionSubsystem::Get(WorldContext);

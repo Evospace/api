@@ -36,14 +36,8 @@ class UBiomeFamily : public UBiome {
   // Only baked
   virtual IndexType GetBiome(const Vec2i &pos) const override;
 
-  // Batched sub-biome selection over a [w x h] region anchored at world
-  // (originX, originY): out[i] in [0, mSubBiomes.Num()-1]. Uses the same
-  // domain-warped cellular field as GetBiome.
   void FillBiomeMap(int32 *out, int32 originX, int32 originY, int32 w, int32 h) const;
 
-  // Raw cellular noise values (CellValue return type, [-1..1]) with domain warp
-  // applied from Perturb* settings. Used by GetBiome, FillBiomeMap, and global
-  // biome GenerateGlobal paths so point and bulk sampling stay consistent.
   void FillBiomeNoiseSet(float *out, float originX, float originY, int32 w, int32 h, float scale = 1.f) const;
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
@@ -65,7 +59,6 @@ class UBiomeFamily : public UBiome {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   int32 PerturbOctaves = 2;
 
-  /** High-frequency simplex offset (world blocks) breaking up locally straight cellular edges. */
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   float PerturbFineAmp = 5.f;
 

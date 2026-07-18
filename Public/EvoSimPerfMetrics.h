@@ -9,18 +9,6 @@
 class UClass;
 class UDimensionRuntime;
 
-/**
- * Simulation performance metrics (SimBench).
- *
- * Pure-sim, tick-exact profiling: per-system cycle counters sampled once per
- * simulation tick, aggregated into distributions at export time. Owns no
- * render/FPS/frame-time state by design — the bench drives the sim headless at
- * max throughput and the headline metric is sustained TPS + tick_ms percentiles.
- *
- * Two detail levels (see FEvoSimPerfMetrics::SetEntityTimingEnabled):
- *   - systems  (default): only per-system timing, minimal perturbation.
- *   - entities: additionally attribute time per UBlockLogic class.
- */
 enum class EEvoSimPerfSystem : uint8 {
   SimTotal = 0,
   ResourceNetworks,
@@ -31,7 +19,6 @@ enum class EEvoSimPerfSystem : uint8 {
   Count
 };
 
-/** Full per-tick distribution of a value (milliseconds). */
 struct FEvoSimPerfDist {
   int32 Samples = 0;
   float Mean = 0.f;
@@ -41,7 +28,6 @@ struct FEvoSimPerfDist {
   float Max = 0.f;
 };
 
-/** A single expensive tick, with its per-system breakdown (spike hunting). */
 struct FEvoSimPerfWorstTick {
   int64 TickIndex = 0;
   float TotalMs = 0.f;
@@ -49,7 +35,6 @@ struct FEvoSimPerfWorstTick {
   bool bGc = false;
 };
 
-/** Per-block-class attribution (detail=entities only). */
 struct FEvoSimPerfEntityDist {
   UClass *Class = nullptr;
   int32 Count = 0;
@@ -63,27 +48,23 @@ struct FEvoSimPerfReport {
   int32 GcCount = 0;
 };
 
-/** Session metadata; the C++ fields, git/machine meta is added by the python runner. */
 struct FEvoSimPerfSessionMeta {
   static constexpr int32 kVersion = 2;
 
-  FString Save; // save/workload name
-  FString Detail; // "systems" | "entities"
+  FString Save;
+  FString Detail;
   int32 TickRate = 20;
   int32 WarmupTicks = 0;
   int32 MeasureTicks = 0;
   int32 FrameBudgetMs = 0;
 
-  // Workload shape captured at measure start.
   int32 Logics = 0;
   int32 ResourceNetworks = 0;
   int32 ConveyorNetworks = 0;
 
-  // Filled in on export from the measured window.
   double MeasureWallSec = 0.0;
   double MaxTps = 0.0;
 
-  // Environment.
   FString BuildConfig;
   FString Platform;
   FString Cpu;
@@ -96,21 +77,17 @@ class FEvoSimPerfMetrics {
   static bool IsEnabled();
   static void SetEnabled(bool bEnabled);
 
-  /** detail=entities: additionally attribute per UBlockLogic class (perturbs timing). */
   static void SetEntityTimingEnabled(bool bEnabled);
   static bool IsEntityTimingEnabled();
 
-  /** Begin/end the measure window. Resets all samples. */
   static void BeginSession();
   static void EndSession();
   static bool IsSessionActive();
 
   void Reset();
 
-  /** Number of simulation ticks committed since the last Reset/BeginSession. */
   int64 GetMeasuredTicks() const { return SimulationTickSamples; }
 
-  /** Mark that a GC happened; the next committed tick is annotated as GC-affected. */
   void MarkGcPending();
 
   void BuildReport(const UDimensionRuntime *Runtime, FEvoSimPerfReport &OutReport) const;
@@ -146,14 +123,13 @@ class FEvoSimPerfMetrics {
     }
   }
 
-  /** Commit one simulation tick's per-system deltas as a sample. */
   void OnSimulationTickCompleted();
 
   private:
   struct FEntitySlot {
     uint64 TotalCycles = 0;
     uint64 LastTickCycles = 0;
-    TArray<float> TickMs; // per-committed-tick delta (entities mode only)
+    TArray<float> TickMs;
   };
 
   struct FSimTickSample {

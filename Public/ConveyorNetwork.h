@@ -32,7 +32,6 @@ class UConveyorNetwork : public UNetworkBase {
   UPROPERTY(VisibleAnywhere)
   TArray<int32> NeighborIndex; // per conveyor index, -1 if receiver is not a conveyor
 
-  // Per conveyor; points into other blocks, so validated at tick start (TBlockRef)
   TArray<TBlockRef<UBaseInventoryAccessor>> ReceiverAccessors;
 
   UPROPERTY(VisibleAnywhere)
@@ -41,7 +40,6 @@ class UConveyorNetwork : public UNetworkBase {
   UPROPERTY(VisibleAnywhere)
   TArray<int32> PostOrder; // downstream-to-upstream processing order
 
-  // Per conveyor; own inventories of member conveyors
   UPROPERTY(VisibleAnywhere)
   TArray<UInventoryAccess *> CachedInput;
 
@@ -59,7 +57,7 @@ class UConveyorNetwork : public UNetworkBase {
   TArray<int32> ActivePostOrder;
 
   // Working buffers reused between ticks (to avoid reallocations)
-  TArray<UBaseInventoryAccessor *> ResolvedReceivers; // per conveyor, validated once per tick
+  TArray<UBaseInventoryAccessor *> ResolvedReceivers;
   TArray<uint8> TmpVisited;
   TArray<bool> Accept;
   TArray<bool> OutClears;

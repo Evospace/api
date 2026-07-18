@@ -51,7 +51,6 @@ class UAccessor : public UInstance {
 
   UAccessor *GetOutsideNeighborSameTypeCached();
 
-  // TBlockRef contract: alive as long as the owner block is in the world.
   bool IsInWorld() const { return Owner && Owner->IsInWorld(); }
 
   template <class T>
@@ -80,7 +79,5 @@ class UAccessor : public UInstance {
   FQrVector3i Side;
 
   private:
-  // Cached neighbor accessor of the same class as this accessor.
-  // Validated at use (weak + owner-in-world); recomputed by position on miss.
   TBlockRef<UAccessor> CachedOutsideSameType;
 };

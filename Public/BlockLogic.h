@@ -63,20 +63,12 @@ class UBlockLogic : public UInstance {
   public:
   // Lifecycle
 
-  // Both invoked centrally by UDimensionRuntime::SetBlockLogic: BlockBeginPlay right after
-  // the block is added to the logic map (neighbors already notified, before SetRenderable),
-  // BlockEndPlay when it is removed. Spawn sites must not call them manually.
   virtual void BlockBeginPlay();
   virtual void BlockEndPlay();
   virtual void SpawnBlockPostprocess();
 
-  // True while the block is present in the dimension logic map. Flipped exclusively by
-  // UDimensionRuntime::SetBlockLogic; TBlockRef checks it at the point of use, which is
-  // the only cross-block reference safety mechanism.
   bool IsInWorld() const { return bInWorld; }
 
-  // Topology semantics only (network split/merge, multiblock parts).
-  // Never use these for reference/cache safety; that is TBlockRef's job.
   virtual void NeighborBlockAdded(UBlockLogic *block, const Vec3i &pos);
   virtual void NeighborBlockRemoved(UBlockLogic *block, const Vec3i &pos);
 
@@ -185,9 +177,6 @@ class UBlockLogic : public UInstance {
   const UStaticItem *GetNetworkSignal() const;
   virtual const UStaticBlock *GetStaticBlock() const;
 
-  // Desync hash: append deterministic sim state (never presentation/caches) to the writer.
-  // Default covers class, position, rotation, Working and every owned inventory — the same
-  // subobject surface SerializeJson walks. Override to add scalar sim fields on top (call Super).
   virtual void AppendSimStateHash(struct FSimHashWriter &W) const;
 
   // Serialization
@@ -208,9 +197,6 @@ class UBlockLogic : public UInstance {
   // Simulation / surface runtime ( UObject outer )
   UDimensionRuntime *GetDimensionRuntime() const { return Runtime; }
 
-  // Deterministic per-block simulation RNG. Seeded in Init() from the surface runtime's
-  // seed base and this block's position, persisted in Serialize/DeserializeJson and folded
-  // into the desync hash. Simulation randomness only, never presentation.
   FSimRng &GetSimRng() { return SimRng; }
 
   // State controls
@@ -282,15 +268,12 @@ class UBlockLogic : public UInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   bool Working = false;
 
-  // Deterministic simulation RNG stream. Plain member (not a UPROPERTY): serialized
-  // manually as a decimal string in Serialize/DeserializeJson, seeded in Init().
   FSimRng SimRng;
 
   TArray<int32> AccessorInstances;
 
   private:
   friend class UDimensionRuntime;
-  // See IsInWorld(); written only by UDimensionRuntime::SetBlockLogic.
   void SetInWorld(bool value) { bInWorld = value; }
   bool bInWorld = false;
 };

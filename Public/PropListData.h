@@ -30,11 +30,9 @@ struct FPropListData {
   UPROPERTY()
   int32 Weight = 1;
 
-  /** Minimum Euclidean distance from world origin (blocks) before this tier can spawn. */
   UPROPERTY()
   float MinDist = 0.f;
 
-  /** Weight multiplier applied as distance grows past MinDist (1 = no ramp). */
   UPROPERTY()
   float FarWeight = 1.f;
 };

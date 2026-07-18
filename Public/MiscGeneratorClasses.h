@@ -27,20 +27,8 @@ class UBiome;
 class UHeightGenerator;
 
 namespace mapgen {
-// Single-pass separable Gaussian blur (finite support, truncated at `radius`)
-// over a row-major [w*h] grid. Because support is exactly `radius`, evaluating
-// it over a halo that extends `radius` beyond the region of interest makes
-// inner-cell results independent of the halo border (clamped replicate edges
-// only reach border cells) — that is what makes blended heights identical
-// across adjacent sectors. O(N*(2*radius+1)) per axis. `in`/`out` are [w*h] and
-// must not alias; scratch is allocated internally.
 void GaussianBlur2D(const float *in, float *out, int32 w, int32 h, int32 radius);
 
-// Weighted per-biome height blend (see biome_plan.md target pipeline):
-//   for each distinct biome b: Wb = Blur(mask_b, radius);
-//   out = Σ_b Wb·Hb / Σ_b Wb
-// biomeId/out are [w*h]; `heights` holds one [w*h] field per entry of
-// `distinctBiomes` (parallel arrays). Preserves interior detail, blends seams.
 void BlendBiomeHeights(const int32 *biomeId, int32 w, int32 h, int32 radius,
                        const TArray<int32> &distinctBiomes,
                        const TArray<const float *> &heights,
@@ -154,14 +142,6 @@ class UChancedLayeringGenerator : public USimpleLayeringGenerator {
   TArray<float> mChances;
 };
 
-// Selects between two block stacks by the local surface detail height: where a
-// referenced HeightGenerator's detail at (x,y) drops below `Below`, the "low"
-// stack is used (e.g. clay flats in basins), otherwise the inherited base stack
-// (Blocks/Starts). Lets a single leaf biome read as grass on the swells and a
-// different material only in the carved lowlands instead of one material edge
-// to edge. JSON: "LowBlocks"/"LowStarts" (the low stack), "Height" (a
-// HeightGenerator name, normally the same basin field the biome height uses)
-// and "Below" (threshold). Seam-safe: the height field is world-position based.
 UCLASS()
 class ULowlandLayeringGenerator : public USimpleLayeringGenerator {
   GENERATED_BODY()

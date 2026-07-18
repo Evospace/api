@@ -141,9 +141,6 @@ class UGameSessionData : public UInstance {
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   bool WorldTimeAutoAdvance = true;
 
-  // Persisted generator settings (height-map toggle, rivers, carve). Captured off
-  // the configurable generator at world creation (Initialize) and pushed back onto
-  // it on load (UMapGeneratorSubsystem::UpdateSeed_Internal).
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FMapGeneratorSettings MapSettings;
 

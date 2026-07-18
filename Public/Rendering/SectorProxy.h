@@ -64,7 +64,6 @@ class USectorProxy : public UObject {
 
   virtual USectorPropComponent *GetInstancingComponent() const;
 
-  // All return true if at least one decoration was removed.
   virtual bool ClearBlockProps(const FQrVector3i &bpos, bool only_small);
   virtual bool ClearBlockPropsDrop(const FQrVector3i &bpos, bool only_small);
 

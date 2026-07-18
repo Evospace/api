@@ -12,8 +12,6 @@ class ULogicContext;
 class UCondition;
 class ULogicOutput;
 
-// Combinator of the logic circuit: evaluates Condition against the context
-// input and, when true, writes every Output definition to the context output.
 UCLASS(BlueprintType, Blueprintable, EditInlineNew, DefaultToInstanced)
 class ULogicDecider : public UInstance {
   GENERATED_BODY()

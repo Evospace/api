@@ -2,7 +2,6 @@
 #include "GlobalBiomeFamily.h"
 #include "GlobalBiomeFamilyMoon.generated.h"
 
-// Airless surfaces: flat reference elevation; crater detail comes from per-biome height maps.
 UCLASS()
 class UGlobalBiomeFamilyMoon : public UGlobalBiomeFamily {
   GENERATED_BODY()

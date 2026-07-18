@@ -33,9 +33,6 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   virtual void SetSeed(int32 seed) override;
 
-  // The configurable generator's whole settings bundle (height-map toggle,
-  // rivers, carve) is read/written as one struct, so a menu UI can edit it on the
-  // shared generator instance and then trigger a map regenerate.
   UFUNCTION(BlueprintCallable)
   FMapGeneratorSettings GetMapSettings() const { return MapSettings; }
 
@@ -53,9 +50,6 @@ class UBiomeWorldGenerator : public UWorldGenerator {
 
   std::vector<UStaticBlock *> ores_map;
 
-  // Common map settings (e.g. whether Generate() uses per-leaf biome height
-  // maps). Legacy subclasses set these in their constructors; the configurable
-  // generator keeps the defaults.
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   FMapGeneratorSettings MapSettings;
 
@@ -69,8 +63,6 @@ class UBiomeWorldGenerator : public UWorldGenerator {
   // Canyon noises stored on the generator instance
   std::unique_ptr<FastNoiseSIMD> canyon_mask2d; // Simplex fractal mask in XY
   std::unique_ptr<FastNoiseSIMD> canyon_cell3d; // Cellular distance field in 3D
-  // Ridged 3D noise displacing the isosurface near the terrain surface where
-  // the leaf biome authors SurfaceRockDetail > 0 (rocky mountains vs smooth dunes)
   std::unique_ptr<FastNoiseSIMD> rock_detail3d;
 
   public:
@@ -130,11 +122,6 @@ class UWorldGeneratorMoon : public UBiomeWorldGenerator {
   virtual void LoadBiomeFamily() override;
 };
 
-/**
- * Configurable generator: a copy of UWorldGeneratorRivers that drives its
- * behavior from MapSettings (biome height maps ON by default), as opposed to the
- * legacy generators above which hardcode them OFF.
- */
 UCLASS(BlueprintType)
 class UWorldGeneratorConfigurable : public UBiomeWorldGenerator {
   GENERATED_BODY()

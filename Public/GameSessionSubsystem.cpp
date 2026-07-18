@@ -47,7 +47,6 @@ bool UGameSessionSubsystem::BeginSession(const FPreparedSaveContext &Context) {
   LOG(INFO_LL) << "LoadSave: Migrations took " << (int32)((FPlatformTime::Seconds() - t1) * 1000.0) << " ms";
 
   const double t2 = FPlatformTime::Seconds();
-  // Notify subsystems to load their save-scoped data from staging before session data is set
   NotifySaveLoaded(FSavePathProvider::GetStagingSlotName());
   LOG(INFO_LL) << "LoadSave: NotifySaveLoaded took " << (int32)((FPlatformTime::Seconds() - t2) * 1000.0) << " ms";
 

@@ -16,7 +16,6 @@ class URailNodeBlockLogic : public UBlockLogic, public IRailLinkable {
   public:
   URailNodeBlockLogic();
 
-  // IRailLinkable: a plain rail node is its own graph node.
   virtual URailNodeBlockLogic *GetRailNode() override { return this; }
 
   virtual void BlockBeginPlay() override;
@@ -38,8 +37,6 @@ class URailNodeBlockLogic : public UBlockLogic, public IRailLinkable {
   void RailUnlink(URailNodeBlockLogic *Other);
   void UnlinkAllRail();
 
-  // Face-adjacent only (see URailNetwork::TryAddSegment). Used by ASteelRailItemLogic.
-  // Both apply locally and replicate through the player-action pipeline (RailLink/RailUnlink).
   void TryAddSegmentTo(URailNodeBlockLogic *Other);
   void TryRemoveSegmentTo(URailNodeBlockLogic *Other);
 

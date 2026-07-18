@@ -26,9 +26,6 @@ class UBiome : public UPrototype {
 
   public:
   virtual FLayering GetLayering(const Vec2i &pos) const;
-  // Per-biome height *detail* (no global base elevation). Default returns the
-  // owned height generator's value, or 0 when none is authored — a biome
-  // without a height generator legitimately contributes no detail (e.g. sea).
   virtual float GetHeight(const FVector2D &pos) const;
   virtual void FillPropCandidates(TArray<FPropCandidate> &out, int32 seed, const Vec2i &sectorCorner, int32 sectorW,
                                   int32 sectorH) const;
@@ -42,16 +39,12 @@ class UBiome : public UPrototype {
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UPropsGenerator *props = nullptr;
 
-  // Owns this leaf biome's terrain height detail (JSON "Height"). May be null.
   UPROPERTY(BlueprintReadWrite, EditAnywhere)
   UHeightGenerator *height = nullptr;
 
-  /** Local water murkiness for this leaf biome (0 = clear, 1 = opaque). */
   UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0"))
   float WaterMurkiness = 0.0f;
 
-  /** Amplitude, in blocks, of the near-surface 3D rock noise that displaces the
-   * terrain isosurface (0 = keep the heightmap surface smooth, e.g. dunes). */
   UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0"))
   float SurfaceRockDetail = 0.0f;
 

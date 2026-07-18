@@ -140,18 +140,9 @@ class UNoiseGenerator : public UPrototype {
   std::unique_ptr<FastNoiseSIMD> noise;
   float min = 2;
   float max = 10;
-  // Redistribution exponent applied to the normalized [0,1] noise before the
-  // [min,max] remap. >1 sharpens peaks / flattens valleys; 1 = linear.
-  // Authored via JSON ("Power").
   float power = 1.f;
-  // Added to the world seed before being applied to the noise so noises in a
-  // stack decorrelate from one another. Authored via JSON ("SeedOffset").
   int32 seed_offset = 0;
 
-  // JSON-driven configuration so height noises can be authored as content
-  // (parallel to the Lua setters above). Reads NoiseType, Frequency,
-  // FractalOctaves, FractalGain, FractalLacunarity, FractalType, Min, Max,
-  // Power, SeedOffset.
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   public:

@@ -25,15 +25,8 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   GENERATED_BODY()
 
   public:
-  /**
-   * Starts a game session from a staged save: ends the previous session, runs migrations,
-   * lets subsystems load their save-scoped data (OnSaveLoading) and publishes the loaded
-   * UGameSessionData (OnDataUpdated). Must complete before the gameplay map opens — the
-   * world starts generating from this data in BeginPlay.
-   */
   bool BeginSession(const FPreparedSaveContext &Context);
 
-  /** Tears down per-session state; subscribers of OnSessionEnded drop their save-scoped data. */
   UFUNCTION(BlueprintCallable)
   void EndSession();
 
@@ -157,11 +150,9 @@ class UGameSessionSubsystem : public UGameInstanceSubsystem {
   void SetPresentationSurfacePlanet(const UStaticPlanet *Planet);
   void ClearPresentationSurfacePlanet();
 
-  /** Switch local presentation to another playable surface (e.g. Moon, Temperate). */
   UFUNCTION(BlueprintCallable, Category = "Surface")
   void TravelToSurface(const FString &SurfaceName);
 
-  /** Persist simulation logic for surfaces that are not the active presentation. */
   void SaveAllSurfaces(UWorld *World);
 
   private:

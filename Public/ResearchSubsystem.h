@@ -24,9 +24,6 @@ class UResearchSubsystem : public UGameInstanceSubsystem {
   virtual void Initialize(FSubsystemCollectionBase &Collection) override;
   virtual void Deinitialize() override;
 
-  // Research state is per save — one shared tree for the whole game, not part of any
-  // player profile. Persisted as Research.json in the save root; joining players
-  // inherit it with the world.
   bool SaveToSaveRoot(const FString &SaveRoot) const;
   bool LoadFromSaveRoot(const FString &SaveRoot);
 

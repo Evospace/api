@@ -79,8 +79,6 @@ void USectorProxy::GetSectorDataHot(FSectorData &data) {
   // TODO: move storage to column to remove this workaround
   if (PivotPos.Z == 0 && ensure(owner && owner->SectorPropComponent)) {
     owner->SectorPropComponent->GetAll(data.mAttaches);
-    // Streamed props live in the grass subsystem, not the column component; fold their survivors
-    // back into the save so removal persists.
     if (auto *grass = UGrassStreamingSubsystem::Get(owner)) {
       grass->AppendSurvivors(FIntPoint(owner->pos.X, owner->pos.Y), data.mAttaches);
     }
@@ -239,8 +237,6 @@ void USectorProxy::LoadSector(const AColumn &c) {
 
   UGrassStreamingSubsystem *grass = owner ? UGrassStreamingSubsystem::Get(owner) : nullptr;
   for (const auto &it : SectorColdData.mAttaches) {
-    // Streamed small props are not instanced into the column; hand them to the player-centric
-    // streaming subsystem which materializes HISM only around the player.
     if (it.Key->Streamed && grass) {
       grass->RegisterSectorProps(FIntPoint(owner->pos.X, owner->pos.Y), it.Key, it.Value);
       for (const auto &tr : it.Value)

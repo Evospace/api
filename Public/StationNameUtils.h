@@ -5,9 +5,6 @@
 
 namespace EvoStationName {
 
-// Default station naming shared by drone and rail networks: "Station N" with the
-// smallest positive N not already taken. Pure function of the existing name set,
-// so lockstep peers generate identical defaults without any RNG.
 inline FString SmallestFreeDefaultName(const TArray<FString> &ExistingNames) {
   static const TCHAR *Prefix = TEXT("Station ");
   TSet<int32> Used;

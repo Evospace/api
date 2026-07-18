@@ -29,7 +29,6 @@ class EVOSPACE_API USimulationSurfaceSubsystem : public UGameInstanceSubsystem {
 
   void ApplySurfaceLifecycle(const FString &SurfaceFolderName, ESurfaceSimulationLifecycle Lifecycle,
                              ADimension *PresentationForRebind = nullptr);
-  /** Drops every per-surface runtime; runs on UGameSessionSubsystem::OnSessionEnded (new game / reload). */
   UFUNCTION()
   void ResetAllSurfaceRuntimesForSaveLoad();
 

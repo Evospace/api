@@ -117,7 +117,6 @@ class ADimension : public AActor {
   UFUNCTION(BlueprintCallable)
   void SaveDimentionFolder(bool backup = false, bool bCapturePreview = false);
 
-  /** Flush the temp working copy for a network guest join. Returns false if column IO is still busy. */
   bool FlushWorkingCopyForNetworkJoin();
 
   USectorSaver *GetSectorSaver();
@@ -160,7 +159,6 @@ class ADimension : public AActor {
   /** Remove logic from FinishSpawning queue (must run if actor/render teardown happens before DeferredActorSpawn sees the entry). */
   void DiscardPendingDeferredRenderable(UBlockLogic *Logic);
 
-  /** Column streaming, caching and the pending cell-edit machinery. */
   UColumnStreamingManager *GetColumnManager() const { return ColumnManager; }
 
   UFUNCTION(BlueprintCallable)
@@ -176,7 +174,6 @@ class ADimension : public AActor {
   /** ADimension::Runtime must be set for SectorArea to advance LoadedPos/Radius and for LoadColumn to run. */
   bool IsSimulationRuntimeBound() const { return Runtime != nullptr; }
 
-  /** Current simulation runtime without creating one; null when unbound (e.g. preview/menu). */
   UDimensionRuntime *GetSimulationRuntime() const { return Runtime; }
 
   virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

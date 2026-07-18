@@ -54,7 +54,6 @@ class URailNetwork : public UNetworkBase {
 
   bool TryAddSegment(URailNodeBlockLogic *A, URailNodeBlockLogic *B);
 
-  /** Remove a single undirected segment between two linked nodes; true if a link was removed. */
   bool RemoveSegment(URailNodeBlockLogic *A, URailNodeBlockLogic *B);
 
   /** Count of undirected links (for diagnostics). */
@@ -67,10 +66,8 @@ class URailNetwork : public UNetworkBase {
   int64 GetEdgeLength(const FQrVector3i &From, const FQrVector3i &To) const;
   void CollectRenderSegments(TArray<FRailRenderSegmentData> &OutSegments) const;
 
-  /** Nearest registered rail node within MaxDistanceUu of WorldLocation (skips nodes at that exact position). */
   URailNodeBlockLogic *FindNearestNode(const FVector &WorldLocation, float MaxDistanceUu) const;
 
-  /** Cubic Bezier polyline from an existing node to a preview end world position (placement hologram). */
   bool BuildPreviewPolyline(URailNodeBlockLogic *From, const FVector &EndWorld, TArray<FVector> &OutPoints) const;
 
   void DebugDrawGraphEdges(class UWorld *World, const FColor &Color, float LineLife) const;

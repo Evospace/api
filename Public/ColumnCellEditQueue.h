@@ -14,22 +14,13 @@ struct FPendingCellWrite {
   BlockDensity Density{};
 };
 
-/**
- * Transient, thread-safe store of sector-cell writes waiting for an unloaded column.
- * Filled on the game thread; drained atomically either by the column cell-edit job or by a
- * streaming column load — whichever runs first on the single column IO worker thread, so the
- * two can never both consume the same cells. NOT a session-long delta store: entries live only
- * until the next job/load touches the column.
- */
 class EVOSPACE_API FColumnCellEditQueue {
   public:
-  /** Last write wins per cell. Game thread. */
   void Enqueue(const FQrVector3i &ColumnPos, const FQrVector3i &CellPos, const FPendingCellWrite &Write) {
     std::lock_guard<std::mutex> lock(Mutex);
     Columns.FindOrAdd(ColumnPos).Add(CellPos, Write);
   }
 
-  /** Atomically removes and returns all pending cells for a column. Any thread. */
   bool TakeColumn(const FQrVector3i &ColumnPos, TMap<FQrVector3i, FPendingCellWrite> &Out) {
     std::lock_guard<std::mutex> lock(Mutex);
     return Columns.RemoveAndCopyValue(ColumnPos, Out);

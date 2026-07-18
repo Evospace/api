@@ -12,16 +12,6 @@ class AActor;
 class UStaticProp;
 class UStaticIndexedHierarchicalInstancedStaticMeshComponent;
 
-/**
- * Player-centric streaming of small mass props (grass, flowers, pebbles).
- *
- * Columns still generate placement and hand the streamed subset here via RegisterSectorProps
- * (instead of building per-column HISM). The subsystem keeps the lightweight survivor lists for
- * all loaded columns, but materializes HISM only inside a tile ring around the player, batching
- * one HISM per prop type per coarse tile. Removal (mining / breaking brush) edits the survivors
- * and rebuilds the affected tile; survivors are written back into the column save in
- * AppendSurvivors so removal persists.
- */
 UCLASS()
 class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   GENERATED_BODY()
@@ -31,45 +21,29 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
 
   static UGrassStreamingSubsystem *Get(const UObject *worldContext);
 
-  // --- Column lifecycle (called from sector materialization / unload) ---
   void RegisterSectorProps(const FIntPoint &sectorPos, const UStaticProp *prop, const TArray<FTransform3f> &transforms);
   void UnregisterSector(const FIntPoint &sectorPos);
 
-  // --- Save: append surviving streamed props of a column into its save data ---
   void AppendSurvivors(const FIntPoint &sectorPos, TMap<const UStaticProp *, TArray<FTransform3f>> &out) const;
 
-  // --- Removal ---
-  /** Remove streamed props at a world block position (only_small ignored: streamed props are all
-   * small). Returns true if at least one instance was removed. */
   bool DestroyInBlock(const Vec3i &bpos, bool only_small);
-  /** Remove the streamed instance addressed by a HISM + its static index (breaking brush). */
   bool DestroyInstance(FHism *comp, int32 staticIndex);
-  /** Remove the streamed instance of `prop` at `loc` (1-unit tolerance). Remote-peer path for
-   * PropBreak: instance indices diverge across peers, so the instance travels by prop + location. */
   bool DestroyInstanceAt(const UStaticProp *prop, const FVector &loc);
 
-  // --- Queries ---
   TArray<const UStaticProp *> Get(const Vec3i &bpos) const;
   const UStaticProp *LookForProp(const FHism *comp) const;
 
-  // --- Tunables (overridable live via evo.GrassStream.* console variables) ---
-  /** Tile edge in sectors (1 sector = gFlatSectorSize blocks). */
   int32 TileSize = 2;
-  /** Materialization radius in tiles around the player view. */
   int32 RingRadius = 2;
-  /** Extra tiles kept materialized before dematerializing (hysteresis). */
   int32 RingHysteresis = 1;
-  /** Soft budget of instances built per tick. */
   int32 MaxInstancesPerFrame = 2048;
 
-  // --- UTickableWorldSubsystem ---
   virtual void Tick(float DeltaTime) override;
   virtual TStatId GetStatId() const override;
   virtual void Deinitialize() override;
 
   private:
   struct FSectorSurvivors {
-    // Streamed props surviving in this column, keyed by prop type.
     TMap<const UStaticProp *, TArray<FTransform3f>> props;
   };
 
@@ -83,8 +57,6 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   TMap<FIntPoint, FTile> mTiles;
   TMap<const FHism *, const UStaticProp *> mHismToProp;
 
-  // Holder actor kept at world origin; all streamed HISM attach to its root so that
-  // component-relative instance transforms equal world transforms (mirrors USectorPropComponent).
   TWeakObjectPtr<AActor> mHolder;
 
   FIntPoint mLastPlayerTile = FIntPoint(MAX_int32, MAX_int32);
@@ -99,7 +71,6 @@ class UGrassStreamingSubsystem : public UTickableWorldSubsystem {
   FHism *MakeHism(const UStaticProp *prop);
 
   void MarkSectorTileDirty(const FIntPoint &sectorPos);
-  // In-place removal from an already-materialized tile's HISM (no teardown/rebuild, no flicker).
   void RemoveLiveInstancesInBlock(const FIntPoint &sectorPos, const Vec3i &bpos);
   void RemoveLiveInstanceAt(const FIntPoint &sectorPos, const UStaticProp *prop, const FVector &loc);
   void RebuildTile(const FIntPoint &tileCoord, FTile &tile, int32 &budget);

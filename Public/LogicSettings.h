@@ -92,9 +92,6 @@ class ULogicSettings : public UInstance {
   UFUNCTION(BlueprintCallable)
   void SetImportEnabled(int32 Index, bool bEnabled);
 
-  // Last logic input delivered to the owning block (data wire or direct push).
-  // Created on first GUI request; transport records into it only after that,
-  // so blocks whose settings GUI was never opened pay nothing.
   UFUNCTION(BlueprintCallable)
   class ULogicContext *GetDeliveredInputContext();
 

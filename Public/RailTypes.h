@@ -123,7 +123,6 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 Speed = 0;
 
-  /** Consecutive ticks the train wanted to move but was fully held by another consist. Transient (not serialized); used for deadlock diagnostics. */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int32 BlockedByTrafficTicks = 0;
 
@@ -134,8 +133,6 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 SimTick = 0;
 
-  // Concrete resolved destination while moving (schedule stops are non-unique names;
-  // the dispatcher pins one station and remembers it by block position).
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   bool bHasTargetStation = false;
 
@@ -160,12 +157,9 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   int32 CurrentStopIndex = 0;
 
-  // Player-requested departure: the next dispatch skips the departure condition.
-  // Transient intent (not serialized); reaches every peer as a player action.
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "Rail|Schedule")
   bool bDepartureForced = false;
 
-  // Station the train physically occupies (Arrived/docked), by block position.
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Rail|Schedule")
   bool bHasCurrentStation = false;
 

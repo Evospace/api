@@ -8,7 +8,6 @@
 
 class UCondition;
 
-// Base class for condition editor widgets (ConditionBlock/ConditionBlockUi BPs).
 UCLASS(BlueprintType)
 class UConditionWidget : public UUserWidget {
   GENERATED_BODY()

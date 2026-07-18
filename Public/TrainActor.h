@@ -56,18 +56,13 @@ class ATrainActor : public AActor {
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   int32 GetCarCount() const { return CarMeshGroups.Num(); }
 
-  /** Last rendered pose of one car (centre + bogies); false when CarIndex is out of range or nothing rendered yet. */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   bool GetRenderedCarPose(int32 CarIndex, FTrainCarWorldPose &OutPose) const;
 
-  /** |sim speed| / max speed, updated on the visual tick. */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Train")
   float GetSpeedFraction() const { return LastSpeedFraction; }
 
-  /** Called by the railway manager on the visual tick; fires OnTrainSpeedFractionChanged on change. */
   void SetSpeedFraction(float Fraction);
-
-  // --- Blueprint animation hooks (cosmetic; fired from local sim state transitions) ---
 
   UFUNCTION(BlueprintImplementableEvent, Category = "Train|Events")
   void OnTrainArrived(const FString &StationIdentifier);

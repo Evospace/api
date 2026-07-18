@@ -57,10 +57,8 @@ class UStaticProp : public UStaticObject {
 
   virtual bool ProtoValidCheck() override;
 
-  /** Surface height in blocks must be >= SurfaceHeightMin + water level (NaN = no bound). */
   bool PassesSurfaceHeight(float surfaceHeightBlocks) const;
 
-  /** Prop top in blocks must be <= TopHeightMax + water level (NaN = no bound). */
   bool PassesTopHeight(float topHeightBlocks) const;
 
   UPROPERTY(EditAnywhere)
@@ -84,14 +82,12 @@ class UStaticProp : public UStaticObject {
   UPROPERTY(EditAnywhere)
   float CullEnd = 0;
 
-  /** Blocks relative to water surface; NaN disables the bound. */
   UPROPERTY(EditAnywhere)
   float SurfaceHeightMax = std::numeric_limits<float>::quiet_NaN();
 
   UPROPERTY(EditAnywhere)
   float SurfaceHeightMin = std::numeric_limits<float>::quiet_NaN();
 
-  /** Max prop top (surface + projected mesh height), blocks relative to water; NaN disables. */
   UPROPERTY(EditAnywhere)
   float TopHeightMax = std::numeric_limits<float>::quiet_NaN();
 
@@ -101,8 +97,6 @@ class UStaticProp : public UStaticObject {
   UPROPERTY(EditAnywhere)
   bool IsBig = false;
 
-  /** If true, this prop is not instanced into the column; placement is handed to
-      UGrassStreamingSubsystem which materializes HISM only within a ring around the player. */
   UPROPERTY(EditAnywhere)
   bool Streamed = false;
 

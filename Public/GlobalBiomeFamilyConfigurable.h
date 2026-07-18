@@ -2,10 +2,6 @@
 #include "GlobalBiomeFamily.h"
 #include "GlobalBiomeFamilyConfigurable.generated.h"
 
-// Deep copy of UGlobalBiomeFamily2 (the "rivers" global family), owned by
-// UWorldGeneratorConfigurable so its height/biome pipeline can evolve
-// independently of the legacy generators. Not a subclass of UGlobalBiomeFamily2
-// on purpose — the implementation is duplicated, not delegated.
 UCLASS()
 class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
   GENERATED_BODY()
@@ -20,8 +16,6 @@ class UGlobalBiomeFamilyConfigurable : public UGlobalBiomeFamily {
 
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
-  // Adjusts cellular-biome and continent noise frequencies relative to authored
-  // defaults. SpreadPercent in [-50, 100]: 0 = authored size, +100 = 2x larger.
   void ApplyLayoutScaleSettings(float BiomeSizeSpreadPercent, float ContinentScaleSpreadPercent);
 
   void SyncRegionalNoiseFrequencies(float biomeSizeMultiplier);

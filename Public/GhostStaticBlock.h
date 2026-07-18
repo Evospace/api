@@ -6,11 +6,6 @@
 
 #include "GhostStaticBlock.generated.h"
 
-/**
- * Actor of a placed ghost block: renders the target block's build hologram (selector or
- * actor class meshes with the hologram material) and never collides. The live machine
- * actor class is intentionally not used as-is — its blueprint may expect a real logic type.
- */
 UCLASS()
 class AGhostBlockActor : public ABlockActor {
   GENERATED_BODY()
@@ -26,11 +21,6 @@ class AGhostBlockActor : public ABlockActor {
   UChildActorComponent *VisualChild = nullptr;
 };
 
-/**
- * Prototype of the single universal "Ghost" block. Logic and actor classes are fixed in
- * C++; the visual comes from the per-instance UGhostBlockLogic::Target, so one prototype
- * covers every machine.
- */
 UCLASS(BlueprintType)
 class UGhostStaticBlock : public UStaticBlock {
   GENERATED_BODY()
@@ -47,6 +37,5 @@ class UGhostStaticBlock : public UStaticBlock {
 
   UGhostStaticBlock();
 
-  /** Spawns AGhostBlockActor; skips lua actor hooks (actor_init expects a live machine actor). */
   virtual ABlockActor *SpawnActorAndLuaDeferred(ADimension *world, UBlockLogic *bloc_logic, const FTransform &tr) const override;
 };

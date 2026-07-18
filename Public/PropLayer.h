@@ -17,16 +17,13 @@ struct FPropClusterSettings {
   int32 MaxCount = 8;
   float CenterSpacing = 16.f;
   float Jitter = 1.f;
-  /** Cellular noise gate in [0, 1]; cluster center spawns when cell value >= threshold. */
   float DensityThreshold = 0.55f;
-  /** Cellular noise frequency (1 / world cells). Defaults to 1 / CenterSpacing when unset. */
   float CellFrequency = 0.f;
 };
 
 struct FPropLayer {
   EPropPlacementMode Mode = EPropPlacementMode::Scatter;
   UStaticPropList *PropList = nullptr;
-  /** Scatter: per-cell spawn probability in [0, 1]. */
   float Density = 0.f;
   FPropClusterSettings Cluster;
   int32 SeedOffset = 0;

@@ -6,10 +6,6 @@
 
 namespace evo::WorldDayCycle {
 
-// Day-cycle progression is measured in simulation ticks (TotalGameTicks), which advance at the
-// session TickRate. Real-time day length = DayLengthTicks / TickRate, so changing TickRate (e.g.
-// fast-forward) scales the day proportionally. There is intentionally no separate fixed clock rate.
-
 inline int64 PositiveModInt64(int64 a, int64 m) {
   check(m > 0);
   const int64 r = a % m;

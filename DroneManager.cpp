@@ -40,7 +40,6 @@ void UDroneManager::FindStationsByName(const FString &Name, TArray<UDroneStation
       Out.Add(Pair.Value);
     }
   }
-  // TMap iteration order is insertion-dependent; sort so every peer sees the same order.
   Out.Sort([](const UDroneStationBlockLogic &A, const UDroneStationBlockLogic &B) {
     return A.GetBlockPos() < B.GetBlockPos();
   });

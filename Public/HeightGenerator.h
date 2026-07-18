@@ -18,21 +18,12 @@ class UHeightGenerator : public UPrototype {
   UPROPERTY()
   TArray<UNoiseGenerator *> mNoises;
 
-  // Seed all owned noises (each noise applies its own SeedOffset).
   void SetSeed(int32 seed);
 
-  // Batched height-detail fill over a [w x h] region anchored at world
-  // (originX, originY). Sums every noise in mNoises, each mapped from its raw
-  // [-1,1] output into its authored [min, max] range. Writes into out[w*h]
-  // (row-major, matching FastNoiseSIMD layout). This is the primary path used
-  // by the sector generator; the result is pure per-biome detail (no global
-  // base elevation), so callers add the reference elevation themselves.
   void FillHeight(float *out, int32 originX, int32 originY, int32 w, int32 h, float scale = 1.f) const;
 
-  // Scalar spot query (single cell) of the same detail field as FillHeight.
   float GetHeight(float x, float y) const;
 
-  // JSON authoring: "Noises" = array of NoiseGenerator names.
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
 
   PROTOTYPE_CODEGEN(HeightGenerator, HeightGenerator)

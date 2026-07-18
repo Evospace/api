@@ -298,8 +298,6 @@ class UConductorBlockLogic : public UBlockLogic, public ICoverAttachInterface {
 
   virtual void UpdateSides(UAccessor *except = nullptr);
 
-  // A conductor snapshots its share of network charge only while it is in the world;
-  // a removed conductor must not take charge with it into a rebuild.
   bool SupportsLocalNetworkStorage() const {
     return IsInWorld();
   }

@@ -59,8 +59,6 @@ void UGameSessionData::Initialize(UObject *WorldContextObject, const FString &sa
   SaveName = saveName;
   Seed = seed;
   GeneratorName = generatorName;
-  // Capture the (menu-tuned) settings off the live generator so they persist with
-  // the save. Only biome generators carry MapSettings; others leave it default.
   if (auto *mgs = UGameInstanceHelper::GetGameInstance(WorldContextObject).GetSubsystem<UMapGeneratorSubsystem>()) {
     if (auto *bg = Cast<UBiomeWorldGenerator>(mgs->FindWorldGenerator(generatorName))) {
       MapSettings = bg->GetMapSettings();

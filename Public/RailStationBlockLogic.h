@@ -31,19 +31,12 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
   UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
   UInventory *WagonStorageProxy = nullptr;
 
-  // Non-unique display name; empty = unassigned, a default ("Station N") is assigned
-  // in URailwayManager::RegisterStation. Change via RenameStation, not directly.
   UPROPERTY(EditAnywhere, BlueprintReadOnly)
   FString StationName;
 
-  /**
-   * Player-facing rename; delegates to URailwayManager::RenameStation (schedule
-   * auto-update + multiplayer sync). Pc non-null marks a local player action.
-   */
   UFUNCTION(BlueprintCallable, Category = "Rail|Station")
   bool RenameStation(APlayerController *Pc, const FString &NewName);
 
-  /** Distinct station names on this station's railway manager, sorted; for the rename GUI. */
   UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Rail|Station")
   TArray<FString> GetAllStationNames() const;
 
@@ -70,7 +63,6 @@ class URailStationBlockLogic : public URailNodeBlockLogic {
   void SetDockedTrain(UTrainInstance *Train);
   UTrainInstance *GetDockedTrain() const { return DockedTrain; }
 
-  /** Cosmetic hooks for station animation (gates, lights); fired from SetDockedTrain transitions. */
   UPROPERTY(BlueprintAssignable, Category = "Rail|Events")
   FRailStationTrainDockEvent OnTrainDocked;
 
