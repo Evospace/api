@@ -9,7 +9,6 @@ class UNetworkBase : public UObject {
   GENERATED_BODY()
   public:
   virtual void Tick() {}
-  virtual void EndTick() {}
 
   UFUNCTION(BlueprintCallable)
   void MarkDirty() { bCollectedDirty = true; }

@@ -1,13 +1,13 @@
+// Copyright (c) 2017 - 2025, Samsonov Andrei. All Rights Reserved.
 #pragma once
 
 #include "Qr/CoordinameMinimal.h"
 #include "ConveyorInterface.generated.h"
 
-class ULogicContext;
 class UInventoryAccess;
 struct RItemInstancingHandle;
 
-UINTERFACE(BlueprintType)
+UINTERFACE()
 class UConveyorInterface : public UInterface {
   GENERATED_BODY()
 };
@@ -16,14 +16,6 @@ class IConveyorInterface {
   GENERATED_BODY()
   public:
   virtual void SetPushedSide(const Vec3i &side, RItemInstancingHandle &&item) = 0;
-
-  UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-  UInventoryAccess *GetInputAccess() const;
-
-  virtual UInventoryAccess *GetInputAccess_Implementation() const = 0;
-
-  UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-  UInventoryAccess *GetOutputAccess() const;
-
-  virtual UInventoryAccess *GetOutputAccess_Implementation() const = 0;
+  virtual UInventoryAccess *GetInputAccess() const = 0;
+  virtual UInventoryAccess *GetOutputAccess() const = 0;
 };
