@@ -212,6 +212,7 @@ class ADimension : public AActor {
   UDroneManager *GetDroneManager();
   URailNetwork *GetRailNetwork();
   URailwayManager *GetRailwayManager();
+  class UVehicleManager *GetVehicleManager();
   class UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeffered(class UConveyorNetwork *network);
 
@@ -309,11 +310,6 @@ class ADimension : public AActor {
   bool IsSnapshotBarrierReady() const;
 
   void SaveDimentionFolderImpl(bool backup, bool bCapturePreview = false);
-  void TickPendingFullSave();
-
-  bool mPendingFullSave = false;
-  bool mPendingFullSaveBackup = false;
-  bool mPendingFullSaveCapturePreview = false;
 
   void TearDownSurfaceColumnsAndPresentation();
   void InvalidateAllPlayerSectorStreamingAnchors();

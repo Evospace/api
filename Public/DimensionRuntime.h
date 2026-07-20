@@ -22,6 +22,7 @@ class ULogicContext;
 class URailNetwork;
 class URailwayManager;
 class UResourceNetworkManager;
+class UVehicleManager;
 class UStaticBlock;
 class UGameInstance;
 class UGameSessionSubsystem;
@@ -85,6 +86,7 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
   UDroneManager *GetDroneManager();
   URailNetwork *GetRailNetwork();
   URailwayManager *GetRailwayManager();
+  UVehicleManager *GetVehicleManager();
   UConveyorNetwork *GetNewConveyorNetwork();
   void KillConveyorNetworkDeferred(UConveyorNetwork *Network);
   void KillNetworkDeferred(UBlockNetwork *Network);
@@ -156,6 +158,9 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   UPROPERTY()
   URailwayManager *RailwayManager = nullptr;
+
+  UPROPERTY()
+  UVehicleManager *VehicleManager = nullptr;
 
   UPROPERTY()
   TArray<UConveyorNetwork *> ConveyorNetworks;
