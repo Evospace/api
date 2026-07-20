@@ -35,6 +35,7 @@ class AColumn;
 class ULogicContext;
 class ULogicSettings;
 class UDimensionRuntime;
+class UItemMap;
 
 UCLASS(BlueprintType)
 class UBlockLogic : public UInstance {
@@ -276,6 +277,10 @@ class UBlockLogic : public UInstance {
   friend class UDimensionRuntime;
   void SetInWorld(bool value) { bInWorld = value; }
   bool bInWorld = false;
+
+  UPROPERTY()
+  TObjectPtr<UItemMap> mPendingLogicInput;
+  bool bPendingLogicInputQueued = false;
 };
 
 UCLASS(BlueprintType)

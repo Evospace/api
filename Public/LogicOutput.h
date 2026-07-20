@@ -29,23 +29,23 @@ class ULogicOutput : public UObject, public ISerializableJson {
   GENERATED_BODY()
 
   public:
-  // Target or input signal depending on mode. Also supports special
-  // pseudo-signals named "Anything" and "Everything".
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   UStaticItem *SignalA = nullptr;
 
-  // How to produce output for the given Signal
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UStaticItem *SignalOut = nullptr;
+
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   ELogicOutputMode Mode = ELogicOutputMode::Constant;
 
-  // For Constant mode: value to write
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   int64 ConstA = 1;
 
-  // For Expression mode: compute (A op B) and write into Signal
-  // A is taken from input(Signal)
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   ELogicExprOp ExprOp = ELogicExprOp::Add;
+
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool UseConstA = false;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   bool UseConstB = true;

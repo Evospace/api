@@ -47,7 +47,8 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   void ResetSimulationState(class ADimension *InPresentation);
 
-  void ApplyLogicInput(UBlockLogic *Target, const ULogicContext *Context);
+  void QueueLogicInput(UBlockLogic *Target, const ULogicContext *Context);
+  void FlushLogicInputs();
 
   UBlockLogic *SetBlockLogic(FQrVector3i Pos, UBlockLogic *Logic);
   UBlockLogic *GetBlockLogic(FQrVector3i BlockPos) const;
@@ -161,6 +162,12 @@ class EVOSPACE_API UDimensionRuntime : public UInstance {
 
   UPROPERTY()
   TArray<UConveyorNetwork *> ConveyorNetworksToKill;
+
+  UPROPERTY()
+  TArray<TObjectPtr<UBlockLogic>> PendingLogicInputs;
+
+  UPROPERTY()
+  TObjectPtr<ULogicContext> LogicFlushContext;
 
   int64 TickAccumulatorMicros = 0;
 
