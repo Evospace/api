@@ -184,6 +184,108 @@ static bool NormalizeLegacyDimensionJsonAtPath(const FString &DimensionJsonPath,
   LOG(INFO_LL) << "SaveMigrationManager: Normalized legacy Dimension.json for save '" << DisplayName << "'";
   return true;
 }
+
+static int32 UpgradeLogicCircuits(const TSharedPtr<FJsonValue> &value) {
+  if (!value.IsValid()) {
+    return 0;
+  }
+
+  int32 count = 0;
+
+  const TSharedPtr<FJsonObject> *objPtr = nullptr;
+  if (value->TryGetObject(objPtr) && objPtr && objPtr->IsValid()) {
+    const TSharedPtr<FJsonObject> &obj = *objPtr;
+
+    if (TSharedPtr<FJsonValue> decider = obj->TryGetField(TEXT("Decider")); decider.IsValid()) {
+      obj->SetArrayField(TEXT("Deciders"), { decider });
+      obj->RemoveField(TEXT("Decider"));
+      ++count;
+    }
+
+    FString signalA;
+    if (obj->TryGetStringField(TEXT("SigA"), signalA)) {
+      obj->SetStringField(TEXT("SigOut"), signalA);
+      ++count;
+    }
+
+    for (const auto &field : obj->Values) {
+      count += UpgradeLogicCircuits(field.Value);
+    }
+    return count;
+  }
+
+  const TArray<TSharedPtr<FJsonValue>> *array = nullptr;
+  if (value->TryGetArray(array) && array) {
+    for (const TSharedPtr<FJsonValue> &entry : *array) {
+      count += UpgradeLogicCircuits(entry);
+    }
+  }
+
+  return count;
+}
+
+static bool UpgradeLogicCircuitsAtPath(const FString &LogicBinPath, const FString &DisplayName) {
+  TArray<uint8> compressedData;
+  if (!FFileHelper::LoadFileToArray(compressedData, *LogicBinPath) || compressedData.Num() == 0) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to load '" << LogicBinPath << "' for save '" << DisplayName << "'";
+    return false;
+  }
+
+  FArchiveLoadCompressedProxy decompressor(compressedData, FName("ZLIB"));
+  if (decompressor.GetError()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to decompress '" << LogicBinPath << "' for save '" << DisplayName << "'";
+    return false;
+  }
+
+  FBufferArchive uncompressedData;
+  decompressor << uncompressedData;
+  decompressor.Flush();
+
+  FMemoryReader reader(uncompressedData);
+  reader.Seek(0);
+  int32 version = 0;
+  FString jsonStr;
+  reader << version;
+  reader << jsonStr;
+
+  TSharedPtr<FJsonObject> rootObj;
+  TSharedRef<TJsonReader<>> jsonReader = TJsonReaderFactory<>::Create(jsonStr);
+  if (!FJsonSerializer::Deserialize(jsonReader, rootObj) || !rootObj.IsValid()) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to parse JSON from '" << LogicBinPath << "' for save '" << DisplayName << "'";
+    return false;
+  }
+
+  const int32 migrated = UpgradeLogicCircuits(MakeShared<FJsonValueObject>(rootObj));
+  if (migrated == 0) {
+    return true;
+  }
+
+  FString modifiedJsonStr;
+  const auto writer = TJsonWriterFactory<>::Create(&modifiedJsonStr);
+  if (!FJsonSerializer::Serialize(rootObj.ToSharedRef(), writer)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to serialize modified JSON for save '" << DisplayName << "'";
+    return false;
+  }
+
+  FBufferArchive finalUncompressedData;
+  FMemoryWriter memoryWriter(finalUncompressedData, true);
+  memoryWriter << version;
+  memoryWriter << modifiedJsonStr;
+
+  TArray<uint8> finalCompressedData;
+  FArchiveSaveCompressedProxy compressor(finalCompressedData, FName("ZLIB"));
+  compressor << finalUncompressedData;
+  compressor.Flush();
+
+  if (!FFileHelper::SaveArrayToFile(finalCompressedData, *LogicBinPath)) {
+    LOG(ERROR_LL) << "SaveMigrationManager: Failed to save modified '" << LogicBinPath << "' for save '" << DisplayName << "'";
+    return false;
+  }
+
+  LOG(INFO_LL) << "SaveMigrationManager: Upgraded " << migrated << " logic circuit fields in '" << LogicBinPath
+               << "' for save '" << DisplayName << "'";
+  return true;
+}
 } // namespace
 
 void USaveMigrationManager::RunMigrationsIfNeeded(const FString &DisplaySaveName, UGameInstance *GameInstance) {
@@ -788,6 +890,18 @@ void USaveMigrationManager::RunMigrationsAtRoot(const FString &RootPath, const F
 
                    LOG(INFO_LL) << "SaveMigrationManager: Split Player.json into per-player profile + Research.json for '"
                                 << DisplayName << "'";
+                   return true;
+                 } });
+
+  // Single Decider becomes a Deciders array, and ULogicOutput gets its own destination signal.
+  migrators.Add({ FVersionStruct{ 0, 21, 1, 497, TEXT("*") }, [](const FString &RootPath, const FString &DisplayName, UGameInstance *GameInstance) {
+                   TArray<FString> logicBins;
+                   IFileManager::Get().FindFilesRecursive(logicBins, *RootPath, TEXT("Logic.bin"), true, false);
+                   for (const FString &logicBin : logicBins) {
+                     if (!UpgradeLogicCircuitsAtPath(logicBin, DisplayName)) {
+                       return false;
+                     }
+                   }
                    return true;
                  } });
 

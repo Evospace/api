@@ -38,6 +38,12 @@ class ULogicDecider : public UInstance {
   UFUNCTION(BlueprintCallable)
   void RemoveOutput(ULogicOutput *to_remove);
 
+  UFUNCTION(BlueprintCallable)
+  void CopyToClipboard() const;
+
+  UFUNCTION(BlueprintCallable)
+  bool PasteFromClipboard();
+
   virtual bool DeserializeJson(TSharedPtr<FJsonObject> json) override;
   virtual bool SerializeJson(TSharedPtr<FJsonObject> json) const override;
 };
