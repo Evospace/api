@@ -137,7 +137,8 @@ class URailwayManager : public UObject {
     TArray<FRailPathStep> &OutPath,
     int32 &OutPathIndex,
     int64 &OutDistanceAlong,
-    int64 &OutCost) const;
+    int64 &OutCost,
+    bool &OutReversesFacing) const;
   void SyncRailAnchorFromPathPosition(UTrainInstance *Train) const;
   bool EnsureRailAnchorForCurrentStop(UTrainInstance *Train) const;
   bool TryDispatchTrainFromSchedule(int32 Index);

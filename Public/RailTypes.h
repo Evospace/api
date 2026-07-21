@@ -119,6 +119,9 @@ class UTrainInstance : public UInstance, public ILogicContextProvider {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 RearRailAnchorDistanceAlongSegment = 0;
 
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
+  bool bFacingPathBackward = false;
+
   /** Signed speed along the current path (fixed units per simulation tick); positive = toward path end, negative = toward path start. */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Rail")
   int64 Speed = 0;
