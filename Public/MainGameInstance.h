@@ -9,7 +9,6 @@
 
 #include <Containers/Array.h>
 #include <Containers/Map.h>
-#include <Engine/DPICustomScalingRule.h>
 #include <Engine/GameInstance.h>
 
 #if WITH_EDITOR
@@ -35,33 +34,6 @@ class UAssetOwner;
 class UMapObjectManager;
 class UStaticMesh;
 class UEvoGuiProjectStyle;
-
-UENUM(BlueprintType)
-enum class EJoyImageFormats : uint8 {
-  JPG UMETA(DisplayName = "JPG        "),
-  PNG UMETA(DisplayName = "PNG        "),
-  BMP UMETA(DisplayName = "BMP        "),
-  ICO UMETA(DisplayName = "ICO        "),
-  EXR UMETA(DisplayName = "EXR        "),
-  ICNS UMETA(DisplayName = "ICNS        ")
-};
-
-USTRUCT(BlueprintType)
-struct FScreenResolution {
-  GENERATED_BODY()
-
-  public:
-  uint32 Width;
-  uint32 Height;
-};
-
-UCLASS()
-class UCustomDPI : public UDPICustomScalingRule {
-  GENERATED_BODY()
-
-  public:
-  virtual float GetDPIScaleBasedOnSize(FIntPoint Size) const override;
-};
 
 UCLASS()
 class UMainGameInstance : public USteamGameInstance {
@@ -126,12 +98,8 @@ class UMainGameInstance : public USteamGameInstance {
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
   UNeiComponent *mNei;
 
-  // TODO: check usage
   UFUNCTION(BlueprintCallable)
   static void SetDPI(float scale);
-
-  // TODO: check usage
-  static float DPIScale;
 
   template <typename _Ty>
   static _Ty *GetOrCreatePrototype(const FString &name) {
@@ -148,12 +116,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString StringBinFromInt64(int64 s);
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static float Smoothstep(float edge0, float edge1, float x);
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static bool IsValidSteamString(const FString &s);
 
   UFUNCTION(BlueprintCallable)
   static void ClipboardPaste(FString &dest);
@@ -194,12 +156,6 @@ class UMainGameInstance : public USteamGameInstance {
   bool mIsSubscriptionQueryDone = false;
 
   UFUNCTION(BlueprintCallable)
-  static void SetSoundClassVolume(USoundClass *sound_class, float volume);
-
-  UFUNCTION(BlueprintCallable)
-  static float GetSoundClassVolume(USoundClass *sound_class);
-
-  UFUNCTION(BlueprintCallable)
   static bool IsSaveExists(FString name);
 
   UFUNCTION(BlueprintCallable)
@@ -207,9 +163,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UFUNCTION(BlueprintCallable)
   static FString GetBuildString();
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FString GetDisplayVersionString();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FString GetLicensesText();
@@ -228,9 +181,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   static UTexture2D *LoadTexture2DFromFile(const FString &FullFilePath);
 
-  static UTexture2D *Victory_LoadTexture2D_FromArray(const TArray<FColor> &RawFileData, bool &IsValid, int32 &Width,
-                                                     int32 &Height);
-
   UFUNCTION(BlueprintCallable)
   static TArray<FAssetData> ListAllAssets();
 
@@ -244,12 +194,6 @@ class UMainGameInstance : public USteamGameInstance {
                                  const TArray<FColor> &ImagePixels, bool sRGB);
 
   UFUNCTION(BlueprintCallable)
-  static int32 GreatestCommonDivisor(int32 a, int32 b);
-
-  UFUNCTION(BlueprintCallable)
-  static TArray<FString> GetLocalizations();
-
-  UFUNCTION(BlueprintCallable)
   static void ChangeLocalization(FString target);
 
   void SetLocalization(std::string culture);
@@ -260,19 +204,6 @@ class UMainGameInstance : public USteamGameInstance {
 
   UFUNCTION(BlueprintCallable)
   static TArray<FString> GetErrors();
-
-  UFUNCTION(BlueprintCallable)
-  static bool HasErrors();
-
-  UFUNCTION(BlueprintCallable)
-  static TArray<FString> GetWarnings();
-
-  UFUNCTION(BlueprintCallable)
-  static bool HasWarnings();
-
-  UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-  static bool ContainsAllResearches(const TSet<UStaticResearchRecipe *> where,
-                                    const TArray<UStaticResearchRecipe *> what);
 
   UFUNCTION(BlueprintCallable)
   void SetFilterString(const FString &str);
@@ -313,18 +244,12 @@ class UMainGameInstance : public USteamGameInstance {
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FLinearColor IndexToGraphColor(int32 index);
 
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static FLinearColor HashToColor(const UStaticItem *Pointer);
-
   static FLinearColor VoidToColor(const void *Pointer);
 
   static std::vector<std::string> GetAllSupportedResolutions();
 
   UFUNCTION(BlueprintCallable, BlueprintPure)
   static FVector2D ViewportSize();
-
-  UFUNCTION(BlueprintCallable, BlueprintPure)
-  static float GetDPI();
 
   UFUNCTION(BlueprintCallable)
   FString GetCurrentRHI();
